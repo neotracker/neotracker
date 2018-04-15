@@ -1,0 +1,20 @@
+{
+  "name": "neotracker-shared-utils",
+  "version": "0.0.1-alpha.0",
+  "keywords": [
+    "neo",
+    "blockchain",
+    "neotracker"
+  ],
+  "description": "Utilities for client and server side NEO Tracker.",
+  "repository": "https://github.com/neotracker/neotracker",
+  "bugs": "https://github.com/neotracker/neotracker/issues",
+  "license": "MIT",
+  "main": "./src/index.js",
+  "dependencies": {
+    "@neo-one/monitor": "^1.0.0-alpha.22",
+    "bignumber.js": "^6.0.0",
+    "rxjs": "^5.5.9",
+    "uuid": "^3.2.1"
+  }
+}

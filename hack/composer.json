@@ -1,0 +1,6 @@
+{
+    "require": {
+        "facebook/fbshipit": "dev-master"
+    },
+    "minimum-stability": "dev"
+}

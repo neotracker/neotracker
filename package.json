@@ -1,0 +1,79 @@
+{
+  "name": "neotracker",
+  "version": "0.0.0",
+  "description": "NEO Tracker website",
+  "repository": "https://github.com/neotracker/neotracker-internal",
+  "bugs": "https://github.com/neotracker/neotracker-internal/issues",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "engines": {
+    "node": "^9.11.1 || ^8.9.4"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 10"
+  ],
+  "resolutions": {
+    "react": "16.3.1",
+    "react-dom": "16.3.1",
+    "ajv": "^6.2.0",
+    "bn.js": "^4.11.8",
+    "grpc": "^1.8.4"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.44",
+    "@babel/core": "^7.0.0-beta.44",
+    "@babel/node": "^7.0.0-beta.44",
+    "@babel/plugin-proposal-async-generator-functions": "^7.0.0-beta.44",
+    "@babel/plugin-proposal-class-properties": "^7.0.0-beta.44",
+    "@babel/plugin-proposal-export-namespace-from": "^7.0.0-beta.44",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.44",
+    "@babel/plugin-transform-flow-strip-types": "^7.0.0-beta.44",
+    "@babel/polyfill": "^7.0.0-beta.44",
+    "@babel/preset-env": "^7.0.0-beta.44",
+    "@babel/preset-react": "^7.0.0-beta.44",
+    "@babel/register": "^7.0.0-beta.44",
+    "babel-core": "^7.0.0-0",
+    "babel-eslint": "^8.2.2",
+    "babel-plugin-relay": "^1.5.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-eslint-comments": "^2.0.2",
+    "eslint-plugin-flowtype": "^2.46.1",
+    "eslint-plugin-import": "^2.10.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.7.0",
+    "flow-bin": "^0.69.0",
+    "husky": "^0.14.3",
+    "lerna": "^2.10.1",
+    "lint-staged": "^7.0.4",
+    "prettier": "^1.11.1"
+  },
+  "lint-staged": {
+    "packages/*/src/**/*.js": [
+      "yarn run prettier --write --config .prettierrc",
+      "git add",
+      "yarn run eslint"
+    ],
+    "scripts/**/*.js": [
+      "yarn run prettier --write --config .prettierrc",
+      "git add",
+      "yarn run eslint"
+    ]
+  },
+  "scripts": {
+    "lint": "eslint packages/*/src/**",
+    "nit": "prettier --config .prettierrc --list-different \"packages/*/src/**/*.js\"",
+    "flow": "flow",
+    "lint-staged": "lint-staged",
+    "flow:coverage": "flow-coverage-report -i 'packages/*/src/**/*.js' -t html",
+    "precommit": "lint-staged && flow",
+    "install-composer": "pushd hack && sh ./install-composer.sh && popd",
+    "install-hack": "pushd hack && hhvm composer.phar install && popd"
+  }
+}
