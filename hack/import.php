@@ -66,6 +66,7 @@ class ImportNEOTracker {
         new ImportItSyncPhase(
           ($config, $changeset) ==> self::filterChangeset($changeset),
         ),
+        new ShipItYarnPhase(ShipItRepoSide::DESTINATION),
       },
     ))
       ->run();
