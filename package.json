@@ -45,11 +45,6 @@
       "yarn run prettier --write --config .prettierrc",
       "git add",
       "yarn run eslint"
-    ],
-    "scripts/**/*.js": [
-      "yarn run prettier --write --config .prettierrc",
-      "git add",
-      "yarn run eslint"
     ]
   },
   "name": "neotracker",
@@ -63,6 +58,10 @@
     "react-dom": "16.3.1"
   },
   "scripts": {
+    "develop:create-tables": "babel-node ./packages/neotracker-build-scrape/src/entry/createTables.js",
+    "develop:drop-tables": "babel-node ./packages/neotracker-build-scrape/src/entry/dropTables.js",
+    "develop:scrape": "babel-node ./packages/neotracker-build-scrape/src/entry/scrape.js",
+    "develop:web": "babel-node ./packages/neotracker-build-web/src/develop.js",
     "flow": "flow",
     "flow:coverage": "flow-coverage-report -i 'packages/*/src/**/*.js' -t html",
     "lint": "eslint packages/*/src/**",
