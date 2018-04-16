@@ -7,9 +7,11 @@ export default class HotWebServer extends HotWebServerBase {
   constructor({
     clientBundlePath,
     clientAssetsPath,
+    env,
   }: {|
     clientBundlePath: string,
     clientAssetsPath: string,
+    env?: Object,
   |}) {
     super({
       serverCompiler: createServerCompiler({ buildVersion: 'dev' }),
@@ -22,6 +24,7 @@ export default class HotWebServer extends HotWebServerBase {
       graphqlOutputPath: './build/graphql',
       graphqlSchemaOutputPath: './build/graphql/schema.graphql',
       jsonOutputPath: './build/graphql/schema.graphql.json',
+      env,
     });
   }
 }

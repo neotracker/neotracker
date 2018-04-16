@@ -8,6 +8,7 @@ export default class HotWebEntryServer extends HotEntryServer {
   constructor(options: {|
     clientAssetsPath: string,
     clientBundlePath: string,
+    env?: Object,
   |}) {
     super();
     this.server = new HotWebServer(options);

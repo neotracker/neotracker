@@ -8,30 +8,10 @@ import createServer$ from 'neotracker-server-web';
 import { createConsoleLogger } from 'neotracker-build-utils';
 import { finalize } from 'neotracker-shared-utils';
 
-import { test, main, priv } from '../options';
+import { getOptions } from '../options';
 
-const network =
-  process.env.NEOTRACKER_NETWORK == null
-    ? 'priv'
-    : process.env.NEOTRACKER_NETWORK;
-let options;
-let port;
-switch (network) {
-  case 'main':
-    options = main;
-    port = 1340;
-    break;
-  case 'test':
-    options = test;
-    port = 1341;
-    break;
-  case 'priv':
-    options = priv;
-    port = 1342;
-    break;
-  default:
-    throw new Error('Unknown network');
-}
+const port = 1340;
+const { options, network } = getOptions({ port });
 
 const monitor = DefaultMonitor.create({
   service: 'web_server',

@@ -3,7 +3,9 @@ import { mainDatabase, mainRPCURL } from 'neotracker-build-utils';
 
 import common from './common';
 
-export default common({
-  database: mainDatabase,
-  rpcURL: mainRPCURL,
-});
+export default ({ port }: {| port: number |}) =>
+  common({
+    database: mainDatabase,
+    rpcURL: mainRPCURL,
+    port,
+  });

@@ -11,9 +11,11 @@ const whitelistedUserAgents =
 export default ({
   rpcURL,
   database,
+  port,
 }: {|
   rpcURL: string,
   database: string,
+  port: number,
 |}): ServerOptions => {
   const clientBundlePath = './build/client';
   return {
@@ -59,7 +61,7 @@ export default ({
         directives: {
           childSrc: ["'self'"],
           defaultSrc: ["'self'"],
-          connectSrc: ["'self'", `ws://localhost:${1341}`],
+          connectSrc: ["'self'", `ws://localhost:${port}`],
           imgSrc: ["'self'", 'data:'],
           fontSrc: ["'self'", 'https://fonts.gstatic.com/'],
           frameSrc: ["'self'"],

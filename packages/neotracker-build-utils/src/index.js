@@ -17,7 +17,7 @@ export { default as nodeExternals } from './nodeExternals';
 export { default as runCompiler } from './runCompiler';
 export { default as setupProcessListeners } from './setupProcessListeners';
 
-export { mainRPCURL, testRPCURL, privRPCURL } from './options';
+export * from './options';
 
 export type { HotServer } from './HotServer';
 export type { Type } from './createBabelLoader';

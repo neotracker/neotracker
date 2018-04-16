@@ -4,6 +4,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { DefaultMonitor } from '@neo-one/monitor';
 
 import createScrape$ from 'neotracker-server-scrape';
+import { createFromEnvironment, createTables } from 'neotracker-server-db';
 import { finalize } from 'neotracker-shared-utils';
 
 import {
@@ -14,7 +15,8 @@ import {
   privDatabase,
   testRPCURL,
   mainRPCURL,
-  privRPCURL,
+  getPrivRPCURL,
+  getNetworkOptions,
 } from 'neotracker-build-utils';
 
 export const MAIN = [
@@ -56,32 +58,27 @@ export const TEST = [
 
 export const PRIV = [];
 
-const network =
-  process.env.NEOTRACKER_NETWORK == null
-    ? 'priv'
-    : process.env.NEOTRACKER_NETWORK;
-let rpcURL;
-let database;
-let nep5Hashes;
-switch (network) {
-  case 'main':
-    rpcURL = mainRPCURL;
-    database = mainDatabase;
-    nep5Hashes = MAIN;
-    break;
-  case 'test':
-    rpcURL = testRPCURL;
-    database = testDatabase;
-    nep5Hashes = TEST;
-    break;
-  case 'priv':
-    rpcURL = privRPCURL;
-    database = privDatabase;
-    nep5Hashes = PRIV;
-    break;
-  default:
-    throw new Error('Unknown network');
-}
+const {
+  options: { rpcURL, database, nep5Hashes },
+  network,
+} = getNetworkOptions({
+  main: {
+    rpcURL: mainRPCURL,
+    database: mainDatabase,
+    nep5Hashes: MAIN,
+  },
+  test: {
+    rpcURL: testRPCURL,
+    database: testDatabase,
+    nep5Hashes: TEST,
+  },
+  priv: {
+    rpcURL: getPrivRPCURL(),
+    database: privDatabase,
+    nep5Hashes: PRIV,
+  },
+});
+
 const dbOptions = db({ database });
 
 const monitor = DefaultMonitor.create({
@@ -124,6 +121,17 @@ const run = async () => {
     monitor.logError({ name: 'server_unhandled_rejection', error });
     shutdown(1);
   });
+
+  const knexDB = createFromEnvironment(
+    monitor,
+    {
+      host: 'localhost',
+      port: 5432,
+    },
+    dbOptions,
+  );
+  await createTables(knexDB, monitor);
+  await knexDB.destroy();
 
   const scrape$ = createScrape$({
     environment: {

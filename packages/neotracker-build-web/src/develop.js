@@ -1,13 +1,13 @@
 /* @flow */
 import HotWebEntryServer from './HotWebEntryServer';
 
-import { main, test } from './options';
+import { getOptions } from './options';
 
-const isTestNet = process.env.IS_TEST_NET === 'true';
-const options = isTestNet ? test : main;
+const { options, network } = getOptions({ port: 1340 });
 
 const server = new HotWebEntryServer({
   clientAssetsPath: options.react.clientAssetsPath,
   clientBundlePath: options.clientAssets.path,
+  env: { NEOTRACKER_NETWORK: network },
 });
 server.start();
