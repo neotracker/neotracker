@@ -1,0 +1,56 @@
+aliases:
+  - &restore-yarn-cache
+    keys:
+      - v1-yarn-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      # Fallback in case checksum fails
+      - v1-yarn-{{ .Branch }}-
+
+  - &save-yarn-cache
+    paths:
+      - node_modules
+      - ~/.cache/yarn
+    key: v1-yarn-{{ .Branch }}-{{ checksum "yarn.lock" }}
+
+  - &filter-only-master
+    branches:
+      only:
+        - master
+
+  - &filter-ignore-gh-pages
+    branches:
+      ignore: gh-pages
+
+  - &yarn
+    |
+      yarn install --non-interactive --cache-folder ~/.cache/yarn --frozen-lockfile
+
+defaults: &defaults
+  docker:
+    - image: circleci/node:9.11.1
+
+version: 2
+jobs:
+  test:
+    <<: *defaults
+    working_directory: ~/neo-one
+    steps:
+      - checkout
+      - restore-cache: *restore-yarn-cache
+      - run: *yarn
+      - save-cache: *save-yarn-cache
+      - run:
+          name: Prettier
+          command: yarn nit
+      - run:
+          name: ESLint
+          command: yarn lint
+      - run:
+          name: Flow
+          command: yarn flow
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test:
+          filters: *filter-ignore-gh-pages

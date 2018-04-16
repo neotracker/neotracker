@@ -11,6 +11,7 @@ class NEOTrackerUtils
     return ImmMap {
       'package.oss.json' => 'package.json',
       'yarn.oss.lock' => 'yarn.lock',
+      '.circleci.oss' => '.circleci',
     };
   }
 }
