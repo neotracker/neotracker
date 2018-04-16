@@ -37,6 +37,7 @@ By default, NEO•ONE will create a private network with the RPC url `http://loc
 
 ### Start NEO Tracker
 
+  - `yarn install` (install dependencies)
   - `yarn develop:scrape` (start the scraper which populates postgres with blockchain data)
   - `yarn develop:web` (start the webserver on http://localhost:1340)
 
