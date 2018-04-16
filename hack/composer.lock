@@ -1,0 +1,109 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "9b7dde0585dc2733d6e9d974f55aada7",
+    "packages": [
+        {
+            "name": "91carriage/phpunit-hhi",
+            "version": "dev-phpunit-5.7",
+            "source": {
+                "type": "git",
+                "url": "https://git.simon.geek.nz/91-carriage/phpunit-hhi.git",
+                "reference": "29e50b1130dc6d72266460f1f303ba1f24937a40"
+            },
+            "require": {
+                "hhvm": ">=3.24.3"
+            },
+            "conflict": {
+                "phpunit/phpunit": "<5.7.15"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*"
+            },
+            "suggest": {
+                "91carriage/dbunit-hhi": "HHI files for use with DbUnit"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "6.0.x-dev",
+                    "dev-phpunit-5.7": "5.7.x-dev",
+                    "dev-phpunit-5.6": "5.6.x-dev",
+                    "dev-phpunit-5.5": "5.5.x-dev",
+                    "dev-phpunit-5.4": "5.4.x-dev",
+                    "dev-phpunit-5.3": "5.3.x-dev",
+                    "dev-phpunit-5.2": "5.2.x-dev",
+                    "dev-phpunit-5.1": "5.1.x-dev",
+                    "dev-phpunit-5.0": "5.0.x-dev",
+                    "dev-phpunit-4.8": "4.8.x-dev"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "HHI definitions for PHPUnit",
+            "homepage": "https://git.simon.geek.nz/91-carriage/phpunit-hhi",
+            "keywords": [
+                "hack",
+                "hhvm",
+                "phpunit",
+                "testing"
+            ],
+            "time": "2018-03-02T23:37:33+00:00"
+        },
+        {
+            "name": "facebook/fbshipit",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/facebook/fbshipit.git",
+                "reference": "e465b250d1fb312689a6a14ebfdca57246fc3bf1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/facebook/fbshipit/zipball/e465b250d1fb312689a6a14ebfdca57246fc3bf1",
+                "reference": "e465b250d1fb312689a6a14ebfdca57246fc3bf1",
+                "shasum": ""
+            },
+            "require": {
+                "91carriage/phpunit-hhi": "^5.7.4",
+                "hhvm": "~3.24"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/",
+                    "tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Library for syncing code repositories",
+            "keywords": [
+                "FBShipIt",
+                "facebook",
+                "hack"
+            ],
+            "time": "2018-04-13T01:46:35+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "facebook/fbshipit": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

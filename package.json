@@ -1,0 +1,88 @@
+{
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 10"
+  ],
+  "bugs": "https://github.com/neotracker/neotracker/issues",
+  "description": "NEO Tracker",
+  "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.44",
+    "@babel/core": "^7.0.0-beta.44",
+    "@babel/node": "^7.0.0-beta.44",
+    "@babel/plugin-proposal-async-generator-functions": "^7.0.0-beta.44",
+    "@babel/plugin-proposal-class-properties": "^7.0.0-beta.44",
+    "@babel/plugin-proposal-export-namespace-from": "^7.0.0-beta.44",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.44",
+    "@babel/plugin-transform-flow-strip-types": "^7.0.0-beta.44",
+    "@babel/polyfill": "^7.0.0-beta.44",
+    "@babel/preset-env": "^7.0.0-beta.44",
+    "@babel/preset-react": "^7.0.0-beta.44",
+    "@babel/register": "^7.0.0-beta.44",
+    "babel-core": "^7.0.0-0",
+    "babel-eslint": "^8.2.3",
+    "babel-plugin-relay": "^1.5.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-eslint-comments": "^2.0.2",
+    "eslint-plugin-flowtype": "^2.46.2",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.7.0",
+    "flow-bin": "^0.69.0",
+    "husky": "^0.14.3",
+    "lerna": "^2.10.1",
+    "lint-staged": "^7.0.4",
+    "prettier": "^1.12.0"
+  },
+  "engines": {
+    "node": "^9.11.1 || ^8.9.4"
+  },
+  "license": "MIT",
+  "lint-staged": {
+    "packages/*/src/**/*.js": [
+      "yarn run prettier --write --config .prettierrc",
+      "git add",
+      "yarn run eslint"
+    ],
+    "scripts/**/*.js": [
+      "yarn run prettier --write --config .prettierrc",
+      "git add",
+      "yarn run eslint"
+    ]
+  },
+  "name": "neotracker",
+  "private": true,
+  "repository": "https://github.com/neotracker/neotracker",
+  "resolutions": {
+    "ajv": "^6.2.0",
+    "bn.js": "^4.11.8",
+    "grpc": "^1.8.4",
+    "react": "16.3.1",
+    "react-dom": "16.3.1"
+  },
+  "scripts": {
+    "flow": "flow",
+    "flow:coverage": "flow-coverage-report -i 'packages/*/src/**/*.js' -t html",
+    "lint": "eslint packages/*/src/**",
+    "lint-staged": "lint-staged",
+    "nit": "prettier --config .prettierrc --list-different \"packages/*/src/**/*.js\"",
+    "precommit": "lint-staged && flow"
+  },
+  "version": "0.0.0",
+  "workspaces": [
+    "packages/neotracker-build-scrape",
+    "packages/neotracker-build-utils",
+    "packages/neotracker-build-web",
+    "packages/neotracker-client-web",
+    "packages/neotracker-server-db",
+    "packages/neotracker-server-graphql",
+    "packages/neotracker-server-scrape",
+    "packages/neotracker-server-utils",
+    "packages/neotracker-server-web",
+    "packages/neotracker-shared-graphql",
+    "packages/neotracker-shared-utils",
+    "packages/neotracker-shared-web"
+  ]
+}

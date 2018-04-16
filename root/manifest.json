@@ -1,0 +1,22 @@
+{
+    "name": "NEO Tracker",
+	  "short_name": "NEO Tracker",
+	  "description": "NEO blockchain explorer and wallet. Explore blocks, transactions, addresses, contracts and more. Transfer NEO/GAS and claim GAS with the web wallet.",
+	  "lang": "en",
+	  "start_url": "./",
+    "icons": [
+        {
+            "src": "/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#7c4dff",
+    "background_color": "#7c4dff",
+    "display": "standalone"
+}

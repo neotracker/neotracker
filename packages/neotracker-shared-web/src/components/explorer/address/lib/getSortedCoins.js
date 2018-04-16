@@ -1,0 +1,58 @@
+/* @flow */
+import BigNumber from 'bignumber.js';
+
+import _ from 'lodash';
+
+import {
+  NEO_ASSET_HASH,
+  GAS_ASSET_HASH,
+  NEO_COIN_ASSET,
+  GAS_COIN_ASSET,
+} from 'neotracker-shared-utils';
+
+export default (
+  coins: $ReadOnlyArray<{
+    +asset: {
+      +hash: string,
+    },
+    +value: string,
+  }>,
+) => {
+  let result = _.partition(coins, coin => coin.asset.hash === NEO_ASSET_HASH);
+  let neoCoin = null;
+  if (result[0].length > 0) {
+    // eslint-disable-next-line
+    neoCoin = result[0][0];
+  } else {
+    neoCoin = {
+      value: '0',
+      asset: NEO_COIN_ASSET,
+    };
+  }
+
+  result = _.partition(result[1], coin => coin.asset.hash === GAS_ASSET_HASH);
+  let gasCoin = null;
+  if (result[0].length > 0) {
+    // eslint-disable-next-line
+    gasCoin = result[0][0];
+  } else {
+    gasCoin = {
+      value: '0',
+      asset: GAS_COIN_ASSET,
+    };
+  }
+
+  const sortedResult = result[1].sort((x, y) => {
+    const xNumber = new BigNumber(x.value);
+    const yNumber = new BigNumber(y.value);
+    if (xNumber.lt(yNumber)) {
+      return -1;
+    } else if (xNumber.gt(yNumber)) {
+      return 1;
+    }
+
+    return 0;
+  });
+
+  return [neoCoin, gasCoin].concat(sortedResult).filter(Boolean);
+};

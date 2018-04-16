@@ -1,0 +1,4 @@
+decls/ix.js
+build/
+node_modules/
+**/__generated__
