@@ -30,7 +30,7 @@ class ShipNEOTracker {
       |> ShipItPathFilters::stripPaths(
           $$,
           ImmVector {
-            '@^(?!decls/|hack/|packages/|public/|root/|.babelrc|.editorconfig|.eslintignore|.eslintrc.json|.flowconfig|.gitignore|.prettierignore|.prettierrc|lerna.json|LICENSE|package.oss.json|README.md|yarn.oss.lock|.circleci.oss/)@',
+            '@^(?!decls/|hack/|packages/|public/|root/|.babelrc|.editorconfig|.eslintignore|.eslintrc.json|.flowconfig|.gitignore|.prettierignore|.prettierrc|lerna.json|LICENSE|package.oss.json|README.md|yarn.oss.lock|.circleci.oss/|.github/)@',
             '@^packages/neotracker-internal@',
           },
         )
