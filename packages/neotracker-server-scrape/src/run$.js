@@ -48,7 +48,7 @@ import type { Monitor } from '@neo-one/monitor';
 import { Observable } from 'rxjs/Observable';
 
 import _ from 'lodash';
-import { mergeMap } from 'rxjs/operators';
+import { filter, mergeMap } from 'rxjs/operators';
 import { metrics } from '@neo-one/monitor';
 import { concat } from 'rxjs/observable/concat';
 import { merge } from 'rxjs/observable/merge';
@@ -1413,7 +1413,7 @@ function processContractActions(
   monitor: Monitor,
   contractModel: ContractModel,
   blockIndexStop: number,
-  nep5Contract?: ?ReadSmartContract,
+  nep5Contract: ReadSmartContract,
 ): Promise<void> {
   return getMonitor(monitor).captureSpan(
     async span => {
@@ -1443,7 +1443,7 @@ function processContractActions(
             span,
             action,
             contractModel,
-            nep5Contract == null ? undefined : nep5Contract,
+            nep5Contract,
           );
         });
 
@@ -2347,6 +2347,10 @@ function watchContract(
             getKnownContractModel(context, span, contractModel.hash),
             initializeNEP5Contract(context, span, contractModel),
           ]);
+          if (nep5Contract == null) {
+            return;
+          }
+
           const checkHeight = Math.max(height - ADD_CONTRACT_OFFSET, 1);
           if (knownContractModel.processed_block_index >= checkHeight) {
             context.contractModelsToProcess.push([contractModel, nep5Contract]);
@@ -2510,6 +2514,10 @@ export default (context: Context, monitorIn: Monitor) => {
       context.makeQueryContext,
       context.nep5Hashes$,
     ).pipe(
+      filter(
+        contractModel =>
+          context.nep5Contracts[add0x(contractModel.hash)] == null,
+      ),
       mergeMap(contractModel => watchContract(context, monitor, contractModel)),
     ),
   );

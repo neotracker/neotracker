@@ -10,15 +10,16 @@ export type MigrationName =
   | 'resyncActions'
   | 'fixQLC-0'
   | 'fixSkippedTransfers-2'
-  | 'resyncTransferCoins-1'
+  | 'resyncTransferCoins-2'
   | 'updateIndices'
   | 'processedNextIndexNotify';
 
 export default [
   ['resyncActions', resyncActions],
   ['fixQLC-0', fixQLC],
+  // NOTE: Fixing skipped transfers requires resyncing transfer coins.
   ['fixSkippedTransfers-2', fixSkippedTransfers],
-  ['resyncTransferCoins-1', resyncTransferCoins],
+  ['resyncTransferCoins-2', resyncTransferCoins],
   ['updateIndices', updateIndices],
   ['processedNextIndexNotify', processedNextIndexNotify],
 ];
