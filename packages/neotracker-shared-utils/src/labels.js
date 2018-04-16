@@ -76,6 +76,7 @@ export default {
   ACTION_BLOCK_INDEX: 'action.block.index',
   ACTION_TRANSACTION_INDEX: 'action.transaction.index',
   ACTION_INDEX: 'action.index',
+  CONTRACT_HASH: 'contract.hash',
   // General
   QUEUE_SIZE: 'queue.size',
   OPTIONS: 'options',

@@ -2273,56 +2273,63 @@ export function initializeNEP5Contract(
   monitor: Monitor,
   contractModel: ContractModel,
 ): Promise<?ReadSmartContract> {
-  return getMonitor(monitor).captureSpan(
-    async span => {
-      if (contractModel.type === NEP5_CONTRACT_TYPE) {
-        const contractABI = await abi.NEP5(
-          context.client,
-          add0x(contractModel.hash),
-        );
-        const contract = context.client.smartContract(
-          add0x(contractModel.hash),
-          contractABI,
-        );
-        const [
-          name,
-          symbol,
-          decimals,
-          totalSupply,
-          transactionModel,
-        ] = await Promise.all([
-          contract.name(span),
-          contract.symbol(span),
-          contract.decimals(span),
-          contract.totalSupply(span),
-          TransactionModel.query(context.db)
-            .context(context.makeQueryContext(span))
-            .where('id', contractModel.transaction_id)
-            .first(),
-        ]);
-
-        await context.asset.save(
-          {
+  return getMonitor(monitor)
+    .withData({
+      [labels.CONTRACT_HASH]: contractModel.hash,
+    })
+    .captureSpanLog(
+      async span => {
+        if (contractModel.type === NEP5_CONTRACT_TYPE) {
+          const contractABI = await abi.NEP5(
+            context.client,
+            add0x(contractModel.hash),
+          );
+          const contract = context.client.smartContract(
+            add0x(contractModel.hash),
+            contractABI,
+          );
+          const [
+            name,
+            symbol,
+            decimals,
+            totalSupply,
             transactionModel,
-            asset: {
-              type: 'NEP5',
-              name,
-              symbol,
-              amount: totalSupply.toString(),
-              precision: decimals.toNumber(),
+          ] = await Promise.all([
+            contract.name(span),
+            contract.symbol(span),
+            contract.decimals(span),
+            contract.totalSupply(span),
+            TransactionModel.query(context.db)
+              .context(context.makeQueryContext(span))
+              .where('id', contractModel.transaction_id)
+              .first(),
+          ]);
+
+          await context.asset.save(
+            {
+              transactionModel,
+              asset: {
+                type: 'NEP5',
+                name,
+                symbol,
+                amount: totalSupply.toString(),
+                precision: decimals.toNumber(),
+              },
+              hash: contractModel.hash,
             },
-            hash: contractModel.hash,
-          },
-          span,
-        );
+            span,
+          );
 
-        return contract;
-      }
+          return contract;
+        }
 
-      return null;
-    },
-    { name: 'neotracker_scrape_run_initialize_nep5_contract' },
-  );
+        return null;
+      },
+      {
+        name: 'neotracker_scrape_run_initialize_nep5_contract',
+        error: {},
+      },
+    );
 }
 
 function watchContract(
