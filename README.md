@@ -45,7 +45,7 @@ In both of the above commands, prefix with `NEOTRACKER_RPC_URL=<rpc_url>` where 
 ### General Tips
 
   - List wallets on the private network using `neo-one get wallet --network priv`. Grab the private key for a wallet to use for testing with `neo-one describe wallet <wallet_name> --network priv`.
-  - Start from a clean slate by deleting the NEO•ONE and dropping the postgres tables
+  - Start from a clean slate by deleting the NEO•ONE network and dropping the postgres tables
     - `neo-one delete network priv` (delete the NEO•ONE private network)
     - `yarn develop:drop-tables` (drop the NEO Tracker tables)
 

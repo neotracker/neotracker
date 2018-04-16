@@ -1,3 +1,5 @@
+# Contributing
+
 Welcome to the NEO Tracker community! We're always looking for more contributors and are happy to have you. This document should help make the process for contributing clear and answer some questions that you may have.
 
 Please take a moment to review this document in order to make the contribution process easy and effective for everyone involved.
