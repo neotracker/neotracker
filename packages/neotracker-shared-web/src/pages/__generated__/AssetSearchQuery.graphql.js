@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash c4ad36e322d12c920a7bd43236736119
+ * @relayHash 136fe98b5d3ff8ece713237b0e39ba88
  */
 
 /* eslint-disable */
@@ -34,7 +34,7 @@ query AssetSearchQuery(
   $first: Int!
   $after: String
 ) {
-  assets(orderBy: [{name: "asset.transaction_count", direction: "desc nulls last"}, {name: "asset.id", direction: "desc nulls last"}], first: $first, after: $after, filters: [{name: "asset.hash", operator: "!=", value: "cb453a56856a236cbae8b8f937db308a15421daada4ba6ce78123b59bfb7253c"}, {name: "asset.hash", operator: "!=", value: "6161af8875eb78654e385a33e7334a473a2a0519281d33c06780ff3c8bce15ea"}]) {
+  assets(orderBy: [{name: "asset.transaction_count", direction: "desc nulls last"}, {name: "asset.id", direction: "desc nulls last"}], first: $first, after: $after, filters: [{name: "asset.id", operator: "!=", value: "cb453a56856a236cbae8b8f937db308a15421daada4ba6ce78123b59bfb7253c"}, {name: "asset.id", operator: "!=", value: "6161af8875eb78654e385a33e7334a473a2a0519281d33c06780ff3c8bce15ea"}]) {
     edges {
       node {
         ...AssetPagingView_assets
@@ -56,14 +56,14 @@ fragment AssetTable_assets on Asset {
   type
   amount
   issued
-  transaction_hash
+  transaction_id
   block_time
   address_count
   transaction_count
 }
 
 fragment AssetNameLink_asset on Asset {
-  hash
+  id
   symbol
 }
 */
@@ -95,12 +95,12 @@ v1 = [
     "name": "filters",
     "value": [
       {
-        "name": "asset.hash",
+        "name": "asset.id",
         "operator": "!=",
         "value": "cb453a56856a236cbae8b8f937db308a15421daada4ba6ce78123b59bfb7253c"
       },
       {
-        "name": "asset.hash",
+        "name": "asset.id",
         "operator": "!=",
         "value": "6161af8875eb78654e385a33e7334a473a2a0519281d33c06780ff3c8bce15ea"
       }
@@ -151,7 +151,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "AssetSearchQuery",
-  "id": "104",
+  "id": "21",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -237,7 +237,7 @@ return {
                   {
                     "kind": "ScalarField",
                     "alias": null,
-                    "name": "hash",
+                    "name": "id",
                     "args": null,
                     "storageKey": null
                   },
@@ -272,7 +272,7 @@ return {
                   {
                     "kind": "ScalarField",
                     "alias": null,
-                    "name": "transaction_hash",
+                    "name": "transaction_id",
                     "args": null,
                     "storageKey": null
                   },
@@ -296,13 +296,6 @@ return {
                     "name": "transaction_count",
                     "args": null,
                     "storageKey": null
-                  },
-                  {
-                    "kind": "ScalarField",
-                    "alias": null,
-                    "name": "id",
-                    "args": null,
-                    "storageKey": null
                   }
                 ]
               }
@@ -315,5 +308,5 @@ return {
   }
 };
 })();
-(node/*: any*/).hash = '7f0d7e0905da35f2d7731a4738592ebb';
+(node/*: any*/).hash = '2dfb714a4bd16caaa868569c269201cb';
 module.exports = node;

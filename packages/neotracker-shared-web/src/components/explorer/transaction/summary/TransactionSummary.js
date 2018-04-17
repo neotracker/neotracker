@@ -12,7 +12,7 @@ import { graphql } from 'react-relay';
 
 import { Collapse } from '../../../../lib/base';
 
-import { fragmentContainer } from '../../../../graphql/relay';
+import { fragmentContainer, getID } from '../../../../graphql/relay';
 
 import { type TransactionSummary_transaction } from './__generated__/TransactionSummary_transaction.graphql';
 import TransactionSummaryBodyFooter from './TransactionSummaryBodyFooter';
@@ -61,7 +61,7 @@ function TransactionSummary({
         unmountOnExit
       >
         <TransactionSummaryBodyFooter
-          transactionHash={transaction.hash}
+          transactionHash={getID(transaction.id)}
           addressHash={addressHash}
           dense={dense}
         />
@@ -74,7 +74,7 @@ const enhance: HOC<*, *> = compose(
   fragmentContainer({
     transaction: graphql`
       fragment TransactionSummary_transaction on Transaction {
-        hash
+        id
         ...TransactionSummaryHeader_transaction
       }
     `,

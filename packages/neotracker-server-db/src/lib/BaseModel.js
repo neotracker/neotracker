@@ -19,9 +19,9 @@ import { Node } from './IFace';
 import type { QueryContext } from './QueryContext';
 
 export type CacheType = 'none' | 'blockchain';
+export type ID = number | string;
 
-export default class BaseModel extends Base {
-  id: number;
+export default class BaseModel<TID: ID> extends Base {
   created_at: number;
   updated_at: number;
 
@@ -42,7 +42,6 @@ export default class BaseModel extends Base {
       pluralName: this.pluralName,
       id: 'id',
       fields: {
-        id: { type: { type: 'id', big: this.bigIntID }, exposeGraphQL: true },
         created_at: {
           type: { type: 'integer', minimum: 0 },
           required: true,
@@ -62,7 +61,14 @@ export default class BaseModel extends Base {
       exposeGraphQLType: this.exposeGraphQLType,
       interfaces: this.interfaces.concat([Node]),
       isEdge: false,
-      indices: this.indices,
+      indices: this.indices.concat([
+        {
+          type: 'simple',
+          columnNames: ['id'],
+          unique: true,
+          name: `${this.tableName}_id`,
+        },
+      ]),
       chainCustomBefore: this.chainCustomBefore,
       chainCustomAfter: this.chainCustomAfter,
     };
@@ -81,43 +87,45 @@ export default class BaseModel extends Base {
 
   getLoader(
     context: QueryContext,
-  ): DataLoader<{| id: number, monitor: Monitor |}, ?BaseModel> {
+  ): DataLoader<{| id: TID, monitor: Monitor |}, ?BaseModel<TID>> {
     return this.constructor.getDataLoader(context);
   }
 
   static getDataLoader(
     context: QueryContext,
-  ): DataLoader<{| id: number, monitor: Monitor |}, ?BaseModel> {
+  ): DataLoader<{| id: TID, monitor: Monitor |}, ?BaseModel<TID>> {
     const modelName = `${lcFirst(this.modelSchema.name)}`;
-    return context.rootLoader.loaders[modelName];
+    return (context.rootLoader.loaders[modelName]: $FlowFixMe);
   }
 
   getLoaderByField(
     context: QueryContext,
     fieldName: string,
-  ): DataLoader<{| id: number, monitor: Monitor |}, ?BaseModel> {
+  ): DataLoader<{| id: TID, monitor: Monitor |}, ?BaseModel<TID>> {
     return this.constructor.getDataLoaderByField(context, fieldName);
   }
 
   static getDataLoaderByField(
     context: QueryContext,
     fieldName: string,
-  ): DataLoader<{| id: number, monitor: Monitor |}, ?BaseModel> {
+  ): DataLoader<{| id: TID, monitor: Monitor |}, ?BaseModel<TID>> {
     const modelName = lcFirst(this.modelSchema.name);
-    return context.rootLoader.loadersByField[modelName][fieldName];
+    return (context.rootLoader.loadersByField[modelName][
+      fieldName
+    ]: $FlowFixMe);
   }
 
   getLoaderByEdge(
     context: QueryContext,
     edgeName: string,
-  ): DataLoader<{| id: number, monitor: Monitor |}, ?BaseModel> {
+  ): DataLoader<{| id: TID, monitor: Monitor |}, ?BaseModel<TID>> {
     return this.constructor.getDataLoaderByEdge(context, edgeName);
   }
 
   static getDataLoaderByEdge(
     context: QueryContext,
     edgeName: string,
-  ): DataLoader<{| id: number, monitor: Monitor |}, ?BaseModel> {
+  ): DataLoader<{| id: TID, monitor: Monitor |}, ?BaseModel<TID>> {
     const modelName = `${lcFirst(this.modelSchema.name)}`;
     // $FlowFixMe
     return context.rootLoader.loadersByEdge[modelName][edgeName];

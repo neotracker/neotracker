@@ -5,7 +5,7 @@ import { GAS_ASSET_HASH } from 'neotracker-shared-utils';
 export const ZERO_GAS_COIN = {
   value: '0',
   asset: {
-    hash: GAS_ASSET_HASH,
+    id: GAS_ASSET_HASH,
     symbol: 'GAS',
   },
 };

@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 6b6ec2c44bc937a88732b41925a794b1
+ * @relayHash f94c4ac7a12f04ce531c4fd77ada2f29
  */
 
 /* eslint-disable */
@@ -15,7 +15,7 @@ export type AssetQueryVariables = {|
 |};
 export type AssetQueryResponse = {|
   +asset: ?{|
-    +hash: string,
+    +id: string,
     +symbol: string,
     +$fragmentRefs: AssetView_asset$ref,
   |},
@@ -28,16 +28,15 @@ query AssetQuery(
   $hash: String!
 ) {
   asset(hash: $hash) {
-    hash
+    id
     symbol
     ...AssetView_asset
-    id
   }
 }
 
 fragment AssetView_asset on Asset {
-  hash
-  transaction_hash
+  id
+  transaction_id
   type
   symbol
   name {
@@ -48,7 +47,7 @@ fragment AssetView_asset on Asset {
   issued
   available
   precision
-  admin_address_hash
+  admin_address_id
   block_time
   transaction_count
   address_count
@@ -68,20 +67,20 @@ fragment AssetViewExtra_asset on Asset {
 }
 
 fragment TransactionSummary_transaction on Transaction {
-  hash
+  id
   ...TransactionSummaryHeader_transaction
 }
 
 fragment AssetTransactionPagingView_asset on Asset {
-  hash
+  id
 }
 
 fragment AssetTransferPagingView_asset on Asset {
-  hash
+  id
 }
 
 fragment AssetAddressPagingView_asset on Asset {
-  hash
+  id
 }
 
 fragment TransactionSummaryHeader_transaction on Transaction {
@@ -97,7 +96,7 @@ fragment TransactionHeaderBackground_transaction on Transaction {
 
 fragment TransactionTypeAndLink_transaction on Transaction {
   type
-  hash
+  id
 }
 */
 
@@ -121,7 +120,7 @@ v1 = [
 v2 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "hash",
+  "name": "id",
   "args": null,
   "storageKey": null
 },
@@ -145,19 +144,12 @@ v5 = {
   "name": "block_time",
   "args": null,
   "storageKey": null
-},
-v6 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "id",
-  "args": null,
-  "storageKey": null
 };
 return {
   "kind": "Request",
   "operationKind": "query",
   "name": "AssetQuery",
-  "id": "99",
+  "id": "14",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -204,7 +196,7 @@ return {
           {
             "kind": "ScalarField",
             "alias": null,
-            "name": "precision",
+            "name": "available",
             "args": null,
             "storageKey": null
           },
@@ -212,7 +204,7 @@ return {
           {
             "kind": "ScalarField",
             "alias": null,
-            "name": "transaction_hash",
+            "name": "transaction_id",
             "args": null,
             "storageKey": null
           },
@@ -256,18 +248,18 @@ return {
             "args": null,
             "storageKey": null
           },
-          {
-            "kind": "ScalarField",
-            "alias": null,
-            "name": "available",
-            "args": null,
-            "storageKey": null
-          },
           v3,
           {
             "kind": "ScalarField",
             "alias": null,
-            "name": "admin_address_hash",
+            "name": "precision",
+            "args": null,
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "name": "admin_address_id",
             "args": null,
             "storageKey": null
           },
@@ -304,16 +296,14 @@ return {
             "selections": [
               v2,
               v4,
-              v5,
-              v6
+              v5
             ]
-          },
-          v6
+          }
         ]
       }
     ]
   }
 };
 })();
-(node/*: any*/).hash = '834ed01c06d50dfa60546c5d5e2a4b5d';
+(node/*: any*/).hash = '34d2ec6a309946235e640aa255f6323b';
 module.exports = node;

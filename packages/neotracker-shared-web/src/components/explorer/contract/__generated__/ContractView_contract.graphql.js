@@ -12,7 +12,7 @@ type ContractViewExtra_contract$ref = any;
 import type { FragmentReference } from 'relay-runtime';
 declare export opaque type ContractView_contract$ref: FragmentReference;
 export type ContractView_contract = {|
-  +hash: string,
+  +id: string,
   +name: string,
   +version: string,
   +parameters_raw: string,
@@ -37,7 +37,7 @@ const node/*: ConcreteFragment*/ = {
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "hash",
+      "name": "id",
       "args": null,
       "storageKey": null
     },
@@ -104,5 +104,5 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
-(node/*: any*/).hash = '65b0e89b2d1d8888237de1b2cc3e6bd6';
+(node/*: any*/).hash = 'e5664fffbe8b65537b47a17720cd5f6c';
 module.exports = node;

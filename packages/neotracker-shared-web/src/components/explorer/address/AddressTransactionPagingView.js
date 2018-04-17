@@ -7,7 +7,11 @@ import { sanitizeError } from 'neotracker-shared-utils';
 
 import { TransactionPagingView } from '../transaction';
 
-import { fragmentContainer, queryRenderer } from '../../../graphql/relay';
+import {
+  fragmentContainer,
+  getID,
+  queryRenderer,
+} from '../../../graphql/relay';
 import { getPagingVariables } from '../../../utils';
 
 import { type AddressTransactionPagingView_address } from './__generated__/AddressTransactionPagingView_address.graphql';
@@ -71,7 +75,7 @@ function AddressTransactionPagingView({
       hasNextPage={hasNextPage}
       pageSize={PAGE_SIZE}
       onUpdatePage={onUpdatePage}
-      addressHash={address == null ? undefined : address.hash}
+      addressHash={address == null ? undefined : getID(address.id)}
     />
   );
 }
@@ -86,7 +90,7 @@ const mapPropsToVariables = ({
   address == null
     ? null
     : {
-        hash: address.hash,
+        hash: getID(address.id),
         ...getPagingVariables(PAGE_SIZE, page),
       };
 
@@ -94,7 +98,7 @@ const enhance: HOC<*, *> = compose(
   fragmentContainer({
     address: graphql`
       fragment AddressTransactionPagingView_address on Address {
-        hash
+        id
       }
     `,
   }),
@@ -109,7 +113,7 @@ const enhance: HOC<*, *> = compose(
         $after: String
       ) {
         address(hash: $hash) {
-          hash
+          id
           transactions(
             first: $first
             after: $after

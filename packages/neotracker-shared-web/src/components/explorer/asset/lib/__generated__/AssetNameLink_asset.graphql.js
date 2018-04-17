@@ -11,7 +11,7 @@ import type { ConcreteFragment } from 'relay-runtime';
 import type { FragmentReference } from 'relay-runtime';
 declare export opaque type AssetNameLink_asset$ref: FragmentReference;
 export type AssetNameLink_asset = {|
-  +hash: string,
+  +id: string,
   +symbol: string,
   +$refType: AssetNameLink_asset$ref,
 |};
@@ -28,7 +28,7 @@ const node/*: ConcreteFragment*/ = {
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "hash",
+      "name": "id",
       "args": null,
       "storageKey": null
     },
@@ -41,5 +41,5 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
-(node/*: any*/).hash = '2fb37193e2527ec301279038ab721af5';
+(node/*: any*/).hash = '5444e77732d825ff725a0e4a80c444c2';
 module.exports = node;

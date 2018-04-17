@@ -21,7 +21,7 @@ import { Button, TextField, Typography, withStyles } from '../../../lib/base';
 import { Selector } from '../../../lib/selector';
 
 import { confirmTransaction } from '../../../redux';
-import { fragmentContainer } from '../../../graphql/relay';
+import { fragmentContainer, getID } from '../../../graphql/relay';
 import { getName } from '../../explorer/asset/lib';
 import { getSortedCoins } from '../../explorer/address/lib';
 
@@ -55,7 +55,7 @@ type InternalProps = {|
     value: string,
     asset: {
       type: AssetType,
-      hash: string,
+      id: string,
       precision: number,
       symbol: string,
     },
@@ -116,8 +116,8 @@ function SendTransaction({
           label={null}
           helperText="Select Asset"
           options={coins.map(coin => coin.asset).map(asset => ({
-            id: asset.hash,
-            text: getName(asset.symbol, asset.hash),
+            id: getID(asset.id),
+            text: getName(asset.symbol, getID(asset.id)),
             asset,
           }))}
           selectedID={selectedAssetHash}
@@ -149,7 +149,7 @@ const enhance: HOC<*, *> = compose(
               value
               asset {
                 type
-                hash
+                id
                 precision
                 symbol
               }
@@ -194,7 +194,7 @@ const enhance: HOC<*, *> = compose(
       const amount = event.target.value;
       const amountValidation = walletAPI.validateAmount(
         amount,
-        coins.find(coin => coin.asset.hash === selectedAssetHash),
+        coins.find(coin => getID(coin.asset.id) === selectedAssetHash),
       );
       setState(prevState => ({
         ...prevState,
@@ -206,7 +206,7 @@ const enhance: HOC<*, *> = compose(
       const selectedAssetHash = option == null ? NEO_ASSET_HASH : option.id;
       const amountValidation = walletAPI.validateAmount(
         amount,
-        coins.find(coin => coin.asset.hash === selectedAssetHash),
+        coins.find(coin => getID(coin.asset.id) === selectedAssetHash),
       );
       setState(prevState => ({
         ...prevState,
@@ -222,7 +222,7 @@ const enhance: HOC<*, *> = compose(
       coins,
       dispatch,
     }) => () => {
-      const coin = coins.find(c => c.asset.hash === selectedAssetHash);
+      const coin = coins.find(c => getID(c.asset.id) === selectedAssetHash);
       if (coin != null) {
         dispatch(
           confirmTransaction({

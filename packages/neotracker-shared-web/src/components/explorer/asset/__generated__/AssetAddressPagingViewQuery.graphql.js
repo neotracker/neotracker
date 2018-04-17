@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash c57464d6af098785e8daf29fa4fd7a4a
+ * @relayHash a4f0b07813370ae16b1f7bc87e25af7c
  */
 
 /* eslint-disable */
@@ -18,12 +18,12 @@ export type AssetAddressPagingViewQueryVariables = {|
 |};
 export type AssetAddressPagingViewQueryResponse = {|
   +asset: ?{|
-    +hash: string,
+    +id: string,
     +coins: {|
       +edges: $ReadOnlyArray<{|
         +node: {|
           +address: {|
-            +hash: string,
+            +id: string,
             +$fragmentRefs: AddressPagingView_addresses$ref,
           |},
           +$fragmentRefs: Coin_coin$ref,
@@ -46,15 +46,14 @@ query AssetAddressPagingViewQuery(
   $after: String
 ) {
   asset(hash: $hash) {
-    hash
-    coins(first: $first, after: $after, orderBy: [{name: "coin.value", direction: "DESC"}, {name: "coin.id", direction: "DESC"}]) {
+    id
+    coins(first: $first, after: $after, orderBy: [{name: "coin.value", direction: "desc nulls first"}, {name: "coin.id", direction: "desc nulls first"}]) {
       edges {
         node {
           ...Coin_coin
           address {
-            hash
-            ...AddressPagingView_addresses
             id
+            ...AddressPagingView_addresses
           }
           id
         }
@@ -64,16 +63,14 @@ query AssetAddressPagingViewQuery(
         endCursor
       }
     }
-    id
   }
 }
 
 fragment Coin_coin on Coin {
   value
   asset {
-    hash
-    symbol
     id
+    symbol
   }
 }
 
@@ -82,10 +79,10 @@ fragment AddressPagingView_addresses on Address {
 }
 
 fragment AddressTable_addresses on Address {
-  hash
-  transaction_hash
+  id
+  transaction_id
   block_time
-  last_transaction_hash
+  last_transaction_id
   last_transaction_time
   transaction_count
 }
@@ -123,7 +120,7 @@ v1 = [
 v2 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "hash",
+  "name": "id",
   "args": null,
   "storageKey": null
 },
@@ -145,11 +142,11 @@ v3 = [
     "name": "orderBy",
     "value": [
       {
-        "direction": "DESC",
+        "direction": "desc nulls first",
         "name": "coin.value"
       },
       {
-        "direction": "DESC",
+        "direction": "desc nulls first",
         "name": "coin.id"
       }
     ],
@@ -180,19 +177,12 @@ v4 = {
       "storageKey": null
     }
   ]
-},
-v5 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "id",
-  "args": null,
-  "storageKey": null
 };
 return {
   "kind": "Request",
   "operationKind": "query",
   "name": "AssetAddressPagingViewQuery",
-  "id": "17",
+  "id": "19",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -337,8 +327,7 @@ return {
                             "name": "symbol",
                             "args": null,
                             "storageKey": null
-                          },
-                          v5
+                          }
                         ]
                       },
                       {
@@ -354,7 +343,7 @@ return {
                           {
                             "kind": "ScalarField",
                             "alias": null,
-                            "name": "transaction_hash",
+                            "name": "transaction_id",
                             "args": null,
                             "storageKey": null
                           },
@@ -368,7 +357,7 @@ return {
                           {
                             "kind": "ScalarField",
                             "alias": null,
-                            "name": "last_transaction_hash",
+                            "name": "last_transaction_id",
                             "args": null,
                             "storageKey": null
                           },
@@ -385,24 +374,22 @@ return {
                             "name": "transaction_count",
                             "args": null,
                             "storageKey": null
-                          },
-                          v5
+                          }
                         ]
                       },
-                      v5
+                      v2
                     ]
                   }
                 ]
               },
               v4
             ]
-          },
-          v5
+          }
         ]
       }
     ]
   }
 };
 })();
-(node/*: any*/).hash = 'cd98c7c322c520a8bcac41d14626daa9';
+(node/*: any*/).hash = '20d1d7a35e01b851b759660d0530ad9d';
 module.exports = node;

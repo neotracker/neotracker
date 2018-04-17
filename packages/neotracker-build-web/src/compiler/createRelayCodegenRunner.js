@@ -91,7 +91,7 @@ class QueryPersistor {
   async _writeOne(text: string): Promise<number> {
     const currentObject = await this._getCurrent();
     const { current, reverseMap } = currentObject;
-    let { nextIndex } = currentObject;
+    const { nextIndex } = currentObject;
     const normalizedText = print(parse(text));
     let index = reverseMap[normalizedText];
     if (index == null) {
@@ -99,7 +99,7 @@ class QueryPersistor {
       reverseMap[normalizedText] = nextIndex;
       current[nextIndex] = normalizedText;
       await fs.writeFile(OUTPUT_PATH, stringify(current));
-      nextIndex += 1;
+      currentObject.nextIndex += 1;
     }
 
     return index;

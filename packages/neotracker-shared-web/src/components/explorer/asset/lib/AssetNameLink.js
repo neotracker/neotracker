@@ -28,7 +28,7 @@ const enhance: HOC<*, *> = compose(
   fragmentContainer({
     asset: graphql`
       fragment AssetNameLink_asset on Asset {
-        hash
+        id
         symbol
       }
     `,

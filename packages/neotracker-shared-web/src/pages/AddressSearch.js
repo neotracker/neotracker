@@ -13,7 +13,7 @@ import { CoinTable } from '../components/explorer/address/lib';
 import { AddressPagingView } from '../components/explorer/address';
 import { SearchView } from '../components/common/view';
 
-import { queryRenderer } from '../graphql/relay';
+import { getID, queryRenderer } from '../graphql/relay';
 import * as routes from '../routes';
 
 import { PAGE_SIZE, getPage, mapPropsToVariables } from './commonSearch';
@@ -71,7 +71,7 @@ function AddressSearch({
   if (currentProps != null) {
     addresses = currentProps.addresses.edges.map(edge => edge.node);
     currentProps.addresses.edges.forEach((edge, idx) => {
-      addressesMap[edge.node.hash] = edge.node;
+      addressesMap[getID(edge.node.id)] = edge.node;
       rowHeightMap[idx] = edge.node.coins.edges.length * COIN_TABLE_ROW_HEIGHT;
     });
     // eslint-disable-next-line
@@ -111,14 +111,17 @@ export default (queryRenderer(
   graphql`
     query AddressSearchQuery($first: Int!, $after: String) {
       addresses(
-        orderBy: [{ name: "address.id", direction: "desc nulls last" }]
+        orderBy: [
+          { name: "address.block_time", direction: "desc nulls first" }
+          { name: "address.id", direction: "desc nulls last" }
+        ]
         first: $first
         after: $after
       ) {
         edges {
           node {
             ...AddressPagingView_addresses
-            hash
+            id
             coins {
               edges {
                 node {

@@ -26,31 +26,28 @@ export const ASSET_TYPES = [
   NEP5_CONTRACT_TYPE,
 ];
 
-export default class Asset extends BlockchainModel {
+export default class Asset extends BlockchainModel<string> {
+  id: string;
+  transaction_id: string;
+  type: string;
+  name_raw: string;
+  name: string;
+  symbol: string;
+  amount: string;
+  precision: number;
+  owner: string;
+  admin_address_id: string;
+  block_time: number;
+  issued: string;
+  available: string;
+  address_count: string;
+  transaction_count: string;
+  transfer_count: string;
+
   static modelName = 'Asset';
   static exposeGraphQL: boolean = true;
   static indices = [
-    {
-      type: 'simple',
-      columnNames: ['hash'],
-      name: 'asset_hash',
-      unique: true,
-    },
-    {
-      type: 'simple',
-      columnNames: ['transaction_hash'],
-      name: 'asset_transaction_hash',
-    },
-    {
-      type: 'simple',
-      columnNames: ['transaction_id'],
-      name: 'asset_transaction_id',
-    },
-    {
-      type: 'simple',
-      columnNames: ['admin_address_id'],
-      name: 'asset_admin_address_id',
-    },
+    // AssetSearch
     {
       type: 'order',
       columns: [
@@ -65,32 +62,17 @@ export default class Asset extends BlockchainModel {
       ],
       name: 'asset_desc_transaction_count',
     },
-    {
-      type: 'order',
-      columns: [
-        {
-          name: 'id',
-          order: 'DESC NULLS LAST',
-        },
-      ],
-      name: 'asset_desc_id',
-    },
   ];
   static bigIntID = true;
 
   static fieldSchema: FieldSchema = {
-    hash: {
+    id: {
       type: ASSET_HASH_VALIDATOR,
       exposeGraphQL: true,
       required: true,
     },
-    transaction_hash: {
-      type: HASH_VALIDATOR,
-      exposeGraphQL: true,
-      required: true,
-    },
     transaction_id: {
-      type: { type: 'foreignID', modelType: 'Transaction' },
+      type: HASH_VALIDATOR,
       exposeGraphQL: true,
       required: true,
     },
@@ -171,13 +153,8 @@ export default class Asset extends BlockchainModel {
       exposeGraphQL: true,
     },
     // Does not necessarily exist for NEP-5 tokens
-    admin_address_hash: {
-      type: ADDRESS_VALIDATOR,
-      exposeGraphQL: true,
-    },
-    // Does not necessarily exist for NEP-5 tokens
     admin_address_id: {
-      type: { type: 'foreignID', modelType: 'Address' },
+      type: ADDRESS_VALIDATOR,
       exposeGraphQL: true,
     },
     block_time: BLOCK_TIME_COLUMN,
@@ -193,7 +170,7 @@ export default class Asset extends BlockchainModel {
           return obj.available;
         }
 
-        if (obj.transaction_hash === GAS_ASSET_HASH) {
+        if (obj.transaction_id === GAS_ASSET_HASH) {
           const maxIndex = await context.rootLoader.maxIndexFetcher.get();
           return calculateAvailableGAS(maxIndex);
         }

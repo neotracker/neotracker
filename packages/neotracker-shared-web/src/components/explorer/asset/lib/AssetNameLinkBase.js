@@ -11,6 +11,7 @@ import * as routes from '../../../../routes';
 import { type AssetNameLink_asset } from './__generated__/AssetNameLink_asset.graphql';
 
 import getName from './getName';
+import { getID } from '../../../../graphql/relay';
 
 type ExternalProps = {|
   asset: AssetNameLink_asset,
@@ -35,8 +36,8 @@ function AssetNameLinkBase({
       className={className}
       variant={variant}
       component={component}
-      path={routes.makeAsset(asset.hash)}
-      title={getName(asset.symbol, asset.hash)}
+      path={routes.makeAsset(getID(asset.id))}
+      title={getName(asset.symbol, getID(asset.id))}
     />
   );
 }

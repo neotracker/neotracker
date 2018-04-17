@@ -8,7 +8,7 @@ import { type Theme } from '../../../../styles/createTheme';
 import { PageLoading } from '../../../common/loading';
 import { Typography, withStyles } from '../../../../lib/base';
 
-import { fragmentContainer } from '../../../../graphql/relay';
+import { fragmentContainer, getID } from '../../../../graphql/relay';
 
 import TransactionSummary from './TransactionSummary';
 import { type TransactionSummaryList_transactions } from './__generated__/TransactionSummaryList_transactions.graphql';
@@ -50,7 +50,7 @@ function TransactionSummaryList({
   if (!loading) {
     content = transactions.map(transaction => (
       <TransactionSummary
-        key={transaction.hash}
+        key={getID(transaction.id)}
         className={classes.summary}
         transaction={transaction}
       />
@@ -72,7 +72,7 @@ const enhance: HOC<*, *> = compose(
     transactions: graphql`
       fragment TransactionSummaryList_transactions on Transaction
         @relay(plural: true) {
-        hash
+        id
         ...TransactionSummary_transaction
       }
     `,

@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 7f522b2c96e2850d195f271559ec7fe0
+ * @relayHash 40438beb3b21ba5634a769448032060d
  */
 
 /* eslint-disable */
@@ -34,7 +34,7 @@ query ContractQuery(
 }
 
 fragment ContractView_contract on Contract {
-  hash
+  id
   name
   version
   parameters_raw
@@ -55,7 +55,7 @@ fragment ContractViewExtra_contract on Contract {
 }
 
 fragment TransactionSummary_transaction on Transaction {
-  hash
+  id
   ...TransactionSummaryHeader_transaction
 }
 
@@ -72,7 +72,7 @@ fragment TransactionHeaderBackground_transaction on Transaction {
 
 fragment TransactionTypeAndLink_transaction on Transaction {
   type
-  hash
+  id
 }
 */
 
@@ -103,13 +103,6 @@ v2 = {
 v3 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "hash",
-  "args": null,
-  "storageKey": null
-},
-v4 = {
-  "kind": "ScalarField",
-  "alias": null,
   "name": "id",
   "args": null,
   "storageKey": null
@@ -118,7 +111,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "ContractQuery",
-  "id": "8",
+  "id": "9",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -164,7 +157,7 @@ return {
           {
             "kind": "ScalarField",
             "alias": null,
-            "name": "author",
+            "name": "needs_storage",
             "args": null,
             "storageKey": null
           },
@@ -190,14 +183,14 @@ return {
             "args": null,
             "storageKey": null
           },
+          v3,
           {
             "kind": "ScalarField",
             "alias": null,
-            "name": "needs_storage",
+            "name": "author",
             "args": null,
             "storageKey": null
           },
-          v3,
           {
             "kind": "ScalarField",
             "alias": null,
@@ -242,11 +235,9 @@ return {
                 "name": "block_time",
                 "args": null,
                 "storageKey": null
-              },
-              v4
+              }
             ]
-          },
-          v4
+          }
         ]
       }
     ]

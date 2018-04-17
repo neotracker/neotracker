@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 2ae25838482df87de9f352fe7b0802b8
+ * @relayHash e7271141cb7f35664bbdb66bcd6493c2
  */
 
 /* eslint-disable */
@@ -15,7 +15,6 @@ export type AddressQueryVariables = {|
 |};
 export type AddressQueryResponse = {|
   +address: ?{|
-    +hash: string,
     +$fragmentRefs: AddressView_address$ref,
   |},
 |};
@@ -27,7 +26,6 @@ query AddressQuery(
   $hash: String!
 ) {
   address(hash: $hash) {
-    hash
     ...AddressView_address
     id
   }
@@ -35,8 +33,8 @@ query AddressQuery(
 
 fragment AddressView_address on Address {
   ...AddressViewExtra_address
-  hash
-  transaction_hash
+  id
+  transaction_id
   block_time
   transaction_count
   transfer_count
@@ -46,9 +44,8 @@ fragment AddressView_address on Address {
         ...CoinTable_coins
         value
         asset {
-          hash
-          symbol
           id
+          symbol
         }
         id
       }
@@ -61,7 +58,7 @@ fragment AddressView_address on Address {
 }
 
 fragment AddressViewExtra_address on Address {
-  hash
+  id
   first_transaction {
     ...TransactionSummary_transaction
     id
@@ -73,32 +70,30 @@ fragment AddressViewExtra_address on Address {
 fragment CoinTable_coins on Coin {
   value
   asset {
-    hash
-    symbol
     id
+    symbol
   }
 }
 
 fragment Coin_coin on Coin {
   value
   asset {
-    hash
-    symbol
     id
+    symbol
   }
 }
 
 fragment TransactionSummary_transaction on Transaction {
-  hash
+  id
   ...TransactionSummaryHeader_transaction
 }
 
 fragment AddressTransactionPagingView_address on Address {
-  hash
+  id
 }
 
 fragment AddressTransferPagingView_address on Address {
-  hash
+  id
 }
 
 fragment TransactionSummaryHeader_transaction on Transaction {
@@ -114,7 +109,7 @@ fragment TransactionHeaderBackground_transaction on Transaction {
 
 fragment TransactionTypeAndLink_transaction on Transaction {
   type
-  hash
+  id
 }
 */
 
@@ -138,7 +133,7 @@ v1 = [
 v2 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "hash",
+  "name": "id",
   "args": null,
   "storageKey": null
 },
@@ -149,14 +144,7 @@ v3 = {
   "args": null,
   "storageKey": null
 },
-v4 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "id",
-  "args": null,
-  "storageKey": null
-},
-v5 = [
+v4 = [
   {
     "kind": "ScalarField",
     "alias": null,
@@ -180,17 +168,16 @@ v5 = [
         "name": "symbol",
         "args": null,
         "storageKey": null
-      },
-      v4
+      }
     ]
   },
-  v4
+  v2
 ];
 return {
   "kind": "Request",
   "operationKind": "query",
   "name": "AddressQuery",
-  "id": "33",
+  "id": "16",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -209,7 +196,6 @@ return {
         "concreteType": "Address",
         "plural": false,
         "selections": [
-          v2,
           {
             "kind": "FragmentSpread",
             "name": "AddressView_address",
@@ -251,14 +237,13 @@ return {
                 "args": null,
                 "storageKey": null
               },
-              v3,
-              v4
+              v3
             ]
           },
           {
             "kind": "ScalarField",
             "alias": null,
-            "name": "transaction_hash",
+            "name": "transaction_id",
             "args": null,
             "storageKey": null
           },
@@ -303,7 +288,7 @@ return {
                     "args": null,
                     "concreteType": "Coin",
                     "plural": false,
-                    "selections": v5
+                    "selections": v4
                   }
                 ]
               }
@@ -317,14 +302,13 @@ return {
             "args": null,
             "concreteType": "Coin",
             "plural": false,
-            "selections": v5
-          },
-          v4
+            "selections": v4
+          }
         ]
       }
     ]
   }
 };
 })();
-(node/*: any*/).hash = 'd991d9fcd9c4c08fff797d759204541a';
+(node/*: any*/).hash = '51c3731b6bd28ae1927cbd3bb77c025b';
 module.exports = node;

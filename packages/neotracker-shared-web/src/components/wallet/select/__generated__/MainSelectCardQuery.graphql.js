@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 0ae4d8c35e3e57efb9ef25b0e39548e4
+ * @relayHash 25e951921df5713503522f51e53195e8
  */
 
 /* eslint-disable */
@@ -57,9 +57,8 @@ fragment AccountViewBase_address on Address {
 fragment CoinTable_coins on Coin {
   value
   asset {
-    hash
-    symbol
     id
+    symbol
   }
 }
 */
@@ -99,7 +98,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "MainSelectCardQuery",
-  "id": "102",
+  "id": "7",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -178,21 +177,14 @@ return {
                         "concreteType": "Asset",
                         "plural": false,
                         "selections": [
-                          {
-                            "kind": "ScalarField",
-                            "alias": null,
-                            "name": "hash",
-                            "args": null,
-                            "storageKey": null
-                          },
+                          v3,
                           {
                             "kind": "ScalarField",
                             "alias": null,
                             "name": "symbol",
                             "args": null,
                             "storageKey": null
-                          },
-                          v3
+                          }
                         ]
                       },
                       v3

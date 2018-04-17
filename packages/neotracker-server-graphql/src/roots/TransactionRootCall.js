@@ -17,7 +17,7 @@ export default class TransactionRootCall extends BlockchainRootCall {
     context: GraphQLContext,
     info: GraphQLResolveInfo,
   ): Promise<any> =>
-    context.rootLoader.hashLoaders.transaction.load({
+    context.rootLoader.loaders.transaction.load({
       id: hash,
       monitor: context.getMonitor(info),
     });

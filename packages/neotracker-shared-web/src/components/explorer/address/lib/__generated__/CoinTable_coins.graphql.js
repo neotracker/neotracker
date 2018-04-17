@@ -13,7 +13,7 @@ declare export opaque type CoinTable_coins$ref: FragmentReference;
 export type CoinTable_coins = $ReadOnlyArray<{|
   +value: string,
   +asset: {|
-    +hash: string,
+    +id: string,
     +symbol: string,
   |},
   +$refType: CoinTable_coins$ref,
@@ -49,7 +49,7 @@ const node/*: ConcreteFragment*/ = {
         {
           "kind": "ScalarField",
           "alias": null,
-          "name": "hash",
+          "name": "id",
           "args": null,
           "storageKey": null
         },
@@ -64,5 +64,5 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
-(node/*: any*/).hash = 'c25d8189b0ee3246dd796c05f856c0bf';
+(node/*: any*/).hash = '5f37ed94f05475d317875207c85ed7c2';
 module.exports = node;

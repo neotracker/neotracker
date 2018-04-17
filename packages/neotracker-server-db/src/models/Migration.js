@@ -2,7 +2,12 @@
 import BaseVisibleModel from './BaseVisibleModel';
 import type { FieldSchema } from '../lib';
 
-export default class Migration extends BaseVisibleModel {
+export default class Migration extends BaseVisibleModel<number> {
+  id: number;
+  name: string;
+  complete: boolean;
+  data: string;
+
   static modelName = 'Migration';
   static exposeGraphQL: boolean = false;
   static indices = [
@@ -15,6 +20,12 @@ export default class Migration extends BaseVisibleModel {
   ];
 
   static fieldSchema: FieldSchema = {
+    id: {
+      type: { type: 'id', big: false },
+      required: true,
+      exposeGraphQL: true,
+      auto: true,
+    },
     name: {
       type: { type: 'string' },
       required: true,

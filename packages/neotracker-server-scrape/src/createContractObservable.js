@@ -28,7 +28,7 @@ const deleteNEP5 = async (
     async span => {
       const asset = await AssetModel.query(db)
         .context(makeQueryContext(span))
-        .where('hash', contract.hash)
+        .where('id', contract.id)
         .first();
       if (asset != null) {
         await Promise.all([
@@ -37,7 +37,7 @@ const deleteNEP5 = async (
             .delete()
             .from(db.raw('address_to_transfer USING transfer'))
             .where(db.raw('address_to_transfer.id2 = transfer.id'))
-            .where('transfer.asset_id', asset.id),
+            .where('transfer.id', asset.id),
           CoinModel.query(db)
             .context(makeQueryContext(span))
             .delete()
@@ -51,12 +51,12 @@ const deleteNEP5 = async (
           KnownContractModel.query(db)
             .context(makeQueryContext(span))
             .delete()
-            .where('hash', contract.hash),
+            .where('id', contract.id),
         ]);
         await TransferModel.query(db)
           .context(makeQueryContext(span))
           .delete()
-          .where('asset_id', asset.id);
+          .where('id', asset.id);
         await asset
           .$query(db)
           .context(makeQueryContext(span))
@@ -88,17 +88,17 @@ export default (
             .where('type', NEP5_CONTRACT_TYPE);
           await Promise.all(
             currentModels
-              .filter(model => !hashesSet.has(model.hash))
+              .filter(model => !hashesSet.has(model.id))
               .map(model => deleteNEP5(span, db, makeQueryContext, model)),
           );
           const [contracts] = await Promise.all([
             ContractModel.query(db)
               .context(makeQueryContext(span))
-              .whereIn('hash', hashes),
+              .whereIn('id', hashes),
             ContractModel.query(db)
               .context(makeQueryContext(span))
               .patch({ type: NEP5_CONTRACT_TYPE })
-              .whereIn('hash', hashes),
+              .whereIn('id', hashes),
           ]);
 
           return contracts;

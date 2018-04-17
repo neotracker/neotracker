@@ -12,21 +12,26 @@ import {
 import BlockchainModel from './BlockchainModel';
 import { type EdgeSchema, type FieldSchema } from '../lib';
 
-export default class Contract extends BlockchainModel {
+export default class Contract extends BlockchainModel<string> {
+  id: string;
+  script: string;
+  parameters_raw: string;
+  return_type: string;
+  needs_storage: string;
+  name: string;
+  version: string;
+  author: string;
+  email: string;
+  description: string;
+  transaction_id: string;
+  block_time: number;
+  block_index: number;
+  type: string;
+
   static modelName = 'Contract';
   static exposeGraphQL: boolean = true;
   static indices = [
-    {
-      type: 'simple',
-      columnNames: ['hash'],
-      name: 'contract_hash',
-      unique: true,
-    },
-    {
-      type: 'simple',
-      columnNames: ['transaction_id'],
-      name: 'contract_transaction_id',
-    },
+    // ContractSearch
     {
       type: 'order',
       columns: [
@@ -45,7 +50,7 @@ export default class Contract extends BlockchainModel {
   static bigIntID = true;
 
   static fieldSchema: FieldSchema = {
-    hash: {
+    id: {
       type: CONTRACT_VALIDATOR,
       exposeGraphQL: true,
       required: true,
@@ -95,13 +100,8 @@ export default class Contract extends BlockchainModel {
       required: true,
       exposeGraphQL: true,
     },
-    transaction_hash: {
-      type: HASH_VALIDATOR,
-      exposeGraphQL: true,
-      required: true,
-    },
     transaction_id: {
-      type: { type: 'foreignID', modelType: 'Transaction' },
+      type: HASH_VALIDATOR,
       exposeGraphQL: true,
       required: true,
     },

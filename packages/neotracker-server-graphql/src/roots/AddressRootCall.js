@@ -17,7 +17,7 @@ export default class AddressRootCall extends BlockchainRootCall {
     context: GraphQLContext,
     info: GraphQLResolveInfo,
   ): Promise<any> =>
-    context.rootLoader.hashLoaders.address.load({
+    context.rootLoader.loaders.address.load({
       id: hash,
       monitor: context.getMonitor(info),
     });

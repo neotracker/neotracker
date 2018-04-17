@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 451ff2f98c89f23ec9ec6ae5e4de645c
+ * @relayHash ab7c3e0f60db7084ff064d97fca21772
  */
 
 /* eslint-disable */
@@ -54,10 +54,10 @@ fragment ContractPagingView_contracts on Contract {
 }
 
 fragment ContractTable_contracts on Contract {
-  hash
+  id
   name
   author
-  transaction_hash
+  transaction_id
   block_time
 }
 */
@@ -135,7 +135,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "ContractSearchQuery",
-  "id": "18",
+  "id": "15",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -221,7 +221,7 @@ return {
                   {
                     "kind": "ScalarField",
                     "alias": null,
-                    "name": "hash",
+                    "name": "id",
                     "args": null,
                     "storageKey": null
                   },
@@ -242,7 +242,7 @@ return {
                   {
                     "kind": "ScalarField",
                     "alias": null,
-                    "name": "transaction_hash",
+                    "name": "transaction_id",
                     "args": null,
                     "storageKey": null
                   },
@@ -250,13 +250,6 @@ return {
                     "kind": "ScalarField",
                     "alias": null,
                     "name": "block_time",
-                    "args": null,
-                    "storageKey": null
-                  },
-                  {
-                    "kind": "ScalarField",
-                    "alias": null,
-                    "name": "id",
                     "args": null,
                     "storageKey": null
                   }

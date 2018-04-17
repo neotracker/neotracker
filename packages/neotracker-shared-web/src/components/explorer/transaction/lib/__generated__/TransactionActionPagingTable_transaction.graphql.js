@@ -11,7 +11,7 @@ import type { ConcreteFragment } from 'relay-runtime';
 import type { FragmentReference } from 'relay-runtime';
 declare export opaque type TransactionActionPagingTable_transaction$ref: FragmentReference;
 export type TransactionActionPagingTable_transaction = {|
-  +hash: string,
+  +id: string,
   +$refType: TransactionActionPagingTable_transaction$ref,
 |};
 */
@@ -27,11 +27,11 @@ const node/*: ConcreteFragment*/ = {
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "hash",
+      "name": "id",
       "args": null,
       "storageKey": null
     }
   ]
 };
-(node/*: any*/).hash = 'f39b40facd00021015c30fd04e355bda';
+(node/*: any*/).hash = 'e385a2af4640f46fc8c56374d8e12b16';
 module.exports = node;

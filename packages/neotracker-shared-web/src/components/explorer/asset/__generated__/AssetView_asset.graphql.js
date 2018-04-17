@@ -12,8 +12,8 @@ type AssetViewExtra_asset$ref = any;
 import type { FragmentReference } from 'relay-runtime';
 declare export opaque type AssetView_asset$ref: FragmentReference;
 export type AssetView_asset = {|
-  +hash: string,
-  +transaction_hash: string,
+  +id: string,
+  +transaction_id: string,
   +type: string,
   +symbol: string,
   +name: $ReadOnlyArray<{|
@@ -24,7 +24,7 @@ export type AssetView_asset = {|
   +issued: string,
   +available: string,
   +precision: number,
-  +admin_address_hash: ?string,
+  +admin_address_id: ?string,
   +block_time: number,
   +transaction_count: number,
   +address_count: number,
@@ -52,7 +52,7 @@ const node/*: ConcreteFragment*/ = {
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "hash",
+      "name": "id",
       "args": null,
       "storageKey": null
     },
@@ -112,7 +112,7 @@ const node/*: ConcreteFragment*/ = {
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "transaction_hash",
+      "name": "transaction_id",
       "args": null,
       "storageKey": null
     },
@@ -126,7 +126,7 @@ const node/*: ConcreteFragment*/ = {
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "admin_address_hash",
+      "name": "admin_address_id",
       "args": null,
       "storageKey": null
     },
@@ -165,5 +165,5 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
-(node/*: any*/).hash = '86d4e55c08a0d8da42b0ecc5bc80b837';
+(node/*: any*/).hash = '38f127a71cd61a540fec6c474b90170d';
 module.exports = node;

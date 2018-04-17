@@ -12,8 +12,8 @@ type AssetNameLink_asset$ref = any;
 import type { FragmentReference } from 'relay-runtime';
 declare export opaque type TransferItem_transfer$ref: FragmentReference;
 export type TransferItem_transfer = {|
-  +from_address_hash: ?string,
-  +to_address_hash: ?string,
+  +from_address_id: ?string,
+  +to_address_id: ?string,
   +value: string,
   +asset: {|
     +$fragmentRefs: AssetNameLink_asset$ref,
@@ -33,14 +33,14 @@ const node/*: ConcreteFragment*/ = {
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "from_address_hash",
+      "name": "from_address_id",
       "args": null,
       "storageKey": null
     },
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "to_address_hash",
+      "name": "to_address_id",
       "args": null,
       "storageKey": null
     },
@@ -69,5 +69,5 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
-(node/*: any*/).hash = 'f32142f654e30864230fa654b5ddecb3';
+(node/*: any*/).hash = '81e3a5052cf51f6586c23ea154e45e48';
 module.exports = node;

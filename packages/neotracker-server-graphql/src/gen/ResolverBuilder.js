@@ -108,7 +108,9 @@ const resolveNode = (
   throw new CodedError(CodedError.NOT_FOUND_ERROR);
 };
 
-const makeResolveModelLive = (model: Class<BaseModel>) =>
+const makeResolveModelLive = (
+  model: Class<BaseModel<number>> | Class<BaseModel<string>>,
+) =>
   liveExecuteField(
     (
       obj: Object,
@@ -217,14 +219,18 @@ export default class ResolverBuilder {
     return wrappedResolvers;
   }
 
-  makeResolveNode(model: Class<BaseModel>): GraphQLResolver<*> {
+  makeResolveNode(
+    model: Class<BaseModel<number>> | Class<BaseModel<string>>,
+  ): GraphQLResolver<*> {
     return {
       resolve: resolveNode,
       live: makeResolveModelLive(model),
     };
   }
 
-  makeResolveNodes(model: Class<BaseModel>): GraphQLResolver<*> {
+  makeResolveNodes(
+    model: Class<BaseModel<number>> | Class<BaseModel<string>>,
+  ): GraphQLResolver<*> {
     return {
       resolve: this.makeResolver({ model }),
       live: makeResolveModelLive(model),
@@ -367,7 +373,7 @@ export default class ResolverBuilder {
   }: {
     edge: {
       name: string,
-      model: Class<BaseModel>,
+      model: Class<BaseModel<number>> | Class<BaseModel<string>>,
       makeGraphQLResolver?: (
         resolveEdge: GraphQLFieldResolver<*, GraphQLContext>,
       ) => GraphQLFieldResolver<*, GraphQLContext>,

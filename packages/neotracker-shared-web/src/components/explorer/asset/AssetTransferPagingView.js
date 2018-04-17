@@ -7,7 +7,11 @@ import { sanitizeError } from 'neotracker-shared-utils';
 
 import { TransferPagingView } from '../transfer';
 
-import { fragmentContainer, queryRenderer } from '../../../graphql/relay';
+import {
+  fragmentContainer,
+  getID,
+  queryRenderer,
+} from '../../../graphql/relay';
 import { getPagingVariables } from '../../../utils';
 
 import { type AssetTransferPagingView_asset } from './__generated__/AssetTransferPagingView_asset.graphql';
@@ -81,7 +85,7 @@ const mapPropsToVariables = ({
   asset: AssetTransferPagingView_asset,
   page: number,
 |}) => ({
-  hash: asset.hash,
+  hash: getID(asset.id),
   ...getPagingVariables(PAGE_SIZE, page),
 });
 
@@ -89,7 +93,7 @@ const enhance: HOC<*, *> = compose(
   fragmentContainer({
     asset: graphql`
       fragment AssetTransferPagingView_asset on Asset {
-        hash
+        id
       }
     `,
   }),
@@ -104,14 +108,17 @@ const enhance: HOC<*, *> = compose(
         $after: String
       ) {
         asset(hash: $hash) {
-          hash
+          id
           transfers(
             first: $first
             after: $after
             orderBy: [
-              { name: "transfer.block_index", direction: "desc" }
-              { name: "transfer.transaction_index", direction: "desc" }
-              { name: "transfer.action_index", direction: "desc" }
+              { name: "transfer.block_index", direction: "desc nulls first" }
+              {
+                name: "transfer.transaction_index"
+                direction: "desc nulls first"
+              }
+              { name: "transfer.action_index", direction: "desc nulls first" }
             ]
           ) {
             edges {

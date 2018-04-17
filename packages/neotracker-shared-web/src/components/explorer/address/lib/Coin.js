@@ -30,7 +30,7 @@ const enhance: HOC<*, *> = compose(
       fragment Coin_coin on Coin {
         value
         asset {
-          hash
+          id
           symbol
         }
       }

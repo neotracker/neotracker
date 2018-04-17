@@ -8,7 +8,7 @@ import { graphql } from 'react-relay';
 import { ExpandoCard } from '../../common/card';
 import { TransactionSummary } from '../transaction/summary';
 
-import { fragmentContainer } from '../../../graphql/relay';
+import { fragmentContainer, getID } from '../../../graphql/relay';
 import { withStyles } from '../../../lib/base';
 
 import AddressTransactionPagingView from './AddressTransactionPagingView';
@@ -47,7 +47,7 @@ function AddressViewExtra({
         content={
           <TransactionSummary
             transaction={address.first_transaction}
-            addressHash={address.hash}
+            addressHash={getID(address.id)}
             alwaysExpand
           />
         }
@@ -82,7 +82,7 @@ const enhance: HOC<*, *> = compose(
   fragmentContainer({
     address: graphql`
       fragment AddressViewExtra_address on Address {
-        hash
+        id
         first_transaction {
           ...TransactionSummary_transaction
         }

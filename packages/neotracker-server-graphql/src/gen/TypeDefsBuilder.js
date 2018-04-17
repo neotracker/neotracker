@@ -160,28 +160,41 @@ export default class TypeDefsBuilder {
       `;
 
       model.modelSchema.interfaces.forEach(iface => {
-        const interfaceFields = {};
-        iface.graphqlFields.forEach(field => {
-          let fieldname = field;
-          let typename = fields[field];
-          if (typename == null) {
-            const fieldWithArgs = `${field}(`;
-            entries(fields).forEach(([fieldName, typeName]) => {
-              if (fieldName.startsWith(fieldWithArgs)) {
-                fieldname = fieldName;
-                typename = typeName;
-              }
-            });
-          }
-          interfaceFields[fieldname] = typename;
-        });
-        const interfaceGraphqlFields = this.makeFieldsString(interfaceFields);
-        if (interfaceGraphqlFields.length) {
-          typeDefs[getInterfaceName(iface)] = `
-            interface ${getInterfaceName(iface)} {
-              ${interfaceGraphqlFields}
+        if (typeDefs[getInterfaceName(iface)] == null) {
+          const interfaceFields = {};
+          iface.graphqlFields.forEach(field => {
+            let fieldname = field;
+            let typename = fields[field];
+            if (typename == null) {
+              const fieldWithArgs = `${field}(`;
+              entries(fields).forEach(([fieldName, typeName]) => {
+                if (fieldName.startsWith(fieldWithArgs)) {
+                  fieldname = fieldName;
+                  typename = typeName;
+                }
+              });
             }
-          `;
+            if (field === 'id') {
+              typename = 'ID!';
+            }
+
+            if (typename == null) {
+              throw new Error(
+                `Could not find interface type for field ${field} on type ${
+                  model.modelSchema.name
+                }`,
+              );
+            }
+            interfaceFields[fieldname] = typename;
+          });
+          const interfaceGraphqlFields = this.makeFieldsString(interfaceFields);
+          if (interfaceGraphqlFields.length) {
+            typeDefs[getInterfaceName(iface)] = `
+              interface ${getInterfaceName(iface)} {
+                ${interfaceGraphqlFields}
+              }
+            `;
+          }
         }
       });
     }
@@ -319,8 +332,13 @@ export default class TypeDefsBuilder {
       .reduce((fields, [fieldName, field]) => {
         const [fieldType, fieldTypeDefs] = this.getFieldType(field);
         typeDefs = { ...typeDefs, ...fieldTypeDefs };
-        // eslint-disable-next-line no-param-reassign
-        fields[fieldName] = fieldType;
+        if (fieldName === 'id') {
+          // eslint-disable-next-line no-param-reassign
+          fields[fieldName] = 'ID!';
+        } else {
+          // eslint-disable-next-line no-param-reassign
+          fields[fieldName] = fieldType;
+        }
         return fields;
       }, {});
     return [graphqlFields, typeDefs];

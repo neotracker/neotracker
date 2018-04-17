@@ -6,7 +6,7 @@ import { graphql } from 'react-relay';
 
 import { PageView } from '../../common/view';
 
-import { fragmentContainer } from '../../../graphql/relay';
+import { fragmentContainer, getID } from '../../../graphql/relay';
 import * as routes from '../../../routes';
 
 import { type ContractView_contract } from './__generated__/ContractView_contract.graphql';
@@ -25,7 +25,7 @@ type Props = {|
 |};
 function ContractView({ contract, className }: Props): React.Element<*> {
   const columns = [
-    ['Hash', contract.hash],
+    ['Hash', getID(contract.id)],
     ['Name', contract.name],
     ['Version', contract.version],
     ['Parameters', contract.parameters_raw],
@@ -39,7 +39,7 @@ function ContractView({ contract, className }: Props): React.Element<*> {
   return (
     <PageView
       className={className}
-      id={contract.hash}
+      id={getID(contract.id)}
       title="Contract"
       name="Contract"
       pluralName="Contracts"
@@ -54,7 +54,7 @@ const enhance: HOC<*, *> = compose(
   fragmentContainer({
     contract: graphql`
       fragment ContractView_contract on Contract {
-        hash
+        id
         name
         version
         parameters_raw

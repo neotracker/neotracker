@@ -25,21 +25,62 @@ export const TRANSACTION_TYPES = [
   'StateTransaction',
 ];
 
-export default class Transaction extends BlockchainModel {
+export default class Transaction extends BlockchainModel<string> {
+  id: string;
+  type: string;
+  size: number;
+  version: number;
+  attributes_raw: string;
+  system_fee: string;
+  network_fee: string;
+  nonce: string;
+  pubkey: string;
+  block_id: string;
+  block_time: number;
+  index: number;
+  scripts_raw: string;
+  script: string;
+  gas: string;
+  results_raw: string;
+
   static modelName = 'Transaction';
   static exposeGraphQL: boolean = true;
   static indices = [
+    // AddressTransactionPagingView, AssetTransactionPagingView
     {
-      type: 'simple',
-      columnNames: ['hash'],
-      name: 'transaction_hash',
-      unique: true,
+      type: 'order',
+      columns: [
+        {
+          name: 'id',
+          order: 'asc nulls last',
+        },
+        {
+          name: 'block_time',
+          order: 'desc nulls first',
+        },
+        {
+          name: 'index',
+          order: 'asc nulls last',
+        },
+      ],
+      name: 'transaction_id_block_time_index',
     },
+    // BlockTransactionPagingView
     {
-      type: 'simple',
-      columnNames: ['block_id', 'type'],
-      name: 'transaction_block_id_type',
+      type: 'order',
+      columns: [
+        {
+          name: 'block_id',
+          order: 'asc nulls last',
+        },
+        {
+          name: 'index',
+          order: 'asc nulls last',
+        },
+      ],
+      name: 'transaction_block_id_index',
     },
+    // TransactionSearch and Home
     {
       type: 'order',
       columns: [
@@ -71,11 +112,14 @@ export default class Transaction extends BlockchainModel {
         BEGIN
           UPDATE asset
           SET issued=issued - (NEW.system_fee + NEW.network_fee)
-          WHERE asset.hash = '${GAS_ASSET_HASH}';
+          WHERE asset.id = '${GAS_ASSET_HASH}';
           RETURN NULL;
         END;
       $tx_update_tables$ LANGUAGE plpgsql;
     `).raw(`
+      DROP TRIGGER IF EXISTS tx_update_tables
+      ON transaction;
+
       CREATE TRIGGER tx_update_tables AFTER INSERT
       ON transaction FOR EACH ROW
       WHEN (NEW.system_fee > 0 OR NEW.network_fee > 0)
@@ -84,16 +128,16 @@ export default class Transaction extends BlockchainModel {
   }
 
   static fieldSchema: FieldSchema = {
+    id: {
+      type: HASH_VALIDATOR,
+      required: true,
+      exposeGraphQL: true,
+    },
     type: {
       type: {
         type: 'string',
         enum: TRANSACTION_TYPES,
       },
-      required: true,
-      exposeGraphQL: true,
-    },
-    hash: {
-      type: HASH_VALIDATOR,
       required: true,
       exposeGraphQL: true,
     },
@@ -129,14 +173,10 @@ export default class Transaction extends BlockchainModel {
       type: { type: 'string' },
       exposeGraphQL: true,
     },
-    block_hash: {
+    block_id: {
       type: HASH_VALIDATOR,
       required: true,
       exposeGraphQL: true,
-    },
-    block_id: {
-      type: { type: 'foreignID', modelType: 'Block' },
-      required: true,
     },
     block_time: BLOCK_TIME_COLUMN,
     index: {

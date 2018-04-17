@@ -114,7 +114,7 @@ export default class CurrentPriceRootCall extends RootCall {
             if (marketCapUSD == null && assetID === GAS) {
               const asset = await Asset.query(rootLoader.db)
                 .context(rootLoader.makeAllPowerfulQueryContext(monitor))
-                .where('hash', GAS_ASSET_HASH)
+                .where('id', GAS_ASSET_HASH)
                 .first();
               if (asset != null) {
                 marketCapUSD = Math.floor(priceUSD * asset.issued);

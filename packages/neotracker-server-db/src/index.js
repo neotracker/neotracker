@@ -11,16 +11,7 @@ export {
   createFromEnvironment$,
   transaction,
 } from './db';
-export {
-  Base,
-  BaseModel,
-  IFace,
-  makeQueryContext,
-  makeAllPowerfulQueryContext,
-  createTable,
-  dropTable,
-  setupForCreate,
-} from './lib';
+export * from './lib';
 export { RootLoader, createRootLoader$, createRootLoader } from './loader';
 export {
   TYPE_INPUT,
@@ -42,7 +33,6 @@ export {
   Coin,
   Contract,
   DataPoint,
-  GraphQLQuery,
   KnownContract,
   Migration,
   ProcessedIndex,
@@ -51,15 +41,9 @@ export {
   Transfer,
 } from './models';
 export { models };
-export { createTables } from './setup';
+export * from './setup';
 export { calculateClaimValueBase } from './utils';
 
-export type {
-  AllPowerfulQueryContext,
-  Field,
-  FieldType,
-  QueryContext,
-} from './lib';
 export type {
   Options as SubscribeProcessedNextIndexOptions,
   Environment as SubscribeProcessedNextIndexEnvironment,

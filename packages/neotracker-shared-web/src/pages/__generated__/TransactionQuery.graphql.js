@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 0e501b25fe0ee39e7ca9dc5343c79878
+ * @relayHash cefd67ace0c7add551df8ea1b32a30a9
  */
 
 /* eslint-disable */
@@ -15,7 +15,7 @@ export type TransactionQueryVariables = {|
 |};
 export type TransactionQueryResponse = {|
   +transaction: ?{|
-    +hash: string,
+    +id: string,
     +$fragmentRefs: TransactionView_transaction$ref,
   |},
 |};
@@ -27,16 +27,15 @@ query TransactionQuery(
   $hash: String!
 ) {
   transaction(hash: $hash) {
-    hash
-    ...TransactionView_transaction
     id
+    ...TransactionView_transaction
   }
 }
 
 fragment TransactionView_transaction on Transaction {
   ...TransactionSummaryBody_transaction
   type
-  hash
+  id
   network_fee
   system_fee
   size
@@ -77,8 +76,8 @@ fragment TransactionViewExtra_transaction on Transaction {
 
 fragment TransferTable_transfers on Transfer {
   ...TransferLink_transfer
-  from_address_hash
-  to_address_hash
+  from_address_id
+  to_address_id
   value
   asset {
     ...AssetNameLink_asset
@@ -88,11 +87,11 @@ fragment TransferTable_transfers on Transfer {
 }
 
 fragment TransferLink_transfer on Transfer {
-  transaction_hash
+  transaction_id
 }
 
 fragment AssetNameLink_asset on Asset {
-  hash
+  id
   symbol
 }
 
@@ -106,7 +105,6 @@ fragment TransactionEnrollmentSummaryBody_transaction on Transaction {
   ...TransactionOutputPagingTable_transaction
   enrollment {
     address {
-      hash
       id
     }
     id
@@ -158,11 +156,11 @@ fragment TransactionInvocationSummaryBody_transaction on Transaction {
 }
 
 fragment TransactionInputPagingTable_transaction on Transaction {
-  hash
+  id
 }
 
 fragment TransactionOutputPagingTable_transaction on Transaction {
-  hash
+  id
 }
 
 fragment AssetRegistered_asset on Asset {
@@ -174,12 +172,12 @@ fragment ContractPublished_contract on Contract {
 }
 
 fragment ContractNameLink_contract on Contract {
-  hash
+  id
   name
 }
 
 fragment TransactionClaimPagingTable_transaction on Transaction {
-  hash
+  id
 }
 */
 
@@ -203,18 +201,11 @@ v1 = [
 v2 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "hash",
-  "args": null,
-  "storageKey": null
-},
-v3 = {
-  "kind": "ScalarField",
-  "alias": null,
   "name": "id",
   "args": null,
   "storageKey": null
 },
-v4 = {
+v3 = {
   "kind": "LinkedField",
   "alias": null,
   "name": "asset",
@@ -230,11 +221,10 @@ v4 = {
       "name": "symbol",
       "args": null,
       "storageKey": null
-    },
-    v3
+    }
   ]
 },
-v5 = {
+v4 = {
   "kind": "ScalarField",
   "alias": null,
   "name": "block_time",
@@ -245,7 +235,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "TransactionQuery",
-  "id": "66",
+  "id": "26",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -314,11 +304,10 @@ return {
                 "concreteType": "Address",
                 "plural": false,
                 "selections": [
-                  v2,
-                  v3
+                  v2
                 ]
               },
-              v3
+              v2
             ]
           },
           {
@@ -355,15 +344,14 @@ return {
                         "name": "name",
                         "args": null,
                         "storageKey": null
-                      },
-                      v3
+                      }
                     ]
                   }
                 ]
               }
             ]
           },
-          v4,
+          v3,
           {
             "kind": "ScalarField",
             "alias": null,
@@ -385,7 +373,7 @@ return {
             "args": null,
             "storageKey": null
           },
-          v5,
+          v4,
           {
             "kind": "LinkedField",
             "alias": null,
@@ -409,7 +397,7 @@ return {
                 "args": null,
                 "storageKey": null
               },
-              v3
+              v2
             ]
           },
           {
@@ -467,21 +455,21 @@ return {
                       {
                         "kind": "ScalarField",
                         "alias": null,
-                        "name": "transaction_hash",
+                        "name": "transaction_id",
                         "args": null,
                         "storageKey": null
                       },
                       {
                         "kind": "ScalarField",
                         "alias": null,
-                        "name": "from_address_hash",
+                        "name": "from_address_id",
                         "args": null,
                         "storageKey": null
                       },
                       {
                         "kind": "ScalarField",
                         "alias": null,
-                        "name": "to_address_hash",
+                        "name": "to_address_id",
                         "args": null,
                         "storageKey": null
                       },
@@ -492,21 +480,20 @@ return {
                         "args": null,
                         "storageKey": null
                       },
+                      v3,
                       v4,
-                      v5,
-                      v3
+                      v2
                     ]
                   }
                 ]
               }
             ]
-          },
-          v3
+          }
         ]
       }
     ]
   }
 };
 })();
-(node/*: any*/).hash = '496b9e735d6768b6a046e818d2814d21';
+(node/*: any*/).hash = '41720aa53fac5601b0810f0f0b932be0';
 module.exports = node;

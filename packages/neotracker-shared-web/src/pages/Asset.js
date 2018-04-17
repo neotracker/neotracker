@@ -12,7 +12,7 @@ import { PageError } from '../components/common/error';
 import { PageLoading } from '../components/common/loading';
 
 import { getName } from '../components/explorer/asset/lib';
-import { queryRenderer } from '../graphql/relay';
+import { getID, queryRenderer } from '../graphql/relay';
 
 import { type AssetQueryResponse } from './__generated__/AssetQuery.graphql';
 
@@ -48,7 +48,7 @@ function Asset({ props, error, retry, className }: Props): React.Element<any> {
     );
   }
 
-  const name = getName(props.asset.symbol, props.asset.hash);
+  const name = getName(props.asset.symbol, getID(props.asset.id));
   return (
     <div className={className}>
       <Helmet>
@@ -66,7 +66,7 @@ export default (queryRenderer(
   graphql`
     query AssetQuery($hash: String!) {
       asset(hash: $hash) {
-        hash
+        id
         symbol
         ...AssetView_asset
       }

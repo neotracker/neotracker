@@ -221,8 +221,8 @@ const reduceCoinChanges = (
 };
 
 export type InputOutputResult = {|
-  assetIDs: Array<number>,
-  addressIDs: Array<number>,
+  assetIDs: Array<string>,
+  addressIDs: Array<string>,
   coinChanges?: ?CoinChanges,
 |};
 export const EMPTY_INPUT_OUTPUT_RESULT = { assetIDs: [], addressIDs: [] };
@@ -286,14 +286,14 @@ function getKnownContractModel(
     span =>
       KnownContractModel.query(context.db)
         .context(context.makeQueryContext(span))
-        .where('hash', hash)
+        .where('id', hash)
         .first()
         .then(result => {
           if (result == null) {
             return KnownContractModel.query(context.db)
               .context(context.makeQueryContext(span))
               .insert({
-                hash,
+                id: hash,
                 processed_block_index: -1,
                 processed_transaction_index: -1,
                 processed_action_index: -1,
@@ -352,7 +352,7 @@ function updateKnownContractModelPreRun(
       dbTransaction(context.db, async trx => {
         const knownContractModel = await KnownContractModel.query(trx)
           .context(context.makeQueryContext(span))
-          .where('hash', contractModel.hash)
+          .where('id', contractModel.id)
           .forUpdate()
           .first();
         if (!isActionProcessed(action, knownContractModel)) {
@@ -394,7 +394,7 @@ function updateKnownContractModelPostRun(
       dbTransaction(context.db, async trx => {
         const knownContractModel = await KnownContractModel.query(trx)
           .context(context.makeQueryContext(span))
-          .where('hash', contractModel.hash)
+          .where('id', contractModel.id)
           .forUpdate()
           .first();
         if (!isActionProcessed(action, knownContractModel)) {
@@ -419,7 +419,7 @@ function updateKnownContractModelDone(
       dbTransaction(context.db, async trx => {
         const knownContractModel = await KnownContractModel.query(trx)
           .context(context.makeQueryContext(span))
-          .where('hash', contractModel.hash)
+          .where('id', contractModel.id)
           .forUpdate()
           .first();
         if (knownContractModel.processed_block_index < blockIndex) {
@@ -442,7 +442,7 @@ async function checkActionProcessed(
   const knownContractModel = await getKnownContractModel(
     context,
     monitor,
-    contractModel.hash,
+    contractModel.id,
   );
   return isActionProcessed(action, knownContractModel);
 }
@@ -476,11 +476,14 @@ function getReference(
 ): Promise<TransactionInputOutputModel> {
   return getMonitor(monitor).captureSpan(
     async span => {
+      const id = TransactionInputOutputModel.makeID({
+        type: TYPE_INPUT,
+        outputTransactionHash: input.txid,
+        outputTransactionIndex: input.vout,
+      });
       const result = await TransactionInputOutputModel.query(context.db)
         .context(context.makeQueryContext(span))
-        .where('type', TYPE_INPUT)
-        .where('output_transaction_hash', input.txid)
-        .where('output_transaction_index', input.vout)
+        .where('id', id)
         .first();
       return result;
     },
@@ -591,19 +594,21 @@ function saveCoin(
         actionModel,
       } = save;
       const replay = await dbTransaction(context.db, async (trx: any) => {
+        const id = CoinModel.makeID({
+          addressHash: address.id,
+          assetHash: asset.id,
+        });
         const coinModel = await CoinModel.query(trx)
           .context(context.makeQueryContext(span))
-          .where('address_id', address.id)
-          .where('asset_id', asset.id)
+          .where('id', id)
           .forUpdate()
           .first();
         if (coinModel == null) {
           await CoinModel.query(trx)
             .context(context.makeQueryContext(span))
             .insert({
-              address_hash: address.hash,
+              id,
               address_id: address.id,
-              asset_hash: asset.hash,
               asset_id: asset.id,
               value: new BigNumber('0').toFixed(asset.precision),
               block_index: -1,
@@ -796,20 +801,17 @@ export function processInputOutputResult(
           .raw(
             `
           UPDATE address SET
-            last_transaction_hash=?,
             last_transaction_id=?,
             last_transaction_time=?
           WHERE
-            address.id IN (${addressIDsSet.join(', ')}) AND (
+            address.id IN (${addressIDsSet
+              .map(id => `'${id}'`)
+              .join(', ')}) AND (
               address.last_transaction_time IS NULL OR
               address.last_transaction_time <= ${transactionModel.block_time}
             )
         `,
-            [
-              transactionModel.hash,
-              transactionModel.id,
-              transactionModel.block_time,
-            ],
+            [transactionModel.id, transactionModel.block_time],
           )
           .queryContext(context.makeQueryContext(span));
       }
@@ -842,7 +844,7 @@ function saveSingleTransfer(
       // For QLC
       let toAddressHash = toAddressHashIn;
       if (
-        transactionModel.hash === QLC_TRANSACTION_HASH &&
+        transactionModel.id === QLC_TRANSACTION_HASH &&
         fromAddressHash == null &&
         toAddressHashIn != null &&
         toAddressHashIn === QLC_TRANSFER_TO_ADDRESS_HASH
@@ -890,18 +892,13 @@ function saveSingleTransfer(
       const transferModel = await TransferModel.query(context.db)
         .context(context.makeQueryContext(span))
         .insert({
-          transaction_hash: transactionModel.hash,
+          id: actionModel.id,
           transaction_id: transactionModel.id,
-          asset_hash: assetModel.hash,
           asset_id: assetModel.id,
           contract_id: contractModel.id,
-          action_id: actionModel.id,
           value: value.toFixed(assetModel.precision),
-          from_address_hash:
-            fromAddressModel == null ? null : fromAddressModel.hash,
           from_address_id:
             fromAddressModel == null ? null : fromAddressModel.id,
-          to_address_hash: toAddressModel == null ? null : toAddressModel.hash,
           to_address_id: toAddressModel == null ? null : toAddressModel.id,
           block_index: blockModel.index,
           transaction_index: transactionModel.index,
@@ -914,7 +911,7 @@ function saveSingleTransfer(
           if (error.code === CONFLICT_ERROR_CODE) {
             return TransferModel.query(context.db)
               .context(context.makeQueryContext(span))
-              .where('action_id', actionModel.id)
+              .where('id', actionModel.id)
               .first();
           }
 
@@ -934,15 +931,15 @@ function saveSingleTransfer(
             fromAddressModel == null
               ? null
               : createCoinChange({
-                  addressHash: fromAddressModel.hash,
-                  assetHash: assetModel.hash,
+                  addressHash: fromAddressModel.id,
+                  assetHash: assetModel.id,
                   value: value.negated(),
                 }),
             toAddressModel == null
               ? null
               : createCoinChange({
-                  addressHash: toAddressModel.hash,
-                  assetHash: assetModel.hash,
+                  addressHash: toAddressModel.id,
+                  assetHash: assetModel.id,
                   value,
                 }),
           ].filter(Boolean),
@@ -1019,9 +1016,15 @@ function saveSingleAction(
   return getMonitor(monitor).captureSpan(
     async span => {
       const action = normalizeAction(actionIn);
+      const id = ActionModel.makeID({
+        blockIndex: action.blockIndex,
+        transactionIndex: action.transactionIndex,
+        index: action.index,
+      });
       const actionModel = await ActionModel.query(context.db)
         .context(context.makeQueryContext(span))
         .insert({
+          id,
           type: action.type,
           block_index: action.blockIndex,
           transaction_id: transactionModel.id,
@@ -1038,9 +1041,7 @@ function saveSingleAction(
           if (error.code === CONFLICT_ERROR_CODE) {
             return ActionModel.query(context.db)
               .context(context.makeQueryContext(span))
-              .where('block_index', action.blockIndex)
-              .where('transaction_index', action.transactionIndex)
-              .where('index', action.index)
+              .where('id', id)
               .first();
           }
           throw error;
@@ -1071,7 +1072,7 @@ function fixToken(
     async span => {
       const transactionModel = await TransactionModel.query(context.db)
         .context(context.makeQueryContext(span))
-        .where('hash', transactionHash)
+        .where('id', transactionHash)
         .first();
 
       if (blockModel == null || transactionModel == null) {
@@ -1085,9 +1086,9 @@ function fixToken(
             action: {
               version: 0,
               type: 'Notification',
-              blockHash: blockModel.hash,
+              blockHash: blockModel.id,
               blockIndex: blockModel.index,
-              transactionHash: transactionModel.hash,
+              transactionHash: transactionModel.id,
               transactionIndex: transactionModel.index,
               index,
               scriptHash,
@@ -1155,7 +1156,7 @@ export const isRPX = (
 ) =>
   normalizeHash(scriptHash) === RPX_HASH &&
   blockModel.index === RPX_DEPLOY_BLOCK_INDEX &&
-  transactionModel.hash === RPX_DEPLOY_TRANSACTION_HASH;
+  transactionModel.id === RPX_DEPLOY_TRANSACTION_HASH;
 
 const isRHT = (
   blockModel: BlockModel,
@@ -1163,7 +1164,7 @@ const isRHT = (
   scriptHash: string,
 ) =>
   normalizeHash(scriptHash) === RHT_HASH &&
-  transactionModel.hash === RHT_TRANSACTION_HASH;
+  transactionModel.id === RHT_TRANSACTION_HASH;
 
 function saveInvocationAction(
   context: Context,
@@ -1335,7 +1336,7 @@ function processActionFiltered(
           .first(),
         TransactionModel.query(context.db)
           .context(context.makeQueryContext(span))
-          .where('hash', normalizeHash(action.transactionHash))
+          .where('id', normalizeHash(action.transactionHash))
           .first(),
       ]);
       if (blockModel == null) {
@@ -1365,7 +1366,7 @@ function processActionFiltered(
         action,
         contractModel,
       );
-      if (isRPX(blockModel, transactionModel, contractModel.hash)) {
+      if (isRPX(blockModel, transactionModel, contractModel.id)) {
         // eslint-disable-next-line
         context.rpxFixed = true;
       }
@@ -1420,10 +1421,10 @@ function processContractActions(
       const knownContractModel = await getKnownContractModel(
         context,
         span,
-        contractModel.hash,
+        contractModel.id,
       );
       const actions = context.client
-        .smartContract(add0x(contractModel.hash), { functions: [] })
+        .smartContract(add0x(contractModel.id), { functions: [] })
         .iterActionsRaw({
           indexStart:
             knownContractModel.processed_block_index === -1
@@ -1538,14 +1539,14 @@ function saveClaim(
 
       const claimDB = {
         claim_transaction_id: transactionModel.id,
-        claim_transaction_hash: transactionModel.hash,
       };
 
       if (inputTransactionInputOutput.claim_transaction_id == null) {
         await inputTransactionInputOutput
           .$query(context.db)
           .context(context.makeQueryContext(span))
-          .patch(claimDB);
+          .patch(claimDB)
+          .returning('*');
       } else if (
         inputTransactionInputOutput.claim_transaction_id !== transactionModel.id
       ) {
@@ -1561,7 +1562,14 @@ function saveClaim(
 
         await TransactionInputOutputModel.query(context.db)
           .context(context.makeQueryContext(span))
-          .insert(duplicateClaimDB)
+          .insert({
+            ...duplicateClaimDB,
+            id: TransactionInputOutputModel.makeID({
+              outputTransactionHash: duplicateClaimDB.output_transaction_id,
+              outputTransactionIndex: duplicateClaimDB.output_transaction_index,
+              type: duplicateClaimDB.type,
+            }),
+          })
           .catch(error => {
             if (error.code !== CONFLICT_ERROR_CODE) {
               throw error;
@@ -1611,8 +1619,8 @@ function getCoinChangesForOutputs(
       changes: references
         .map(output =>
           createCoinChange({
-            addressHash: output.address_hash,
-            assetHash: output.asset_hash,
+            addressHash: output.address_id,
+            assetHash: output.asset_id,
             value: new BigNumber(output.value).negated(),
           }),
         )
@@ -1640,11 +1648,11 @@ function isIssue(
 
   const values = {};
   references.forEach(input => {
-    if (values[input.asset_hash] == null) {
-      values[input.asset_hash] = new BigNumber('0');
+    if (values[input.asset_id] == null) {
+      values[input.asset_id] = new BigNumber('0');
     }
 
-    values[input.asset_hash] = values[input.asset_hash].plus(
+    values[input.asset_id] = values[input.asset_id].plus(
       new BigNumber(input.value),
     );
   });
@@ -1716,16 +1724,18 @@ function getOutput(
       return {
         result: { assetIDs: [asset.id], addressIDs: [address.id] },
         output: {
+          id: TransactionInputOutputModel.makeID({
+            outputTransactionHash: transactionModel.id,
+            outputTransactionIndex: idx,
+            type: TYPE_INPUT,
+          }),
           type: TYPE_INPUT,
           subtype: getSubtype(output, references, transaction, idx),
-          output_transaction_hash: transactionModel.hash,
           output_transaction_id: transactionModel.id,
           output_transaction_index: idx,
           output_block_index: blockModel.index,
-          asset_hash: output.asset,
           asset_id: asset.id,
           value: output.value.toFixed(asset.precision),
-          address_hash: output.address,
           address_id: address.id,
         },
       };
@@ -1803,10 +1813,10 @@ function saveInput(
         .$query(context.db)
         .context(context.makeQueryContext(span))
         .patch({
-          input_transaction_hash: transactionModel.hash,
           input_transaction_id: transactionModel.id,
           claim_value: claimValue,
-        });
+        })
+        .returning('*');
 
       return {
         assetIDs: [reference.asset_id],
@@ -1935,7 +1945,7 @@ function saveTransaction(
           .context(context.makeQueryContext(span))
           .insert({
             type: transaction.type,
-            hash: transaction.txid,
+            id: transaction.txid,
             size: transaction.size,
             version: transaction.version,
             attributes_raw: JSON.stringify(transaction.attributes),
@@ -1944,7 +1954,6 @@ function saveTransaction(
             nonce: transaction.nonce == null ? null : `${transaction.nonce}`,
             pubkey:
               transaction.publicKey == null ? null : transaction.publicKey,
-            block_hash: blockModel.hash,
             block_id: blockModel.id,
             block_time: blockModel.time,
             index,
@@ -1967,7 +1976,7 @@ function saveTransaction(
             if (error.code === CONFLICT_ERROR_CODE) {
               return TransactionModel.query(context.db)
                 .context(context.makeQueryContext(span))
-                .where('hash', transaction.txid)
+                .where('id', transaction.txid)
                 .first();
             }
 
@@ -2026,9 +2035,7 @@ function saveBlock(
       let prevBlockData = {};
       if (prevBlockModel != null) {
         prevBlockData = {
-          previous_block_hash: prevBlockModel.hash,
           previous_block_id: prevBlockModel.id,
-          validator_address_hash: prevBlockModel.next_validator_address_hash,
           validator_address_id: prevBlockModel.next_validator_address_id,
         };
       }
@@ -2038,14 +2045,13 @@ function saveBlock(
           .context(context.makeQueryContext(span))
           .insert({
             ...prevBlockData,
-            hash: block.hash,
+            id: block.hash,
             size: block.size,
             version: block.version,
             merkle_root: block.merkleRoot,
             time: block.time,
             index: block.index,
             nonce: block.nonce,
-            next_validator_address_hash: block.nextConsensus,
             next_validator_address_id: address.id,
             invocation_script: block.script.invocation,
             verification_script: block.script.verification,
@@ -2116,7 +2122,6 @@ function processBlockFiltered(
           .$query(context.db)
           .context(context.makeQueryContext(span))
           .patch({
-            next_block_hash: blockModel.hash,
             next_block_id: blockModel.id,
           });
       }
@@ -2168,13 +2173,10 @@ function processMinerBlocksFiltered(
       [prevBlockModel].concat(blockModels).forEach(blockModel => {
         indexToBlockModel[blockModel.index] = blockModel;
         indexToBlockModelPatch[blockModel.index] = {
-          previous_block_hash: blockModel.hash,
           previous_block_id: blockModel.id,
-          validator_address_hash: blockModel.next_validator_address_hash,
           validator_address_id: blockModel.next_validator_address_id,
         };
         indexToPrevBlockModelPatch[blockModel.index] = {
-          next_block_hash: blockModel.hash,
           next_block_id: blockModel.id,
         };
       });
@@ -2275,17 +2277,17 @@ export function initializeNEP5Contract(
 ): Promise<?ReadSmartContract> {
   return getMonitor(monitor)
     .withData({
-      [labels.CONTRACT_HASH]: contractModel.hash,
+      [labels.CONTRACT_HASH]: contractModel.id,
     })
     .captureSpanLog(
       async span => {
         if (contractModel.type === NEP5_CONTRACT_TYPE) {
           const contractABI = await abi.NEP5(
             context.client,
-            add0x(contractModel.hash),
+            add0x(contractModel.id),
           );
           const contract = context.client.smartContract(
-            add0x(contractModel.hash),
+            add0x(contractModel.id),
             contractABI,
           );
           const [
@@ -2315,7 +2317,7 @@ export function initializeNEP5Contract(
                 amount: totalSupply.toString(),
                 precision: decimals.toNumber(),
               },
-              hash: contractModel.hash,
+              hash: contractModel.id,
             },
             span,
           );
@@ -2344,7 +2346,7 @@ function watchContract(
         async span => {
           const [height, knownContractModel, nep5Contract] = await Promise.all([
             getCurrentHeight(context, span),
-            getKnownContractModel(context, span, contractModel.hash),
+            getKnownContractModel(context, span, contractModel.id),
             initializeNEP5Contract(context, span, contractModel),
           ]);
           if (nep5Contract == null) {
@@ -2460,7 +2462,7 @@ function run({
                 nep5Contract != null
               ) {
                 // eslint-disable-next-line
-                context.nep5Contracts[add0x(contractModel.hash)] = nep5Contract;
+                context.nep5Contracts[add0x(contractModel.id)] = nep5Contract;
               }
             });
           }
@@ -2515,8 +2517,7 @@ export default (context: Context, monitorIn: Monitor) => {
       context.nep5Hashes$,
     ).pipe(
       filter(
-        contractModel =>
-          context.nep5Contracts[add0x(contractModel.hash)] == null,
+        contractModel => context.nep5Contracts[add0x(contractModel.id)] == null,
       ),
       mergeMap(contractModel => watchContract(context, monitor, contractModel)),
     ),

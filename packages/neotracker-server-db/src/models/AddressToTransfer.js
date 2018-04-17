@@ -1,20 +1,8 @@
 /* @flow */
 import { BaseEdge, type BaseModel } from '../lib';
 
-export default class AddressToTransfer extends BaseEdge {
+export default class AddressToTransfer extends BaseEdge<string, string> {
   static modelName = 'AddressToTransfer';
-  static indices = [
-    {
-      type: 'order',
-      columns: [
-        {
-          name: 'id2',
-          order: 'DESC NULLS LAST',
-        },
-      ],
-      name: 'address_to_transfer_desc_id2',
-    },
-  ];
 
   // TODO: Need to display transfer_count
   static chainCustomAfter(schema: any): any {
@@ -33,6 +21,9 @@ export default class AddressToTransfer extends BaseEdge {
         END;
       $address_to_transfer_update_tables$ LANGUAGE plpgsql;
     `).raw(`
+      DROP TRIGGER IF EXISTS address_to_transfer_update_tables
+      ON address_to_transfer;
+
       CREATE TRIGGER address_to_transfer_update_tables
       AFTER INSERT ON address_to_transfer
       REFERENCING NEW TABLE AS new_address_to_transfer
@@ -41,12 +32,12 @@ export default class AddressToTransfer extends BaseEdge {
     `);
   }
 
-  static get id1Type(): Class<BaseModel> {
+  static get id1Type(): Class<BaseModel<string>> {
     // eslint-disable-next-line
     return require('./Address').default;
   }
 
-  static get id2Type(): Class<BaseModel> {
+  static get id2Type(): Class<BaseModel<string>> {
     // eslint-disable-next-line
     return require('./Transfer').default;
   }

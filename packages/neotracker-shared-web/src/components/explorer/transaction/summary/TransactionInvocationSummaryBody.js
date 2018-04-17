@@ -13,7 +13,7 @@ import {
   TransactionOutputPagingTable,
 } from '../../transaction/lib';
 
-import { fragmentContainer } from '../../../../graphql/relay';
+import { fragmentContainer, getID } from '../../../../graphql/relay';
 import { withStyles } from '../../../../lib/base';
 
 import { type TransactionInvocationSummaryBody_transaction } from './__generated__/TransactionInvocationSummaryBody_transaction.graphql';
@@ -59,7 +59,7 @@ function TransactionInvocationSummaryBody({
   const published = [];
   for (const edge of transaction.contracts.edges) {
     published.push(
-      <ContractPublished key={edge.node.id} contract={edge.node} />,
+      <ContractPublished key={getID(edge.node.id)} contract={edge.node} />,
     );
   }
 

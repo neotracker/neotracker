@@ -7,7 +7,7 @@ import { graphql } from 'react-relay';
 
 import { PagingView } from '../../../common/view';
 
-import { fragmentContainer } from '../../../../graphql/relay';
+import { fragmentContainer, getID } from '../../../../graphql/relay';
 import { withStyles } from '../../../../lib/base';
 
 import { type ActionTable_actions } from './__generated__/ActionTable_actions.graphql';
@@ -70,10 +70,10 @@ function ActionTable({
       {actions.map(
         action =>
           action.type === 'Log' ? (
-            <LogItem key={action.id} action={action} />
+            <LogItem key={getID(action.id)} action={action} />
           ) : (
             <NotificationItem
-              key={action.id}
+              key={getID(action.id)}
               action={action}
               addressHash={addressHash}
             />

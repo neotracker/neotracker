@@ -15,7 +15,7 @@ declare export opaque type TransactionEnrollmentSummaryBody_transaction$ref: Fra
 export type TransactionEnrollmentSummaryBody_transaction = {|
   +enrollment: ?{|
     +address: {|
-      +hash: string,
+      +id: string,
     |},
   |},
   +$fragmentRefs: (TransactionInputPagingTable_transaction$ref & TransactionOutputPagingTable_transaction$ref),
@@ -62,7 +62,7 @@ const node/*: ConcreteFragment*/ = {
             {
               "kind": "ScalarField",
               "alias": null,
-              "name": "hash",
+              "name": "id",
               "args": null,
               "storageKey": null
             }
@@ -72,5 +72,5 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
-(node/*: any*/).hash = '936620354adf394fff38c1b1cd0c2072';
+(node/*: any*/).hash = '558bcfd30dd431ca65dc96a7dc758689';
 module.exports = node;

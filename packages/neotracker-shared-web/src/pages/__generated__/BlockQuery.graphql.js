@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 53ea56631623cb7874666100f010fa84
+ * @relayHash b59d34edd9d08dedf410f83cbaadc862
  */
 
 /* eslint-disable */
@@ -36,17 +36,17 @@ query BlockQuery(
 }
 
 fragment BlockView_block on Block {
-  hash
+  id
   index
   confirmations
   size
   version
   time
-  previous_block_hash
-  next_block_hash
+  previous_block_id
+  next_block_id
   merkle_root
   transaction_count
-  validator_address_hash
+  validator_address_id
   ...BlockViewExtra_block
 }
 
@@ -59,7 +59,7 @@ fragment BlockViewExtra_block on Block {
 }
 
 fragment BlockTransactionPagingView_block on Block {
-  hash
+  id
 }
 */
 
@@ -103,7 +103,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "BlockQuery",
-  "id": "100",
+  "id": "12",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -149,7 +149,7 @@ return {
           {
             "kind": "ScalarField",
             "alias": null,
-            "name": "previous_block_hash",
+            "name": "previous_block_id",
             "args": null,
             "storageKey": null
           },
@@ -185,14 +185,14 @@ return {
           {
             "kind": "ScalarField",
             "alias": null,
-            "name": "hash",
+            "name": "id",
             "args": null,
             "storageKey": null
           },
           {
             "kind": "ScalarField",
             "alias": null,
-            "name": "next_block_hash",
+            "name": "next_block_id",
             "args": null,
             "storageKey": null
           },
@@ -213,7 +213,7 @@ return {
           {
             "kind": "ScalarField",
             "alias": null,
-            "name": "validator_address_hash",
+            "name": "validator_address_id",
             "args": null,
             "storageKey": null
           },
@@ -241,13 +241,6 @@ return {
                 "storageKey": null
               }
             ]
-          },
-          {
-            "kind": "ScalarField",
-            "alias": null,
-            "name": "id",
-            "args": null,
-            "storageKey": null
           }
         ]
       }

@@ -1,7 +1,11 @@
 /* @flow */
 import { Model } from 'objection';
 
-import { CONTRACT_VALIDATOR, INTEGER_INDEX_VALIDATOR } from './common';
+import {
+  CONTRACT_VALIDATOR,
+  HASH_VALIDATOR,
+  INTEGER_INDEX_VALIDATOR,
+} from './common';
 import BlockchainModel from './BlockchainModel';
 import { type EdgeSchema, type FieldSchema } from '../lib';
 
@@ -9,16 +13,21 @@ const ACTION_TYPES = ['Log', 'Notification'];
 
 export type ActionType = 'Log' | 'Notification';
 
-export default class Action extends BlockchainModel {
+export default class Action extends BlockchainModel<string> {
+  id: string;
+  type: string;
+  block_index: number;
+  transaction_id: string;
+  transaction_index: number;
+  index: number;
+  script_hash: string;
+  message: string;
+  args_raw: string;
+
   static modelName = 'Action';
   static exposeGraphQL: boolean = true;
   static indices = [
-    {
-      type: 'simple',
-      columnNames: ['block_index', 'transaction_index', 'index'],
-      name: 'action_primary',
-      unique: true,
-    },
+    // TransactionActionPagingTable
     {
       type: 'order',
       columns: [
@@ -31,12 +40,17 @@ export default class Action extends BlockchainModel {
           order: 'asc nulls last',
         },
       ],
-      name: 'action_desc_transaction_id_asc_index',
+      name: 'action_transaction_id_index',
+      unique: true,
     },
   ];
-  static bigIntID = true;
 
   static fieldSchema: FieldSchema = {
+    id: {
+      type: { type: 'string' },
+      required: true,
+      exposeGraphQL: true,
+    },
     type: {
       type: { type: 'string', enum: ACTION_TYPES },
       required: true,
@@ -47,7 +61,7 @@ export default class Action extends BlockchainModel {
       required: true,
     },
     transaction_id: {
-      type: { type: 'foreignID', modelType: 'Transaction' },
+      type: HASH_VALIDATOR,
       exposeGraphQL: true,
       required: true,
     },
@@ -75,6 +89,18 @@ export default class Action extends BlockchainModel {
     },
   };
 
+  static makeID({
+    blockIndex,
+    transactionIndex,
+    index,
+  }: {|
+    blockIndex: number,
+    transactionIndex: number,
+    index: number,
+  |}): string {
+    return [blockIndex, transactionIndex, index].join('$');
+  }
+
   static edgeSchema: EdgeSchema = {
     transaction: {
       relation: {
@@ -100,7 +126,7 @@ export default class Action extends BlockchainModel {
         },
         join: {
           from: 'action.id',
-          to: 'transfer.action_id',
+          to: 'transfer.id',
         },
       },
       exposeGraphQL: true,

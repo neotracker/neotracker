@@ -17,7 +17,7 @@ export type SendTransaction_address = {|
         +value: string,
         +asset: {|
           +type: string,
-          +hash: string,
+          +id: string,
           +precision: number,
           +symbol: string,
         |},
@@ -89,7 +89,7 @@ const node/*: ConcreteFragment*/ = {
                     {
                       "kind": "ScalarField",
                       "alias": null,
-                      "name": "hash",
+                      "name": "id",
                       "args": null,
                       "storageKey": null
                     },
@@ -117,5 +117,5 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
-(node/*: any*/).hash = 'f91426de53fd73e88d6a0c6b417f2cdb';
+(node/*: any*/).hash = 'c292c6bfc5ce1b8aa1c21d4133363939';
 module.exports = node;

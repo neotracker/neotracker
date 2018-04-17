@@ -14,8 +14,8 @@ type Coin_coin$ref = any;
 import type { FragmentReference } from 'relay-runtime';
 declare export opaque type AddressView_address$ref: FragmentReference;
 export type AddressView_address = {|
-  +hash: string,
-  +transaction_hash: ?string,
+  +id: string,
+  +transaction_id: ?string,
   +block_time: number,
   +transaction_count: number,
   +transfer_count: number,
@@ -24,7 +24,7 @@ export type AddressView_address = {|
       +node: {|
         +value: string,
         +asset: {|
-          +hash: string,
+          +id: string,
           +symbol: string,
         |},
         +$fragmentRefs: CoinTable_coins$ref,
@@ -44,7 +44,7 @@ const node/*: ConcreteFragment*/ = (function(){
 var v0 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "hash",
+  "name": "id",
   "args": null,
   "storageKey": null
 };
@@ -64,7 +64,7 @@ return {
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "transaction_hash",
+      "name": "transaction_id",
       "args": null,
       "storageKey": null
     },
@@ -172,5 +172,5 @@ return {
   ]
 };
 })();
-(node/*: any*/).hash = 'aeb354b38914e64bbc444beb73867661';
+(node/*: any*/).hash = 'b75c902bc5b8a7c94d75a04382c28f8d';
 module.exports = node;

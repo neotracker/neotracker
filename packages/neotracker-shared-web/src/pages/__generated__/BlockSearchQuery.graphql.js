@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 44e59d029259bfab7f2c25a16e34972f
+ * @relayHash 83064d4050c2e34e6ba5ffaaa32102a8
  */
 
 /* eslint-disable */
@@ -55,7 +55,7 @@ fragment BlockTable_blocks on Block {
   index
   time
   transaction_count
-  validator_address_hash
+  validator_address_id
   size
 }
 */
@@ -122,7 +122,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "BlockSearchQuery",
-  "id": "20",
+  "id": "17",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -229,7 +229,7 @@ return {
                   {
                     "kind": "ScalarField",
                     "alias": null,
-                    "name": "validator_address_hash",
+                    "name": "validator_address_id",
                     "args": null,
                     "storageKey": null
                   },

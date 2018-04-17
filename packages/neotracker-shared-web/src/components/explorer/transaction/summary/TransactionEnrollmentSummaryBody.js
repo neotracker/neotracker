@@ -12,7 +12,7 @@ import {
 } from '../../transaction/lib';
 import { Typography, withStyles } from '../../../../lib/base';
 
-import { fragmentContainer } from '../../../../graphql/relay';
+import { fragmentContainer, getID } from '../../../../graphql/relay';
 
 import { type TransactionEnrollmentSummaryBody_transaction } from './__generated__/TransactionEnrollmentSummaryBody_transaction.graphql';
 import TransactionSplitSummaryBody from './TransactionSplitSummaryBody';
@@ -62,7 +62,7 @@ function TransactionEnrollmentSummaryBody({
         <Typography className={classes.enrolled} variant="body1">
           Validator Enrolled:
         </Typography>
-        <AddressLink addressHash={transaction.enrollment.address.hash} />
+        <AddressLink addressHash={getID(transaction.enrollment.address.id)} />
       </div>
     );
   }
@@ -91,7 +91,7 @@ const enhance: HOC<*, *> = compose(
         ...TransactionOutputPagingTable_transaction
         enrollment {
           address {
-            hash
+            id
           }
         }
       }

@@ -8,7 +8,7 @@ import { ContractLink } from '../contract/lib';
 import { Table } from '../../common/table';
 import { TransactionTimeLink } from '../transaction/lib';
 
-import { fragmentContainer } from '../../../graphql/relay';
+import { fragmentContainer, getID } from '../../../graphql/relay';
 import { withStyles } from '../../../lib/base';
 
 import { type ContractTable_contracts } from './__generated__/ContractTable_contracts.graphql';
@@ -54,12 +54,12 @@ function ContractTable({
   const authorValues = [];
   const registeredAt = [];
   contracts.forEach(contract => {
-    contractValues.push(<ContractLink contractHash={contract.hash} />);
+    contractValues.push(<ContractLink contractHash={getID(contract.id)} />);
     nameValues.push(contract.name);
     authorValues.push(contract.author);
     registeredAt.push(
       <TransactionTimeLink
-        transactionHash={contract.transaction_hash}
+        transactionHash={contract.transaction_id}
         blockTime={contract.block_time}
       />,
     );
@@ -96,10 +96,10 @@ const enhance: HOC<*, *> = compose(
   fragmentContainer({
     contracts: graphql`
       fragment ContractTable_contracts on Contract @relay(plural: true) {
-        hash
+        id
         name
         author
-        transaction_hash
+        transaction_id
         block_time
       }
     `,

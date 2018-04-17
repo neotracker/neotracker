@@ -19,17 +19,17 @@ export default (
         TransferModel.query(context.db)
           .context(context.makeQueryContext(span))
           .where('from_address_id', null)
-          .where('to_address_hash', 'ASTin8w3BjRb7nKFwPeR5dfSQYjVKGUJJL')
+          .where('to_address_id', 'ASTin8w3BjRb7nKFwPeR5dfSQYjVKGUJJL')
           .first(),
         AddressModel.query(context.db)
           .context(context.makeQueryContext(span))
-          .where('hash', 'ANvKJaBm2ynGMjd6Y1n2z2TcRnbwVtsaKo')
+          .where('id', 'ANvKJaBm2ynGMjd6Y1n2z2TcRnbwVtsaKo')
           .first(),
       ]);
       if (
         transfer == null ||
         correctedAddress == null ||
-        transfer.transaction_hash !==
+        transfer.transaction_id !==
           '4428f56f61048e504c203c6abb033ffa4ae9a3a992ca86084227d287c0175b8a'
       ) {
         throw new Error('Could not find QLC transfer');
@@ -39,7 +39,6 @@ export default (
         .$query(context.db)
         .context(context.makeQueryContext(span))
         .patch({
-          to_address_hash: correctedAddress.hash,
           to_address_id: correctedAddress.id,
         });
     },

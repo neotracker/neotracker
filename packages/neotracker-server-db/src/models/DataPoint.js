@@ -15,12 +15,23 @@ const DATA_POINT_TYPES = [
   'ANCtoUSD',
 ];
 
-export default class DataPoint extends BaseVisibleModel {
+export default class DataPoint extends BaseVisibleModel<number> {
+  id: number;
+  type: string;
+  time: number;
+  value: string;
+
   static modelName = 'DataPoint';
   static exposeGraphQL: boolean = true;
   static bigIntID = true;
 
   static fieldSchema: FieldSchema = {
+    id: {
+      type: { type: 'id', big: false },
+      required: true,
+      exposeGraphQL: true,
+      auto: true,
+    },
     type: {
       type: {
         type: 'string',

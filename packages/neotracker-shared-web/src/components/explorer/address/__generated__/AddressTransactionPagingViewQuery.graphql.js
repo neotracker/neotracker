@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash f82284e408295b0746864819dfbde248
+ * @relayHash f854700159489de4df6a4ee748f7ac76
  */
 
 /* eslint-disable */
@@ -17,7 +17,7 @@ export type AddressTransactionPagingViewQueryVariables = {|
 |};
 export type AddressTransactionPagingViewQueryResponse = {|
   +address: ?{|
-    +hash: string,
+    +id: string,
     +transactions: {|
       +edges: $ReadOnlyArray<{|
         +node: {|
@@ -41,7 +41,7 @@ query AddressTransactionPagingViewQuery(
   $after: String
 ) {
   address(hash: $hash) {
-    hash
+    id
     transactions(first: $first, after: $after, orderBy: [{name: "transaction.block_time", direction: "desc nulls first"}, {name: "transaction.index", direction: "asc nulls last"}]) {
       edges {
         node {
@@ -54,7 +54,6 @@ query AddressTransactionPagingViewQuery(
         hasNextPage
       }
     }
-    id
   }
 }
 
@@ -63,12 +62,12 @@ fragment TransactionPagingView_transactions on Transaction {
 }
 
 fragment TransactionTable_transactions on Transaction {
-  hash
+  id
   ...TransactionSummary_transaction
 }
 
 fragment TransactionSummary_transaction on Transaction {
-  hash
+  id
   ...TransactionSummaryHeader_transaction
 }
 
@@ -85,7 +84,7 @@ fragment TransactionHeaderBackground_transaction on Transaction {
 
 fragment TransactionTypeAndLink_transaction on Transaction {
   type
-  hash
+  id
 }
 */
 
@@ -121,7 +120,7 @@ v1 = [
 v2 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "hash",
+  "name": "id",
   "args": null,
   "storageKey": null
 },
@@ -178,19 +177,12 @@ v4 = {
       "storageKey": null
     }
   ]
-},
-v5 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "id",
-  "args": null,
-  "storageKey": null
 };
 return {
   "kind": "Request",
   "operationKind": "query",
   "name": "AddressTransactionPagingViewQuery",
-  "id": "21",
+  "id": "20",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -309,21 +301,19 @@ return {
                         "name": "block_time",
                         "args": null,
                         "storageKey": null
-                      },
-                      v5
+                      }
                     ]
                   }
                 ]
               },
               v4
             ]
-          },
-          v5
+          }
         ]
       }
     ]
   }
 };
 })();
-(node/*: any*/).hash = 'fb26642c07362faaa99ac6b85781d899';
+(node/*: any*/).hash = 'f7662983e870c931317ab5dbc452ce35';
 module.exports = node;

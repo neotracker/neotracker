@@ -35,16 +35,16 @@ function TransferItem({
 }: Props): React.Element<*> {
   return (
     <div className={className}>
-      {transfer.from_address_hash == null ? null : (
+      {transfer.from_address_id == null ? null : (
         <AddressLink
-          addressHash={transfer.from_address_hash}
-          highlighted={transfer.from_address_hash === addressHash}
+          addressHash={transfer.from_address_id}
+          highlighted={transfer.from_address_id === addressHash}
         />
       )}
-      {transfer.to_address_hash == null ? null : (
+      {transfer.to_address_id == null ? null : (
         <AddressLink
-          addressHash={transfer.to_address_hash}
-          highlighted={transfer.to_address_hash === addressHash}
+          addressHash={transfer.to_address_id}
+          highlighted={transfer.to_address_id === addressHash}
         />
       )}
       <AssetNameLink asset={transfer.asset} />
@@ -57,8 +57,8 @@ const enhance: HOC<*, *> = compose(
   fragmentContainer({
     transfer: graphql`
       fragment TransferItem_transfer on Transfer {
-        from_address_hash
-        to_address_hash
+        from_address_id
+        to_address_id
         value
         asset {
           ...AssetNameLink_asset

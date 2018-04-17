@@ -11,10 +11,10 @@ import type { ConcreteFragment } from 'relay-runtime';
 import type { FragmentReference } from 'relay-runtime';
 declare export opaque type ContractTable_contracts$ref: FragmentReference;
 export type ContractTable_contracts = $ReadOnlyArray<{|
-  +hash: string,
+  +id: string,
   +name: string,
   +author: string,
-  +transaction_hash: string,
+  +transaction_id: string,
   +block_time: number,
   +$refType: ContractTable_contracts$ref,
 |}>;
@@ -33,7 +33,7 @@ const node/*: ConcreteFragment*/ = {
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "hash",
+      "name": "id",
       "args": null,
       "storageKey": null
     },
@@ -54,7 +54,7 @@ const node/*: ConcreteFragment*/ = {
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "transaction_hash",
+      "name": "transaction_id",
       "args": null,
       "storageKey": null
     },
@@ -67,5 +67,5 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
-(node/*: any*/).hash = '8acc6b69fb2b5537b4128aed412ad643';
+(node/*: any*/).hash = '7e497841ab56b77e6d74378b29a00de1';
 module.exports = node;

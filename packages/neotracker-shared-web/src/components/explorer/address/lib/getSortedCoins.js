@@ -10,15 +10,20 @@ import {
   GAS_COIN_ASSET,
 } from 'neotracker-shared-utils';
 
+import { getID } from '../../../../graphql/relay';
+
 export default (
   coins: $ReadOnlyArray<{
     +asset: {
-      +hash: string,
+      +id: string,
     },
     +value: string,
   }>,
 ) => {
-  let result = _.partition(coins, coin => coin.asset.hash === NEO_ASSET_HASH);
+  let result = _.partition(
+    coins,
+    coin => getID(coin.asset.id) === NEO_ASSET_HASH,
+  );
   let neoCoin = null;
   if (result[0].length > 0) {
     // eslint-disable-next-line
@@ -30,7 +35,10 @@ export default (
     };
   }
 
-  result = _.partition(result[1], coin => coin.asset.hash === GAS_ASSET_HASH);
+  result = _.partition(
+    result[1],
+    coin => getID(coin.asset.id) === GAS_ASSET_HASH,
+  );
   let gasCoin = null;
   if (result[0].length > 0) {
     // eslint-disable-next-line

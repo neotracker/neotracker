@@ -7,7 +7,11 @@ import { sanitizeError } from 'neotracker-shared-utils';
 
 import { TransactionPagingView } from '../transaction';
 
-import { fragmentContainer, queryRenderer } from '../../../graphql/relay';
+import {
+  fragmentContainer,
+  getID,
+  queryRenderer,
+} from '../../../graphql/relay';
 import { getPagingVariables } from '../../../utils';
 
 import { type BlockTransactionPagingView_block } from './__generated__/BlockTransactionPagingView_block.graphql';
@@ -81,7 +85,7 @@ const mapPropsToVariables = ({
   block: BlockTransactionPagingView_block,
   page: number,
 |}) => ({
-  hash: block.hash,
+  hash: getID(block.id),
   ...getPagingVariables(PAGE_SIZE, page),
 });
 
@@ -89,7 +93,7 @@ const enhance: HOC<*, *> = compose(
   fragmentContainer({
     block: graphql`
       fragment BlockTransactionPagingView_block on Block {
-        hash
+        id
       }
     `,
   }),
@@ -104,11 +108,13 @@ const enhance: HOC<*, *> = compose(
         $after: String
       ) {
         block(hash: $hash) {
-          hash
+          id
           transactions(
             first: $first
             after: $after
-            orderBy: [{ name: "transaction.index", direction: "ASC" }]
+            orderBy: [
+              { name: "transaction.index", direction: "asc nulls last" }
+            ]
           ) {
             edges {
               node {

@@ -54,22 +54,22 @@ function TransferTable({
   transfers.forEach(transfer => {
     transferValues.push(<TransferLink transfer={transfer} />);
     fromValues.push(
-      transfer.from_address_hash == null ? (
+      transfer.from_address_id == null ? (
         <div />
       ) : (
         <AddressLink
-          addressHash={transfer.from_address_hash}
-          highlighted={transfer.from_address_hash === addressHash}
+          addressHash={transfer.from_address_id}
+          highlighted={transfer.from_address_id === addressHash}
         />
       ),
     );
     toValues.push(
-      transfer.to_address_hash == null ? (
+      transfer.to_address_id == null ? (
         <div />
       ) : (
         <AddressLink
-          addressHash={transfer.to_address_hash}
-          highlighted={transfer.to_address_hash === addressHash}
+          addressHash={transfer.to_address_id}
+          highlighted={transfer.to_address_id === addressHash}
         />
       ),
     );
@@ -120,8 +120,8 @@ const enhance: HOC<*, *> = compose(
     transfers: graphql`
       fragment TransferTable_transfers on Transfer @relay(plural: true) {
         ...TransferLink_transfer
-        from_address_hash
-        to_address_hash
+        from_address_id
+        to_address_id
         value
         asset {
           ...AssetNameLink_asset

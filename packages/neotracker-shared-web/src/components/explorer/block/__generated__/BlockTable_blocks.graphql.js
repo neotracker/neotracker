@@ -14,7 +14,7 @@ export type BlockTable_blocks = $ReadOnlyArray<{|
   +index: number,
   +time: number,
   +transaction_count: number,
-  +validator_address_hash: ?string,
+  +validator_address_id: ?string,
   +size: number,
   +$refType: BlockTable_blocks$ref,
 |}>;
@@ -54,7 +54,7 @@ const node/*: ConcreteFragment*/ = {
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "validator_address_hash",
+      "name": "validator_address_id",
       "args": null,
       "storageKey": null
     },
@@ -67,5 +67,5 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
-(node/*: any*/).hash = 'ee82c3db13c35ae349c19c63defd8907';
+(node/*: any*/).hash = 'b0c8bcdc10a1297c75827628b8c7072e';
 module.exports = node;

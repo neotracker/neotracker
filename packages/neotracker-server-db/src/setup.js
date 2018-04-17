@@ -6,12 +6,14 @@ import type knex from 'knex';
 import { createTable, setupForCreate } from './lib';
 import models from './models';
 
-// eslint-disable-next-line
+const modelSchemas = {};
+models.forEach(model => {
+  modelSchemas[model.modelSchema.name] = model.modelSchema;
+});
+
+export { modelSchemas };
+
 export const createTables = async (db: knex<*>, monitor: Monitor) => {
-  const modelSchemas = {};
-  models.forEach(model => {
-    modelSchemas[model.modelSchema.name] = model.modelSchema;
-  });
   await setupForCreate(db, monitor);
   for (const model of models) {
     // eslint-disable-next-line

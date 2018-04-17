@@ -79,7 +79,6 @@ export default (queryRenderer(
   graphql`
     query AddressQuery($hash: String!) {
       address(hash: $hash) {
-        hash
         ...AddressView_address
       }
     }

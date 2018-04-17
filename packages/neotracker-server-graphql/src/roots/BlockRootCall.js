@@ -29,6 +29,6 @@ export default class BlockRootCall extends BlockchainRootCall {
       return context.rootLoader.blockIndexLoader.load({ id: index, monitor });
     }
 
-    return context.rootLoader.hashLoaders.block.load({ id: hash, monitor });
+    return context.rootLoader.loaders.block.load({ id: hash, monitor });
   };
 }

@@ -54,10 +54,10 @@ function BlockTable({
     timeValues.push(<BlockTime blockTime={block.time} />);
     transactionsValues.push(formatNumber(block.transaction_count));
     validatorValues.push(
-      block.validator_address_hash == null ? (
+      block.validator_address_id == null ? (
         'Genesis'
       ) : (
-        <AddressLink addressHash={block.validator_address_hash} />
+        <AddressLink addressHash={block.validator_address_id} />
       ),
     );
     sizeValues.push(getBlockSize(block.size));
@@ -101,7 +101,7 @@ const enhance: HOC<*, *> = compose(
         index
         time
         transaction_count
-        validator_address_hash
+        validator_address_id
         size
       }
     `,

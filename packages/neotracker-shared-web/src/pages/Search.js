@@ -13,7 +13,7 @@ import { Error404 } from '../lib/error';
 import { PageError } from '../components/common/error';
 import { PageLoading } from '../components/common/loading';
 
-import { queryRenderer } from '../graphql/relay';
+import { getID, queryRenderer } from '../graphql/relay';
 import * as routes from '../routes';
 
 import { type SearchQueryResponse } from './__generated__/SearchQuery.graphql';
@@ -38,15 +38,15 @@ function Search({ props, error, retry, match }: Props): React.Element<any> {
   } else {
     const { address, asset, block, contract, transaction } = props;
     if (address != null) {
-      element = <Redirect to={routes.makeAddress(address.hash)} />;
+      element = <Redirect to={routes.makeAddress(getID(address.id))} />;
     } else if (asset != null) {
-      element = <Redirect to={routes.makeAsset(asset.hash)} />;
+      element = <Redirect to={routes.makeAsset(getID(asset.id))} />;
     } else if (block != null) {
       element = <Redirect to={routes.makeBlockIndex(block.index)} />;
     } else if (contract != null) {
-      element = <Redirect to={routes.makeContract(contract.hash)} />;
+      element = <Redirect to={routes.makeContract(getID(contract.id))} />;
     } else if (transaction != null) {
-      element = <Redirect to={routes.makeTransaction(transaction.hash)} />;
+      element = <Redirect to={routes.makeTransaction(getID(transaction.id))} />;
     } else {
       try {
         const { value } = match.params;
@@ -87,19 +87,19 @@ export default (queryRenderer(
   graphql`
     query SearchQuery($value: String!, $index: String) {
       address(hash: $value) {
-        hash
+        id
       }
       asset(hash: $value) {
-        hash
+        id
       }
       block(hash: $value, index: $index) {
         index
       }
       contract(hash: $value) {
-        hash
+        id
       }
       transaction(hash: $value) {
-        hash
+        id
       }
     }
   `,

@@ -36,6 +36,7 @@ import {
 } from '../../../redux';
 import { api as walletAPI } from '../../../wallet';
 import { getName } from '../../explorer/asset/lib';
+import { getID } from '../../../graphql/relay';
 
 const styles = (theme: Theme) => ({
   content: {
@@ -63,7 +64,7 @@ type InternalProps = {|
     address: string,
     amount: string,
     asset: {
-      hash: string,
+      id: string,
       symbol: string,
     },
   },
@@ -131,7 +132,7 @@ function SendTransactionDialog({
         <Typography className={classes.inline} variant="body2" component="span">
           {getName(
             confirmTransaction.asset.symbol,
-            confirmTransaction.asset.hash,
+            getID(confirmTransaction.asset.id),
           )}
         </Typography>
         {' to address: '}
@@ -286,7 +287,7 @@ const enhance: HOC<*, *> = compose(
               toAddress: confirmTransaction.address,
               amount: new BigNumber(confirmTransaction.amount),
               assetType: confirmTransaction.asset.type,
-              assetHash: confirmTransaction.asset.hash,
+              assetHash: getID(confirmTransaction.asset.id),
             }),
           {
             name: 'neotracker_wallet_send_transaction',

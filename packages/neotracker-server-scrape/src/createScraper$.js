@@ -114,16 +114,14 @@ export default ({
         fetch: (key: string, monitor: Monitor) =>
           AddressModel.query(rootLoader.db)
             .context(makeQueryContext(monitor))
-            .where('hash', key)
+            .where('id', key)
             .first()
             .execute(),
         create: ({ hash, transactionModel }: AddressSave, monitor: Monitor) =>
           AddressModel.query(rootLoader.db)
             .context(makeQueryContext(monitor))
             .insert({
-              hash,
-              transaction_hash:
-                transactionModel == null ? null : transactionModel.hash,
+              id: hash,
               transaction_id:
                 transactionModel == null ? null : transactionModel.id,
               block_time:
@@ -155,7 +153,7 @@ export default ({
           );
         }
         return {
-          hash: hash == null ? transactionModel.hash : hash,
+          id: hash == null ? transactionModel.id : hash,
           type: asset.type,
           name_raw: JSON.stringify(asset.name),
           symbol:
@@ -163,9 +161,7 @@ export default ({
           amount: asset.amount,
           precision: asset.precision,
           owner: asset.owner,
-          admin_address_hash: adminAddress == null ? null : adminAddress.hash,
           admin_address_id: adminAddress == null ? null : adminAddress.id,
-          transaction_hash: transactionModel.hash,
           transaction_id: transactionModel.id,
           block_time: transactionModel.block_time,
         };
@@ -183,7 +179,7 @@ export default ({
           fetch: (key: string, monitor: Monitor) =>
             AssetModel.query(rootLoader.db)
               .context(makeQueryContext(monitor))
-              .where('hash', key)
+              .where('id', key)
               .first()
               .execute(),
           create: async (save: AssetSave, monitor: Monitor) => {
@@ -197,13 +193,13 @@ export default ({
           },
           getKey: (key: string) => key,
           getKeyFromSave: ({ transactionModel }: AssetSave) =>
-            transactionModel.hash,
+            transactionModel.id,
         }),
         contract: new WriteCache({
           fetch: (key: string, monitor: Monitor) =>
             ContractModel.query(rootLoader.db)
               .context(makeQueryContext(monitor))
-              .where('hash', key)
+              .where('id', key)
               .first()
               .execute(),
           create: async (
@@ -213,7 +209,7 @@ export default ({
             ContractModel.query(rootLoader.db)
               .context(makeQueryContext(monitor))
               .insert({
-                hash: contract.hash,
+                id: contract.hash,
                 script: contract.script,
                 parameters_raw: JSON.stringify(contract.parameters),
                 return_type: contract.returnType,
@@ -223,7 +219,6 @@ export default ({
                 author: contract.author,
                 email: contract.email,
                 description: contract.description,
-                transaction_hash: transactionModel.hash,
                 transaction_id: transactionModel.id,
                 block_time: transactionModel.block_time,
                 block_index: blockModel.index,

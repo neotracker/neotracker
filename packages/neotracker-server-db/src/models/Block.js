@@ -11,16 +11,30 @@ import {
 import BlockchainModel from './BlockchainModel';
 import { type EdgeSchema, type FieldSchema } from '../lib';
 
-export default class Block extends BlockchainModel {
+export default class Block extends BlockchainModel<string> {
+  id: string;
+  size: number;
+  version: number;
+  merkle_root: string;
+  time: number;
+  index: number;
+  nonce: string;
+  validator_address_id: string;
+  next_validator_address_id: string;
+  invocation_script: string;
+  verification_script: string;
+  confirmations: number;
+  transaction_count: number;
+  previous_block_id: string;
+  next_block_id: string;
+  system_fee: string;
+  network_fee: string;
+  aggregated_system_fee: string;
+
   static modelName = 'Block';
   static exposeGraphQL: boolean = true;
   static indices = [
-    {
-      type: 'simple',
-      columnNames: ['hash'],
-      name: 'block_hash',
-      unique: true,
-    },
+    // BlockSearch, Home, run$
     {
       type: 'order',
       columns: [
@@ -36,7 +50,7 @@ export default class Block extends BlockchainModel {
   static bigIntID = true;
 
   static fieldSchema: FieldSchema = {
-    hash: {
+    id: {
       type: HASH_VALIDATOR,
       required: true,
       exposeGraphQL: true,
@@ -71,21 +85,14 @@ export default class Block extends BlockchainModel {
       required: true,
       exposeGraphQL: true,
     },
-    validator_address_hash: {
-      type: ADDRESS_VALIDATOR,
-      exposeGraphQL: true,
-    },
     validator_address_id: {
-      type: { type: 'foreignID', modelType: 'Address' },
-    },
-    next_validator_address_hash: {
       type: ADDRESS_VALIDATOR,
-      required: true,
       exposeGraphQL: true,
     },
     next_validator_address_id: {
-      type: { type: 'foreignID', modelType: 'Address' },
+      type: ADDRESS_VALIDATOR,
       required: true,
+      exposeGraphQL: true,
     },
     invocation_script: {
       type: { type: 'string' },
@@ -112,20 +119,12 @@ export default class Block extends BlockchainModel {
       required: true,
       exposeGraphQL: true,
     },
-    previous_block_hash: {
-      type: HASH_VALIDATOR,
-      exposeGraphQL: true,
-    },
     previous_block_id: {
-      type: { type: 'foreignID', modelType: 'Block' },
-      exposeGraphQL: true,
-    },
-    next_block_hash: {
       type: HASH_VALIDATOR,
       exposeGraphQL: true,
     },
     next_block_id: {
-      type: { type: 'foreignID', modelType: 'Block' },
+      type: HASH_VALIDATOR,
       exposeGraphQL: true,
     },
     system_fee: {

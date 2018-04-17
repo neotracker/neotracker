@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 090f4baad26c4a39d1f5969f799e75a6
+ * @relayHash f6b94d490f962fa8b5805360adbf65e1
  */
 
 /* eslint-disable */
@@ -17,7 +17,7 @@ export type TransactionOutputPagingTableQueryVariables = {|
 |};
 export type TransactionOutputPagingTableQueryResponse = {|
   +transaction: ?{|
-    +hash: string,
+    +id: string,
     +outputs: {|
       +edges: $ReadOnlyArray<{|
         +node: {|
@@ -41,8 +41,8 @@ query TransactionOutputPagingTableQuery(
   $after: String
 ) {
   transaction(hash: $hash) {
-    hash
-    outputs(first: $first, after: $after, orderBy: [{name: "transaction_input_output.id", direction: "ASC NULLS LAST"}]) {
+    id
+    outputs(first: $first, after: $after, orderBy: [{name: "transaction_input_output.output_transaction_index", direction: "ASC NULLS LAST"}]) {
       edges {
         node {
           ...TransactionOutputTable_outputs
@@ -54,17 +54,16 @@ query TransactionOutputPagingTableQuery(
         hasNextPage
       }
     }
-    id
   }
 }
 
 fragment TransactionOutputTable_outputs on TransactionInputOutput {
   ...TransactionInputOutputTable_input_outputs
-  input_transaction_hash
+  input_transaction_id
 }
 
 fragment TransactionInputOutputTable_input_outputs on TransactionInputOutput {
-  address_hash
+  address_id
   value
   asset {
     ...AssetNameLink_asset
@@ -73,7 +72,7 @@ fragment TransactionInputOutputTable_input_outputs on TransactionInputOutput {
 }
 
 fragment AssetNameLink_asset on Asset {
-  hash
+  id
   symbol
 }
 */
@@ -110,7 +109,7 @@ v1 = [
 v2 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "hash",
+  "name": "id",
   "args": null,
   "storageKey": null
 },
@@ -133,7 +132,7 @@ v3 = [
     "value": [
       {
         "direction": "ASC NULLS LAST",
-        "name": "transaction_input_output.id"
+        "name": "transaction_input_output.output_transaction_index"
       }
     ],
     "type": "[OrderByInput!]"
@@ -163,19 +162,12 @@ v4 = {
       "storageKey": null
     }
   ]
-},
-v5 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "id",
-  "args": null,
-  "storageKey": null
 };
 return {
   "kind": "Request",
   "operationKind": "query",
   "name": "TransactionOutputPagingTableQuery",
-  "id": "24",
+  "id": "27",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -283,7 +275,7 @@ return {
                       {
                         "kind": "ScalarField",
                         "alias": null,
-                        "name": "address_hash",
+                        "name": "address_id",
                         "args": null,
                         "storageKey": null
                       },
@@ -310,31 +302,29 @@ return {
                             "name": "symbol",
                             "args": null,
                             "storageKey": null
-                          },
-                          v5
+                          }
                         ]
                       },
                       {
                         "kind": "ScalarField",
                         "alias": null,
-                        "name": "input_transaction_hash",
+                        "name": "input_transaction_id",
                         "args": null,
                         "storageKey": null
                       },
-                      v5
+                      v2
                     ]
                   }
                 ]
               },
               v4
             ]
-          },
-          v5
+          }
         ]
       }
     ]
   }
 };
 })();
-(node/*: any*/).hash = 'e2dc572958aa202f7a22207112671143';
+(node/*: any*/).hash = '11bb465026f113aae00bcf63621a3cd8';
 module.exports = node;

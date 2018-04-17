@@ -3,6 +3,7 @@ import { Model } from 'objection';
 
 import {
   ADDRESS_VALIDATOR,
+  ASSET_HASH_VALIDATOR,
   HASH_VALIDATOR,
   INTEGER_INDEX_VALIDATOR,
   TYPE_INPUT,
@@ -19,79 +20,78 @@ import { type EdgeSchema, type FieldSchema } from '../lib';
 // Always starts as an output
 // May be used as an input in contract (where it subtracts from the owner)
 // or a claim (where it does not subtract from the owner)
-export default class TransactionInputOutput extends BlockchainModel {
+export default class TransactionInputOutput extends BlockchainModel<string> {
+  id: string;
+  type: string;
+  subtype: string;
+  input_transaction_id: string;
+  claim_transaction_id: string;
+  output_transaction_id: string;
+  output_block_index: number;
+  asset_id: string;
+  value: string;
+  address_id: string;
+  claim_value: string;
+
   static modelName = 'TransactionInputOutput';
   static exposeGraphQL: boolean = true;
   static indices = [
+    // TransactionInputPagingTable
     {
-      type: 'simple',
-      columnNames: [
-        'type',
-        'output_transaction_index',
-        'output_transaction_hash',
+      type: 'order',
+      columns: [
+        {
+          name: 'input_transaction_id',
+          order: 'asc nulls last',
+        },
+        {
+          name: 'type',
+          order: 'asc nulls last',
+        },
+        {
+          name: 'output_transaction_index',
+          order: 'asc nulls last',
+        },
       ],
-      name: 'tio_primary_key',
-      unique: true,
+      name: 'tio_input_transaction_id_type_output_transaction_index',
     },
+    // TransactionOutputPagingTable, run$
     {
-      type: 'simple',
-      columnNames: [
-        'type',
-        'output_transaction_index',
-        'output_transaction_hash',
-        'input_transaction_id',
+      type: 'order',
+      columns: [
+        {
+          name: 'output_transaction_id',
+          order: 'asc nulls last',
+        },
+        {
+          name: 'type',
+          order: 'asc nulls last',
+        },
+        {
+          name: 'output_transaction_index',
+          order: 'asc nulls last',
+        },
       ],
-      name: 'tio_type_output_index_hash_id',
+      name: 'tio_output_transaction_id_type_output_transaction_index',
     },
+    // TransactionClaimPagingTable
     {
-      type: 'simple',
-      columnNames: [
-        'type',
-        'output_transaction_index',
-        'output_transaction_id',
+      type: 'order',
+      columns: [
+        {
+          name: 'claim_transaction_id',
+          order: 'asc nulls last',
+        },
+        {
+          name: 'type',
+          order: 'asc nulls last',
+        },
+        {
+          name: 'output_transaction_index',
+          order: 'asc nulls last',
+        },
       ],
-      name: 'tio_type_output_index_id',
-    },
-    {
-      type: 'simple',
-      columnNames: [
-        'type',
-        'output_transaction_index',
-        'output_transaction_hash',
-        'input_transaction_hash',
-      ],
-      name: 'tio_type_output_index_output_hash_input_hash',
-      unique: true,
-    },
-    {
-      type: 'simple',
-      columnNames: ['input_transaction_id', 'type'],
-      name: 'tio_input_transaction_id_type',
-    },
-    {
-      type: 'simple',
-      columnNames: ['output_transaction_id', 'type'],
-      name: 'tio_output_transaction_id_type',
-    },
-    {
-      type: 'simple',
-      columnNames: ['claim_transaction_id', 'type'],
-      name: 'tio_claim_transaction_id_type',
-    },
-    {
-      type: 'simple',
-      columnNames: ['asset_id'],
-      name: 'tio_asset_id_output_transaction',
-    },
-    {
-      type: 'simple',
-      columnNames: ['address_id', 'asset_hash'],
-      name: 'tio_address_id_asset_hash_input_claim_transaction',
-    },
-    {
-      type: 'simple',
-      columnNames: ['address_id', 'asset_id', 'claim_transaction_id'],
-      name: 'tio_address_id_asset_id_claim_transaction_id',
+      name: 'tio_claim_transaction_id_type_output_transaction_index',
     },
   ];
   static bigIntID = true;
@@ -107,11 +107,14 @@ export default class TransactionInputOutput extends BlockchainModel {
         END;
       $txio_update_tables$ LANGUAGE plpgsql;
     `).raw(`
+      DROP TRIGGER IF EXISTS txio_update_tables
+      ON transaction_input_output;
+
       CREATE TRIGGER txio_update_tables AFTER INSERT
       ON transaction_input_output FOR EACH ROW
       WHEN (
         NEW.type = '${TYPE_INPUT}' AND
-        NEW.input_transaction_hash IS NULL AND (
+        NEW.input_transaction_id IS NULL AND (
           NEW.subtype = '${SUBTYPE_ISSUE}' OR
           NEW.subtype = '${SUBTYPE_CLAIM}' OR
           NEW.subtype = '${SUBTYPE_REWARD}'
@@ -121,7 +124,24 @@ export default class TransactionInputOutput extends BlockchainModel {
     `);
   }
 
+  static makeID({
+    outputTransactionHash,
+    outputTransactionIndex,
+    type,
+  }: {|
+    outputTransactionHash: string,
+    outputTransactionIndex: number,
+    type: string,
+  |}): string {
+    return [outputTransactionHash, outputTransactionIndex, type].join('$');
+  }
+
   static fieldSchema: FieldSchema = {
+    id: {
+      type: { type: 'string' },
+      required: true,
+      exposeGraphQL: true,
+    },
     type: {
       type: { type: 'string', enum: [TYPE_INPUT, TYPE_DUPLICATE_CLAIM] },
       required: true,
@@ -141,28 +161,18 @@ export default class TransactionInputOutput extends BlockchainModel {
       required: true,
       exposeGraphQL: true,
     },
-    input_transaction_hash: {
-      type: HASH_VALIDATOR,
-      exposeGraphQL: true,
-    },
     input_transaction_id: {
-      type: { type: 'foreignID', modelType: 'Transaction' },
-    },
-    claim_transaction_hash: {
       type: HASH_VALIDATOR,
       exposeGraphQL: true,
     },
     claim_transaction_id: {
-      type: { type: 'foreignID', modelType: 'Transaction' },
-    },
-    output_transaction_hash: {
       type: HASH_VALIDATOR,
-      required: true,
       exposeGraphQL: true,
     },
     output_transaction_id: {
-      type: { type: 'foreignID', modelType: 'Transaction' },
+      type: HASH_VALIDATOR,
       required: true,
+      exposeGraphQL: true,
     },
     output_transaction_index: {
       type: { type: 'integer', minimum: 0 },
@@ -173,28 +183,20 @@ export default class TransactionInputOutput extends BlockchainModel {
       type: INTEGER_INDEX_VALIDATOR,
       required: true,
     },
-    asset_hash: {
-      type: HASH_VALIDATOR,
+    asset_id: {
+      type: ASSET_HASH_VALIDATOR,
       required: true,
       exposeGraphQL: true,
-    },
-    asset_id: {
-      type: { type: 'foreignID', modelType: 'Asset' },
-      required: true,
     },
     value: {
       type: { type: 'decimal' },
       required: true,
       exposeGraphQL: true,
     },
-    address_hash: {
+    address_id: {
       type: ADDRESS_VALIDATOR,
       required: true,
       exposeGraphQL: true,
-    },
-    address_id: {
-      type: { type: 'foreignID', modelType: 'Address' },
-      required: true,
     },
     claim_value: {
       type: { type: 'decimal' },

@@ -11,7 +11,7 @@ import type { ConcreteFragment } from 'relay-runtime';
 import type { FragmentReference } from 'relay-runtime';
 declare export opaque type AssetAddressPagingView_asset$ref: FragmentReference;
 export type AssetAddressPagingView_asset = {|
-  +hash: string,
+  +id: string,
   +$refType: AssetAddressPagingView_asset$ref,
 |};
 */
@@ -27,11 +27,11 @@ const node/*: ConcreteFragment*/ = {
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "hash",
+      "name": "id",
       "args": null,
       "storageKey": null
     }
   ]
 };
-(node/*: any*/).hash = 'd3d36b5ab18336e49491f4969fdabc38';
+(node/*: any*/).hash = 'c555b39b11659e816a0549cae4e0fb52';
 module.exports = node;

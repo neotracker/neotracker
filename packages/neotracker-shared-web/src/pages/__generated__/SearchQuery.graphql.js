@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 6f653f9542c9026597f4789f25ed3429
+ * @relayHash ab5e6b482724c211d663b774fd736507
  */
 
 /* eslint-disable */
@@ -15,19 +15,19 @@ export type SearchQueryVariables = {|
 |};
 export type SearchQueryResponse = {|
   +address: ?{|
-    +hash: string,
+    +id: string,
   |},
   +asset: ?{|
-    +hash: string,
+    +id: string,
   |},
   +block: ?{|
     +index: number,
   |},
   +contract: ?{|
-    +hash: string,
+    +id: string,
   |},
   +transaction: ?{|
-    +hash: string,
+    +id: string,
   |},
 |};
 */
@@ -39,11 +39,9 @@ query SearchQuery(
   $index: String
 ) {
   address(hash: $value) {
-    hash
     id
   }
   asset(hash: $value) {
-    hash
     id
   }
   block(hash: $value, index: $index) {
@@ -51,11 +49,9 @@ query SearchQuery(
     id
   }
   contract(hash: $value) {
-    hash
     id
   }
   transaction(hash: $value) {
-    hash
     id
   }
 }
@@ -87,14 +83,34 @@ v1 = [
 v2 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "hash",
+  "name": "id",
   "args": null,
   "storageKey": null
 },
 v3 = [
   v2
 ],
-v4 = [
+v4 = {
+  "kind": "LinkedField",
+  "alias": null,
+  "name": "address",
+  "storageKey": null,
+  "args": v1,
+  "concreteType": "Address",
+  "plural": false,
+  "selections": v3
+},
+v5 = {
+  "kind": "LinkedField",
+  "alias": null,
+  "name": "asset",
+  "storageKey": null,
+  "args": v1,
+  "concreteType": "Asset",
+  "plural": false,
+  "selections": v3
+},
+v6 = [
   {
     "kind": "Variable",
     "name": "hash",
@@ -108,29 +124,38 @@ v4 = [
     "type": "String"
   }
 ],
-v5 = {
+v7 = {
   "kind": "ScalarField",
   "alias": null,
   "name": "index",
   "args": null,
   "storageKey": null
 },
-v6 = {
-  "kind": "ScalarField",
+v8 = {
+  "kind": "LinkedField",
   "alias": null,
-  "name": "id",
-  "args": null,
-  "storageKey": null
+  "name": "contract",
+  "storageKey": null,
+  "args": v1,
+  "concreteType": "Contract",
+  "plural": false,
+  "selections": v3
 },
-v7 = [
-  v2,
-  v6
-];
+v9 = {
+  "kind": "LinkedField",
+  "alias": null,
+  "name": "transaction",
+  "storageKey": null,
+  "args": v1,
+  "concreteType": "Transaction",
+  "plural": false,
+  "selections": v3
+};
 return {
   "kind": "Request",
   "operationKind": "query",
   "name": "SearchQuery",
-  "id": "28",
+  "id": "25",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -140,58 +165,22 @@ return {
     "metadata": null,
     "argumentDefinitions": v0,
     "selections": [
-      {
-        "kind": "LinkedField",
-        "alias": null,
-        "name": "address",
-        "storageKey": null,
-        "args": v1,
-        "concreteType": "Address",
-        "plural": false,
-        "selections": v3
-      },
-      {
-        "kind": "LinkedField",
-        "alias": null,
-        "name": "asset",
-        "storageKey": null,
-        "args": v1,
-        "concreteType": "Asset",
-        "plural": false,
-        "selections": v3
-      },
+      v4,
+      v5,
       {
         "kind": "LinkedField",
         "alias": null,
         "name": "block",
         "storageKey": null,
-        "args": v4,
+        "args": v6,
         "concreteType": "Block",
         "plural": false,
         "selections": [
-          v5
+          v7
         ]
       },
-      {
-        "kind": "LinkedField",
-        "alias": null,
-        "name": "contract",
-        "storageKey": null,
-        "args": v1,
-        "concreteType": "Contract",
-        "plural": false,
-        "selections": v3
-      },
-      {
-        "kind": "LinkedField",
-        "alias": null,
-        "name": "transaction",
-        "storageKey": null,
-        "args": v1,
-        "concreteType": "Transaction",
-        "plural": false,
-        "selections": v3
-      }
+      v8,
+      v9
     ]
   },
   "operation": {
@@ -199,62 +188,26 @@ return {
     "name": "SearchQuery",
     "argumentDefinitions": v0,
     "selections": [
-      {
-        "kind": "LinkedField",
-        "alias": null,
-        "name": "address",
-        "storageKey": null,
-        "args": v1,
-        "concreteType": "Address",
-        "plural": false,
-        "selections": v7
-      },
-      {
-        "kind": "LinkedField",
-        "alias": null,
-        "name": "asset",
-        "storageKey": null,
-        "args": v1,
-        "concreteType": "Asset",
-        "plural": false,
-        "selections": v7
-      },
+      v4,
+      v5,
       {
         "kind": "LinkedField",
         "alias": null,
         "name": "block",
         "storageKey": null,
-        "args": v4,
+        "args": v6,
         "concreteType": "Block",
         "plural": false,
         "selections": [
-          v5,
-          v6
+          v7,
+          v2
         ]
       },
-      {
-        "kind": "LinkedField",
-        "alias": null,
-        "name": "contract",
-        "storageKey": null,
-        "args": v1,
-        "concreteType": "Contract",
-        "plural": false,
-        "selections": v7
-      },
-      {
-        "kind": "LinkedField",
-        "alias": null,
-        "name": "transaction",
-        "storageKey": null,
-        "args": v1,
-        "concreteType": "Transaction",
-        "plural": false,
-        "selections": v7
-      }
+      v8,
+      v9
     ]
   }
 };
 })();
-(node/*: any*/).hash = '6d6ec34d77b3a7b9c58f1a1eb05cfa15';
+(node/*: any*/).hash = '67a60cb2cab0ab7643af5a2e195e9dcb';
 module.exports = node;

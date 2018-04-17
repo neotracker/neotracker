@@ -7,7 +7,11 @@ import { sanitizeError } from 'neotracker-shared-utils';
 
 import { TransferPagingView } from '../transfer';
 
-import { fragmentContainer, queryRenderer } from '../../../graphql/relay';
+import {
+  fragmentContainer,
+  getID,
+  queryRenderer,
+} from '../../../graphql/relay';
 import { getPagingVariables } from '../../../utils';
 
 import { type AddressTransferPagingView_address } from './__generated__/AddressTransferPagingView_address.graphql';
@@ -71,7 +75,7 @@ function AddressTransferPagingView({
       hasNextPage={hasNextPage}
       pageSize={PAGE_SIZE}
       onUpdatePage={onUpdatePage}
-      addressHash={address == null ? undefined : address.hash}
+      addressHash={address == null ? undefined : getID(address.id)}
     />
   );
 }
@@ -86,7 +90,7 @@ const mapPropsToVariables = ({
   address == null
     ? null
     : {
-        hash: address.hash,
+        hash: getID(address.id),
         ...getPagingVariables(PAGE_SIZE, page),
       };
 
@@ -94,7 +98,7 @@ const enhance: HOC<*, *> = compose(
   fragmentContainer({
     address: graphql`
       fragment AddressTransferPagingView_address on Address {
-        hash
+        id
       }
     `,
   }),
@@ -109,14 +113,17 @@ const enhance: HOC<*, *> = compose(
         $after: String
       ) {
         address(hash: $hash) {
-          hash
+          id
           transfers(
             first: $first
             after: $after
             orderBy: [
-              { name: "transfer.block_index", direction: "desc" }
-              { name: "transfer.transaction_index", direction: "desc" }
-              { name: "transfer.action_index", direction: "desc" }
+              { name: "transfer.block_index", direction: "desc nulls first" }
+              {
+                name: "transfer.transaction_index"
+                direction: "desc nulls first"
+              }
+              { name: "transfer.action_index", direction: "desc nulls first" }
             ]
           ) {
             edges {

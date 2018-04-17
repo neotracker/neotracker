@@ -17,7 +17,7 @@ export default class AssetRootCall extends BlockchainRootCall {
     context: GraphQLContext,
     info: GraphQLResolveInfo,
   ): Promise<any> =>
-    context.rootLoader.hashLoaders.asset.load({
+    context.rootLoader.loaders.asset.load({
       id: hash,
       monitor: context.getMonitor(info),
     });

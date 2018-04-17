@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 894985b6ff3230518aa4f30767e20fe4
+ * @relayHash 7fcf4c4ec1de906f17c6aad29fb5ff03
  */
 
 /* eslint-disable */
@@ -17,7 +17,7 @@ export type AssetTransferPagingViewQueryVariables = {|
 |};
 export type AssetTransferPagingViewQueryResponse = {|
   +asset: ?{|
-    +hash: string,
+    +id: string,
     +transfers: {|
       +edges: $ReadOnlyArray<{|
         +node: {|
@@ -41,8 +41,8 @@ query AssetTransferPagingViewQuery(
   $after: String
 ) {
   asset(hash: $hash) {
-    hash
-    transfers(first: $first, after: $after, orderBy: [{name: "transfer.block_index", direction: "desc"}, {name: "transfer.transaction_index", direction: "desc"}, {name: "transfer.action_index", direction: "desc"}]) {
+    id
+    transfers(first: $first, after: $after, orderBy: [{name: "transfer.block_index", direction: "desc nulls first"}, {name: "transfer.transaction_index", direction: "desc nulls first"}, {name: "transfer.action_index", direction: "desc nulls first"}]) {
       edges {
         node {
           ...TransferPagingView_transfers
@@ -54,7 +54,6 @@ query AssetTransferPagingViewQuery(
         hasNextPage
       }
     }
-    id
   }
 }
 
@@ -64,8 +63,8 @@ fragment TransferPagingView_transfers on Transfer {
 
 fragment TransferTable_transfers on Transfer {
   ...TransferLink_transfer
-  from_address_hash
-  to_address_hash
+  from_address_id
+  to_address_id
   value
   asset {
     ...AssetNameLink_asset
@@ -75,11 +74,11 @@ fragment TransferTable_transfers on Transfer {
 }
 
 fragment TransferLink_transfer on Transfer {
-  transaction_hash
+  transaction_id
 }
 
 fragment AssetNameLink_asset on Asset {
-  hash
+  id
   symbol
 }
 */
@@ -116,7 +115,7 @@ v1 = [
 v2 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "hash",
+  "name": "id",
   "args": null,
   "storageKey": null
 },
@@ -138,15 +137,15 @@ v3 = [
     "name": "orderBy",
     "value": [
       {
-        "direction": "desc",
+        "direction": "desc nulls first",
         "name": "transfer.block_index"
       },
       {
-        "direction": "desc",
+        "direction": "desc nulls first",
         "name": "transfer.transaction_index"
       },
       {
-        "direction": "desc",
+        "direction": "desc nulls first",
         "name": "transfer.action_index"
       }
     ],
@@ -177,19 +176,12 @@ v4 = {
       "storageKey": null
     }
   ]
-},
-v5 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "id",
-  "args": null,
-  "storageKey": null
 };
 return {
   "kind": "Request",
   "operationKind": "query",
   "name": "AssetTransferPagingViewQuery",
-  "id": "30",
+  "id": "29",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -297,21 +289,21 @@ return {
                       {
                         "kind": "ScalarField",
                         "alias": null,
-                        "name": "transaction_hash",
+                        "name": "transaction_id",
                         "args": null,
                         "storageKey": null
                       },
                       {
                         "kind": "ScalarField",
                         "alias": null,
-                        "name": "from_address_hash",
+                        "name": "from_address_id",
                         "args": null,
                         "storageKey": null
                       },
                       {
                         "kind": "ScalarField",
                         "alias": null,
-                        "name": "to_address_hash",
+                        "name": "to_address_id",
                         "args": null,
                         "storageKey": null
                       },
@@ -338,8 +330,7 @@ return {
                             "name": "symbol",
                             "args": null,
                             "storageKey": null
-                          },
-                          v5
+                          }
                         ]
                       },
                       {
@@ -349,20 +340,19 @@ return {
                         "args": null,
                         "storageKey": null
                       },
-                      v5
+                      v2
                     ]
                   }
                 ]
               },
               v4
             ]
-          },
-          v5
+          }
         ]
       }
     ]
   }
 };
 })();
-(node/*: any*/).hash = 'c749b1e4046146f07fe305b1a3cdbd29';
+(node/*: any*/).hash = '9f288814310d023d79d5184ba7117f94';
 module.exports = node;

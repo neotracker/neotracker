@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 556a4e2254fb10a45a693c22ddeb1094
+ * @relayHash 55b93907dc8acdeb7a5095891c152d42
  */
 
 /* eslint-disable */
@@ -54,11 +54,11 @@ fragment WalletTransfersCard_address on Address {
 }
 
 fragment AddressTransferPagingView_address on Address {
-  hash
+  id
 }
 
 fragment AddressTransactionPagingView_address on Address {
-  hash
+  id
 }
 
 fragment TransferView_address on Address {
@@ -72,10 +72,9 @@ fragment SendTransaction_address on Address {
         value
         asset {
           type
-          hash
+          id
           precision
           symbol
-          id
         }
         id
       }
@@ -105,9 +104,8 @@ fragment AccountViewBase_address on Address {
 fragment CoinTable_coins on Coin {
   value
   asset {
-    hash
-    symbol
     id
+    symbol
   }
 }
 */
@@ -139,13 +137,6 @@ v2 = {
 v3 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "hash",
-  "args": null,
-  "storageKey": null
-},
-v4 = {
-  "kind": "ScalarField",
-  "alias": null,
   "name": "id",
   "args": null,
   "storageKey": null
@@ -154,7 +145,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "MainWalletViewQuery",
-  "id": "101",
+  "id": "22",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -256,7 +247,6 @@ return {
                             "args": null,
                             "storageKey": null
                           },
-                          v4,
                           {
                             "kind": "ScalarField",
                             "alias": null,
@@ -273,7 +263,7 @@ return {
                           }
                         ]
                       },
-                      v4
+                      v3
                     ]
                   }
                 ]
@@ -290,11 +280,10 @@ return {
             "plural": false,
             "selections": [
               v2,
-              v4
+              v3
             ]
           },
-          v3,
-          v4
+          v3
         ]
       }
     ]

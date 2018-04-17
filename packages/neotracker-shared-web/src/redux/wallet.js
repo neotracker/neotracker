@@ -12,7 +12,7 @@ export type State = {
     amount: BigNumber,
     asset: {
       type: AssetType,
-      hash: string,
+      id: string,
       name: $ReadOnlyArray<{
         name: string,
         lang: string,

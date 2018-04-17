@@ -10,50 +10,50 @@ import type { GraphQLContext } from '../types';
 
 import { calculateAddressClaimValue } from '../utils';
 
-export default class Address extends BlockchainModel {
+export default class Address extends BlockchainModel<string> {
+  id: string;
+  transaction_id: string;
+  block_time: number;
+  transaction_count: string;
+  transfer_count: string;
+  last_transaction_id: string;
+  last_transaction_time: number;
+  name: string;
+  name_url: string;
+  verified: boolean;
+
   static modelName = 'Address';
   static get pluralName(): string {
     return 'Addresses';
   }
   static exposeGraphQL: boolean = true;
   static indices = [
-    {
-      type: 'simple',
-      columnNames: ['hash'],
-      name: 'address_hash',
-      unique: true,
-    },
-    {
-      type: 'simple',
-      columnNames: ['name'],
-      name: 'address_name',
-      unique: true,
-    },
+    // AddressSearch
     {
       type: 'order',
       columns: [
+        {
+          name: 'block_time',
+          order: 'DESC NULLS FIRST',
+        },
         {
           name: 'id',
           order: 'DESC NULLS LAST',
         },
       ],
-      name: 'address_desc_id',
+      name: 'address_block_time_id',
     },
   ];
   static bigIntID = true;
 
   static fieldSchema: FieldSchema = {
-    hash: {
+    id: {
       type: ADDRESS_VALIDATOR,
       exposeGraphQL: true,
       required: true,
     },
-    transaction_hash: {
-      type: HASH_VALIDATOR,
-      exposeGraphQL: true,
-    },
     transaction_id: {
-      type: { type: 'foreignID', modelType: 'Transaction' },
+      type: HASH_VALIDATOR,
       exposeGraphQL: true,
     },
     block_time: BLOCK_TIME_COLUMN,
@@ -67,12 +67,8 @@ export default class Address extends BlockchainModel {
       required: true,
       exposeGraphQL: true,
     },
-    last_transaction_hash: {
-      type: HASH_VALIDATOR,
-      exposeGraphQL: true,
-    },
     last_transaction_id: {
-      type: { type: 'foreignID', modelType: 'Transaction' },
+      type: HASH_VALIDATOR,
       exposeGraphQL: true,
     },
     last_transaction_time: {
@@ -93,7 +89,7 @@ export default class Address extends BlockchainModel {
 
         const [asset, value] = await Promise.all([
           context.rootLoader.loaders.asset.load({
-            id: GAS_ASSET_ID,
+            id: (GAS_ASSET_ID: $FlowFixMe),
             monitor: context.getMonitor(info),
           }),
           calculateAddressClaimValue(obj, context, info),

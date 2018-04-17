@@ -12,15 +12,7 @@ import { map, startWith } from 'rxjs/operators';
 import { pubsub } from 'neotracker-server-utils';
 
 import { PROCESSED_NEXT_INDEX } from '../channels';
-import {
-  Address,
-  Asset,
-  Block,
-  Contract,
-  ProcessedIndex,
-  Transaction,
-  loaderModels as models,
-} from '../models';
+import { Block, ProcessedIndex, loaderModels as models } from '../models';
 import {
   type BaseModel,
   type QueryContext,
@@ -30,7 +22,6 @@ import RootLoader, {
   type Loaders,
   type LoadersByField,
   type LoadersByEdge,
-  type HashLoaders,
 } from './RootLoader';
 
 import makeCache from './makeCache';
@@ -41,7 +32,10 @@ export type Options = {|
   cacheEnabled: boolean,
 |};
 
-const getLoaderOptions = (options: Options, model: Class<BaseModel>) =>
+const getLoaderOptions = (
+  options: Options,
+  model: Class<BaseModel<number>> | Class<BaseModel<string>>,
+) =>
   options.cacheEnabled && model.cacheType === 'blockchain'
     ? {
         cacheMap: makeCache({
@@ -86,16 +80,14 @@ const createLoaders = ({
   loaders: Loaders,
   loadersByField: LoadersByField,
   loadersByEdge: LoadersByEdge,
-  hashLoaders: HashLoaders,
   blockIndexLoader: DataLoader<{| id: string, monitor: Monitor |}, ?Block>,
   maxIndexFetcher: { get: () => Promise<string> },
 |} => {
   const loaders = {};
   const loadersByField = {};
   const loadersByEdge = {};
-  const hashLoaders = ({}: $FlowFixMe);
   const addLoaderByField = (
-    model: Class<BaseModel>,
+    model: Class<BaseModel<number>> | Class<BaseModel<string>>,
     fieldName: string,
     loader: DataLoader<*, *>,
   ) => {
@@ -112,7 +104,7 @@ const createLoaders = ({
   };
 
   const addLoaderByEdge = (
-    model: Class<BaseModel>,
+    model: Class<BaseModel<number>> | Class<BaseModel<string>>,
     edgeName: string,
     loader: DataLoader<*, *>,
   ) => {
@@ -124,7 +116,9 @@ const createLoaders = ({
     loadersByEdge[key][edgeName] = loader;
   };
 
-  const addLoader = (model: Class<BaseModel>) => {
+  const addLoader = (
+    model: Class<BaseModel<number>> | Class<BaseModel<string>>,
+  ) => {
     const fieldName = 'id';
     let loader = makeLoader({
       db,
@@ -167,19 +161,6 @@ const createLoaders = ({
     });
   });
 
-  [Address, Asset, Transaction, Block, Contract].forEach(modelClass => {
-    const fieldName = 'hash';
-    let loader = makeLoader({
-      db,
-      modelClass,
-      fieldName,
-      makeQueryContext,
-      options: getLoaderOptions(options, modelClass),
-    });
-    loader = addLoaderByField(modelClass, fieldName, loader);
-    hashLoaders[lcFirst(modelClass.modelSchema.name)] = loader;
-  });
-
   const blockIndexLoader = (addLoaderByField(
     Block,
     'index',
@@ -197,7 +178,6 @@ const createLoaders = ({
     loaders,
     loadersByField,
     loadersByEdge,
-    hashLoaders,
     blockIndexLoader,
     maxIndexFetcher,
   };
@@ -220,7 +200,6 @@ export const createRootLoader = (
     loaders,
     loadersByField,
     loadersByEdge,
-    hashLoaders,
     blockIndexLoader,
     maxIndexFetcher,
   } = createLoaders({ db, options, monitor: rootMonitor, makeQueryContext });
@@ -236,7 +215,6 @@ export const createRootLoader = (
     loaders,
     loadersByField,
     loadersByEdge,
-    hashLoaders,
     blockIndexLoader,
     maxIndexFetcher,
   });

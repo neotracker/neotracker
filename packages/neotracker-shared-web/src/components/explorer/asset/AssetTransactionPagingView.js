@@ -7,7 +7,11 @@ import { sanitizeError } from 'neotracker-shared-utils';
 
 import { TransactionPagingView } from '../transaction';
 
-import { fragmentContainer, queryRenderer } from '../../../graphql/relay';
+import {
+  fragmentContainer,
+  getID,
+  queryRenderer,
+} from '../../../graphql/relay';
 import { getPagingVariables } from '../../../utils';
 
 import { type AssetTransactionPagingView_asset } from './__generated__/AssetTransactionPagingView_asset.graphql';
@@ -81,7 +85,7 @@ const mapPropsToVariables = ({
   asset: AssetTransactionPagingView_asset,
   page: number,
 |}) => ({
-  hash: asset.hash,
+  hash: getID(asset.id),
   ...getPagingVariables(PAGE_SIZE, page),
 });
 
@@ -89,7 +93,7 @@ const enhance: HOC<*, *> = compose(
   fragmentContainer({
     asset: graphql`
       fragment AssetTransactionPagingView_asset on Asset {
-        hash
+        id
       }
     `,
   }),
@@ -104,7 +108,7 @@ const enhance: HOC<*, *> = compose(
         $after: String
       ) {
         asset(hash: $hash) {
-          hash
+          id
           transactions(
             first: $first
             after: $after

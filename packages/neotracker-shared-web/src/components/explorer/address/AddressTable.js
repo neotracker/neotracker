@@ -9,7 +9,7 @@ import { Table } from '../../common/table';
 import { TransactionTimeLink } from '../transaction/lib';
 
 import { formatNumber } from '../../../utils';
-import { fragmentContainer } from '../../../graphql/relay';
+import { fragmentContainer, getID } from '../../../graphql/relay';
 
 import { type AddressTable_addresses } from './__generated__/AddressTable_addresses.graphql';
 
@@ -38,21 +38,21 @@ function AddressTable({
   const transactionsValues = [];
   const coinValues = [];
   addresses.forEach(address => {
-    addressValues.push(<AddressLink addressHash={address.hash} />);
+    addressValues.push(<AddressLink addressHash={getID(address.id)} />);
     createdAtValues.push(
       <TransactionTimeLink
-        transactionHash={address.transaction_hash}
+        transactionHash={address.transaction_id}
         blockTime={address.block_time}
       />,
     );
     lastTransactionValues.push(
       <TransactionTimeLink
-        transactionHash={address.last_transaction_hash}
+        transactionHash={address.last_transaction_id}
         blockTime={address.last_transaction_time}
       />,
     );
     transactionsValues.push(formatNumber(address.transaction_count));
-    coinValues.push(renderCoin(address.hash));
+    coinValues.push(renderCoin(getID(address.id)));
   });
   const columns = [
     {
@@ -95,10 +95,10 @@ const enhance: HOC<*, *> = compose(
   fragmentContainer({
     addresses: graphql`
       fragment AddressTable_addresses on Address @relay(plural: true) {
-        hash
-        transaction_hash
+        id
+        transaction_id
         block_time
-        last_transaction_hash
+        last_transaction_id
         last_transaction_time
         transaction_count
       }

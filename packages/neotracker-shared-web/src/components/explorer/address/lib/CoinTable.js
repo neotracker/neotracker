@@ -100,7 +100,7 @@ const enhance: HOC<*, *> = compose(
       fragment CoinTable_coins on Coin @relay(plural: true) {
         value
         asset {
-          hash
+          id
           symbol
         }
       }

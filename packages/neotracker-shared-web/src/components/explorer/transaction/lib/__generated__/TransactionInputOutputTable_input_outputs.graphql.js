@@ -12,7 +12,7 @@ type AssetNameLink_asset$ref = any;
 import type { FragmentReference } from 'relay-runtime';
 declare export opaque type TransactionInputOutputTable_input_outputs$ref: FragmentReference;
 export type TransactionInputOutputTable_input_outputs = $ReadOnlyArray<{|
-  +address_hash: string,
+  +address_id: string,
   +value: string,
   +asset: {|
     +$fragmentRefs: AssetNameLink_asset$ref,
@@ -34,7 +34,7 @@ const node/*: ConcreteFragment*/ = {
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "address_hash",
+      "name": "address_id",
       "args": null,
       "storageKey": null
     },
@@ -63,5 +63,5 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
-(node/*: any*/).hash = '65fe5fa3d6c88c3f64d38ddc3e2ade84';
+(node/*: any*/).hash = '0fe11ffc0199525fa0b56f21ba91937f';
 module.exports = node;

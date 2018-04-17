@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 555dea01cb6326480bb7c462cabb5c67
+ * @relayHash 55bd95749c95809a010e4e2a5cb64176
  */
 
 /* eslint-disable */
@@ -17,7 +17,7 @@ export type AssetTransactionPagingViewQueryVariables = {|
 |};
 export type AssetTransactionPagingViewQueryResponse = {|
   +asset: ?{|
-    +hash: string,
+    +id: string,
     +transactions: {|
       +edges: $ReadOnlyArray<{|
         +node: {|
@@ -41,7 +41,7 @@ query AssetTransactionPagingViewQuery(
   $after: String
 ) {
   asset(hash: $hash) {
-    hash
+    id
     transactions(first: $first, after: $after, orderBy: [{name: "transaction.block_time", direction: "desc nulls first"}, {name: "transaction.index", direction: "asc nulls last"}]) {
       edges {
         node {
@@ -54,7 +54,6 @@ query AssetTransactionPagingViewQuery(
         hasNextPage
       }
     }
-    id
   }
 }
 
@@ -63,12 +62,12 @@ fragment TransactionPagingView_transactions on Transaction {
 }
 
 fragment TransactionTable_transactions on Transaction {
-  hash
+  id
   ...TransactionSummary_transaction
 }
 
 fragment TransactionSummary_transaction on Transaction {
-  hash
+  id
   ...TransactionSummaryHeader_transaction
 }
 
@@ -85,7 +84,7 @@ fragment TransactionHeaderBackground_transaction on Transaction {
 
 fragment TransactionTypeAndLink_transaction on Transaction {
   type
-  hash
+  id
 }
 */
 
@@ -121,7 +120,7 @@ v1 = [
 v2 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "hash",
+  "name": "id",
   "args": null,
   "storageKey": null
 },
@@ -178,19 +177,12 @@ v4 = {
       "storageKey": null
     }
   ]
-},
-v5 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "id",
-  "args": null,
-  "storageKey": null
 };
 return {
   "kind": "Request",
   "operationKind": "query",
   "name": "AssetTransactionPagingViewQuery",
-  "id": "27",
+  "id": "28",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -309,21 +301,19 @@ return {
                         "name": "block_time",
                         "args": null,
                         "storageKey": null
-                      },
-                      v5
+                      }
                     ]
                   }
                 ]
               },
               v4
             ]
-          },
-          v5
+          }
         ]
       }
     ]
   }
 };
 })();
-(node/*: any*/).hash = '80dd5c9b525105f47162db89b9d05e4c';
+(node/*: any*/).hash = '5c0d1b0d2a628ef39527be8e700ed7ca';
 module.exports = node;

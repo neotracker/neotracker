@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 777d3958fa397402610638b7d93b50c9
+ * @relayHash 382adc5cb8e420effe1371e2ed441f43
  */
 
 /* eslint-disable */
@@ -54,12 +54,12 @@ fragment TransactionPagingView_transactions on Transaction {
 }
 
 fragment TransactionTable_transactions on Transaction {
-  hash
+  id
   ...TransactionSummary_transaction
 }
 
 fragment TransactionSummary_transaction on Transaction {
-  hash
+  id
   ...TransactionSummaryHeader_transaction
 }
 
@@ -76,7 +76,7 @@ fragment TransactionHeaderBackground_transaction on Transaction {
 
 fragment TransactionTypeAndLink_transaction on Transaction {
   type
-  hash
+  id
 }
 */
 
@@ -169,7 +169,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "TransactionSearchQuery",
-  "id": "9",
+  "id": "6",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -255,7 +255,7 @@ return {
                   {
                     "kind": "ScalarField",
                     "alias": null,
-                    "name": "hash",
+                    "name": "id",
                     "args": null,
                     "storageKey": null
                   },
@@ -270,13 +270,6 @@ return {
                     "kind": "ScalarField",
                     "alias": null,
                     "name": "block_time",
-                    "args": null,
-                    "storageKey": null
-                  },
-                  {
-                    "kind": "ScalarField",
-                    "alias": null,
-                    "name": "id",
                     "args": null,
                     "storageKey": null
                   }

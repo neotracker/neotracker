@@ -12,7 +12,7 @@ type TransactionSummary_transaction$ref = any;
 import type { FragmentReference } from 'relay-runtime';
 declare export opaque type TransactionSummaryList_transactions$ref: FragmentReference;
 export type TransactionSummaryList_transactions = $ReadOnlyArray<{|
-  +hash: string,
+  +id: string,
   +$fragmentRefs: TransactionSummary_transaction$ref,
   +$refType: TransactionSummaryList_transactions$ref,
 |}>;
@@ -31,7 +31,7 @@ const node/*: ConcreteFragment*/ = {
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "hash",
+      "name": "id",
       "args": null,
       "storageKey": null
     },
@@ -42,5 +42,5 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
-(node/*: any*/).hash = '303275f345a22ec4157bd2282ec36578';
+(node/*: any*/).hash = '233d8bff4060ca45833bc4ae66b5ece5';
 module.exports = node;

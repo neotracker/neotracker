@@ -402,11 +402,38 @@ export const setupForCreate = async (db: Knex<*>, monitor: Monitor) =>
     )
     .queryContext(makeAllPowerfulQueryContext(monitor));
 
+const getCreateIndex = (index: IndexSchema, tableName: string) => {
+  if (index.type === 'order') {
+    const cols = index.columns
+      .map(col => `${col.name} ${col.order}`)
+      .join(', ');
+    let unique = '';
+    if (index.unique) {
+      unique = 'UNIQUE ';
+    }
+
+    return `
+      CREATE ${unique}INDEX ${index.name} ON ${tableName} (${cols});
+    `;
+  }
+
+  const cols = index.columnNames.map(col => `${col}`).join(', ');
+  let unique = '';
+  if (index.unique) {
+    unique = 'UNIQUE ';
+  }
+
+  return `
+    CREATE ${unique}INDEX ${index.name} ON ${tableName} (${cols});
+  `;
+};
+
 export const createTable = async (
   db: Knex<*>,
   monitor: Monitor,
   modelSchema: ModelSchema,
   modelSchemas: { [modelType: string]: ModelSchema },
+  bare?: boolean,
 ) => {
   const schema = ((db: any).schema: any);
   let executeSchema;
@@ -421,37 +448,29 @@ export const createTable = async (
             addColumn(db, table, fieldName, field, modelSchemas);
           }
         });
-        if (_.isEqual(modelSchema.id, ['id1', 'id2'])) {
-          table.primary(['id1', 'id2']);
-        }
-        modelSchema.indices.forEach(index => {
-          if (index.type === 'simple') {
-            if (index.unique) {
-              table.unique(index.columnNames, index.name);
-            } else {
-              table.index(index.columnNames, index.name);
+        if (!bare) {
+          if (_.isEqual(modelSchema.id, ['id1', 'id2'])) {
+            table.primary(['id1', 'id2']);
+          }
+          modelSchema.indices.forEach(index => {
+            if (index.type === 'simple') {
+              if (index.unique) {
+                table.unique(index.columnNames, index.name);
+              } else {
+                table.index(index.columnNames, index.name);
+              }
             }
+          });
+        }
+      });
+
+      if (!bare) {
+        modelSchema.indices.forEach(index => {
+          if (index.type === 'order') {
+            currentSchema.raw(getCreateIndex(index, modelSchema.tableName));
           }
         });
-      });
-
-      modelSchema.indices.forEach(index => {
-        if (index.type === 'order') {
-          const cols = index.columns
-            .map(col => `${col.name} ${col.order}`)
-            .join(', ');
-          let unique = '';
-          if (index.unique) {
-            unique = 'UNIQUE ';
-          }
-
-          currentSchema.raw(`
-            CREATE ${unique}INDEX ${index.name} ON ${
-            modelSchema.tableName
-          } (${cols});
-          `);
-        }
-      });
+      }
 
       return currentSchema;
     };
@@ -473,11 +492,15 @@ export const createTable = async (
     .hasTable(modelSchema.tableName)
     .queryContext(makeAllPowerfulQueryContext(monitor));
   if (!exists) {
-    await addUpdatedAtTrigger(
-      modelSchema.chainCustomAfter(
-        executeSchema(modelSchema.chainCustomBefore(schema)),
-      ),
-    );
+    if (bare) {
+      await addUpdatedAtTrigger(executeSchema(schema));
+    } else {
+      await addUpdatedAtTrigger(
+        modelSchema.chainCustomAfter(
+          executeSchema(modelSchema.chainCustomBefore(schema)),
+        ),
+      );
+    }
   }
 };
 
@@ -500,4 +523,79 @@ export const dropTable = async (
       )
       .queryContext(makeAllPowerfulQueryContext(monitor));
   }
+};
+
+const EMPTY_DROP_INDICES = 'query string argument of EXECUTE is null';
+
+export const dropIndices = async (
+  db: Knex<*>,
+  monitor: Monitor,
+  tableName: string,
+) => {
+  try {
+    await db
+      .raw(
+        `
+      DO
+      $$BEGIN
+         EXECUTE (
+         SELECT string_agg('ALTER TABLE ${tableName} DROP CONSTRAINT ' || conname, '; ')
+         FROM   pg_constraint
+         WHERE conrelid::regclass::text = '${tableName}'
+         );
+      END$$;
+    `,
+      )
+      .queryContext(makeAllPowerfulQueryContext(monitor));
+  } catch (error) {
+    if (!error.message.includes(EMPTY_DROP_INDICES)) {
+      throw error;
+    }
+  }
+  try {
+    await db
+      .raw(
+        `
+      DO
+      $$BEGIN
+         EXECUTE (
+         SELECT 'DROP INDEX ' || string_agg(indexname, ', ')
+         FROM   pg_indexes
+         WHERE tablename = '${tableName}'
+         );
+      END$$;
+    `,
+      )
+      .queryContext(makeAllPowerfulQueryContext(monitor));
+  } catch (error) {
+    if (!error.message.includes(EMPTY_DROP_INDICES)) {
+      throw error;
+    }
+  }
+};
+
+export const createIndices = async (
+  db: Knex<*>,
+  monitor: Monitor,
+  modelSchema: ModelSchema,
+) => {
+  await Promise.all(
+    modelSchema.indices.map(index =>
+      db
+        .raw(getCreateIndex(index, modelSchema.tableName))
+        .queryContext(makeAllPowerfulQueryContext(monitor)),
+    ),
+  );
+};
+
+export const refreshTriggers = async (
+  db: Knex<*>,
+  monitor: Monitor,
+  modelSchema: ModelSchema,
+) => {
+  await modelSchema
+    .chainCustomAfter(
+      modelSchema.chainCustomBefore(((db: $FlowFixMe).schema: $FlowFixMe)),
+    )
+    .queryContext(makeAllPowerfulQueryContext(monitor));
 };

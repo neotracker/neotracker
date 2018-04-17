@@ -102,12 +102,12 @@ export default (queryRenderer(
         after: $after
         filters: [
           {
-            name: "asset.hash"
+            name: "asset.id"
             operator: "!="
             value: "cb453a56856a236cbae8b8f937db308a15421daada4ba6ce78123b59bfb7253c"
           }
           {
-            name: "asset.hash"
+            name: "asset.id"
             operator: "!="
             value: "6161af8875eb78654e385a33e7334a473a2a0519281d33c06780ff3c8bce15ea"
           }

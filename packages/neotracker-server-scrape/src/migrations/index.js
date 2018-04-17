@@ -1,4 +1,5 @@
 /* @flow */
+import convertIDs from './convertIDs';
 import fixQLC from './fixQLC';
 import fixSkippedTransfers from './fixSkippedTransfers';
 import resyncActions from './resyncActions';
@@ -7,6 +8,7 @@ import updateIndices from './updateIndices';
 import processedNextIndexNotify from './processedNextIndexNotify';
 
 export type MigrationName =
+  | 'convertIDs'
   | 'resyncActions'
   | 'fixQLC-0'
   | 'fixSkippedTransfers-2'
@@ -15,6 +17,7 @@ export type MigrationName =
   | 'processedNextIndexNotify';
 
 export default [
+  ['convertIDs', convertIDs],
   ['resyncActions', resyncActions],
   ['fixQLC-0', fixQLC],
   // NOTE: Fixing skipped transfers requires resyncing transfer coins.

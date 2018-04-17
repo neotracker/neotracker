@@ -6,7 +6,7 @@ import { graphql } from 'react-relay';
 
 import { TransactionSummary } from '../transaction/summary';
 
-import { fragmentContainer } from '../../../graphql/relay';
+import { fragmentContainer, getID } from '../../../graphql/relay';
 
 import { type TransactionTable_transactions } from './__generated__/TransactionTable_transactions.graphql';
 
@@ -33,7 +33,7 @@ function TransactionTable({
     <div className={className}>
       {transactions.map(transaction => (
         <TransactionSummary
-          key={transaction.hash}
+          key={getID(transaction.id)}
           transaction={transaction}
           addressHash={addressHash}
           dense={dense}
@@ -48,7 +48,7 @@ const enhance: HOC<*, *> = compose(
     transactions: graphql`
       fragment TransactionTable_transactions on Transaction
         @relay(plural: true) {
-        hash
+        id
         ...TransactionSummary_transaction
       }
     `,

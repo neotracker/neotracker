@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash ef3f2dd92f1973106180f9bf589c6e23
+ * @relayHash 78cca7bd3f14ab56ee795ad6801cd851
  */
 
 /* eslint-disable */
@@ -17,7 +17,7 @@ export type BlockTransactionPagingViewQueryVariables = {|
 |};
 export type BlockTransactionPagingViewQueryResponse = {|
   +block: ?{|
-    +hash: string,
+    +id: string,
     +transactions: {|
       +edges: $ReadOnlyArray<{|
         +node: {|
@@ -41,8 +41,8 @@ query BlockTransactionPagingViewQuery(
   $after: String
 ) {
   block(hash: $hash) {
-    hash
-    transactions(first: $first, after: $after, orderBy: [{name: "transaction.index", direction: "ASC"}]) {
+    id
+    transactions(first: $first, after: $after, orderBy: [{name: "transaction.index", direction: "asc nulls last"}]) {
       edges {
         node {
           ...TransactionPagingView_transactions
@@ -54,7 +54,6 @@ query BlockTransactionPagingViewQuery(
         hasNextPage
       }
     }
-    id
   }
 }
 
@@ -63,12 +62,12 @@ fragment TransactionPagingView_transactions on Transaction {
 }
 
 fragment TransactionTable_transactions on Transaction {
-  hash
+  id
   ...TransactionSummary_transaction
 }
 
 fragment TransactionSummary_transaction on Transaction {
-  hash
+  id
   ...TransactionSummaryHeader_transaction
 }
 
@@ -85,7 +84,7 @@ fragment TransactionHeaderBackground_transaction on Transaction {
 
 fragment TransactionTypeAndLink_transaction on Transaction {
   type
-  hash
+  id
 }
 */
 
@@ -121,7 +120,7 @@ v1 = [
 v2 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "hash",
+  "name": "id",
   "args": null,
   "storageKey": null
 },
@@ -143,7 +142,7 @@ v3 = [
     "name": "orderBy",
     "value": [
       {
-        "direction": "ASC",
+        "direction": "asc nulls last",
         "name": "transaction.index"
       }
     ],
@@ -174,19 +173,12 @@ v4 = {
       "storageKey": null
     }
   ]
-},
-v5 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "id",
-  "args": null,
-  "storageKey": null
 };
 return {
   "kind": "Request",
   "operationKind": "query",
   "name": "BlockTransactionPagingViewQuery",
-  "id": "1",
+  "id": "8",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -305,21 +297,19 @@ return {
                         "name": "block_time",
                         "args": null,
                         "storageKey": null
-                      },
-                      v5
+                      }
                     ]
                   }
                 ]
               },
               v4
             ]
-          },
-          v5
+          }
         ]
       }
     ]
   }
 };
 })();
-(node/*: any*/).hash = '15f19e9585f35e0cc9f5a79950730f7c';
+(node/*: any*/).hash = '758520037ca311696f22323047e60249';
 module.exports = node;

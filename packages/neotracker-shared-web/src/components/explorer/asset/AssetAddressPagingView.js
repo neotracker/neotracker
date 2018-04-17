@@ -8,7 +8,11 @@ import { sanitizeError } from 'neotracker-shared-utils';
 import { AddressPagingView } from '../address';
 import { Coin } from '../address/lib';
 
-import { fragmentContainer, queryRenderer } from '../../../graphql/relay';
+import {
+  fragmentContainer,
+  getID,
+  queryRenderer,
+} from '../../../graphql/relay';
 import { getPagingVariables } from '../../../utils';
 
 import { type AssetAddressPagingView_asset } from './__generated__/AssetAddressPagingView_asset.graphql';
@@ -63,7 +67,7 @@ function AssetAddressPagingView({
 
   const coinMap = {};
   coins.forEach(coin => {
-    coinMap[coin.address.hash] = coin;
+    coinMap[getID(coin.address.id)] = coin;
   });
 
   return (
@@ -90,7 +94,7 @@ const mapPropsToVariables = ({
   asset: AssetAddressPagingView_asset,
   page: number,
 |}) => ({
-  hash: asset.hash,
+  hash: getID(asset.id),
   ...getPagingVariables(PAGE_SIZE, page),
 });
 
@@ -98,7 +102,7 @@ const enhance: HOC<*, *> = compose(
   fragmentContainer({
     asset: graphql`
       fragment AssetAddressPagingView_asset on Asset {
-        hash
+        id
       }
     `,
   }),
@@ -113,20 +117,20 @@ const enhance: HOC<*, *> = compose(
         $after: String
       ) {
         asset(hash: $hash) {
-          hash
+          id
           coins(
             first: $first
             after: $after
             orderBy: [
-              { name: "coin.value", direction: "DESC" }
-              { name: "coin.id", direction: "DESC" }
+              { name: "coin.value", direction: "desc nulls first" }
+              { name: "coin.id", direction: "desc nulls first" }
             ]
           ) {
             edges {
               node {
                 ...Coin_coin
                 address {
-                  hash
+                  id
                   ...AddressPagingView_addresses
                 }
               }

@@ -264,7 +264,7 @@ const processBlock = async (context: Context, monitor: Monitor, block: Block) =>
             const [transactionModel, references] = await Promise.all([
               TransactionModel.query(context.db)
                 .context(context.makeQueryContext(span))
-                .where('hash', transaction.txid)
+                .where('id', transaction.txid)
                 .first(),
               getReferences(context, span, transaction),
             ]);
@@ -299,23 +299,13 @@ const fixAddress = async (context: Context, monitor: Monitor) =>
         .raw(
           `
         UPDATE address SET
-          last_transaction_hash=a.last_transaction_hash,
           last_transaction_id=a.last_transaction_id,
           last_transaction_time=a.last_transaction_time,
-          transaction_hash=a.transaction_hash,
           transaction_id=a.transaction_id,
           transaction_count=a.transaction_count
         FROM (
           SELECT DISTINCT ON (a.id)
             a.id,
-            FIRST_VALUE(
-              a.transaction_hash
-            ) OVER (
-              PARTITION BY a.id
-              ORDER BY
-                a.block_time DESC,
-                a.transaction_index DESC
-            ) AS last_transaction_hash,
             FIRST_VALUE(
               a.transaction_id
             ) OVER (
@@ -333,14 +323,6 @@ const fixAddress = async (context: Context, monitor: Monitor) =>
                 a.transaction_index DESC
             ) AS last_transaction_time,
             FIRST_VALUE(
-              a.transaction_hash
-            ) OVER (
-              PARTITION BY a.id
-              ORDER BY
-                a.block_time ASC,
-                a.transaction_index ASC
-            ) AS transaction_hash,
-            FIRST_VALUE(
               a.transaction_id
             ) OVER (
               PARTITION BY a.id
@@ -357,7 +339,6 @@ const fixAddress = async (context: Context, monitor: Monitor) =>
           FROM (
             SELECT
               a.id,
-              t.hash AS transaction_hash,
               t.id AS transaction_id,
               t.block_time,
               t.index AS transaction_index
@@ -472,7 +453,7 @@ const processBlocks = async (
 
       nep5Contracts.forEach(([contractModel, contract]) => {
         // eslint-disable-next-line
-        context.nep5Contracts[add0x(contractModel.hash)] = contract;
+        context.nep5Contracts[add0x(contractModel.id)] = contract;
       });
 
       let count = 0;

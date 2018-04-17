@@ -1,14 +1,14 @@
 /* @flow */
 import Base from './Base';
-import type BaseModel from './BaseModel';
+import type BaseModel, { ID } from './BaseModel';
 import { type IndexSchema, type ModelSchema } from './common';
 
-export default class BaseEdge extends Base {
-  id1: number;
-  id2: number;
+export default class BaseEdge<TID1: ID, TID2: ID> extends Base {
+  id1: TID1;
+  id2: TID2;
 
-  static +id1Type: Class<BaseModel>;
-  static +id2Type: Class<BaseModel>;
+  static +id1Type: Class<BaseModel<TID1>>;
+  static +id2Type: Class<BaseModel<TID2>>;
   static +materializedView: ?string = null;
   static indices: Array<IndexSchema> = [];
 
@@ -20,11 +20,11 @@ export default class BaseEdge extends Base {
       id: ['id1', 'id2'],
       fields: {
         id1: {
-          type: { type: 'foreignID', modelType: this.id1Type.modelSchema.name },
+          type: this.id1Type.modelSchema.fields.id.type,
           required: true,
         },
         id2: {
-          type: { type: 'foreignID', modelType: this.id2Type.modelSchema.name },
+          type: this.id2Type.modelSchema.fields.id.type,
           required: true,
         },
       },

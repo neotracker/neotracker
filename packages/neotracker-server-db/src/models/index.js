@@ -9,7 +9,6 @@ import Block from './Block';
 import Coin from './Coin';
 import Contract from './Contract';
 import DataPoint from './DataPoint';
-import GraphQLQuery from './GraphQLQuery';
 import KnownContract from './KnownContract';
 import Migration from './Migration';
 import ProcessedIndex from './ProcessedIndex';
@@ -27,7 +26,6 @@ export { default as Block } from './Block';
 export { default as Coin } from './Coin';
 export { default as Contract } from './Contract';
 export { default as DataPoint } from './DataPoint';
-export { default as GraphQLQuery } from './GraphQLQuery';
 export { default as KnownContract } from './KnownContract';
 export { default as Migration } from './Migration';
 export { default as ProcessedIndex } from './ProcessedIndex';
@@ -43,7 +41,6 @@ export const loaderModels = [
   Coin,
   Contract,
   DataPoint,
-  GraphQLQuery,
   KnownContract,
   Migration,
   ProcessedIndex,
@@ -63,7 +60,6 @@ export default [
   Coin,
   Contract,
   DataPoint,
-  GraphQLQuery,
   KnownContract,
   Migration,
   ProcessedIndex,

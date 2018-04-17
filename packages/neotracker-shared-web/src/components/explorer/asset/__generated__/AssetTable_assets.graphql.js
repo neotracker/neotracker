@@ -15,7 +15,7 @@ export type AssetTable_assets = $ReadOnlyArray<{|
   +type: string,
   +amount: string,
   +issued: string,
-  +transaction_hash: string,
+  +transaction_id: string,
   +block_time: number,
   +address_count: number,
   +transaction_count: number,
@@ -63,7 +63,7 @@ const node/*: ConcreteFragment*/ = {
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "transaction_hash",
+      "name": "transaction_id",
       "args": null,
       "storageKey": null
     },
@@ -90,5 +90,5 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
-(node/*: any*/).hash = 'b235794ee6547d1973c7309861ef7bbf';
+(node/*: any*/).hash = '9737320dd33da9aa4eb965c3dd07a9b2';
 module.exports = node;

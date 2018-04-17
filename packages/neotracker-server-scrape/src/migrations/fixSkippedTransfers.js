@@ -133,7 +133,7 @@ const findActions = async (context: Context, monitor: Monitor) =>
         .whereNull('transfer.action_id')
         .whereIn(
           'action.script_hash',
-          nep5Contracts.map(contract => contract.hash),
+          nep5Contracts.map(contract => contract.id),
         )
         .where('action.block_index', '<=', height);
       span.setData({ 'actions.size': actionModels.length });

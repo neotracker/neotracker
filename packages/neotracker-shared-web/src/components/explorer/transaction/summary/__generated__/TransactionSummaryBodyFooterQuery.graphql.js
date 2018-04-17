@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 11d0b6632b7a28b938c6f73ae3ec5381
+ * @relayHash 9eeebee86e4b799885525753681ad436
  */
 
 /* eslint-disable */
@@ -58,7 +58,6 @@ fragment TransactionEnrollmentSummaryBody_transaction on Transaction {
   ...TransactionOutputPagingTable_transaction
   enrollment {
     address {
-      hash
       id
     }
     id
@@ -110,11 +109,11 @@ fragment TransactionInvocationSummaryBody_transaction on Transaction {
 }
 
 fragment TransactionInputPagingTable_transaction on Transaction {
-  hash
+  id
 }
 
 fragment TransactionOutputPagingTable_transaction on Transaction {
-  hash
+  id
 }
 
 fragment AssetRegistered_asset on Asset {
@@ -126,17 +125,17 @@ fragment ContractPublished_contract on Contract {
 }
 
 fragment ContractNameLink_contract on Contract {
-  hash
+  id
   name
 }
 
 fragment AssetNameLink_asset on Asset {
-  hash
+  id
   symbol
 }
 
 fragment TransactionClaimPagingTable_transaction on Transaction {
-  hash
+  id
 }
 */
 
@@ -160,13 +159,6 @@ v1 = [
 v2 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "hash",
-  "args": null,
-  "storageKey": null
-},
-v3 = {
-  "kind": "ScalarField",
-  "alias": null,
   "name": "id",
   "args": null,
   "storageKey": null
@@ -175,7 +167,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "TransactionSummaryBodyFooterQuery",
-  "id": "31",
+  "id": "1",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -248,11 +240,10 @@ return {
                 "concreteType": "Address",
                 "plural": false,
                 "selections": [
-                  v2,
-                  v3
+                  v2
                 ]
               },
-              v3
+              v2
             ]
           },
           {
@@ -289,8 +280,7 @@ return {
                         "name": "name",
                         "args": null,
                         "storageKey": null
-                      },
-                      v3
+                      }
                     ]
                   }
                 ]
@@ -313,8 +303,7 @@ return {
                 "name": "symbol",
                 "args": null,
                 "storageKey": null
-              },
-              v3
+              }
             ]
           },
           {
@@ -330,8 +319,7 @@ return {
             "name": "system_fee",
             "args": null,
             "storageKey": null
-          },
-          v3
+          }
         ]
       }
     ]

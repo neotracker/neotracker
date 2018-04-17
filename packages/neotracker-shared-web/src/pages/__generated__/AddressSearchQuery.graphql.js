@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 274627584b94d08e50912e433dc0b2c2
+ * @relayHash ebc566fc2c775326c36bf57c95b604d4
  */
 
 /* eslint-disable */
@@ -19,7 +19,7 @@ export type AddressSearchQueryResponse = {|
   +addresses: {|
     +edges: $ReadOnlyArray<{|
       +node: {|
-        +hash: string,
+        +id: string,
         +coins: {|
           +edges: $ReadOnlyArray<{|
             +node: {|
@@ -43,11 +43,11 @@ query AddressSearchQuery(
   $first: Int!
   $after: String
 ) {
-  addresses(orderBy: [{name: "address.id", direction: "desc nulls last"}], first: $first, after: $after) {
+  addresses(orderBy: [{name: "address.block_time", direction: "desc nulls first"}, {name: "address.id", direction: "desc nulls last"}], first: $first, after: $after) {
     edges {
       node {
         ...AddressPagingView_addresses
-        hash
+        id
         coins {
           edges {
             node {
@@ -56,7 +56,6 @@ query AddressSearchQuery(
             }
           }
         }
-        id
       }
     }
     pageInfo {
@@ -72,17 +71,16 @@ fragment AddressPagingView_addresses on Address {
 fragment CoinTable_coins on Coin {
   value
   asset {
-    hash
-    symbol
     id
+    symbol
   }
 }
 
 fragment AddressTable_addresses on Address {
-  hash
-  transaction_hash
+  id
+  transaction_id
   block_time
-  last_transaction_hash
+  last_transaction_id
   last_transaction_time
   transaction_count
 }
@@ -121,6 +119,10 @@ v1 = [
     "name": "orderBy",
     "value": [
       {
+        "direction": "desc nulls first",
+        "name": "address.block_time"
+      },
+      {
         "direction": "desc nulls last",
         "name": "address.id"
       }
@@ -131,7 +133,7 @@ v1 = [
 v2 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "hash",
+  "name": "id",
   "args": null,
   "storageKey": null
 },
@@ -152,19 +154,12 @@ v3 = {
       "storageKey": null
     }
   ]
-},
-v4 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "id",
-  "args": null,
-  "storageKey": null
 };
 return {
   "kind": "Request",
   "operationKind": "query",
   "name": "AddressSearchQuery",
-  "id": "25",
+  "id": "23",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -290,7 +285,7 @@ return {
                   {
                     "kind": "ScalarField",
                     "alias": null,
-                    "name": "transaction_hash",
+                    "name": "transaction_id",
                     "args": null,
                     "storageKey": null
                   },
@@ -304,7 +299,7 @@ return {
                   {
                     "kind": "ScalarField",
                     "alias": null,
-                    "name": "last_transaction_hash",
+                    "name": "last_transaction_id",
                     "args": null,
                     "storageKey": null
                   },
@@ -372,18 +367,16 @@ return {
                                     "name": "symbol",
                                     "args": null,
                                     "storageKey": null
-                                  },
-                                  v4
+                                  }
                                 ]
                               },
-                              v4
+                              v2
                             ]
                           }
                         ]
                       }
                     ]
-                  },
-                  v4
+                  }
                 ]
               }
             ]
@@ -395,5 +388,5 @@ return {
   }
 };
 })();
-(node/*: any*/).hash = '0f29b9f8b6cb4b7966b689768526779f';
+(node/*: any*/).hash = '333ec241a076d27a42437e8e51aa3e30';
 module.exports = node;

@@ -6,7 +6,7 @@ import { graphql } from 'react-relay';
 
 import { Link } from '../../../../lib/link';
 
-import { fragmentContainer } from '../../../../graphql/relay';
+import { fragmentContainer, getID } from '../../../../graphql/relay';
 import * as routes from '../../../../routes';
 
 import { type ContractNameLink_contract } from './__generated__/ContractNameLink_contract.graphql';
@@ -27,7 +27,7 @@ function ContractNameLink({ contract, className }: Props): React.Element<*> {
     <Link
       className={className}
       variant="body1"
-      path={routes.makeContract(contract.hash)}
+      path={routes.makeContract(getID(contract.id))}
       title={contract.name}
     />
   );
@@ -37,7 +37,7 @@ const enhance: HOC<*, *> = compose(
   fragmentContainer({
     contract: graphql`
       fragment ContractNameLink_contract on Contract {
-        hash
+        id
         name
       }
     `,

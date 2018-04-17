@@ -10,7 +10,7 @@ import { PageView } from '../../common/view';
 import { TransactionTimeLink } from '../transaction/lib';
 
 import { formatNumber } from '../../../utils';
-import { fragmentContainer } from '../../../graphql/relay';
+import { fragmentContainer, getID } from '../../../graphql/relay';
 import { getName } from '../asset/lib';
 import * as routes from '../../../routes';
 
@@ -34,23 +34,23 @@ function AssetView({ asset, className }: Props): React.Element<*> {
     supply = formatNumber(asset.issued);
   }
   const columns = [
-    ['Hash', asset.hash],
+    ['Hash', getID(asset.id)],
     ['Type', asset.type],
-    ['Name', getName(asset.name, asset.hash)],
-    ['Symbol', getName(asset.symbol, asset.hash)],
+    ['Name', getName(asset.name, getID(asset.id))],
+    ['Symbol', getName(asset.symbol, getID(asset.id))],
     ['Supply', supply],
-    asset.hash === GAS_ASSET_HASH
+    getID(asset.id) === GAS_ASSET_HASH
       ? ['Available', formatNumber(asset.available)]
       : null,
     ['Issued', formatNumber(asset.issued)],
     ['Precision', formatNumber(asset.precision)],
-    asset.admin_address_hash != null
-      ? ['Owner', <AddressLink addressHash={asset.admin_address_hash} />]
+    asset.admin_address_id != null
+      ? ['Owner', <AddressLink addressHash={asset.admin_address_id} />]
       : null,
     [
       'Created',
       <TransactionTimeLink
-        transactionHash={asset.transaction_hash}
+        transactionHash={asset.transaction_id}
         blockTime={asset.block_time}
       />,
     ],
@@ -64,7 +64,7 @@ function AssetView({ asset, className }: Props): React.Element<*> {
   return (
     <PageView
       className={className}
-      id={asset.hash}
+      id={getID(asset.id)}
       title="Asset"
       name="Asset"
       pluralName="Assets"
@@ -79,8 +79,8 @@ const enhance: HOC<*, *> = compose(
   fragmentContainer({
     asset: graphql`
       fragment AssetView_asset on Asset {
-        hash
-        transaction_hash
+        id
+        transaction_id
         type
         symbol
         name {
@@ -91,7 +91,7 @@ const enhance: HOC<*, *> = compose(
         issued
         available
         precision
-        admin_address_hash
+        admin_address_id
         block_time
         transaction_count
         address_count

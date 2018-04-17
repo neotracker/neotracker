@@ -10,7 +10,7 @@ import { PageView } from '../../common/view';
 import { WalletPageUpsell } from '../../wallet/upsell';
 
 import { formatNumber } from '../../../utils';
-import { fragmentContainer } from '../../../graphql/relay';
+import { fragmentContainer, getID } from '../../../graphql/relay';
 import {
   getBackgroundClassName,
   styles as bgStyles,
@@ -63,7 +63,7 @@ function TransactionView({
   classes,
 }: Props): React.Element<*> {
   const columns = [
-    ['Hash', transaction.hash],
+    ['Hash', getID(transaction.id)],
     ['Time', <BlockTime blockTime={transaction.block_time} />],
     ['Network Fee', `${formatNumber(transaction.network_fee)} GAS`],
     ['System Fee', `${formatNumber(transaction.system_fee)} GAS`],
@@ -82,7 +82,7 @@ function TransactionView({
   return (
     <PageView
       className={className}
-      id={transaction.hash}
+      id={getID(transaction.id)}
       title={getTitle((transaction.type: any))}
       name="Transaction"
       pluralName="Transactions"
@@ -113,7 +113,7 @@ const enhance: HOC<*, *> = compose(
       fragment TransactionView_transaction on Transaction {
         ...TransactionSummaryBody_transaction
         type
-        hash
+        id
         network_fee
         system_fee
         size

@@ -9,39 +9,32 @@ import {
 import BlockchainModel from './BlockchainModel';
 import { type EdgeSchema, type FieldSchema } from '../lib';
 
-export default class Coin extends BlockchainModel {
+export default class Coin extends BlockchainModel<string> {
+  id: string;
+  address_id: string;
+  asset_id: string;
+  value: string;
+  block_index: number;
+  transaction_index: number;
+  action_index: number;
+
   static modelName = 'Coin';
   static indices = [
-    {
-      type: 'simple',
-      columnNames: ['address_id', 'asset_id'],
-      name: 'coin_primary',
-      unique: true,
-    },
-    {
-      type: 'simple',
-      columnNames: ['asset_id'],
-      name: 'coin_asset',
-    },
-    {
-      type: 'simple',
-      columnNames: ['value', 'id'],
-      name: 'coin_value_id',
-    },
+    // AssetAddressPagingView
     {
       type: 'order',
       columns: [
         {
           name: 'asset_id',
-          order: 'desc',
+          order: 'asc nulls last',
         },
         {
           name: 'value',
-          order: 'desc',
+          order: 'desc nulls first',
         },
         {
           name: 'id',
-          order: 'desc',
+          order: 'desc nulls first',
         },
       ],
       name: 'coin_asset_value_id',
@@ -60,30 +53,38 @@ export default class Coin extends BlockchainModel {
         END;
       $coin_update_tables$ LANGUAGE plpgsql;
     `).raw(`
+      DROP TRIGGER IF EXISTS coin_update_tables
+      ON coin;
+
       CREATE TRIGGER coin_update_tables AFTER INSERT
       ON coin FOR EACH ROW EXECUTE PROCEDURE
       coin_update_tables()
     `);
   }
 
+  static makeID({
+    addressHash,
+    assetHash,
+  }: {|
+    addressHash: string,
+    assetHash: string,
+  |}): string {
+    return [addressHash, assetHash].join('$');
+  }
+
   static fieldSchema: FieldSchema = {
-    address_hash: {
-      type: ADDRESS_VALIDATOR,
+    id: {
+      type: { type: 'string' },
       required: true,
       exposeGraphQL: true,
     },
     address_id: {
-      type: { type: 'foreignID', modelType: 'Address' },
-      required: true,
-      exposeGraphQL: true,
-    },
-    asset_hash: {
-      type: ASSET_HASH_VALIDATOR,
+      type: ADDRESS_VALIDATOR,
       required: true,
       exposeGraphQL: true,
     },
     asset_id: {
-      type: { type: 'foreignID', modelType: 'Asset' },
+      type: ASSET_HASH_VALIDATOR,
       required: true,
       exposeGraphQL: true,
     },

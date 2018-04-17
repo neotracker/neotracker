@@ -113,8 +113,8 @@ function TransactionInputOutputTable({
     addressLinks.push(
       <div key={idx} className={classNames(classes.margin, classes.row)}>
         <AddressLink
-          addressHash={inputOutput.address_hash}
-          highlighted={inputOutput.address_hash === addressHash}
+          addressHash={inputOutput.address_id}
+          highlighted={inputOutput.address_id === addressHash}
         />
       </div>,
     );
@@ -182,7 +182,7 @@ const enhance: HOC<*, *> = compose(
     input_outputs: graphql`
       fragment TransactionInputOutputTable_input_outputs on TransactionInputOutput
         @relay(plural: true) {
-        address_hash
+        address_id
         value
         asset {
           ...AssetNameLink_asset

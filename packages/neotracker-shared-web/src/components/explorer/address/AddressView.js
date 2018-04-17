@@ -73,7 +73,7 @@ function AddressView({
     columns.push([
       'Created',
       <TransactionTimeLink
-        transactionHash={address.transaction_hash}
+        transactionHash={address.transaction_id}
         blockTime={address.block_time}
       />,
     ]);
@@ -109,8 +109,8 @@ const enhance: HOC<*, *> = compose(
     address: graphql`
       fragment AddressView_address on Address {
         ...AddressViewExtra_address
-        hash
-        transaction_hash
+        id
+        transaction_id
         block_time
         transaction_count
         transfer_count
@@ -120,7 +120,7 @@ const enhance: HOC<*, *> = compose(
               ...CoinTable_coins
               value
               asset {
-                hash
+                id
                 symbol
               }
             }

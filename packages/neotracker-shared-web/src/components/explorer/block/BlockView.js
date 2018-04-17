@@ -9,7 +9,7 @@ import { BlockHashLink, BlockTime, getBlockSize } from '../block/lib';
 import { PageView } from '../../common/view';
 
 import { formatNumber } from '../../../utils';
-import { fragmentContainer } from '../../../graphql/relay';
+import { fragmentContainer, getID } from '../../../graphql/relay';
 import * as routes from '../../../routes';
 
 import { type BlockView_block } from './__generated__/BlockView_block.graphql';
@@ -28,17 +28,14 @@ type Props = {|
 |};
 function BlockView({ block, className }: Props): React.Element<*> {
   const columns = [
-    ['Hash', block.hash],
+    ['Hash', getID(block.id)],
     ['Index', formatNumber(block.index)],
     ['Time', <BlockTime blockTime={block.time} />],
   ];
-  if (block.validator_address_hash != null) {
+  if (block.validator_address_id != null) {
     columns.push(
       ...[
-        [
-          'Validator',
-          <AddressLink addressHash={block.validator_address_hash} />,
-        ],
+        ['Validator', <AddressLink addressHash={block.validator_address_id} />],
       ],
     );
   }
@@ -52,24 +49,24 @@ function BlockView({ block, className }: Props): React.Element<*> {
     ],
   );
 
-  if (block.previous_block_hash != null) {
+  if (block.previous_block_id != null) {
     columns.push([
       'Previous Block',
-      <BlockHashLink blockHash={block.previous_block_hash} />,
+      <BlockHashLink blockHash={block.previous_block_id} />,
     ]);
   }
 
-  if (block.next_block_hash != null) {
+  if (block.next_block_id != null) {
     columns.push([
       'Next Block',
-      <BlockHashLink blockHash={block.next_block_hash} />,
+      <BlockHashLink blockHash={block.next_block_id} />,
     ]);
   }
 
   return (
     <PageView
       className={className}
-      id={block.hash}
+      id={getID(block.id)}
       title="Block"
       name="Block"
       pluralName="Blocks"
@@ -84,17 +81,17 @@ const enhance: HOC<*, *> = compose(
   fragmentContainer({
     block: graphql`
       fragment BlockView_block on Block {
-        hash
+        id
         index
         confirmations
         size
         version
         time
-        previous_block_hash
-        next_block_hash
+        previous_block_id
+        next_block_id
         merkle_root
         transaction_count
-        validator_address_hash
+        validator_address_id
         ...BlockViewExtra_block
       }
     `,
