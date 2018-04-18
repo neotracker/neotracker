@@ -128,9 +128,9 @@ const findActions = async (context: Context, monitor: Monitor) =>
 
       const actionModels = await ActionModel.query(context.db)
         .context(context.makeQueryContext(span))
-        .leftOuterJoin('transfer', 'action.id', 'transfer.action_id')
+        .leftOuterJoin('transfer', 'action.id', 'transfer.id')
         .where('action.args_raw', 'like', '%7472616e73666572%')
-        .whereNull('transfer.action_id')
+        .whereNull('transfer.id')
         .whereIn(
           'action.script_hash',
           nep5Contracts.map(contract => contract.id),
