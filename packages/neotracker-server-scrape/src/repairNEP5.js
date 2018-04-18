@@ -91,6 +91,7 @@ const repairAssetSupply = async (
   await context.asset.refresh(assetHash, monitor);
 };
 
+// eslint-disable-next-line
 const repairSupply = async (context: Context, monitor: Monitor) => {
   await Promise.all(
     entries(context.nep5Contracts).map(([assetHash0x, contract]) =>
@@ -102,7 +103,7 @@ const repairSupply = async (context: Context, monitor: Monitor) => {
 const repair = async (context: Context, monitor: Monitor) => {
   await Promise.all([
     repairCoins(context, monitor),
-    repairSupply(context, monitor),
+    // repairSupply(context, monitor),
   ]);
 };
 
