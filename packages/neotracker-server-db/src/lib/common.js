@@ -413,7 +413,9 @@ const getCreateIndex = (index: IndexSchema, tableName: string) => {
     }
 
     return `
-      CREATE ${unique}INDEX ${index.name} ON ${tableName} (${cols});
+      CREATE ${unique}INDEX IF NOT EXISTS ${
+      index.name
+    } ON ${tableName} (${cols});
     `;
   }
 
@@ -424,7 +426,7 @@ const getCreateIndex = (index: IndexSchema, tableName: string) => {
   }
 
   return `
-    CREATE ${unique}INDEX ${index.name} ON ${tableName} (${cols});
+    CREATE ${unique}INDEX IF NOT EXISTS ${index.name} ON ${tableName} (${cols});
   `;
 };
 

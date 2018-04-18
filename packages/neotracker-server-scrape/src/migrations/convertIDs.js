@@ -74,7 +74,17 @@ const handleConvert = async (
     await dropIndices(context.db, monitor, model.modelSchema.tableName);
   }
 
-  await convert();
+  const convertName = `${model.modelSchema.name}-convert`;
+  if (!checkpoint.has(convertName)) {
+    await convert();
+    await addCheckpoint(
+      context,
+      monitor,
+      checkpointName,
+      checkpoint,
+      convertName,
+    );
+  }
 
   await createIndices(context.db, monitor, model.modelSchema);
   await refreshTriggers(context.db, monitor, model.modelSchema);
