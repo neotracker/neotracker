@@ -85,7 +85,7 @@ const repairAssetSupply = async (
   const issued = await contract.totalSupply(monitor);
   await AssetModel.query(context.db)
     .context(context.makeQueryContext(monitor))
-    .patch({ issued })
+    .patch({ issued: issued.toString() })
     .where('id', assetHash);
 
   await context.asset.refresh(assetHash, monitor);
