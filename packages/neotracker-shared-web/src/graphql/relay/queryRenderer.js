@@ -237,11 +237,11 @@ class ReactRelayQueryRenderer extends React.Component<Props, State> {
       prevQuery: props.query,
       queryFetcher,
       retryCallbacks,
-      ...fetchQueryAndComputeStateFromProps(
+      ...(fetchQueryAndComputeStateFromProps(
         props,
         queryFetcher,
         retryCallbacks,
-      ),
+      ): $FlowFixMe),
       lastProps: null,
     };
   }
@@ -259,11 +259,11 @@ class ReactRelayQueryRenderer extends React.Component<Props, State> {
         prevQuery: nextProps.query,
         prevPropsEnvironment: nextProps.environment,
         prevPropsVariables: nextProps.variables,
-        ...fetchQueryAndComputeStateFromProps(
+        ...(fetchQueryAndComputeStateFromProps(
           nextProps,
           prevState.queryFetcher,
           prevState.retryCallbacks,
-        ),
+        ): $FlowFixMe),
       });
     }
 

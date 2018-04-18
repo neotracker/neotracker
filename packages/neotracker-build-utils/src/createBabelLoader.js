@@ -55,7 +55,7 @@ export default ({
     /react-redux/,
   ];
   if (fast) {
-    exclude = exclude.concat([/node_modules/]);
+    exclude = (exclude.concat([/node_modules/]): Array<RegExp>);
   }
   return {
     test: /\.m?jsx?$/,
@@ -67,8 +67,8 @@ export default ({
       options: {
         cacheDirectory: true,
         babelrc: false,
-        presets: (presets || []).concat(getPresets({ type })),
-        plugins: (plugins || []).concat(getPlugins({ type })),
+        presets: ((presets || []).concat(getPresets({ type })): Array<any>),
+        plugins: ((plugins || []).concat(getPlugins({ type })): Array<any>),
       },
     },
   };

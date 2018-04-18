@@ -19,7 +19,7 @@ import { Button, Typography, withStyles } from '../../../lib/base';
 const styles = (theme: Theme) => ({
   script: {
     backgroundColor: theme.palette.grey[200],
-    ...theme.custom.code.text,
+    ...(theme.custom.code.text: $FlowFixMe),
     maxHeight: 400,
     maxWidth: '100%',
     resize: 'vertical',

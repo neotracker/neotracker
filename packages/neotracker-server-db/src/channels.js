@@ -12,11 +12,11 @@ export const PROCESSED_NEXT_INDEX = 'processed_next_index';
 export type Options = {|
   intervalMS: number,
   db: {
-    connection: {
+    connection: {|
       user?: string,
       database?: string,
       password?: string,
-    },
+    |},
   },
 |};
 
