@@ -25,6 +25,13 @@ import type { Monitor } from '@neo-one/monitor';
 
 import { type Context } from '../types';
 
+type ConvertOptions = {|
+  context: Context,
+  monitor: Monitor,
+  checkpointName: string,
+  checkpoint: Set<string>,
+|};
+
 const runRaw = async (
   context: Context,
   monitor: Monitor,
@@ -33,6 +40,21 @@ const runRaw = async (
   await context.db
     .raw(statement)
     .queryContext(context.makeQueryContext(monitor));
+};
+
+const addCheckpoint = async (
+  context: Context,
+  monitor: Monitor,
+  checkpointName: string,
+  checkpoint: Set<string>,
+  name: string,
+) => {
+  checkpoint.add(name);
+  await context.migrationHandler.checkpoint(
+    checkpointName,
+    JSON.stringify([...checkpoint]),
+    monitor,
+  );
 };
 
 const handleConvert = async (
@@ -57,11 +79,12 @@ const handleConvert = async (
   await createIndices(context.db, monitor, model.modelSchema);
   await refreshTriggers(context.db, monitor, model.modelSchema);
 
-  checkpoint.add(model.modelSchema.name);
-  await context.migrationHandler.checkpoint(
-    checkpointName,
-    JSON.stringify([...checkpoint]),
+  await addCheckpoint(
+    context,
     monitor,
+    checkpointName,
+    checkpoint,
+    model.modelSchema.name,
   );
 };
 
@@ -69,34 +92,54 @@ const handleConvertEdge = async (
   context: Context,
   monitor: Monitor,
   model: Class<BaseEdge<*, *>>,
-  id1Type: string,
-  id2Type: string,
+  checkpointName: string,
+  checkpoint: Set<string>,
   convert: () => Promise<void>,
 ) => {
-  await runRaw(
-    context,
-    monitor,
-    `
-    ALTER TABLE ${model.tableName} RENAME TO ${model.tableName}_old;
-  `,
-  );
+  const alterName = `${model.modelSchema.name}-alter-edge`;
+  if (!checkpoint.has(alterName)) {
+    await runRaw(
+      context,
+      monitor,
+      `
+      ALTER TABLE ${model.tableName} RENAME TO ${model.tableName}_old;
+    `,
+    );
+    await addCheckpoint(
+      context,
+      monitor,
+      checkpointName,
+      checkpoint,
+      alterName,
+    );
+  }
   await createTable(context.db, monitor, model.modelSchema, modelSchemas, true);
 
-  await convert();
+  const convertName = `${model.modelSchema.name}-convert-edge`;
+  if (!checkpoint.has(convertName)) {
+    await convert();
+    await addCheckpoint(
+      context,
+      monitor,
+      checkpointName,
+      checkpoint,
+      convertName,
+    );
+  }
 
   await runRaw(
     context,
     monitor,
     `
-    DROP TABLE ${model.tableName}_old;
+    DROP TABLE IF EXISTS ${model.tableName}_old;
   `,
   );
 };
 
-const convertAction = async (
-  context: Context,
-  monitor: Monitor,
-): Promise<void> => {
+const convertAction = async ({
+  context,
+  monitor,
+}: ConvertOptions): Promise<void> => {
   await runRaw(
     context,
     monitor,
@@ -128,10 +171,10 @@ const convertAction = async (
   );
 };
 
-const convertAddress = async (
-  context: Context,
-  monitor: Monitor,
-): Promise<void> => {
+const convertAddress = async ({
+  context,
+  monitor,
+}: ConvertOptions): Promise<void> => {
   await runRaw(
     context,
     monitor,
@@ -147,10 +190,10 @@ const convertAddress = async (
   );
 };
 
-const convertAsset = async (
-  context: Context,
-  monitor: Monitor,
-): Promise<void> => {
+const convertAsset = async ({
+  context,
+  monitor,
+}: ConvertOptions): Promise<void> => {
   await runRaw(
     context,
     monitor,
@@ -166,10 +209,10 @@ const convertAsset = async (
   );
 };
 
-const convertBlock = async (
-  context: Context,
-  monitor: Monitor,
-): Promise<void> => {
+const convertBlock = async ({
+  context,
+  monitor,
+}: ConvertOptions): Promise<void> => {
   await runRaw(
     context,
     monitor,
@@ -189,10 +232,10 @@ const convertBlock = async (
   );
 };
 
-const convertCoin = async (
-  context: Context,
-  monitor: Monitor,
-): Promise<void> => {
+const convertCoin = async ({
+  context,
+  monitor,
+}: ConvertOptions): Promise<void> => {
   await runRaw(
     context,
     monitor,
@@ -207,10 +250,10 @@ const convertCoin = async (
   );
 };
 
-const convertContract = async (
-  context: Context,
-  monitor: Monitor,
-): Promise<void> => {
+const convertContract = async ({
+  context,
+  monitor,
+}: ConvertOptions): Promise<void> => {
   await runRaw(
     context,
     monitor,
@@ -224,10 +267,10 @@ const convertContract = async (
   );
 };
 
-const convertKnownContract = async (
-  context: Context,
-  monitor: Monitor,
-): Promise<void> => {
+const convertKnownContract = async ({
+  context,
+  monitor,
+}: ConvertOptions): Promise<void> => {
   await runRaw(
     context,
     monitor,
@@ -239,10 +282,10 @@ const convertKnownContract = async (
   );
 };
 
-const convertTransaction = async (
-  context: Context,
-  monitor: Monitor,
-): Promise<void> => {
+const convertTransaction = async ({
+  context,
+  monitor,
+}: ConvertOptions): Promise<void> => {
   await runRaw(
     context,
     monitor,
@@ -256,10 +299,10 @@ const convertTransaction = async (
   );
 };
 
-const convertTransactionInputOutput = async (
-  context: Context,
-  monitor: Monitor,
-): Promise<void> => {
+const convertTransactionInputOutput = async ({
+  context,
+  monitor,
+}: ConvertOptions): Promise<void> => {
   await runRaw(
     context,
     monitor,
@@ -281,10 +324,10 @@ const convertTransactionInputOutput = async (
   );
 };
 
-const convertTransfer = async (
-  context: Context,
-  monitor: Monitor,
-): Promise<void> => {
+const convertTransfer = async ({
+  context,
+  monitor,
+}: ConvertOptions): Promise<void> => {
   await runRaw(
     context,
     monitor,
@@ -316,16 +359,18 @@ const convertTransfer = async (
   );
 };
 
-const convertAddressToTransaction = async (
-  context: Context,
-  monitor: Monitor,
-): Promise<void> => {
+const convertAddressToTransaction = async ({
+  context,
+  monitor,
+  checkpointName,
+  checkpoint,
+}: ConvertOptions): Promise<void> => {
   await handleConvertEdge(
     context,
     monitor,
     AddressToTransactionModel,
-    'varchar(34)',
-    'varchar(64)',
+    checkpointName,
+    checkpoint,
     async () => {
       await runRaw(
         context,
@@ -344,16 +389,18 @@ const convertAddressToTransaction = async (
   );
 };
 
-const convertAddressToTransfer = async (
-  context: Context,
-  monitor: Monitor,
-): Promise<void> => {
+const convertAddressToTransfer = async ({
+  context,
+  monitor,
+  checkpointName,
+  checkpoint,
+}: ConvertOptions): Promise<void> => {
   await handleConvertEdge(
     context,
     monitor,
     AddressToTransferModel,
-    'varchar(34)',
-    'varchar(255)',
+    checkpointName,
+    checkpoint,
     async () => {
       await runRaw(
         context,
@@ -374,16 +421,18 @@ const convertAddressToTransfer = async (
   );
 };
 
-const convertAssetToTransaction = async (
-  context: Context,
-  monitor: Monitor,
-): Promise<void> => {
+const convertAssetToTransaction = async ({
+  context,
+  monitor,
+  checkpointName,
+  checkpoint,
+}: ConvertOptions): Promise<void> => {
   await handleConvertEdge(
     context,
     monitor,
     AssetToTransactionModel,
-    'varchar(64)',
-    'varchar(64)',
+    checkpointName,
+    checkpoint,
     async () => {
       await runRaw(
         context,
@@ -454,21 +503,25 @@ export default async (
       async () => {
         for (const [model, convert, name, isEdge] of CONVERSIONS) {
           // eslint-disable-next-line
-          await monitor
-            .withData({ model: name })
-            .captureLog(
-              () =>
-                handleConvert(
-                  context,
-                  monitor,
-                  checkpointName,
-                  checkpoint,
-                  model,
-                  isEdge,
-                  () => convert(context, monitor),
-                ),
-              { name: 'neotracker_scrape_convert_model', error: {} },
-            );
+          await monitor.withData({ model: name }).captureLog(
+            () =>
+              handleConvert(
+                context,
+                monitor,
+                checkpointName,
+                checkpoint,
+                model,
+                isEdge,
+                () =>
+                  convert({
+                    context,
+                    monitor,
+                    checkpointName,
+                    checkpoint,
+                  }),
+              ),
+            { name: 'neotracker_scrape_convert_model', error: {} },
+          );
         }
       },
       {
