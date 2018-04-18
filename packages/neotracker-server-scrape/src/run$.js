@@ -60,11 +60,13 @@ import {
 } from './constants';
 import type { Context } from './types';
 
+import { add0x } from './utils';
 import createContractObservable from './createContractObservable';
 import normalizeBlock, {
   normalizeAction,
   normalizeHash,
 } from './normalizeBlock';
+import repairNEP5 from './repairNEP5';
 
 const NEOTRACKER_PERSIST_BLOCK_DURATION_SECONDS = metrics.createHistogram({
   name: 'neotracker_scrape_persist_block_duration_seconds',
@@ -106,9 +108,6 @@ const RHT_TRANSACTION_HASH =
 class ExitError extends Error {}
 
 type CoinChange = [string, string, BigNumber];
-
-export const add0x = (hash: string) =>
-  hash.startsWith('0x') ? hash : `0x${hash}`;
 
 const createCoinChange = ({
   addressHash,
@@ -2480,9 +2479,17 @@ function run({
             },
           );
           NEOTRACKER_SCRAPE_BLOCK_INDEX_GAUGE.set(block.index);
-          NEOTRACKER_PERSIST_BLOCK_LATENCY_SECONDS.observe(
-            monitor.nowSeconds() - block.time,
-          );
+          const latency = monitor.nowSeconds() - block.time;
+          NEOTRACKER_PERSIST_BLOCK_LATENCY_SECONDS.observe(latency);
+
+          if (!catchup) {
+            if (
+              block.index % context.repairNEP5BlockFrequency === 0 &&
+              latency <= context.repairNEP5LatencySeconds
+            ) {
+              await repairNEP5(context, monitor);
+            }
+          }
         }
       });
     }

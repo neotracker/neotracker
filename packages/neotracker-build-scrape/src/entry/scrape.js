@@ -150,6 +150,8 @@ const run = async () => {
       rpcURL,
       migrationEnabled: true,
       nep5Hashes,
+      repairNEP5BlockFrequency: 10,
+      repairNEP5LatencySeconds: 15,
     }),
     monitor,
   });

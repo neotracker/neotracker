@@ -16,8 +16,8 @@ import { type Context } from '../types';
 
 import { insertNEP5Assets } from './resyncActions';
 
+import { add0x } from '../utils';
 import {
-  add0x,
   getCurrentHeight,
   processInputOutputResult,
   processChanges,

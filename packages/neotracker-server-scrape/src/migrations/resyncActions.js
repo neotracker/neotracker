@@ -25,8 +25,8 @@ import type { Monitor } from '@neo-one/monitor';
 
 import { type Context } from '../types';
 
+import { add0x } from '../utils';
 import {
-  add0x,
   getCurrentHeight,
   getReferences,
   initializeNEP5Contract,

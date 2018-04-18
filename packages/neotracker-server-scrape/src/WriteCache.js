@@ -87,4 +87,9 @@ export default class WriteCache<Key, Value, Save> {
       return result;
     });
   }
+
+  refresh(key: Key, monitor: Monitor): void {
+    const result = this._fetch(key, monitor);
+    this._cache.set(key, result);
+  }
 }

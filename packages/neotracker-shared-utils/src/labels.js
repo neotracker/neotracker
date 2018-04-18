@@ -77,6 +77,8 @@ export default {
   ACTION_TRANSACTION_INDEX: 'action.transaction.index',
   ACTION_INDEX: 'action.index',
   CONTRACT_HASH: 'contract.hash',
+  SCRAPE_REPAIR_NEP5_COINS: 'scrape.repair_nep5.coins',
+  SCRAPE_REPAIR_NEP5_ASSET: 'scrape.repair_nep5.asset.hash',
   // General
   QUEUE_SIZE: 'queue.size',
   OPTIONS: 'options',

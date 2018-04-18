@@ -68,4 +68,6 @@ export type Context = {|
   nep5Contracts: { [hash: string]: ReadSmartContract },
   migrationHandler: MigrationHandler,
   nep5Hashes$: Observable<Array<string>>,
+  repairNEP5BlockFrequency: number,
+  repairNEP5LatencySeconds: number,
 |};
