@@ -190,12 +190,13 @@ const getStartHeight = async (context: Context, monitor: Monitor) =>
       if (checkpointData == null) {
         const transactions = await TransactionModel.query(context.db)
           .context(context.makeQueryContext(span))
-          .select(context.db.raw('min(??) as ??', ['block_id', 'block_id']))
+          .select(context.db.raw('min(??) as ??', ['block_time', 'block_time']))
           .where('type', 'InvocationTransaction');
-        const blockID = transactions[0].block_id;
+        const blockTime = transactions[0].block_time;
         const block = await BlockModel.query(context.db)
           .context(context.makeQueryContext(monitor))
-          .findById(blockID);
+          .where('time', blockTime)
+          .first();
         indexStart = block.index;
       } else {
         indexStart = JSON.parse(checkpointData) + 1;
