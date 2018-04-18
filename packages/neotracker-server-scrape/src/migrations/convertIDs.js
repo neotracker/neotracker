@@ -38,6 +38,7 @@ const runRaw = async (
 const handleConvert = async (
   context: Context,
   monitor: Monitor,
+  checkpointName: string,
   checkpoint: Set<string>,
   model: Class<Base>,
   isEdge: boolean,
@@ -57,6 +58,11 @@ const handleConvert = async (
   await refreshTriggers(context.db, monitor, model.modelSchema);
 
   checkpoint.add(model.modelSchema.name);
+  await context.migrationHandler.checkpoint(
+    checkpointName,
+    JSON.stringify([...checkpoint]),
+    monitor,
+  );
 };
 
 const handleConvertEdge = async (
@@ -452,8 +458,14 @@ export default async (
             .withData({ model: name })
             .captureLog(
               () =>
-                handleConvert(context, monitor, checkpoint, model, isEdge, () =>
-                  convert(context, monitor),
+                handleConvert(
+                  context,
+                  monitor,
+                  checkpointName,
+                  checkpoint,
+                  model,
+                  isEdge,
+                  () => convert(context, monitor),
                 ),
               { name: 'neotracker_scrape_convert_model', error: {} },
             );
