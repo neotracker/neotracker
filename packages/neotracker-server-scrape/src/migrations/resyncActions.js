@@ -179,11 +179,15 @@ const resetAddressTransferCount = async (context: Context, monitor: Monitor) =>
     { name: 'neotracker_scrape_resync_actions_reset_address_transfer_count' },
   );
 
-const getStartHeight = async (context: Context, monitor: Monitor) =>
+const getStartHeight = async (
+  context: Context,
+  monitor: Monitor,
+  checkpointName: string,
+) =>
   getMonitor(monitor).captureSpan(
     async span => {
       const checkpointData = await context.migrationHandler.getCheckpoint(
-        'resyncActions',
+        checkpointName,
         span,
       );
       let indexStart;
@@ -438,7 +442,7 @@ const processBlocks = async (
   getMonitor(monitor).captureSpan(
     async span => {
       const [indexStart, targetHeight] = await Promise.all([
-        getStartHeight(context, span),
+        getStartHeight(context, span, checkpointName),
         getCurrentHeight(context, span),
       ]);
       const indexStop = targetHeight + 1;
@@ -491,11 +495,15 @@ const fix = async (context: Context, monitor: Monitor) =>
     { name: 'neotracker_scrape_resync_actions_fix' },
   );
 
-export default async (context: Context, monitor: Monitor, checkpoint: string) =>
+export default async (
+  context: Context,
+  monitor: Monitor,
+  checkpointName: string,
+) =>
   getMonitor(monitor).captureSpanLog(
     async span => {
       const data = await context.migrationHandler.getCheckpoint(
-        checkpoint,
+        checkpointName,
         span,
       );
       const hasCheckpoint = data != null;
@@ -508,7 +516,7 @@ export default async (context: Context, monitor: Monitor, checkpoint: string) =>
         await purge(context, span);
         nep5Contracts = await reset(context, span);
       }
-      await processBlocks(context, span, checkpoint, nep5Contracts);
+      await processBlocks(context, span, checkpointName, nep5Contracts);
       await fix(context, span);
     },
     { name: 'neotracker_scrape_resync_actions_main' },
