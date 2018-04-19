@@ -9,7 +9,7 @@ import processedNextIndexNotify from './processedNextIndexNotify';
 
 export type MigrationName =
   | 'convertIDs'
-  | 'resyncActions-1'
+  | 'resyncActions-2'
   | 'fixQLC-0'
   | 'fixSkippedTransfers-2'
   | 'resyncTransferCoins-2'
@@ -18,7 +18,7 @@ export type MigrationName =
 
 export default [
   ['convertIDs', convertIDs],
-  ['resyncActions-1', resyncActions],
+  ['resyncActions-2', resyncActions],
   ['fixQLC-0', fixQLC],
   // NOTE: Fixing skipped transfers requires resyncing transfer coins.
   ['fixSkippedTransfers-2', fixSkippedTransfers],

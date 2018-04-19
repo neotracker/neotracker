@@ -190,8 +190,8 @@ const getStartHeight = async (
         checkpointName,
         span,
       );
-      let indexStart;
-      if (checkpointData == null) {
+      let { index } = checkpointData == null ? {} : JSON.parse(checkpointData);
+      if (index == null) {
         const transactions = await TransactionModel.query(context.db)
           .context(context.makeQueryContext(span))
           .select(context.db.raw('min(??) as ??', ['block_time', 'block_time']))
@@ -201,11 +201,11 @@ const getStartHeight = async (
           .context(context.makeQueryContext(monitor))
           .where('time', blockTime)
           .first();
-        indexStart = block.index;
+        ({ index } = block);
       } else {
-        indexStart = JSON.parse(checkpointData) + 1;
+        index += 1;
       }
-      return indexStart;
+      return index;
     },
     { name: 'neotracker_scrape_resync_actions_get_start_height' },
   );
@@ -437,6 +437,7 @@ const processBlocks = async (
   context: Context,
   monitor: Monitor,
   checkpointName: string,
+  checkpoints: Set<string>,
   nep5Contracts: Array<[ContractModel, ReadSmartContract]>,
 ) =>
   getMonitor(monitor).captureSpan(
@@ -467,7 +468,7 @@ const processBlocks = async (
         if (count % 1000 === 0) {
           await context.migrationHandler.checkpoint(
             checkpointName,
-            JSON.stringify(index),
+            JSON.stringify({ checkpoints: [...checkpoints], index }),
             span,
           );
           count = 0;
@@ -495,6 +496,8 @@ const fix = async (context: Context, monitor: Monitor) =>
     { name: 'neotracker_scrape_resync_actions_fix' },
   );
 
+const RESET_NAME = 'reset';
+
 export default async (
   context: Context,
   monitor: Monitor,
@@ -506,17 +509,31 @@ export default async (
         checkpointName,
         span,
       );
-      const hasCheckpoint = data != null;
+      const { checkpoints: checkpointsIn = [] } =
+        data == null ? {} : JSON.parse(data);
+      const checkpoints = new Set(checkpointsIn);
       let nep5Contracts;
-      if (hasCheckpoint) {
+      if (checkpoints.has(RESET_NAME)) {
         // Effectively a no-op, but good to reuse the same code to get the
         // contracts.
         nep5Contracts = await insertNEP5Assets(context, span);
       } else {
         await purge(context, span);
         nep5Contracts = await reset(context, span);
+        checkpoints.add(RESET_NAME);
+        await context.migrationHandler.checkpoint(
+          checkpointName,
+          JSON.stringify({ checkpoints: [...checkpoints] }),
+          span,
+        );
       }
-      await processBlocks(context, span, checkpointName, nep5Contracts);
+      await processBlocks(
+        context,
+        span,
+        checkpointName,
+        checkpoints,
+        nep5Contracts,
+      );
       await fix(context, span);
     },
     { name: 'neotracker_scrape_resync_actions_main' },
