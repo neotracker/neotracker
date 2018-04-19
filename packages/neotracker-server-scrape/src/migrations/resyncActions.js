@@ -407,11 +407,13 @@ const purge = async (context: Context, monitor: Monitor) =>
   getMonitor(monitor).captureSpan(
     async span => {
       const nep5AssetIDs = await getNEP5AssetIDs(context, span);
-      // Delete Transfer, AddressToTransfer
-      await dropTables(context, span);
-      await deleteCoins(context, span, nep5AssetIDs);
-      await deleteAssetToTransactions(context, span, nep5AssetIDs);
-      await deleteAddressToInvocationTransaction(context, span);
+      await Promise.all([
+        // Delete Transfer, AddressToTransfer
+        dropTables(context, span),
+        deleteCoins(context, span, nep5AssetIDs),
+        deleteAssetToTransactions(context, span, nep5AssetIDs),
+        deleteAddressToInvocationTransaction(context, span),
+      ]);
       // Make sure to delete after in case it fails.
       await deleteAssets(context, span, nep5AssetIDs);
     },
