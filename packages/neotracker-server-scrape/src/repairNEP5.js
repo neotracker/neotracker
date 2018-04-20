@@ -32,7 +32,7 @@ const updateCoin = async (
   await coin
     .$query(context.db)
     .context(context.makeQueryContext(monitor))
-    .patch({ value: balance });
+    .patch({ value: balance.toString() });
 };
 
 const updateCoins = async (
