@@ -28,7 +28,7 @@ export default async (context: Context, monitor: Monitor, checkpoint: string) =>
         'CREATE INDEX IF NOT EXISTS transfer_transaction_id ON transfer (transaction_id ASC NULLS LAST);',
       );
       await createIndex(
-        'CREATE INDEX IF NOT EXISTS tio_address_id_asset_id_claim_transaction_id ON transaction_input_output (address_id ASC NULLS LAST, asset_id ASC NULLS LAST, transaction_id ASC NULLS LAST);',
+        'CREATE INDEX IF NOT EXISTS tio_address_id_asset_id_claim_transaction_id ON transaction_input_output (address_id ASC NULLS LAST, asset_id ASC NULLS LAST, claim_transaction_id ASC NULLS LAST);',
       );
     },
     { name: 'neotracker_scrape_update_indices_main' },
