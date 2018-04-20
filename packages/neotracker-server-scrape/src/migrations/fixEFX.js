@@ -5,7 +5,7 @@ import { type Context } from '../types';
 
 import { fixIssued } from './common';
 
-const THOR_HASH = '67a5086bac196b67d5fd20745b0dc9db4d2930ed';
+const EFX_HASH = 'acbc532904b6b51b5ea6d19b803d78af70e7e6f9';
 
 export default (context: Context, monitor: Monitor, checkpoint: string) =>
-  fixIssued(context, monitor, checkpoint, THOR_HASH);
+  fixIssued(context, monitor, checkpoint, EFX_HASH);
