@@ -39,6 +39,17 @@ export default class Coin extends BlockchainModel<string> {
       ],
       name: 'coin_asset_value_id',
     },
+    // TODO: Figure out where these queries are
+    {
+      type: 'order',
+      columns: [
+        {
+          name: 'address_id',
+          order: 'asc nulls last',
+        },
+      ],
+      name: 'coin_address_id',
+    },
   ];
   static bigIntID = true;
 

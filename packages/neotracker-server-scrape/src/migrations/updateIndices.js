@@ -17,17 +17,18 @@ export default async (context: Context, monitor: Monitor, checkpoint: string) =>
             name: 'neotracker_scrape_update_indices_update_index_error',
             error,
           });
+          throw error;
         }
       };
 
       await createIndex(
-        'CREATE INDEX transfer_transaction_id ON transfer (transaction_id DESC);',
+        'CREATE INDEX IF NOT EXISTS coin_address_id ON transfer (address_id ASC NULLS LAST);',
       );
       await createIndex(
-        'CREATE INDEX coin_asset_value_id ON coin (asset_id DESC, value DESC, id DESC);',
+        'CREATE INDEX IF NOT EXISTS transfer_transaction_id ON transfer (transaction_id ASC NULLS LAST);',
       );
       await createIndex(
-        'CREATE INDEX tio_address_id_asset_id_claim_transaction_id ON transaction_input_output (address_id, asset_id, claim_transaction_id);',
+        'CREATE INDEX IF NOT EXISTS tio_address_id_asset_id_claim_transaction_id ON transfer (address_id ASC NULLS LAST, asset_id ASC NULLS LAST, transaction_id ASC NULLS LAST);',
       );
     },
     { name: 'neotracker_scrape_update_indices_main' },

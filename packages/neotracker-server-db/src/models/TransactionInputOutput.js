@@ -93,6 +93,25 @@ export default class TransactionInputOutput extends BlockchainModel<string> {
       ],
       name: 'tio_claim_transaction_id_type_output_transaction_index',
     },
+    // TODO: Figure out where these queries are
+    {
+      type: 'order',
+      columns: [
+        {
+          name: 'address_id',
+          order: 'asc nulls last',
+        },
+        {
+          name: 'asset_id',
+          order: 'asc nulls last',
+        },
+        {
+          name: 'claim_transaction_id',
+          order: 'asc nulls last',
+        },
+      ],
+      name: 'tio_address_id_asset_id_claim_transaction_id',
+    },
   ];
   static bigIntID = true;
 

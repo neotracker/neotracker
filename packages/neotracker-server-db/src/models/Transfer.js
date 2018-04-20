@@ -74,6 +74,17 @@ export default class Transfer extends BlockchainModel<string> {
       ],
       name: 'transfer_id_block_index_transaction_index_action_index',
     },
+    // TODO: Figure out where these queries are
+    {
+      type: 'order',
+      columns: [
+        {
+          name: 'transaction_id',
+          order: 'asc nulls last',
+        },
+      ],
+      name: 'transfer_transaction_id',
+    },
   ];
   static bigIntID = true;
 
