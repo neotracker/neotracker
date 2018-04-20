@@ -7,7 +7,7 @@ import { entries, labels } from 'neotracker-shared-utils';
 
 import type { Context } from './types';
 
-import { add0x, strip0x } from './utils';
+import { add0x } from './utils';
 
 const NEOTRACKER_NEGATIVE_COIN_TOTAL = metrics.createCounter({
   name: 'neotracker_scrape_negative_coin_total',
@@ -35,6 +35,21 @@ const updateCoin = async (
     .patch({ value: balance.toString() });
 };
 
+const repairAssetSupply = async (
+  context: Context,
+  monitor: Monitor,
+  assetHash: string,
+  contract: ReadSmartContract,
+) => {
+  const issued = await contract.totalSupply(monitor);
+  await AssetModel.query(context.db)
+    .context(context.makeQueryContext(monitor))
+    .patch({ issued: issued.toString() })
+    .where('id', assetHash);
+
+  await context.asset.refresh(assetHash, monitor);
+};
+
 const updateCoins = async (
   context: Context,
   monitor: Monitor,
@@ -52,6 +67,9 @@ const updateCoins = async (
         name: 'neotracker_scrape_repair_nep5_coins',
         level: 'verbose',
       });
+    if (coins.length > 0) {
+      await repairAssetSupply(context, monitor, assetHash, contract);
+    }
     await Promise.all(
       coins.map(coin => updateCoin(context, monitor, contract, coin)),
     );
@@ -76,35 +94,8 @@ const repairCoins = async (context: Context, monitor: Monitor) => {
   );
 };
 
-const repairAssetSupply = async (
-  context: Context,
-  monitor: Monitor,
-  assetHash: string,
-  contract: ReadSmartContract,
-) => {
-  const issued = await contract.totalSupply(monitor);
-  await AssetModel.query(context.db)
-    .context(context.makeQueryContext(monitor))
-    .patch({ issued: issued.toString() })
-    .where('id', assetHash);
-
-  await context.asset.refresh(assetHash, monitor);
-};
-
-// eslint-disable-next-line
-const repairSupply = async (context: Context, monitor: Monitor) => {
-  await Promise.all(
-    entries(context.nep5Contracts).map(([assetHash0x, contract]) =>
-      repairAssetSupply(context, monitor, strip0x(assetHash0x), contract),
-    ),
-  );
-};
-
 const repair = async (context: Context, monitor: Monitor) => {
-  await Promise.all([
-    repairCoins(context, monitor),
-    // repairSupply(context, monitor),
-  ]);
+  await repairCoins(context, monitor);
 };
 
 export default async (context: Context, monitorIn: Monitor) => {
