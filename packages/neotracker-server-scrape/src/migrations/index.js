@@ -1,6 +1,7 @@
 /* @flow */
 import convertIDs from './convertIDs';
 import fixQLC from './fixQLC';
+import fixTHOR from './fixTHOR';
 import fixSkippedTransfers from './fixSkippedTransfers';
 import resyncActions from './resyncActions';
 import resyncTransferCoins from './resyncTransferCoins';
@@ -14,6 +15,7 @@ export type MigrationName =
   | 'fixSkippedTransfers-2'
   | 'resyncTransferCoins-2'
   | 'updateIndices'
+  | 'fixTHOR-0'
   | 'processedNextIndexNotify';
 
 export default [
@@ -24,5 +26,6 @@ export default [
   ['fixSkippedTransfers-2', fixSkippedTransfers],
   ['resyncTransferCoins-2', resyncTransferCoins],
   ['updateIndices', updateIndices],
+  ['fixTHOR-0', fixTHOR],
   ['processedNextIndexNotify', processedNextIndexNotify],
 ];
