@@ -26,21 +26,20 @@ export default (
           .where('id', 'ANvKJaBm2ynGMjd6Y1n2z2TcRnbwVtsaKo')
           .first(),
       ]);
+
       if (
-        transfer == null ||
-        correctedAddress == null ||
-        transfer.transaction_id !==
+        transfer != null &&
+        correctedAddress != null &&
+        transfer.transaction_id ===
           '4428f56f61048e504c203c6abb033ffa4ae9a3a992ca86084227d287c0175b8a'
       ) {
-        throw new Error('Could not find QLC transfer');
+        await transfer
+          .$query(context.db)
+          .context(context.makeQueryContext(span))
+          .patch({
+            to_address_id: correctedAddress.id,
+          });
       }
-
-      await transfer
-        .$query(context.db)
-        .context(context.makeQueryContext(span))
-        .patch({
-          to_address_id: correctedAddress.id,
-        });
     },
     { name: 'neotracker_scrape_fix_qlc' },
   );

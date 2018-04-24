@@ -11,24 +11,24 @@ import processedNextIndexNotify from './processedNextIndexNotify';
 
 export type MigrationName =
   | 'convertIDs'
-  | 'resyncActions-3'
-  | 'fixQLC-0'
+  | 'resyncActions-4'
+  | 'fixQLC-1'
   | 'fixSkippedTransfers-2'
   | 'resyncTransferCoins-2'
   | 'updateIndices-0'
-  | 'fixTHOR-0'
-  | 'fixEFX-0'
+  | 'fixTHOR-1'
+  | 'fixEFX-1'
   | 'processedNextIndexNotify';
 
 export default [
   ['convertIDs', convertIDs],
-  ['resyncActions-3', resyncActions],
-  ['fixQLC-0', fixQLC],
+  ['resyncActions-4', resyncActions],
+  ['fixQLC-1', fixQLC],
   // NOTE: Fixing skipped transfers requires resyncing transfer coins.
   ['fixSkippedTransfers-2', fixSkippedTransfers],
   ['resyncTransferCoins-2', resyncTransferCoins],
   ['updateIndices-0', updateIndices],
-  ['fixTHOR-0', fixTHOR],
-  ['fixEFX-0', fixEFX],
+  ['fixTHOR-1', fixTHOR],
+  ['fixEFX-1', fixEFX],
   ['processedNextIndexNotify', processedNextIndexNotify],
 ];
