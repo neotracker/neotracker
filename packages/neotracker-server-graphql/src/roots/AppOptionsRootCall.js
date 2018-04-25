@@ -1,10 +1,9 @@
 /* @flow */
 import { CodedError } from 'neotracker-server-utils';
 import type { GraphQLResolveInfo } from 'graphql';
-import type { Observable } from 'rxjs/Observable';
+import { type Observable, empty } from 'rxjs';
 
 import { distinctUntilChanged, map, take } from 'rxjs/operators';
-import { empty } from 'rxjs/observable/empty';
 
 import type { GraphQLContext } from '../GraphQLContext';
 import type { GraphQLResolver } from '../constants';

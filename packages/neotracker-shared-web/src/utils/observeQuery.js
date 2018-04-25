@@ -2,7 +2,7 @@
 import type { CacheConfig } from 'neotracker-shared-graphql';
 import type { Environment, GraphQLTaggedNode } from 'relay-runtime';
 import type { Monitor } from '@neo-one/monitor';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { distinctUntilChanged, map, skipWhile } from 'rxjs/operators';
 

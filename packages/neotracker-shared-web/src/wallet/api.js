@@ -16,11 +16,10 @@ import {
   isNEP2 as clientIsNEP2,
 } from '@neo-one/client';
 
-import { combineLatest } from 'rxjs/observable/combineLatest';
+import { combineLatest, of as _of } from 'rxjs';
 import { compose, getContext, mapPropsStream } from 'recompose';
 import crypto from 'crypto';
 import { map, switchMap, take } from 'rxjs/operators';
-import { of as _of } from 'rxjs/observable/of';
 import scrypt from 'scrypt-js';
 import { sha3_256 } from 'js-sha3';
 

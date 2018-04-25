@@ -3,8 +3,7 @@ import { PROCESSED_NEXT_INDEX } from 'neotracker-server-db';
 import { CodedError, pubsub } from 'neotracker-server-utils';
 import type { GraphQLResolveInfo } from 'graphql';
 
-import { concat } from 'rxjs/observable/concat';
-import { of as _of } from 'rxjs/observable/of';
+import { concat, of as _of } from 'rxjs';
 
 import type { GraphQLContext } from '../GraphQLContext';
 import type { GraphQLResolver } from '../constants';

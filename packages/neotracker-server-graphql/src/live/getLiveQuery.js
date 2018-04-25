@@ -1,7 +1,7 @@
 /* @flow */
 import type { ExecutionResult } from 'neotracker-shared-graphql';
 import type { FieldNode, GraphQLObjectType } from 'graphql';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { locatedError } from 'graphql/error/locatedError';
 import {

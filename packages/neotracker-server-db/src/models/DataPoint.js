@@ -1,7 +1,5 @@
 /* @flow */
-import { type Observable } from 'rxjs/Observable';
-
-import { empty } from 'rxjs/observable/empty';
+import { type Observable, empty } from 'rxjs';
 
 import BaseVisibleModel from './BaseVisibleModel';
 import { type FieldSchema } from '../lib';

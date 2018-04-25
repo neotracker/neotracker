@@ -18,7 +18,7 @@ import {
 } from '@neo-one/client';
 import BigNumber from 'bignumber.js';
 import type { Monitor } from '@neo-one/monitor';
-import { Observable } from 'rxjs/Observable';
+import { Observable, combineLatest, concat, of as _of, timer } from 'rxjs';
 
 import {
   concatMap,
@@ -28,10 +28,6 @@ import {
   refCount,
   switchMap,
 } from 'rxjs/operators';
-import { combineLatest } from 'rxjs/observable/combineLatest';
-import { concat } from 'rxjs/observable/concat';
-import { of as _of } from 'rxjs/observable/of';
-import { timer } from 'rxjs/observable/timer';
 
 import type {
   AddressSave,

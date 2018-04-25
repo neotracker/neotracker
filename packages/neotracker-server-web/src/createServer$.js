@@ -2,7 +2,7 @@
 import type { AppOptions } from 'neotracker-shared-web';
 import Koa from 'koa';
 import type { NetworkType } from '@neo-one/client';
-import { Observable } from 'rxjs/Observable';
+import { Observable, combineLatest, defer, merge } from 'rxjs';
 import { LiveServer, schema, startRootCalls$ } from 'neotracker-server-graphql';
 import {
   type DBEnvironment,
@@ -17,8 +17,6 @@ import {
 import type { Monitor } from '@neo-one/monitor';
 import Router from 'koa-router';
 
-import { combineLatest } from 'rxjs/observable/combineLatest';
-import { defer } from 'rxjs/observable/defer';
 import {
   distinctUntilChanged,
   map,
@@ -29,7 +27,6 @@ import {
 import { finalize, mergeScanLatest } from 'neotracker-shared-utils';
 import { handleServer, finalizeServer } from 'neotracker-server-utils';
 import http from 'http';
-import { merge } from 'rxjs/observable/merge';
 import { routes } from 'neotracker-shared-web';
 
 import {
@@ -135,10 +132,8 @@ export default ({
   }).pipe(publishReplay(1), refCount());
 
   const rootCalls$ = startRootCalls$(
-    combineLatest(
-      mapDistinct(_ => _.options.appOptions),
-      rootLoader$,
-      (appOptions, rootLoader) => ({ monitor, appOptions, rootLoader }),
+    combineLatest(mapDistinct(_ => _.options.appOptions), rootLoader$).pipe(
+      map(([appOptions, rootLoader]) => ({ monitor, appOptions, rootLoader })),
     ),
   );
 
@@ -186,7 +181,8 @@ export default ({
       mapDistinct(_ => _.addBodyElements || noOpAddBodyElements),
       mapDistinct(_ => _.options.react),
       mapDistinct(_ => _.options.appOptions),
-      (addHeadElements, addBodyElements, react, appOptions) =>
+    ).pipe(
+      map(([addHeadElements, addBodyElements, react, appOptions]) =>
         reactApplication({
           monitor,
           addHeadElements,
@@ -196,6 +192,7 @@ export default ({
           network: environment.network,
           appOptions,
         }),
+      ),
     ),
     mapDistinct(_ => _.addMiddleware || noOpAddMiddleware),
   ).pipe(

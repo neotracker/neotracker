@@ -3,9 +3,8 @@ import type DataLoader from 'dataloader';
 import type knex from 'knex';
 import { Model } from 'objection';
 import type { Monitor } from '@neo-one/monitor';
-import type { Observable } from 'rxjs/Observable';
+import { type Observable, combineLatest } from 'rxjs';
 
-import { combineLatest } from 'rxjs/observable/combineLatest';
 import { entries } from 'neotracker-shared-utils';
 import { lcFirst } from 'change-case';
 import { map, startWith } from 'rxjs/operators';

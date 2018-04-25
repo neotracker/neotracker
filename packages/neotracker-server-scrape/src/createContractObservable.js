@@ -12,10 +12,9 @@ import {
   Transfer as TransferModel,
 } from 'neotracker-server-db';
 import type { Monitor } from '@neo-one/monitor';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of as _of } from 'rxjs';
 
 import type knex from 'knex';
-import { of as _of } from 'rxjs/observable/of';
 import { switchMap } from 'rxjs/operators';
 
 const deleteNEP5 = async (

@@ -12,8 +12,8 @@
   "license": "MIT",
   "main": "./src/index.js",
   "dependencies": {
-    "@neo-one/monitor": "^1.0.0-alpha.24",
-    "lodash": "^4.17.5",
+    "@neo-one/monitor": "^1.0.0-alpha.25",
+    "lodash": "^4.17.10",
     "neotracker-shared-utils": "^0.0.1-alpha.0",
     "safe-stable-stringify": "^1.0.1"
   }

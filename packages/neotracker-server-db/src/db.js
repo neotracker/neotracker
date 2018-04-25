@@ -1,9 +1,8 @@
 /* @flow */
 import { LABELS, type Labels, type Monitor, metrics } from '@neo-one/monitor';
-import type { Observable } from 'rxjs/Observable';
+import { type Observable, interval } from 'rxjs';
 
 import { finalize } from 'neotracker-shared-utils';
-import { interval } from 'rxjs/observable/interval';
 import sqlSummary from 'sql-summary';
 import { transaction as dbTransaction } from 'objection';
 

@@ -2,7 +2,7 @@
 import { CodedError } from 'neotracker-server-utils';
 import type DataLoader from 'dataloader';
 import type { Monitor } from '@neo-one/monitor';
-import type { Observable } from 'rxjs/Observable';
+import type { Observable } from 'rxjs';
 
 import { lcFirst } from 'change-case';
 

@@ -1,6 +1,6 @@
 /* @flow */
 import type { Monitor } from '@neo-one/monitor';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { pubsub } from 'neotracker-server-utils';
 import PGPubsub from 'pg-pubsub';

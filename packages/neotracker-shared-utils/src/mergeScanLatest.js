@@ -1,10 +1,8 @@
 /* @flow */
-import type { Observable } from 'rxjs/Observable';
-import { Operator } from 'rxjs/Operator';
-import { OuterSubscriber } from 'rxjs/OuterSubscriber';
-import { Subscriber } from 'rxjs/Subscriber';
-import type { Subscription } from 'rxjs/Subscription';
-import { subscribeToResult } from 'rxjs/util/subscribeToResult';
+import { type Observable, type Subscription, Subscriber } from 'rxjs';
+import { OuterSubscriber } from 'rxjs/internal/OuterSubscriber';
+import { Operator } from 'rxjs/internal/Operator';
+import { subscribeToResult } from 'rxjs/internal/util/subscribeToResult';
 
 const EMPTY_LAST_VALUE = {};
 

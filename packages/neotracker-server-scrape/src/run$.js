@@ -45,13 +45,11 @@ import {
 } from '@neo-one/client';
 import BigNumber from 'bignumber.js';
 import type { Monitor } from '@neo-one/monitor';
-import { Observable } from 'rxjs/Observable';
+import { Observable, concat, merge } from 'rxjs';
 
 import _ from 'lodash';
 import { filter, mergeMap } from 'rxjs/operators';
 import { metrics } from '@neo-one/monitor';
-import { concat } from 'rxjs/observable/concat';
-import { merge } from 'rxjs/observable/merge';
 
 import {
   CONFLICT_ERROR_CODE,

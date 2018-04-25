@@ -5,9 +5,7 @@ import type { Monitor } from '@neo-one/monitor';
 import { QueryDeduplicator } from 'neotracker-shared-graphql';
 import type RelayQueryResponseCache from 'relay-runtime/lib/RelayQueryResponseCache';
 
-import { concat } from 'rxjs/observable/concat';
-import { interval } from 'rxjs/observable/interval';
-import { of as _of } from 'rxjs/observable/of';
+import { concat, interval, of as _of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 import LiveClient from './LiveClient';

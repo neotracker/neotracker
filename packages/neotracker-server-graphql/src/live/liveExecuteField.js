@@ -1,6 +1,6 @@
 /* @flow */
 import { type GraphQLResolveInfo, defaultFieldResolver } from 'graphql';
-import { type Observable } from 'rxjs/Observable';
+import { type Observable } from 'rxjs';
 
 import { switchMap } from 'rxjs/operators';
 

@@ -41,7 +41,7 @@ import createGenerateClassName from 'material-ui/styles/createGenerateClassName'
 import { create } from 'jss';
 import fs from 'fs';
 import { matchRoutes } from 'react-router-config';
-import { of as _of } from 'rxjs/observable/of';
+import { of as _of } from 'rxjs';
 import path from 'path';
 import preset from 'jss-preset-default';
 import { renderToString } from 'react-dom/server';

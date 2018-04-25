@@ -15,7 +15,7 @@ import {
   type NEOONEDataProvider,
 } from '@neo-one/client';
 import type { Monitor } from '@neo-one/monitor';
-import type { Observable } from 'rxjs/Observable';
+import type { Observable } from 'rxjs';
 
 import type knex from 'knex';
 

@@ -1,6 +1,6 @@
 /* @flow */
 import '@babel/polyfill';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { DefaultMonitor } from '@neo-one/monitor';
 
 import createScrape$ from 'neotracker-server-scrape';

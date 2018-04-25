@@ -5,14 +5,11 @@ import BigNumber from 'bignumber.js';
 import { CodedError, pubsub } from 'neotracker-server-utils';
 import type { GraphQLResolveInfo } from 'graphql';
 import type { Monitor } from '@neo-one/monitor';
-import { Observable } from 'rxjs/Observable';
+import { Observable, combineLatest, concat, timer } from 'rxjs';
 
 import _ from 'lodash';
-import { combineLatest } from 'rxjs/observable/combineLatest';
-import { concat } from 'rxjs/observable/concat';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import fetch from 'node-fetch';
-import { timer } from 'rxjs/observable/timer';
 
 import { CURRENT_PRICE } from '../channels';
 import type { GraphQLContext } from '../GraphQLContext';
@@ -156,9 +153,8 @@ export default class CurrentPriceRootCall extends RootCall {
         })),
       ),
       timer(0, THREE_MINUTES_IN_SECONDS * 1000),
-      options => options,
     ).pipe(
-      switchMap(async ({ rootLoader, monitor }) => {
+      switchMap(async ([{ rootLoader, monitor }]) => {
         await Promise.all([
           this.refreshCurrentPrice('NEO', monitor, rootLoader),
           this.refreshCurrentPrice('GAS', monitor, rootLoader),

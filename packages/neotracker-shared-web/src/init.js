@@ -1,5 +1,6 @@
 /* @flow */
-import { from } from 'rxjs/observable/from';
+// $FlowFixMe
+import { from } from 'rxjs';
 // $FlowFixMe
 import { setObservableConfig } from 'recompose';
 

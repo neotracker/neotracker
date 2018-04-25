@@ -1,7 +1,5 @@
 /* @flow */
-import type { Observable } from 'rxjs/Observable';
-
-import { merge } from 'rxjs/observable/merge';
+import { type Observable, merge } from 'rxjs';
 
 import type { RootCallOptions } from '../lib';
 

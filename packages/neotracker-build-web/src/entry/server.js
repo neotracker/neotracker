@@ -2,7 +2,7 @@
 import '@babel/polyfill';
 
 import { DefaultMonitor } from '@neo-one/monitor';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { ReplaySubject } from 'rxjs';
 import createServer$ from 'neotracker-server-web';
 
 import { createConsoleLogger } from 'neotracker-build-utils';

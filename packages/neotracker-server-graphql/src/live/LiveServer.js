@@ -10,9 +10,8 @@ import {
 import { type GraphQLSchema } from 'graphql';
 import { type IncomingMessage } from 'http';
 import { type Monitor, metrics } from '@neo-one/monitor';
-import { type Observable } from 'rxjs/Observable';
+import { type Observable, type Subscription } from 'rxjs';
 import { type RootLoader } from 'neotracker-server-db';
-import { type Subscription } from 'rxjs/Subscription';
 
 import { labels, sanitizeError, ua, values } from 'neotracker-shared-utils';
 import { getUA } from 'neotracker-server-utils';

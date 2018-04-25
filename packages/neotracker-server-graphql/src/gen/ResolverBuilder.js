@@ -12,9 +12,8 @@ import { Model, QueryBuilder } from 'objection';
 
 import _ from 'lodash';
 import { camelCase } from 'change-case';
-import { concat } from 'rxjs/observable/concat';
+import { concat, of as _of } from 'rxjs';
 import { metrics } from '@neo-one/monitor';
-import { of as _of } from 'rxjs/observable/of';
 
 import { type GraphQLContext } from '../GraphQLContext';
 import { type GraphQLResolver } from '../constants';

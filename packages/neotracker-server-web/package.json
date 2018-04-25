@@ -12,8 +12,8 @@
   "license": "MIT",
   "main": "./src/index.js",
   "dependencies": {
-    "@neo-one/client": "^1.0.0-alpha.46",
-    "@neo-one/monitor": "^1.0.0-alpha.24",
+    "@neo-one/client": "^1.0.0-alpha.47",
+    "@neo-one/monitor": "^1.0.0-alpha.25",
     "app-root-dir": "^1.0.2",
     "css.escape": "^1.5.1",
     "debug": "^3.1.0",
@@ -45,10 +45,10 @@
     "react-router": "^4.2.0",
     "react-router-config": "^1.0.0-beta.4",
     "resolve-path": "^1.4.0",
-    "rxjs": "^5.5.10",
+    "rxjs": "^6.0.0",
     "serialize-javascript": "^1.5.0",
     "sitemap": "^1.13.0",
-    "source-map-support": "^0.5.4",
+    "source-map-support": "^0.5.5",
     "toobusy-js": "^0.5.1",
     "uuid": "^3.2.1"
   }

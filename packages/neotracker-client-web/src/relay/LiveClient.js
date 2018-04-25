@@ -7,8 +7,7 @@ import {
 } from 'neotracker-shared-graphql';
 import * as Backoff from 'backo2';
 import { type Monitor, type Span, metrics } from '@neo-one/monitor';
-import { Observable } from 'rxjs/Observable';
-import { type Observer } from 'rxjs/Observer';
+import { type Observer, Observable } from 'rxjs';
 
 import _ from 'lodash';
 import { labels, sanitizeError } from 'neotracker-shared-utils';

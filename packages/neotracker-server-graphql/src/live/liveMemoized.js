@@ -1,10 +1,9 @@
 /* @flow */
 import type { ExecutionResult } from 'neotracker-shared-graphql';
 import type { GraphQLResolveInfo } from 'graphql';
-import type { Observable } from 'rxjs/Observable';
+import { type Observable, of as _of } from 'rxjs';
 import stringify from 'safe-stable-stringify';
 
-import { of as _of } from 'rxjs/observable/of';
 import { catchError, finalize, publishReplay, refCount } from 'rxjs/operators';
 
 import type { GraphQLContext } from '../GraphQLContext';

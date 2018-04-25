@@ -10,7 +10,7 @@ import type {
   ReadClient,
 } from '@neo-one/client';
 import type { Monitor } from '@neo-one/monitor';
-import type { Observable } from 'rxjs/Observable';
+import type { Observable } from 'rxjs';
 
 // eslint-disable-next-line
 export type { AppOptions };

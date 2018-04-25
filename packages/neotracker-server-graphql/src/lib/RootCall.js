@@ -2,10 +2,8 @@
 import { CodedError } from 'neotracker-server-utils';
 import type { AppOptions } from 'neotracker-shared-utils';
 import type { Monitor } from '@neo-one/monitor';
-import type { Observable } from 'rxjs/Observable';
+import { type Observable, empty } from 'rxjs';
 import type { RootLoader } from 'neotracker-server-db';
-
-import { empty } from 'rxjs/observable/empty';
 
 import { type GraphQLResolver } from '../constants';
 

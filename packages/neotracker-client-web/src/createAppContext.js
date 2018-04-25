@@ -22,7 +22,7 @@ import type { Monitor } from '@neo-one/monitor';
 import type RelayQueryResponseCache from 'relay-runtime/lib/RelayQueryResponseCache';
 import type { UserAgent } from 'neotracker-shared-utils';
 
-import { concat } from 'rxjs/observable/concat';
+import { concat, of as _of } from 'rxjs';
 import {
   distinctUntilChanged,
   map,
@@ -31,7 +31,6 @@ import {
 } from 'rxjs/operators';
 import { graphql } from 'react-relay';
 import localForage from 'localforage';
-import { of as _of } from 'rxjs/observable/of';
 
 import { makeRelayEnvironment } from './relay';
 

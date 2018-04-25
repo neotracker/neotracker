@@ -1,15 +1,12 @@
 /* @flow */
 import type { GraphQLResolveInfo } from 'graphql';
 import type { Monitor } from '@neo-one/monitor';
-import { Observable } from 'rxjs/Observable';
+import { Observable, combineLatest, concat, timer } from 'rxjs';
 
 import _ from 'lodash';
-import { combineLatest } from 'rxjs/observable/combineLatest';
-import { concat } from 'rxjs/observable/concat';
 import cryptocompare from 'cryptocompare';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import { pubsub } from 'neotracker-server-utils';
-import { timer } from 'rxjs/observable/timer';
 
 import { PRICES } from '../channels';
 import type { GraphQLContext } from '../GraphQLContext';
@@ -152,9 +149,8 @@ export default class PricesRootCall extends RootCall {
         map(monitor => monitor.at('prices_root_call')),
       ),
       timer(0, FIVE_MINUTES_IN_SECONDS * 1000),
-      options => options,
     ).pipe(
-      switchMap(async monitor => {
+      switchMap(async ([monitor]) => {
         await Promise.all([
           this.refreshDataPoints('NEO', 'BTC', monitor),
           this.refreshDataPoints('NEO', 'USD', monitor),

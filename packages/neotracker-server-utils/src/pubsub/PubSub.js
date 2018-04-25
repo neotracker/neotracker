@@ -1,6 +1,5 @@
 /* @flow */
-import type { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+import { type Observable, Subject } from 'rxjs';
 
 export default class PubSub {
   subjects: { [triggerName: string]: Subject<mixed> };
