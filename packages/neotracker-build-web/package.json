@@ -15,6 +15,7 @@
     "@babel/polyfill": "7.0.0-beta.44",
     "@neo-one/monitor": "^1.0.0-alpha.25",
     "app-root-dir": "^1.0.2",
+    "css.escape": "^1.5.1",
     "execa": "^0.10.0",
     "fs-extra": "^5.0.0",
     "graphql": "^0.13.2",
@@ -24,6 +25,7 @@
     "neotracker-server-web": "^0.0.1-alpha.0",
     "neotracker-shared-utils": "^0.0.1-alpha.0",
     "relay-compiler": "^1.5.0",
+    "recompose": "^0.27.0",
     "rxjs": "^6.0.0",
     "safe-stable-stringify": "^1.0.1",
     "webpack": "^4.6.0"

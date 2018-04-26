@@ -1,6 +1,4 @@
 /* @flow */
-import './init';
-
 export { default as App, routeConfigs } from './App';
 export { default as AppServer } from './AppServer';
 export { default as createTheme } from './styles/createTheme';

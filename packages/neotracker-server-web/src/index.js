@@ -1,5 +1,4 @@
 /* @flow */
-import './init';
 import createServer$ from './createServer$';
 
 export {

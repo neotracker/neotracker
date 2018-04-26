@@ -1,5 +1,6 @@
 /* @flow */
-import '@babel/polyfill';
+/* eslint-disable import/first */
+import './init';
 
 import { DefaultMonitor } from '@neo-one/monitor';
 import { ReplaySubject } from 'rxjs';

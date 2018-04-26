@@ -1,6 +1,6 @@
 /* @flow */
-import '@babel/polyfill';
-import 'whatwg-fetch';
+/* eslint-disable import/first */
+import './init';
 
 import { DefaultMonitor } from '@neo-one/monitor';
 
