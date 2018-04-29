@@ -14,7 +14,7 @@ export type MigrationName =
   | 'resyncActions-4'
   | 'fixQLC-1'
   | 'fixSkippedTransfers-2'
-  | 'resyncTransferCoins-2'
+  | 'resyncTransferCoins-3'
   | 'updateIndices-0'
   | 'fixTHOR-1'
   | 'fixEFX-1'
@@ -26,7 +26,7 @@ export default [
   ['fixQLC-1', fixQLC],
   // NOTE: Fixing skipped transfers requires resyncing transfer coins.
   ['fixSkippedTransfers-2', fixSkippedTransfers],
-  ['resyncTransferCoins-2', resyncTransferCoins],
+  ['resyncTransferCoins-3', resyncTransferCoins],
   ['updateIndices-0', updateIndices],
   ['fixTHOR-1', fixTHOR],
   ['fixEFX-1', fixEFX],

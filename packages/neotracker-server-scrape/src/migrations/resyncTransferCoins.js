@@ -3,6 +3,8 @@ import type { Monitor } from '@neo-one/monitor';
 
 import { type Context } from '../types';
 
+import repairNEP5 from '../repairNEP5';
+
 // eslint-disable-next-line
 export default async (context: Context, monitor: Monitor, checkpoint: string) =>
   monitor.at('migration_resync_transfer_coins').captureSpan(
@@ -42,6 +44,8 @@ export default async (context: Context, monitor: Monitor, checkpoint: string) =>
       `,
         )
         .queryContext(context.makeQueryContext(span));
+
+      await repairNEP5(context, monitor);
     },
     { name: 'neotracker_scrape_resync_transfer_coins_main' },
   );
