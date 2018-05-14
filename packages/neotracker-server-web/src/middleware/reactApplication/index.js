@@ -225,6 +225,7 @@ export type Options = {|
     userAgents: string,
   |},
   rpcURL: string,
+  adsenseID?: string,
 |};
 
 export default ({
@@ -308,6 +309,7 @@ export default ({
           appVersion: environment.appVersion,
           addHeadElements,
           addBodyElements,
+          adsenseID: options.adsenseID,
         });
 
         ctx.type = 'html';

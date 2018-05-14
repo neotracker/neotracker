@@ -37,6 +37,7 @@ type Props = {|
   appVersion: string,
   addHeadElements: AddHeadElements,
   addBodyElements: AddBodyElements,
+  adsenseID?: string,
 |};
 export default ({
   css,
@@ -53,6 +54,7 @@ export default ({
   appVersion,
   addHeadElements,
   addBodyElements,
+  adsenseID,
 }: Props) => {
   // Creates an inline script definition that is protected by the nonce.
   const inlineScript = body => (
@@ -95,6 +97,19 @@ export default ({
     ...helmet.meta.toComponent(),
     ...helmet.link.toComponent(),
     ...helmet.style.toComponent(),
+    adsenseID == null
+      ? undefined
+      : scriptTag('//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', {
+          async: true,
+        }),
+    adsenseID == null
+      ? undefined
+      : inlineScript(`
+      (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "${adsenseID}",
+        enable_page_level_ads: true
+      });
+    `),
   ].filter(Boolean);
 
   const constructScript = () => {
