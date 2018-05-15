@@ -12,6 +12,7 @@ export type Options = {|
     action: string,
   |},
   cspConfig: {|
+    enabled: boolean,
     directives: { [key: string]: Array<mixed> },
     browserSniff: boolean,
   |},
@@ -52,7 +53,9 @@ export default ({ options }: {| options: Options |}) => {
               trustProtoHeader: true,
             })
           : null,
-        helmet.contentSecurityPolicy(cspConfig),
+        options.cspConfig.enabled
+          ? helmet.contentSecurityPolicy(cspConfig)
+          : null,
         options.frameguard.enabled
           ? helmet.frameguard({ action: options.frameguard.action })
           : null,

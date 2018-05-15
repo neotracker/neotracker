@@ -58,6 +58,7 @@ export default ({
         action: 'deny',
       },
       cspConfig: {
+        enabled: true,
         directives: {
           childSrc: ["'self'"],
           defaultSrc: ["'self'"],
