@@ -157,6 +157,7 @@ const normalizeInvocationResult = (
     case 'HALT':
       return {
         state: 'HALT',
+        gasCost: result.gasCost,
         gasConsumed: result.gasConsumed,
         stack: result.stack.map(contractParameter =>
           normalizeContractParameter(contractParameter),
@@ -165,6 +166,7 @@ const normalizeInvocationResult = (
     case 'FAULT':
       return {
         state: 'FAULT',
+        gasCost: result.gasCost,
         gasConsumed: result.gasConsumed,
         stack: result.stack.map(contractParameter =>
           normalizeContractParameter(contractParameter),

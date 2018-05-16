@@ -1,7 +1,6 @@
 /* @flow */
 /* eslint-disable react/require-default-props */
 /* eslint-disable react/no-unused-prop-types */
-/* eslint-disable react/no-unused-state */
 import { type CacheConfig } from 'react-relay/lib/RelayCombinedEnvironmentTypes';
 import {
   type Environment,
@@ -29,11 +28,11 @@ type RetryCallbacks = {
   handleRetryAfterError: (error: Error) => void,
 };
 
-export type RenderProps = {
+export type RenderProps = {|
   error: ?Error,
   props: ?Object,
   retry: ?() => void,
-};
+|};
 
 type Props = {
   cacheConfig?: ?CacheConfig,
