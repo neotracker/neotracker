@@ -10,6 +10,7 @@ import { AppBar } from './components/main/appBar';
 import { type AppOptions } from './AppContext';
 import { AppFooter } from './components/main/appFooter';
 import { GlobalSnackbar } from './components/common/snackbar';
+import { Leaderboard } from './components/common/advertising';
 import { type Theme } from './styles/createTheme';
 
 import { mapAppOptions } from './utils';
@@ -124,7 +125,10 @@ function App({
           [classes.contentNormal]: true,
         })}
       >
-        <div className={classes.contentInner}>{children}</div>
+        <div className={classes.contentInner}>
+          <Leaderboard />
+          {children}
+        </div>
         <AppFooter />
       </div>
       <GlobalSnackbar />

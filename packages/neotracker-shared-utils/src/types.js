@@ -18,6 +18,13 @@ export type AppOptions = {|
   maintenance: boolean,
   disableWalletModify: boolean,
   confirmLimitMS: number,
+  adclerks?: {|
+    id?: number,
+    zones?: {|
+      leaderboard?: number,
+      mobileLeaderboard?: number,
+    |},
+  |},
 |};
 
 export type NetworkType = 'main' | 'test' | 'priv';
