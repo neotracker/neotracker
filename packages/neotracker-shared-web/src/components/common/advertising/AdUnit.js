@@ -38,9 +38,7 @@ class AdUnit extends React.Component<Props, void> {
     const { className, getZoneID, appOptions } = this.props;
     const zoneID = getZoneID(appOptions);
     return zoneID == null ? null : (
-      <div className={className}>
-        <div id={`pubclerks_${zoneID}`} />
-      </div>
+      <div className={className} id={`pubclerks_${zoneID}`} />
     );
   }
 }
