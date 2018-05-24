@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 55bd95749c95809a010e4e2a5cb64176
+ * @relayHash f2cf8cf3a8b9cfc8cb26659a323cad78
  */
 
 /* eslint-disable */
@@ -21,15 +21,15 @@ export type AssetTransactionPagingViewQueryResponse = {|
     +transactions: {|
       +edges: $ReadOnlyArray<{|
         +node: {|
-          +$fragmentRefs: TransactionPagingView_transactions$ref,
-        |},
+          +$fragmentRefs: TransactionPagingView_transactions$ref
+        |}
       |}>,
       +pageInfo: {|
         +hasPreviousPage: boolean,
         +hasNextPage: boolean,
       |},
     |},
-  |},
+  |}
 |};
 */
 
@@ -315,5 +315,6 @@ return {
   }
 };
 })();
+// prettier-ignore
 (node/*: any*/).hash = '5c0d1b0d2a628ef39527be8e700ed7ca';
 module.exports = node;

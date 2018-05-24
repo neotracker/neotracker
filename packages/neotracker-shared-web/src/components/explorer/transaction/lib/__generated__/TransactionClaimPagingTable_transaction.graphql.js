@@ -8,7 +8,7 @@
 
 /*::
 import type { ConcreteFragment } from 'relay-runtime';
-import type { FragmentReference } from 'relay-runtime';
+import type { FragmentReference } from "relay-runtime";
 declare export opaque type TransactionClaimPagingTable_transaction$ref: FragmentReference;
 export type TransactionClaimPagingTable_transaction = {|
   +id: string,
@@ -33,5 +33,6 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
+// prettier-ignore
 (node/*: any*/).hash = 'c8fc831087fed706a824afbb9f31e967';
 module.exports = node;

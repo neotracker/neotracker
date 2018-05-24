@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash ebc566fc2c775326c36bf57c95b604d4
+ * @relayHash de97cbbcfb47fa1f65a1069eb36af73f
  */
 
 /* eslint-disable */
@@ -23,17 +23,17 @@ export type AddressSearchQueryResponse = {|
         +coins: {|
           +edges: $ReadOnlyArray<{|
             +node: {|
-              +$fragmentRefs: CoinTable_coins$ref,
-            |},
-          |}>,
+              +$fragmentRefs: CoinTable_coins$ref
+            |}
+          |}>
         |},
         +$fragmentRefs: AddressPagingView_addresses$ref,
-      |},
+      |}
     |}>,
     +pageInfo: {|
-      +hasNextPage: boolean,
+      +hasNextPage: boolean
     |},
-  |},
+  |}
 |};
 */
 
@@ -388,5 +388,6 @@ return {
   }
 };
 })();
+// prettier-ignore
 (node/*: any*/).hash = '333ec241a076d27a42437e8e51aa3e30';
 module.exports = node;

@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 40438beb3b21ba5634a769448032060d
+ * @relayHash f7fb7637642815d48c6e19ea7b22688f
  */
 
 /* eslint-disable */
@@ -11,13 +11,13 @@
 import type { ConcreteRequest } from 'relay-runtime';
 type ContractView_contract$ref = any;
 export type ContractQueryVariables = {|
-  hash: string,
+  hash: string
 |};
 export type ContractQueryResponse = {|
   +contract: ?{|
     +name: string,
     +$fragmentRefs: ContractView_contract$ref,
-  |},
+  |}
 |};
 */
 
@@ -244,5 +244,6 @@ return {
   }
 };
 })();
+// prettier-ignore
 (node/*: any*/).hash = '8c98408ee303d4da40179a46eb1378b9';
 module.exports = node;

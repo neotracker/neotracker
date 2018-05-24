@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash ab5e6b482724c211d663b774fd736507
+ * @relayHash fd5554d5ec4662b8415a97105937a3d6
  */
 
 /* eslint-disable */
@@ -15,19 +15,19 @@ export type SearchQueryVariables = {|
 |};
 export type SearchQueryResponse = {|
   +address: ?{|
-    +id: string,
+    +id: string
   |},
   +asset: ?{|
-    +id: string,
+    +id: string
   |},
   +block: ?{|
-    +index: number,
+    +index: number
   |},
   +contract: ?{|
-    +id: string,
+    +id: string
   |},
   +transaction: ?{|
-    +id: string,
+    +id: string
   |},
 |};
 */
@@ -209,5 +209,6 @@ return {
   }
 };
 })();
+// prettier-ignore
 (node/*: any*/).hash = '67a60cb2cab0ab7643af5a2e195e9dcb';
 module.exports = node;

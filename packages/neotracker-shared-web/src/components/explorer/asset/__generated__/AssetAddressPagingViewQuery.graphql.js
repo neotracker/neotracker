@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash a4f0b07813370ae16b1f7bc87e25af7c
+ * @relayHash f1dfaf875a1c66da21158b0e7ebc3eb9
  */
 
 /* eslint-disable */
@@ -27,14 +27,14 @@ export type AssetAddressPagingViewQueryResponse = {|
             +$fragmentRefs: AddressPagingView_addresses$ref,
           |},
           +$fragmentRefs: Coin_coin$ref,
-        |},
+        |}
       |}>,
       +pageInfo: {|
         +hasNextPage: boolean,
         +endCursor: ?string,
       |},
     |},
-  |},
+  |}
 |};
 */
 
@@ -391,5 +391,6 @@ return {
   }
 };
 })();
+// prettier-ignore
 (node/*: any*/).hash = '20d1d7a35e01b851b759660d0530ad9d';
 module.exports = node;

@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash e7271141cb7f35664bbdb66bcd6493c2
+ * @relayHash 115c5993e4a1e7840d1239c5328d1198
  */
 
 /* eslint-disable */
@@ -11,12 +11,12 @@
 import type { ConcreteRequest } from 'relay-runtime';
 type AddressView_address$ref = any;
 export type AddressQueryVariables = {|
-  hash: string,
+  hash: string
 |};
 export type AddressQueryResponse = {|
   +address: ?{|
-    +$fragmentRefs: AddressView_address$ref,
-  |},
+    +$fragmentRefs: AddressView_address$ref
+  |}
 |};
 */
 
@@ -310,5 +310,6 @@ return {
   }
 };
 })();
+// prettier-ignore
 (node/*: any*/).hash = '51c3731b6bd28ae1927cbd3bb77c025b';
 module.exports = node;

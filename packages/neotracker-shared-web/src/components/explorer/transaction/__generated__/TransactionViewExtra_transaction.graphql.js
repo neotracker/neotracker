@@ -9,7 +9,7 @@
 /*::
 import type { ConcreteFragment } from 'relay-runtime';
 type TransferTable_transfers$ref = any;
-import type { FragmentReference } from 'relay-runtime';
+import type { FragmentReference } from "relay-runtime";
 declare export opaque type TransactionViewExtra_transaction$ref: FragmentReference;
 export type TransactionViewExtra_transaction = {|
   +type: string,
@@ -20,9 +20,9 @@ export type TransactionViewExtra_transaction = {|
   +transfers: {|
     +edges: $ReadOnlyArray<{|
       +node: {|
-        +$fragmentRefs: TransferTable_transfers$ref,
-      |},
-    |}>,
+        +$fragmentRefs: TransferTable_transfers$ref
+      |}
+    |}>
   |},
   +$refType: TransactionViewExtra_transaction$ref,
 |};
@@ -108,5 +108,6 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
+// prettier-ignore
 (node/*: any*/).hash = 'e37bcd0303711c3d77652b72ac1abe55';
 module.exports = node;

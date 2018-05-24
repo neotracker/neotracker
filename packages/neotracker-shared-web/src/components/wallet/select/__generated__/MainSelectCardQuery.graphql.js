@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 25e951921df5713503522f51e53195e8
+ * @relayHash b674cc453c5ca4264b19abd976907301
  */
 
 /* eslint-disable */
@@ -11,12 +11,12 @@
 import type { ConcreteRequest } from 'relay-runtime';
 type SelectCard_address$ref = any;
 export type MainSelectCardQueryVariables = {|
-  hash: string,
+  hash: string
 |};
 export type MainSelectCardQueryResponse = {|
   +address: ?{|
-    +$fragmentRefs: SelectCard_address$ref,
-  |},
+    +$fragmentRefs: SelectCard_address$ref
+  |}
 |};
 */
 
@@ -214,5 +214,6 @@ return {
   }
 };
 })();
+// prettier-ignore
 (node/*: any*/).hash = 'da11af964d40c0563ed417ad4167a082';
 module.exports = node;

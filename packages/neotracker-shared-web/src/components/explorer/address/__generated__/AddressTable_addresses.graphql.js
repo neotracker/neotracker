@@ -8,7 +8,7 @@
 
 /*::
 import type { ConcreteFragment } from 'relay-runtime';
-import type { FragmentReference } from 'relay-runtime';
+import type { FragmentReference } from "relay-runtime";
 declare export opaque type AddressTable_addresses$ref: FragmentReference;
 export type AddressTable_addresses = $ReadOnlyArray<{|
   +id: string,
@@ -75,5 +75,6 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
+// prettier-ignore
 (node/*: any*/).hash = '10ce50e9fe44e30286a093145dec17be';
 module.exports = node;

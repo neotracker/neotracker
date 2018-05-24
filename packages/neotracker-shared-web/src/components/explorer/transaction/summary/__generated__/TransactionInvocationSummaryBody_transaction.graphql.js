@@ -12,21 +12,21 @@ type AssetRegistered_asset$ref = any;
 type ContractPublished_contract$ref = any;
 type TransactionInputPagingTable_transaction$ref = any;
 type TransactionOutputPagingTable_transaction$ref = any;
-import type { FragmentReference } from 'relay-runtime';
+import type { FragmentReference } from "relay-runtime";
 declare export opaque type TransactionInvocationSummaryBody_transaction$ref: FragmentReference;
 export type TransactionInvocationSummaryBody_transaction = {|
   +asset: ?{|
-    +$fragmentRefs: AssetRegistered_asset$ref,
+    +$fragmentRefs: AssetRegistered_asset$ref
   |},
   +contracts: {|
     +edges: $ReadOnlyArray<{|
       +node: {|
         +id: string,
         +$fragmentRefs: ContractPublished_contract$ref,
-      |},
-    |}>,
+      |}
+    |}>
   |},
-  +$fragmentRefs: (TransactionInputPagingTable_transaction$ref & TransactionOutputPagingTable_transaction$ref),
+  +$fragmentRefs: TransactionInputPagingTable_transaction$ref & TransactionOutputPagingTable_transaction$ref,
   +$refType: TransactionInvocationSummaryBody_transaction$ref,
 |};
 */
@@ -112,5 +112,6 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
+// prettier-ignore
 (node/*: any*/).hash = 'c0224394aa31264826f7a3a68c806abb';
 module.exports = node;

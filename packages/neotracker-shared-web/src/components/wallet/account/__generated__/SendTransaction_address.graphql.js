@@ -8,7 +8,7 @@
 
 /*::
 import type { ConcreteFragment } from 'relay-runtime';
-import type { FragmentReference } from 'relay-runtime';
+import type { FragmentReference } from "relay-runtime";
 declare export opaque type SendTransaction_address$ref: FragmentReference;
 export type SendTransaction_address = {|
   +coins: {|
@@ -21,8 +21,8 @@ export type SendTransaction_address = {|
           +precision: number,
           +symbol: string,
         |},
-      |},
-    |}>,
+      |}
+    |}>
   |},
   +$refType: SendTransaction_address$ref,
 |};
@@ -117,5 +117,6 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
+// prettier-ignore
 (node/*: any*/).hash = 'c292c6bfc5ce1b8aa1c21d4133363939';
 module.exports = node;

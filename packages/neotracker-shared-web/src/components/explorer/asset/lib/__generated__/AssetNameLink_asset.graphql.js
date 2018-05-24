@@ -8,7 +8,7 @@
 
 /*::
 import type { ConcreteFragment } from 'relay-runtime';
-import type { FragmentReference } from 'relay-runtime';
+import type { FragmentReference } from "relay-runtime";
 declare export opaque type AssetNameLink_asset$ref: FragmentReference;
 export type AssetNameLink_asset = {|
   +id: string,
@@ -41,5 +41,6 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
+// prettier-ignore
 (node/*: any*/).hash = '5444e77732d825ff725a0e4a80c444c2';
 module.exports = node;

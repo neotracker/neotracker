@@ -8,7 +8,7 @@
 
 /*::
 import type { ConcreteFragment } from 'relay-runtime';
-import type { FragmentReference } from 'relay-runtime';
+import type { FragmentReference } from "relay-runtime";
 declare export opaque type PriceChart_pair_data_points$ref: FragmentReference;
 export type PriceChart_pair_data_points = $ReadOnlyArray<{|
   +time: number,
@@ -43,5 +43,6 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
+// prettier-ignore
 (node/*: any*/).hash = 'e0328816c3b92ffb3f778b8ad4d00a37';
 module.exports = node;

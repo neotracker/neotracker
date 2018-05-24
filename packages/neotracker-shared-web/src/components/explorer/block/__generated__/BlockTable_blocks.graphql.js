@@ -8,7 +8,7 @@
 
 /*::
 import type { ConcreteFragment } from 'relay-runtime';
-import type { FragmentReference } from 'relay-runtime';
+import type { FragmentReference } from "relay-runtime";
 declare export opaque type BlockTable_blocks$ref: FragmentReference;
 export type BlockTable_blocks = $ReadOnlyArray<{|
   +index: number,
@@ -67,5 +67,6 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
+// prettier-ignore
 (node/*: any*/).hash = 'b0c8bcdc10a1297c75827628b8c7072e';
 module.exports = node;

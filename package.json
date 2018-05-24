@@ -21,19 +21,19 @@
     "@babel/register": "7.0.0-beta.44",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "8.2.3",
-    "babel-plugin-relay": "1.5.0",
+    "babel-plugin-relay": "1.6.0",
     "eslint": "4.19.1",
     "eslint-config-airbnb": "16.1.0",
     "eslint-config-prettier": "2.9.0",
     "eslint-plugin-eslint-comments": "2.0.2",
-    "eslint-plugin-flowtype": "2.46.3",
-    "eslint-plugin-import": "2.11.0",
+    "eslint-plugin-flowtype": "2.47.1",
+    "eslint-plugin-import": "2.12.0",
     "eslint-plugin-jsx-a11y": "6.0.3",
     "eslint-plugin-react": "7.8.2",
     "flow-bin": "0.72.0",
     "husky": "0.14.3",
     "lerna": "2.11.0",
-    "lint-staged": "7.0.4",
+    "lint-staged": "7.1.2",
     "prettier": "1.12.1"
   },
   "engines": {
@@ -53,9 +53,9 @@
   "resolutions": {
     "ajv": "6.5.0",
     "bn.js": "4.11.8",
-    "grpc": "1.11.3",
-    "react": "16.3.2",
-    "react-dom": "16.3.2"
+    "grpc": "1.12.1",
+    "react": "16.4.0",
+    "react-dom": "16.4.0"
   },
   "scripts": {
     "develop:create-tables": "babel-node ./packages/neotracker-build-scrape/src/entry/createTables.js",

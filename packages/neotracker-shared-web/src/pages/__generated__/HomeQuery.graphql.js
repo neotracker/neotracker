@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash e65a6096073ce133cc56755d2c2d69ae
+ * @relayHash da1b19a41e3e2d1bfefe7e9b376aeaed
  */
 
 /* eslint-disable */
@@ -14,30 +14,30 @@ type MarketCard_neo_btc_data_points$ref = any;
 type MarketCard_neo_current_price$ref = any;
 type MarketCard_neo_usd_data_points$ref = any;
 type TransactionTable_transactions$ref = any;
-export type HomeQueryVariables = {| |};
+export type HomeQueryVariables = {||};
 export type HomeQueryResponse = {|
   +blocks: {|
     +edges: $ReadOnlyArray<{|
       +node: {|
-        +$fragmentRefs: BlockTable_blocks$ref,
-      |},
-    |}>,
+        +$fragmentRefs: BlockTable_blocks$ref
+      |}
+    |}>
   |},
   +transactions: {|
     +edges: $ReadOnlyArray<{|
       +node: {|
-        +$fragmentRefs: TransactionTable_transactions$ref,
-      |},
-    |}>,
+        +$fragmentRefs: TransactionTable_transactions$ref
+      |}
+    |}>
   |},
   +neo_btc_data_points: $ReadOnlyArray<{|
-    +$fragmentRefs: MarketCard_neo_btc_data_points$ref,
+    +$fragmentRefs: MarketCard_neo_btc_data_points$ref
   |}>,
   +neo_usd_data_points: $ReadOnlyArray<{|
-    +$fragmentRefs: MarketCard_neo_usd_data_points$ref,
+    +$fragmentRefs: MarketCard_neo_usd_data_points$ref
   |}>,
   +neo_current_price: ?{|
-    +$fragmentRefs: MarketCard_neo_current_price$ref,
+    +$fragmentRefs: MarketCard_neo_current_price$ref
   |},
 |};
 */
@@ -613,5 +613,6 @@ return {
   }
 };
 })();
+// prettier-ignore
 (node/*: any*/).hash = '2f668f0b0b7975ad399ebcb9caa1fce0';
 module.exports = node;

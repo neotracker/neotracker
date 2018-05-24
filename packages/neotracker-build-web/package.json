@@ -24,9 +24,9 @@
     "neotracker-server-graphql": "^0.0.1-alpha.0",
     "neotracker-server-web": "^0.0.1-alpha.0",
     "neotracker-shared-utils": "^0.0.1-alpha.0",
-    "recompose": "^0.27.0",
+    "recompose": "^0.27.1",
     "relay-compiler": "^1.5.0",
-    "rxjs": "^6.0.0",
+    "rxjs": "^6.2.0",
     "safe-stable-stringify": "^1.0.1",
     "webpack": "^4.8.3"
   }

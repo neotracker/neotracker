@@ -9,7 +9,7 @@
 /*::
 import type { ConcreteFragment } from 'relay-runtime';
 type AddressTransferPagingView_address$ref = any;
-import type { FragmentReference } from 'relay-runtime';
+import type { FragmentReference } from "relay-runtime";
 declare export opaque type WalletTransfersCard_address$ref: FragmentReference;
 export type WalletTransfersCard_address = {|
   +$fragmentRefs: AddressTransferPagingView_address$ref,
@@ -32,5 +32,6 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
+// prettier-ignore
 (node/*: any*/).hash = 'c1c90f1911ddb52fc464ea0b008a56e2';
 module.exports = node;

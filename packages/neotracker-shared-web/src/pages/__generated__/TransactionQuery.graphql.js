@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash cefd67ace0c7add551df8ea1b32a30a9
+ * @relayHash 25f2f666928c48b2b931fe5baf8b2cb2
  */
 
 /* eslint-disable */
@@ -11,13 +11,13 @@
 import type { ConcreteRequest } from 'relay-runtime';
 type TransactionView_transaction$ref = any;
 export type TransactionQueryVariables = {|
-  hash: string,
+  hash: string
 |};
 export type TransactionQueryResponse = {|
   +transaction: ?{|
     +id: string,
     +$fragmentRefs: TransactionView_transaction$ref,
-  |},
+  |}
 |};
 */
 
@@ -495,5 +495,6 @@ return {
   }
 };
 })();
+// prettier-ignore
 (node/*: any*/).hash = '41720aa53fac5601b0810f0f0b932be0';
 module.exports = node;

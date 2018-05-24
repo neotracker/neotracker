@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 7fcf4c4ec1de906f17c6aad29fb5ff03
+ * @relayHash 38364683dc47705525dce630cada8d8e
  */
 
 /* eslint-disable */
@@ -21,15 +21,15 @@ export type AssetTransferPagingViewQueryResponse = {|
     +transfers: {|
       +edges: $ReadOnlyArray<{|
         +node: {|
-          +$fragmentRefs: TransferPagingView_transfers$ref,
-        |},
+          +$fragmentRefs: TransferPagingView_transfers$ref
+        |}
       |}>,
       +pageInfo: {|
         +hasPreviousPage: boolean,
         +hasNextPage: boolean,
       |},
     |},
-  |},
+  |}
 |};
 */
 
@@ -354,5 +354,6 @@ return {
   }
 };
 })();
+// prettier-ignore
 (node/*: any*/).hash = '9f288814310d023d79d5184ba7117f94';
 module.exports = node;

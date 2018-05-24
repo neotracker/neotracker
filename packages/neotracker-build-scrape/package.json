@@ -18,6 +18,6 @@
     "neotracker-server-db": "^0.0.1-alpha.0",
     "neotracker-server-scrape": "^0.0.1-alpha.0",
     "neotracker-shared-utils": "^0.0.1-alpha.0",
-    "rxjs": "^6.0.0"
+    "rxjs": "^6.2.0"
   }
 }

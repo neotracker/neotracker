@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 83064d4050c2e34e6ba5ffaaa32102a8
+ * @relayHash 4555ad8fa0762cfe442d2af1054e5b74
  */
 
 /* eslint-disable */
@@ -18,13 +18,13 @@ export type BlockSearchQueryResponse = {|
   +blocks: {|
     +edges: $ReadOnlyArray<{|
       +node: {|
-        +$fragmentRefs: BlockPagingView_blocks$ref,
-      |},
+        +$fragmentRefs: BlockPagingView_blocks$ref
+      |}
     |}>,
     +pageInfo: {|
-      +hasNextPage: boolean,
+      +hasNextPage: boolean
     |},
-  |},
+  |}
 |};
 */
 
@@ -258,5 +258,6 @@ return {
   }
 };
 })();
+// prettier-ignore
 (node/*: any*/).hash = '3fb266daa51f6a40b7227df7a1179a3d';
 module.exports = node;

@@ -9,7 +9,7 @@
 /*::
 import type { ConcreteFragment } from 'relay-runtime';
 type PriceChart_pair_data_points$ref = any;
-import type { FragmentReference } from 'relay-runtime';
+import type { FragmentReference } from "relay-runtime";
 declare export opaque type BTCPriceChart_btc_data_points$ref: FragmentReference;
 export type BTCPriceChart_btc_data_points = $ReadOnlyArray<{|
   +$fragmentRefs: PriceChart_pair_data_points$ref,
@@ -34,5 +34,6 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
+// prettier-ignore
 (node/*: any*/).hash = 'fa5fce173bf5986c5f9b6ad8364ebff3';
 module.exports = node;

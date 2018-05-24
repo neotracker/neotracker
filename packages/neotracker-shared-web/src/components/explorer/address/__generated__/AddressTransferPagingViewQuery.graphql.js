@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash ca25c927a4e32b9101a03135f1c3bb74
+ * @relayHash 82338f5ba41a5b5c9759bf8b7f51e1c0
  */
 
 /* eslint-disable */
@@ -21,15 +21,15 @@ export type AddressTransferPagingViewQueryResponse = {|
     +transfers: {|
       +edges: $ReadOnlyArray<{|
         +node: {|
-          +$fragmentRefs: TransferPagingView_transfers$ref,
-        |},
+          +$fragmentRefs: TransferPagingView_transfers$ref
+        |}
       |}>,
       +pageInfo: {|
         +hasPreviousPage: boolean,
         +hasNextPage: boolean,
       |},
     |},
-  |},
+  |}
 |};
 */
 
@@ -354,5 +354,6 @@ return {
   }
 };
 })();
+// prettier-ignore
 (node/*: any*/).hash = '20270f35a4ecdfb5a904c6cb34c829ff';
 module.exports = node;

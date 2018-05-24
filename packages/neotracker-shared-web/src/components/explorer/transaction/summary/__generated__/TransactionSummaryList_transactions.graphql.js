@@ -9,7 +9,7 @@
 /*::
 import type { ConcreteFragment } from 'relay-runtime';
 type TransactionSummary_transaction$ref = any;
-import type { FragmentReference } from 'relay-runtime';
+import type { FragmentReference } from "relay-runtime";
 declare export opaque type TransactionSummaryList_transactions$ref: FragmentReference;
 export type TransactionSummaryList_transactions = $ReadOnlyArray<{|
   +id: string,
@@ -42,5 +42,6 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
+// prettier-ignore
 (node/*: any*/).hash = '233d8bff4060ca45833bc4ae66b5ece5';
 module.exports = node;

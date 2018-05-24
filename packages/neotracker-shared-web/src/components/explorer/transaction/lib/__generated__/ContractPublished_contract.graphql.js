@@ -9,7 +9,7 @@
 /*::
 import type { ConcreteFragment } from 'relay-runtime';
 type ContractNameLink_contract$ref = any;
-import type { FragmentReference } from 'relay-runtime';
+import type { FragmentReference } from "relay-runtime";
 declare export opaque type ContractPublished_contract$ref: FragmentReference;
 export type ContractPublished_contract = {|
   +$fragmentRefs: ContractNameLink_contract$ref,
@@ -32,5 +32,6 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
+// prettier-ignore
 (node/*: any*/).hash = 'df08967a4a1bcacf28431844879c816c';
 module.exports = node;

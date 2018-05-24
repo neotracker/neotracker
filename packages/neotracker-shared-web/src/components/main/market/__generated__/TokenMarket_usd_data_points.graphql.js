@@ -10,10 +10,10 @@
 import type { ConcreteFragment } from 'relay-runtime';
 type BTCPriceChart_usd_data_points$ref = any;
 type CNYPriceChart_usd_data_points$ref = any;
-import type { FragmentReference } from 'relay-runtime';
+import type { FragmentReference } from "relay-runtime";
 declare export opaque type TokenMarket_usd_data_points$ref: FragmentReference;
 export type TokenMarket_usd_data_points = $ReadOnlyArray<{|
-  +$fragmentRefs: (BTCPriceChart_usd_data_points$ref & CNYPriceChart_usd_data_points$ref),
+  +$fragmentRefs: BTCPriceChart_usd_data_points$ref & CNYPriceChart_usd_data_points$ref,
   +$refType: TokenMarket_usd_data_points$ref,
 |}>;
 */
@@ -40,5 +40,6 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
+// prettier-ignore
 (node/*: any*/).hash = '413be9f1213b18e66b345b59241fdb22';
 module.exports = node;

@@ -10,15 +10,15 @@
 import type { ConcreteFragment } from 'relay-runtime';
 type TransactionInputPagingTable_transaction$ref = any;
 type TransactionOutputPagingTable_transaction$ref = any;
-import type { FragmentReference } from 'relay-runtime';
+import type { FragmentReference } from "relay-runtime";
 declare export opaque type TransactionEnrollmentSummaryBody_transaction$ref: FragmentReference;
 export type TransactionEnrollmentSummaryBody_transaction = {|
   +enrollment: ?{|
     +address: {|
-      +id: string,
-    |},
+      +id: string
+    |}
   |},
-  +$fragmentRefs: (TransactionInputPagingTable_transaction$ref & TransactionOutputPagingTable_transaction$ref),
+  +$fragmentRefs: TransactionInputPagingTable_transaction$ref & TransactionOutputPagingTable_transaction$ref,
   +$refType: TransactionEnrollmentSummaryBody_transaction$ref,
 |};
 */
@@ -72,5 +72,6 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
+// prettier-ignore
 (node/*: any*/).hash = '558bcfd30dd431ca65dc96a7dc758689';
 module.exports = node;

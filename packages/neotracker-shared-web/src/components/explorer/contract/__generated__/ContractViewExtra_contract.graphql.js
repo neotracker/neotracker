@@ -9,12 +9,12 @@
 /*::
 import type { ConcreteFragment } from 'relay-runtime';
 type TransactionSummary_transaction$ref = any;
-import type { FragmentReference } from 'relay-runtime';
+import type { FragmentReference } from "relay-runtime";
 declare export opaque type ContractViewExtra_contract$ref: FragmentReference;
 export type ContractViewExtra_contract = {|
   +script: string,
   +transaction: {|
-    +$fragmentRefs: TransactionSummary_transaction$ref,
+    +$fragmentRefs: TransactionSummary_transaction$ref
   |},
   +$refType: ContractViewExtra_contract$ref,
 |};
@@ -53,5 +53,6 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
+// prettier-ignore
 (node/*: any*/).hash = '6cadf5222dc2039b1b562e0ca765134d';
 module.exports = node;

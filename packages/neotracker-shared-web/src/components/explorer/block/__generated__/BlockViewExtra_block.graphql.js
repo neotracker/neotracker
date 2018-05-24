@@ -9,7 +9,7 @@
 /*::
 import type { ConcreteFragment } from 'relay-runtime';
 type BlockTransactionPagingView_block$ref = any;
-import type { FragmentReference } from 'relay-runtime';
+import type { FragmentReference } from "relay-runtime";
 declare export opaque type BlockViewExtra_block$ref: FragmentReference;
 export type BlockViewExtra_block = {|
   +script: {|
@@ -61,5 +61,6 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
+// prettier-ignore
 (node/*: any*/).hash = '3f2bb3e8a16d7e3a6460d5c9c37bffdd';
 module.exports = node;

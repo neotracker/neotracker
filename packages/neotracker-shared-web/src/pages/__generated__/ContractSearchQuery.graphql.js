@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash ab7c3e0f60db7084ff064d97fca21772
+ * @relayHash 136ad6077c18d28661c9383e28eb9a20
  */
 
 /* eslint-disable */
@@ -18,14 +18,14 @@ export type ContractSearchQueryResponse = {|
   +contracts: {|
     +edges: $ReadOnlyArray<{|
       +node: {|
-        +$fragmentRefs: ContractPagingView_contracts$ref,
-      |},
+        +$fragmentRefs: ContractPagingView_contracts$ref
+      |}
     |}>,
     +pageInfo: {|
       +hasPreviousPage: boolean,
       +hasNextPage: boolean,
     |},
-  |},
+  |}
 |};
 */
 
@@ -264,5 +264,6 @@ return {
   }
 };
 })();
+// prettier-ignore
 (node/*: any*/).hash = 'd4e7e7e761ce14af14d2ab41b568b4f4';
 module.exports = node;

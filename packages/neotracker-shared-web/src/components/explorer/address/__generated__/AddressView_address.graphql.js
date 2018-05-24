@@ -11,7 +11,7 @@ import type { ConcreteFragment } from 'relay-runtime';
 type AddressViewExtra_address$ref = any;
 type CoinTable_coins$ref = any;
 type Coin_coin$ref = any;
-import type { FragmentReference } from 'relay-runtime';
+import type { FragmentReference } from "relay-runtime";
 declare export opaque type AddressView_address$ref: FragmentReference;
 export type AddressView_address = {|
   +id: string,
@@ -28,11 +28,11 @@ export type AddressView_address = {|
           +symbol: string,
         |},
         +$fragmentRefs: CoinTable_coins$ref,
-      |},
-    |}>,
+      |}
+    |}>
   |},
   +claim_value_available_coin: {|
-    +$fragmentRefs: Coin_coin$ref,
+    +$fragmentRefs: Coin_coin$ref
   |},
   +$fragmentRefs: AddressViewExtra_address$ref,
   +$refType: AddressView_address$ref,
@@ -172,5 +172,6 @@ return {
   ]
 };
 })();
+// prettier-ignore
 (node/*: any*/).hash = 'b75c902bc5b8a7c94d75a04382c28f8d';
 module.exports = node;

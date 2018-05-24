@@ -10,13 +10,13 @@
 import type { ConcreteFragment } from 'relay-runtime';
 type ActionItem_action$ref = any;
 type TransferItem_transfer$ref = any;
-import type { FragmentReference } from 'relay-runtime';
+import type { FragmentReference } from "relay-runtime";
 declare export opaque type NotificationItem_action$ref: FragmentReference;
 export type NotificationItem_action = {|
   +message: ?string,
   +args_raw: ?string,
   +transfer: ?{|
-    +$fragmentRefs: TransferItem_transfer$ref,
+    +$fragmentRefs: TransferItem_transfer$ref
   |},
   +$fragmentRefs: ActionItem_action$ref,
   +$refType: NotificationItem_action$ref,
@@ -68,5 +68,6 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
+// prettier-ignore
 (node/*: any*/).hash = '99e80303936812b18717dd00765a3654';
 module.exports = node;

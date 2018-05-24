@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 55b93907dc8acdeb7a5095891c152d42
+ * @relayHash dbe8c28c515f58f8d28fe908f0349961
  */
 
 /* eslint-disable */
@@ -14,12 +14,12 @@ type TransferCard_address$ref = any;
 type WalletTransactionsCard_address$ref = any;
 type WalletTransfersCard_address$ref = any;
 export type MainWalletViewQueryVariables = {|
-  hash: string,
+  hash: string
 |};
 export type MainWalletViewQueryResponse = {|
   +address: ?{|
-    +$fragmentRefs: (SelectCard_address$ref & TransferCard_address$ref & WalletTransactionsCard_address$ref & WalletTransfersCard_address$ref),
-  |},
+    +$fragmentRefs: SelectCard_address$ref & TransferCard_address$ref & WalletTransactionsCard_address$ref & WalletTransfersCard_address$ref
+  |}
 |};
 */
 
@@ -290,5 +290,6 @@ return {
   }
 };
 })();
+// prettier-ignore
 (node/*: any*/).hash = '647fdbf3ddc446138a9c15d55a74d0b9';
 module.exports = node;

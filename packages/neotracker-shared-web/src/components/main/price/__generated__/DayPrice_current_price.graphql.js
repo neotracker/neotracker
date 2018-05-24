@@ -8,7 +8,7 @@
 
 /*::
 import type { ConcreteFragment } from 'relay-runtime';
-import type { FragmentReference } from 'relay-runtime';
+import type { FragmentReference } from "relay-runtime";
 declare export opaque type DayPrice_current_price$ref: FragmentReference;
 export type DayPrice_current_price = {|
   +price_usd: number,
@@ -65,5 +65,6 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
+// prettier-ignore
 (node/*: any*/).hash = '1d151b55d245029de012cde66a8a52bc';
 module.exports = node;

@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash b59d34edd9d08dedf410f83cbaadc862
+ * @relayHash 4a6c072375abdab501fdad6f60b5acda
  */
 
 /* eslint-disable */
@@ -18,7 +18,7 @@ export type BlockQueryResponse = {|
   +block: ?{|
     +index: number,
     +$fragmentRefs: BlockView_block$ref,
-  |},
+  |}
 |};
 */
 
@@ -248,5 +248,6 @@ return {
   }
 };
 })();
+// prettier-ignore
 (node/*: any*/).hash = 'ff3b88b5d2d0126cb803952c2c0c2418';
 module.exports = node;

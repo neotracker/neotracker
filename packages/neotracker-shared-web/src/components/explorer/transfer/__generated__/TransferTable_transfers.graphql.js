@@ -10,14 +10,14 @@
 import type { ConcreteFragment } from 'relay-runtime';
 type AssetNameLink_asset$ref = any;
 type TransferLink_transfer$ref = any;
-import type { FragmentReference } from 'relay-runtime';
+import type { FragmentReference } from "relay-runtime";
 declare export opaque type TransferTable_transfers$ref: FragmentReference;
 export type TransferTable_transfers = $ReadOnlyArray<{|
   +from_address_id: ?string,
   +to_address_id: ?string,
   +value: string,
   +asset: {|
-    +$fragmentRefs: AssetNameLink_asset$ref,
+    +$fragmentRefs: AssetNameLink_asset$ref
   |},
   +block_time: number,
   +$fragmentRefs: TransferLink_transfer$ref,
@@ -86,5 +86,6 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
+// prettier-ignore
 (node/*: any*/).hash = 'b2ee8cf22e56817d6c66c4f23d20b32c';
 module.exports = node;
