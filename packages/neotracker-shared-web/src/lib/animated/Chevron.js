@@ -13,10 +13,10 @@ const styles = (theme: any) => ({
     transition: theme.transitions.create(['transform']),
   },
   chevronUp: {
-    transform: 'rotate(0deg)',
+    transform: 'rotate(180deg)',
   },
   chevronDown: {
-    transform: 'rotate(180deg)',
+    transform: 'rotate(0deg)',
   },
 });
 
