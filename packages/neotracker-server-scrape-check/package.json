@@ -1,0 +1,22 @@
+{
+  "name": "neotracker-server-scrape-check",
+  "version": "0.0.1-alpha.0",
+  "keywords": [
+    "neo",
+    "blockchain",
+    "neotracker"
+  ],
+  "description": "NEO Tracker scraper.",
+  "repository": "https://github.com/neotracker/neotracker",
+  "bugs": "https://github.com/neotracker/neotracker/issues",
+  "license": "MIT",
+  "main": "./src/index.js",
+  "dependencies": {
+    "bignumber.js": "^7.2.0",
+    "knex": "^0.14.6",
+    "lodash": "^4.17.10",
+    "@neo-one/client": "^1.0.0-alpha.48",
+    "@neo-one/monitor": "^1.0.0-alpha.26",
+    "neotracker-server-db": "^0.0.1-alpha.0"
+  }
+}
