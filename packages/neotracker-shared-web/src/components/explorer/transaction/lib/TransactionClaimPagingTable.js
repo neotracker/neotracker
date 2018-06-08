@@ -7,11 +7,7 @@ import { sanitizeError } from 'neotracker-shared-utils';
 
 import TransactionInputTable from './TransactionInputTable';
 
-import {
-  fragmentContainer,
-  getID,
-  queryRenderer,
-} from '../../../../graphql/relay';
+import { fragmentContainer, queryRenderer } from '../../../../graphql/relay';
 import { getPagingVariables } from '../../../../utils';
 
 import { type TransactionClaimPagingTable_transaction } from './__generated__/TransactionClaimPagingTable_transaction.graphql';
@@ -91,7 +87,7 @@ const mapPropsToVariables = ({
   transaction: TransactionClaimPagingTable_transaction,
   page: number,
 |}) => ({
-  hash: getID(transaction.id),
+  hash: transaction.hash,
   ...getPagingVariables(PAGE_SIZE, page),
 });
 
@@ -99,7 +95,7 @@ const enhance: HOC<*, *> = compose(
   fragmentContainer({
     transaction: graphql`
       fragment TransactionClaimPagingTable_transaction on Transaction {
-        id
+        hash
       }
     `,
   }),
@@ -114,7 +110,6 @@ const enhance: HOC<*, *> = compose(
         $after: String
       ) {
         transaction(hash: $hash) {
-          id
           claims(
             first: $first
             after: $after

@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash d2f6253c6b74eb2a9c5d78d617171fd6
+ * @relayHash a140f484f9cf44e8cc9632cb01cab695
  */
 
 /* eslint-disable */
@@ -17,7 +17,6 @@ export type TransactionActionPagingTableQueryVariables = {|
 |};
 export type TransactionActionPagingTableQueryResponse = {|
   +transaction: ?{|
-    +id: string,
     +actions: {|
       +edges: $ReadOnlyArray<{|
         +node: {|
@@ -28,7 +27,7 @@ export type TransactionActionPagingTableQueryResponse = {|
         +hasPreviousPage: boolean,
         +hasNextPage: boolean,
       |},
-    |},
+    |}
   |}
 |};
 */
@@ -41,8 +40,7 @@ query TransactionActionPagingTableQuery(
   $after: String
 ) {
   transaction(hash: $hash) {
-    id
-    actions(first: $first, after: $after, orderBy: [{name: "action.index", direction: "ASC NULLS LAST"}]) {
+    actions(first: $first, after: $after, orderBy: [{name: "action.index", direction: "asc"}]) {
       edges {
         node {
           ...ActionTable_actions
@@ -54,6 +52,7 @@ query TransactionActionPagingTableQuery(
         hasNextPage
       }
     }
+    id
   }
 }
 
@@ -128,14 +127,7 @@ v1 = [
     "type": "String!"
   }
 ],
-v2 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "id",
-  "args": null,
-  "storageKey": null
-},
-v3 = [
+v2 = [
   {
     "kind": "Variable",
     "name": "after",
@@ -153,14 +145,14 @@ v3 = [
     "name": "orderBy",
     "value": [
       {
-        "direction": "ASC NULLS LAST",
+        "direction": "asc",
         "name": "action.index"
       }
     ],
     "type": "[OrderByInput!]"
   }
 ],
-v4 = {
+v3 = {
   "kind": "LinkedField",
   "alias": null,
   "name": "pageInfo",
@@ -184,12 +176,19 @@ v4 = {
       "storageKey": null
     }
   ]
+},
+v4 = {
+  "kind": "ScalarField",
+  "alias": null,
+  "name": "id",
+  "args": null,
+  "storageKey": null
 };
 return {
   "kind": "Request",
   "operationKind": "query",
   "name": "TransactionActionPagingTableQuery",
-  "id": "11",
+  "id": "35",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -208,13 +207,12 @@ return {
         "concreteType": "Transaction",
         "plural": false,
         "selections": [
-          v2,
           {
             "kind": "LinkedField",
             "alias": null,
             "name": "actions",
             "storageKey": null,
-            "args": v3,
+            "args": v2,
             "concreteType": "TransactionToActionsConnection",
             "plural": false,
             "selections": [
@@ -245,7 +243,7 @@ return {
                   }
                 ]
               },
-              v4
+              v3
             ]
           }
         ]
@@ -266,13 +264,12 @@ return {
         "concreteType": "Transaction",
         "plural": false,
         "selections": [
-          v2,
           {
             "kind": "LinkedField",
             "alias": null,
             "name": "actions",
             "storageKey": null,
-            "args": v3,
+            "args": v2,
             "concreteType": "TransactionToActionsConnection",
             "plural": false,
             "selections": [
@@ -294,7 +291,7 @@ return {
                     "concreteType": "Action",
                     "plural": false,
                     "selections": [
-                      v2,
+                      v4,
                       {
                         "kind": "ScalarField",
                         "alias": null,
@@ -362,7 +359,7 @@ return {
                             "concreteType": "Asset",
                             "plural": false,
                             "selections": [
-                              v2,
+                              v4,
                               {
                                 "kind": "ScalarField",
                                 "alias": null,
@@ -372,16 +369,17 @@ return {
                               }
                             ]
                           },
-                          v2
+                          v4
                         ]
                       }
                     ]
                   }
                 ]
               },
-              v4
+              v3
             ]
-          }
+          },
+          v4
         ]
       }
     ]
@@ -389,5 +387,5 @@ return {
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = '8deb72560aaf678df5d932e7092ed933';
+(node/*: any*/).hash = 'c0cdce609bc8f1b92c501f0ae49d1351';
 module.exports = node;

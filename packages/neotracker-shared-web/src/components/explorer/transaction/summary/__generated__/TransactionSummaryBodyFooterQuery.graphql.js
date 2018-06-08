@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 10f472cd297cc16678e7c30981764a63
+ * @relayHash 0308356a444e0108665e1ce6b55afa46
  */
 
 /* eslint-disable */
@@ -109,11 +109,11 @@ fragment TransactionInvocationSummaryBody_transaction on Transaction {
 }
 
 fragment TransactionInputPagingTable_transaction on Transaction {
-  id
+  hash
 }
 
 fragment TransactionOutputPagingTable_transaction on Transaction {
-  id
+  hash
 }
 
 fragment AssetRegistered_asset on Asset {
@@ -135,7 +135,7 @@ fragment AssetNameLink_asset on Asset {
 }
 
 fragment TransactionClaimPagingTable_transaction on Transaction {
-  id
+  hash
 }
 */
 
@@ -167,7 +167,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "TransactionSummaryBodyFooterQuery",
-  "id": "1",
+  "id": "53",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -221,7 +221,13 @@ return {
             "args": null,
             "storageKey": null
           },
-          v2,
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "name": "hash",
+            "args": null,
+            "storageKey": null
+          },
           {
             "kind": "LinkedField",
             "alias": null,
@@ -319,7 +325,8 @@ return {
             "name": "system_fee",
             "args": null,
             "storageKey": null
-          }
+          },
+          v2
         ]
       }
     ]

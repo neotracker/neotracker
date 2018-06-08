@@ -14,15 +14,12 @@ import type { FragmentReference } from "relay-runtime";
 declare export opaque type TransactionView_transaction$ref: FragmentReference;
 export type TransactionView_transaction = {|
   +type: string,
-  +id: string,
+  +hash: string,
   +network_fee: string,
   +system_fee: string,
   +size: number,
   +block_time: number,
-  +block: {|
-    +confirmations: number,
-    +index: number,
-  |},
+  +block_id: number,
   +$fragmentRefs: TransactionSummaryBody_transaction$ref & TransactionViewExtra_transaction$ref,
   +$refType: TransactionView_transaction$ref,
 |};
@@ -51,7 +48,7 @@ const node/*: ConcreteFragment*/ = {
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "id",
+      "name": "hash",
       "args": null,
       "storageKey": null
     },
@@ -84,29 +81,11 @@ const node/*: ConcreteFragment*/ = {
       "storageKey": null
     },
     {
-      "kind": "LinkedField",
+      "kind": "ScalarField",
       "alias": null,
-      "name": "block",
-      "storageKey": null,
+      "name": "block_id",
       "args": null,
-      "concreteType": "Block",
-      "plural": false,
-      "selections": [
-        {
-          "kind": "ScalarField",
-          "alias": null,
-          "name": "confirmations",
-          "args": null,
-          "storageKey": null
-        },
-        {
-          "kind": "ScalarField",
-          "alias": null,
-          "name": "index",
-          "args": null,
-          "storageKey": null
-        }
-      ]
+      "storageKey": null
     },
     {
       "kind": "FragmentSpread",
@@ -116,5 +95,5 @@ const node/*: ConcreteFragment*/ = {
   ]
 };
 // prettier-ignore
-(node/*: any*/).hash = 'd2064c80d74c3c92aba2d4f1cfe349d7';
+(node/*: any*/).hash = 'eeb712619bc10ea19ec8e8a7bae352b5';
 module.exports = node;

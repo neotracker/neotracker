@@ -9,7 +9,7 @@ import { BlockIndexLink, BlockTime, getBlockSize } from '../block/lib';
 import { Table } from '../../common/table';
 
 import { formatNumber } from '../../../utils';
-import { fragmentContainer } from '../../../graphql/relay';
+import { fragmentContainer, getNumericID } from '../../../graphql/relay';
 import { withStyles } from '../../../lib/base';
 
 import { type BlockTable_blocks } from './__generated__/BlockTable_blocks.graphql';
@@ -50,7 +50,7 @@ function BlockTable({
   const validatorValues = [];
   const sizeValues = [];
   blocks.forEach(block => {
-    heightValues.push(<BlockIndexLink blockIndex={block.index} />);
+    heightValues.push(<BlockIndexLink blockIndex={getNumericID(block.id)} />);
     timeValues.push(<BlockTime blockTime={block.time} />);
     transactionsValues.push(formatNumber(block.transaction_count));
     validatorValues.push(
@@ -98,7 +98,7 @@ const enhance: HOC<*, *> = compose(
   fragmentContainer({
     blocks: graphql`
       fragment BlockTable_blocks on Block @relay(plural: true) {
-        index
+        id
         time
         transaction_count
         validator_address_id

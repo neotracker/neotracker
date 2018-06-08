@@ -2,6 +2,7 @@
 import { Model } from 'objection';
 
 import {
+  BIG_INT_ID,
   CONTRACT_VALIDATOR,
   HASH_VALIDATOR,
   INTEGER_INDEX_VALIDATOR,
@@ -16,8 +17,9 @@ export type ActionType = 'Log' | 'Notification';
 export default class Action extends BlockchainModel<string> {
   id: string;
   type: string;
-  block_index: number;
+  block_id: number;
   transaction_id: string;
+  transaction_hash: string;
   transaction_index: number;
   index: number;
   script_hash: string;
@@ -33,11 +35,11 @@ export default class Action extends BlockchainModel<string> {
       columns: [
         {
           name: 'transaction_id',
-          order: 'desc nulls first',
+          order: 'desc',
         },
         {
           name: 'index',
-          order: 'asc nulls last',
+          order: 'asc',
         },
       ],
       name: 'action_transaction_id_index',
@@ -47,7 +49,7 @@ export default class Action extends BlockchainModel<string> {
 
   static fieldSchema: FieldSchema = {
     id: {
-      type: { type: 'string' },
+      type: BIG_INT_ID,
       required: true,
       exposeGraphQL: true,
     },
@@ -56,17 +58,24 @@ export default class Action extends BlockchainModel<string> {
       required: true,
       exposeGraphQL: true,
     },
-    block_index: {
+    block_id: {
       type: INTEGER_INDEX_VALIDATOR,
+      exposeGraphQL: true,
       required: true,
     },
     transaction_id: {
+      type: BIG_INT_ID,
+      exposeGraphQL: true,
+      required: true,
+    },
+    transaction_hash: {
       type: HASH_VALIDATOR,
       exposeGraphQL: true,
       required: true,
     },
     transaction_index: {
       type: INTEGER_INDEX_VALIDATOR,
+      exposeGraphQL: true,
       required: true,
     },
     index: {
@@ -88,18 +97,6 @@ export default class Action extends BlockchainModel<string> {
       exposeGraphQL: true,
     },
   };
-
-  static makeID({
-    blockIndex,
-    transactionIndex,
-    index,
-  }: {|
-    blockIndex: number,
-    transactionIndex: number,
-    index: number,
-  |}): string {
-    return [blockIndex, transactionIndex, index].join('$');
-  }
 
   static edgeSchema: EdgeSchema = {
     transaction: {

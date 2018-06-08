@@ -14,8 +14,7 @@ type Coin_coin$ref = any;
 import type { FragmentReference } from "relay-runtime";
 declare export opaque type AddressView_address$ref: FragmentReference;
 export type AddressView_address = {|
-  +id: string,
-  +transaction_id: ?string,
+  +transaction_hash: ?string,
   +block_time: number,
   +transaction_count: number,
   +transfer_count: number,
@@ -40,15 +39,7 @@ export type AddressView_address = {|
 */
 
 
-const node/*: ConcreteFragment*/ = (function(){
-var v0 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "id",
-  "args": null,
-  "storageKey": null
-};
-return {
+const node/*: ConcreteFragment*/ = {
   "kind": "Fragment",
   "name": "AddressView_address",
   "type": "Address",
@@ -60,11 +51,10 @@ return {
       "name": "AddressViewExtra_address",
       "args": null
     },
-    v0,
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "transaction_id",
+      "name": "transaction_hash",
       "args": null,
       "storageKey": null
     },
@@ -137,7 +127,13 @@ return {
                   "concreteType": "Asset",
                   "plural": false,
                   "selections": [
-                    v0,
+                    {
+                      "kind": "ScalarField",
+                      "alias": null,
+                      "name": "id",
+                      "args": null,
+                      "storageKey": null
+                    },
                     {
                       "kind": "ScalarField",
                       "alias": null,
@@ -171,7 +167,6 @@ return {
     }
   ]
 };
-})();
 // prettier-ignore
-(node/*: any*/).hash = 'b75c902bc5b8a7c94d75a04382c28f8d';
+(node/*: any*/).hash = 'e1baa2863d319f3e8e39d4b4cbb7cc2d';
 module.exports = node;

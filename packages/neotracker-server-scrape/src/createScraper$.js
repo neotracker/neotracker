@@ -80,7 +80,10 @@ export default ({
       distinctUntilChanged(),
     ),
     monitor: rootMonitor,
-  }).pipe(publishReplay(1), refCount());
+  }).pipe(
+    publishReplay(1),
+    refCount(),
+  );
 
   const client$ = options$.pipe(
     map(options => options.rpcURL),
@@ -137,12 +140,14 @@ export default ({
                 id: hash,
                 transaction_id:
                   transactionModel == null ? null : transactionModel.id,
+                transaction_hash:
+                  transactionModel == null ? null : transactionModel.hash,
+                block_id:
+                  transactionModel == null ? null : transactionModel.block_id,
                 block_time:
                   transactionModel == null
                     ? 1468595301
                     : transactionModel.block_time,
-                name: hash,
-                verified: false,
               })
               .first()
               .returning('*')
@@ -151,10 +156,11 @@ export default ({
           getKeyFromSave: ({ hash }: AddressSave) => hash,
         });
 
-        const getAssetDB = async (
-          { asset, transactionModel, hash }: AssetSave,
-          monitor: Monitor,
-        ) => {
+        const getAssetID = ({ transactionModel, hash }: AssetSave) =>
+          hash == null ? transactionModel.hash : hash;
+
+        const getAssetDB = async (assetSave: AssetSave, monitor: Monitor) => {
+          const { asset, transactionModel } = assetSave;
           let adminAddress;
           if (asset.admin != null) {
             adminAddress = await address.save(
@@ -166,7 +172,9 @@ export default ({
             );
           }
           return {
-            id: hash == null ? transactionModel.id : hash,
+            id: getAssetID(assetSave),
+            transaction_id: transactionModel.id,
+            transaction_hash: transactionModel.hash,
             type: asset.type,
             name_raw: JSON.stringify(asset.name),
             symbol:
@@ -175,7 +183,6 @@ export default ({
             precision: asset.precision,
             owner: asset.owner,
             admin_address_id: adminAddress == null ? null : adminAddress.id,
-            transaction_id: transactionModel.id,
             block_time: transactionModel.block_time,
           };
         };
@@ -205,8 +212,7 @@ export default ({
                 .execute();
             },
             getKey: (key: string) => key,
-            getKeyFromSave: ({ transactionModel }: AssetSave) =>
-              transactionModel.id,
+            getKeyFromSave: (assetSave: AssetSave) => getAssetID(assetSave),
           }),
           contract: new WriteCache({
             fetch: (key: string, monitor: Monitor) =>
@@ -233,8 +239,9 @@ export default ({
                   email: contract.email,
                   description: contract.description,
                   transaction_id: transactionModel.id,
+                  transaction_hash: transactionModel.hash,
                   block_time: transactionModel.block_time,
-                  block_index: blockModel.index,
+                  block_id: blockModel.id,
                 }),
             getKey: (key: string) => key,
             getKeyFromSave: ({ contract }: ContractSave) => contract.hash,
@@ -243,7 +250,7 @@ export default ({
             fetch: (index: number, monitor: Monitor) =>
               BlockModel.query(rootLoader.db)
                 .context(makeQueryContext(monitor))
-                .where('index', index)
+                .where('id', index)
                 .first()
                 .then(
                   result =>
@@ -257,8 +264,6 @@ export default ({
             getKey: (index: number) => `${index}`,
             getKeyFromSave: ({ index }: SystemFeeSave) => index,
           }),
-          rpxFixed: false,
-          rhtFixed: false,
           contractModelsToProcess: [],
           nep5Contracts: {},
           migrationHandler: new MigrationHandler({

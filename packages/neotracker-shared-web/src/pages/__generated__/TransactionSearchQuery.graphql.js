@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash b29207237aea1a4abaff3a3f0b2b07d4
+ * @relayHash 60eec265434c4a92501ae422e93a84e6
  */
 
 /* eslint-disable */
@@ -35,7 +35,7 @@ query TransactionSearchQuery(
   $first: Int!
   $after: String
 ) {
-  transactions(orderBy: [{name: "transaction.block_time", direction: "desc nulls first"}, {name: "transaction.index", direction: "asc nulls last"}, {name: "transaction.id", direction: "desc nulls last"}], filters: [{name: "transaction.type", operator: "!=", value: "MinerTransaction"}], first: $first, after: $after) {
+  transactions(orderBy: [{name: "transaction.id", direction: "desc"}], filters: [{name: "transaction.type", operator: "!=", value: "MinerTransaction"}], first: $first, after: $after) {
     edges {
       node {
         ...TransactionPagingView_transactions
@@ -59,7 +59,7 @@ fragment TransactionTable_transactions on Transaction {
 }
 
 fragment TransactionSummary_transaction on Transaction {
-  id
+  hash
   ...TransactionSummaryHeader_transaction
 }
 
@@ -76,7 +76,7 @@ fragment TransactionHeaderBackground_transaction on Transaction {
 
 fragment TransactionTypeAndLink_transaction on Transaction {
   type
-  id
+  hash
 }
 */
 
@@ -125,15 +125,7 @@ v1 = [
     "name": "orderBy",
     "value": [
       {
-        "direction": "desc nulls first",
-        "name": "transaction.block_time"
-      },
-      {
-        "direction": "asc nulls last",
-        "name": "transaction.index"
-      },
-      {
-        "direction": "desc nulls last",
+        "direction": "desc",
         "name": "transaction.id"
       }
     ],
@@ -169,7 +161,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "TransactionSearchQuery",
-  "id": "6",
+  "id": "31",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -262,6 +254,13 @@ return {
                   {
                     "kind": "ScalarField",
                     "alias": null,
+                    "name": "hash",
+                    "args": null,
+                    "storageKey": null
+                  },
+                  {
+                    "kind": "ScalarField",
+                    "alias": null,
                     "name": "type",
                     "args": null,
                     "storageKey": null
@@ -285,5 +284,5 @@ return {
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = 'd37c73a9f4a6711b7f4c1d91600233c8';
+(node/*: any*/).hash = '4860721ba4e9f38229ff36fc7e9905a5';
 module.exports = node;

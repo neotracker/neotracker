@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 444ab0f258172d5a54c5172b892c3c9c
+ * @relayHash 0003c36e9d1846316fa372f0b70d770b
  */
 
 /* eslint-disable */
@@ -11,13 +11,12 @@
 import type { ConcreteRequest } from 'relay-runtime';
 type TransactionPagingView_transactions$ref = any;
 export type BlockTransactionPagingViewQueryVariables = {|
-  hash: string,
+  index: number,
   first: number,
   after?: ?string,
 |};
 export type BlockTransactionPagingViewQueryResponse = {|
   +block: ?{|
-    +id: string,
     +transactions: {|
       +edges: $ReadOnlyArray<{|
         +node: {|
@@ -28,7 +27,7 @@ export type BlockTransactionPagingViewQueryResponse = {|
         +hasPreviousPage: boolean,
         +hasNextPage: boolean,
       |},
-    |},
+    |}
   |}
 |};
 */
@@ -36,13 +35,12 @@ export type BlockTransactionPagingViewQueryResponse = {|
 
 /*
 query BlockTransactionPagingViewQuery(
-  $hash: String!
+  $index: Int!
   $first: Int!
   $after: String
 ) {
-  block(hash: $hash) {
-    id
-    transactions(first: $first, after: $after, orderBy: [{name: "transaction.index", direction: "asc nulls last"}]) {
+  block(index: $index) {
+    transactions(first: $first, after: $after, orderBy: [{name: "transaction.index", direction: "asc"}]) {
       edges {
         node {
           ...TransactionPagingView_transactions
@@ -54,6 +52,7 @@ query BlockTransactionPagingViewQuery(
         hasNextPage
       }
     }
+    id
   }
 }
 
@@ -67,7 +66,7 @@ fragment TransactionTable_transactions on Transaction {
 }
 
 fragment TransactionSummary_transaction on Transaction {
-  id
+  hash
   ...TransactionSummaryHeader_transaction
 }
 
@@ -84,7 +83,7 @@ fragment TransactionHeaderBackground_transaction on Transaction {
 
 fragment TransactionTypeAndLink_transaction on Transaction {
   type
-  id
+  hash
 }
 */
 
@@ -92,8 +91,8 @@ const node/*: ConcreteRequest*/ = (function(){
 var v0 = [
   {
     "kind": "LocalArgument",
-    "name": "hash",
-    "type": "String!",
+    "name": "index",
+    "type": "Int!",
     "defaultValue": null
   },
   {
@@ -112,19 +111,12 @@ var v0 = [
 v1 = [
   {
     "kind": "Variable",
-    "name": "hash",
-    "variableName": "hash",
-    "type": "String"
+    "name": "index",
+    "variableName": "index",
+    "type": "Int"
   }
 ],
-v2 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "id",
-  "args": null,
-  "storageKey": null
-},
-v3 = [
+v2 = [
   {
     "kind": "Variable",
     "name": "after",
@@ -142,14 +134,14 @@ v3 = [
     "name": "orderBy",
     "value": [
       {
-        "direction": "asc nulls last",
+        "direction": "asc",
         "name": "transaction.index"
       }
     ],
     "type": "[OrderByInput!]"
   }
 ],
-v4 = {
+v3 = {
   "kind": "LinkedField",
   "alias": null,
   "name": "pageInfo",
@@ -173,12 +165,19 @@ v4 = {
       "storageKey": null
     }
   ]
+},
+v4 = {
+  "kind": "ScalarField",
+  "alias": null,
+  "name": "id",
+  "args": null,
+  "storageKey": null
 };
 return {
   "kind": "Request",
   "operationKind": "query",
   "name": "BlockTransactionPagingViewQuery",
-  "id": "8",
+  "id": "32",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -197,13 +196,12 @@ return {
         "concreteType": "Block",
         "plural": false,
         "selections": [
-          v2,
           {
             "kind": "LinkedField",
             "alias": null,
             "name": "transactions",
             "storageKey": null,
-            "args": v3,
+            "args": v2,
             "concreteType": "BlockToTransactionsConnection",
             "plural": false,
             "selections": [
@@ -234,7 +232,7 @@ return {
                   }
                 ]
               },
-              v4
+              v3
             ]
           }
         ]
@@ -255,13 +253,12 @@ return {
         "concreteType": "Block",
         "plural": false,
         "selections": [
-          v2,
           {
             "kind": "LinkedField",
             "alias": null,
             "name": "transactions",
             "storageKey": null,
-            "args": v3,
+            "args": v2,
             "concreteType": "BlockToTransactionsConnection",
             "plural": false,
             "selections": [
@@ -283,7 +280,14 @@ return {
                     "concreteType": "Transaction",
                     "plural": false,
                     "selections": [
-                      v2,
+                      v4,
+                      {
+                        "kind": "ScalarField",
+                        "alias": null,
+                        "name": "hash",
+                        "args": null,
+                        "storageKey": null
+                      },
                       {
                         "kind": "ScalarField",
                         "alias": null,
@@ -302,9 +306,10 @@ return {
                   }
                 ]
               },
-              v4
+              v3
             ]
-          }
+          },
+          v4
         ]
       }
     ]
@@ -312,5 +317,5 @@ return {
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = '758520037ca311696f22323047e60249';
+(node/*: any*/).hash = 'f99bc674b14c73bce54abcd354dfddec';
 module.exports = node;

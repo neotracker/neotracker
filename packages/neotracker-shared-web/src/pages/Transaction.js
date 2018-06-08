@@ -11,7 +11,7 @@ import { PageError } from '../components/common/error';
 import { PageLoading } from '../components/common/loading';
 import { TransactionView } from '../components/explorer/transaction';
 
-import { getID, queryRenderer } from '../graphql/relay';
+import { queryRenderer } from '../graphql/relay';
 
 import { type TransactionQueryResponse } from './__generated__/TransactionQuery.graphql';
 
@@ -55,7 +55,7 @@ function Transaction({
   return (
     <div className={className}>
       <Helmet>
-        <title>{`Transaction ${getID(props.transaction.id)}`}</title>
+        <title>{`Transaction ${props.transaction.hash}`}</title>
       </Helmet>
       <TransactionView transaction={props.transaction} />
     </div>
@@ -69,7 +69,7 @@ export default (queryRenderer(
   graphql`
     query TransactionQuery($hash: String!) {
       transaction(hash: $hash) {
-        id
+        hash
         ...TransactionView_transaction
       }
     }

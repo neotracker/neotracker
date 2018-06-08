@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash da1b19a41e3e2d1bfefe7e9b376aeaed
+ * @relayHash 5f55f81d610ab68c269778020db6aac5
  */
 
 /* eslint-disable */
@@ -45,7 +45,7 @@ export type HomeQueryResponse = {|
 
 /*
 query HomeQuery {
-  blocks(orderBy: [{name: "block.index", direction: "desc nulls last"}], first: 16) {
+  blocks(orderBy: [{name: "block.id", direction: "desc"}], first: 16) {
     edges {
       node {
         ...BlockTable_blocks
@@ -53,7 +53,7 @@ query HomeQuery {
       }
     }
   }
-  transactions(orderBy: [{name: "transaction.block_time", direction: "desc nulls first"}, {name: "transaction.index", direction: "asc nulls last"}, {name: "transaction.id", direction: "desc nulls last"}], filters: [{name: "transaction.type", operator: "!=", value: "MinerTransaction"}], first: 20) {
+  transactions(orderBy: [{name: "transaction.id", direction: "desc"}], filters: [{name: "transaction.type", operator: "!=", value: "MinerTransaction"}], first: 20) {
     edges {
       node {
         ...TransactionTable_transactions
@@ -76,7 +76,7 @@ query HomeQuery {
 }
 
 fragment BlockTable_blocks on Block {
-  index
+  id
   time
   transaction_count
   validator_address_id
@@ -149,7 +149,7 @@ fragment PriceChart_pair_data_points on DataPoint {
 }
 
 fragment TransactionSummary_transaction on Transaction {
-  id
+  hash
   ...TransactionSummaryHeader_transaction
 }
 
@@ -166,7 +166,7 @@ fragment TransactionHeaderBackground_transaction on Transaction {
 
 fragment TransactionTypeAndLink_transaction on Transaction {
   type
-  id
+  hash
 }
 */
 
@@ -183,8 +183,8 @@ var v0 = [
     "name": "orderBy",
     "value": [
       {
-        "direction": "desc nulls last",
-        "name": "block.index"
+        "direction": "desc",
+        "name": "block.id"
       }
     ],
     "type": "[OrderByInput!]"
@@ -214,15 +214,7 @@ v1 = [
     "name": "orderBy",
     "value": [
       {
-        "direction": "desc nulls first",
-        "name": "transaction.block_time"
-      },
-      {
-        "direction": "asc nulls last",
-        "name": "transaction.index"
-      },
-      {
-        "direction": "desc nulls last",
+        "direction": "desc",
         "name": "transaction.id"
       }
     ],
@@ -264,19 +256,19 @@ v5 = [
 v6 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "time",
+  "name": "id",
   "args": null,
   "storageKey": null
 },
 v7 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "id",
+  "name": "time",
   "args": null,
   "storageKey": null
 },
 v8 = [
-  v6,
+  v7,
   {
     "kind": "ScalarField",
     "alias": null,
@@ -284,13 +276,13 @@ v8 = [
     "args": null,
     "storageKey": null
   },
-  v7
+  v6
 ];
 return {
   "kind": "Request",
   "operationKind": "query",
   "name": "HomeQuery",
-  "id": "18",
+  "id": "42",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -304,7 +296,7 @@ return {
         "kind": "LinkedField",
         "alias": null,
         "name": "blocks",
-        "storageKey": "blocks(first:16,orderBy:[{\"direction\":\"desc nulls last\",\"name\":\"block.index\"}])",
+        "storageKey": "blocks(first:16,orderBy:[{\"direction\":\"desc\",\"name\":\"block.id\"}])",
         "args": v0,
         "concreteType": "BlocksConnection",
         "plural": false,
@@ -342,7 +334,7 @@ return {
         "kind": "LinkedField",
         "alias": null,
         "name": "transactions",
-        "storageKey": "transactions(filters:[{\"name\":\"transaction.type\",\"operator\":\"!=\",\"value\":\"MinerTransaction\"}],first:20,orderBy:[{\"direction\":\"desc nulls first\",\"name\":\"transaction.block_time\"},{\"direction\":\"asc nulls last\",\"name\":\"transaction.index\"},{\"direction\":\"desc nulls last\",\"name\":\"transaction.id\"}])",
+        "storageKey": "transactions(filters:[{\"name\":\"transaction.type\",\"operator\":\"!=\",\"value\":\"MinerTransaction\"}],first:20,orderBy:[{\"direction\":\"desc\",\"name\":\"transaction.id\"}])",
         "args": v1,
         "concreteType": "TransactionsConnection",
         "plural": false,
@@ -435,7 +427,7 @@ return {
         "kind": "LinkedField",
         "alias": null,
         "name": "blocks",
-        "storageKey": "blocks(first:16,orderBy:[{\"direction\":\"desc nulls last\",\"name\":\"block.index\"}])",
+        "storageKey": "blocks(first:16,orderBy:[{\"direction\":\"desc\",\"name\":\"block.id\"}])",
         "args": v0,
         "concreteType": "BlocksConnection",
         "plural": false,
@@ -458,14 +450,8 @@ return {
                 "concreteType": "Block",
                 "plural": false,
                 "selections": [
-                  {
-                    "kind": "ScalarField",
-                    "alias": null,
-                    "name": "index",
-                    "args": null,
-                    "storageKey": null
-                  },
                   v6,
+                  v7,
                   {
                     "kind": "ScalarField",
                     "alias": null,
@@ -486,8 +472,7 @@ return {
                     "name": "size",
                     "args": null,
                     "storageKey": null
-                  },
-                  v7
+                  }
                 ]
               }
             ]
@@ -498,7 +483,7 @@ return {
         "kind": "LinkedField",
         "alias": null,
         "name": "transactions",
-        "storageKey": "transactions(filters:[{\"name\":\"transaction.type\",\"operator\":\"!=\",\"value\":\"MinerTransaction\"}],first:20,orderBy:[{\"direction\":\"desc nulls first\",\"name\":\"transaction.block_time\"},{\"direction\":\"asc nulls last\",\"name\":\"transaction.index\"},{\"direction\":\"desc nulls last\",\"name\":\"transaction.id\"}])",
+        "storageKey": "transactions(filters:[{\"name\":\"transaction.type\",\"operator\":\"!=\",\"value\":\"MinerTransaction\"}],first:20,orderBy:[{\"direction\":\"desc\",\"name\":\"transaction.id\"}])",
         "args": v1,
         "concreteType": "TransactionsConnection",
         "plural": false,
@@ -521,7 +506,14 @@ return {
                 "concreteType": "Transaction",
                 "plural": false,
                 "selections": [
-                  v7,
+                  v6,
+                  {
+                    "kind": "ScalarField",
+                    "alias": null,
+                    "name": "hash",
+                    "args": null,
+                    "storageKey": null
+                  },
                   {
                     "kind": "ScalarField",
                     "alias": null,
@@ -606,7 +598,7 @@ return {
             "args": null,
             "storageKey": null
           },
-          v7
+          v6
         ]
       }
     ]
@@ -614,5 +606,5 @@ return {
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = '2f668f0b0b7975ad399ebcb9caa1fce0';
+(node/*: any*/).hash = 'c21c6e732bfd9e3192eae7fc06275db3';
 module.exports = node;

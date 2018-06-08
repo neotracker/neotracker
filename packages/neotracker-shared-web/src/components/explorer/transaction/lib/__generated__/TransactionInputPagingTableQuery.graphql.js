@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash ece5a166d2eb9cdc8f6fc5b6ad4b4416
+ * @relayHash 0342f998add5e60d13dbc4dd42080ca0
  */
 
 /* eslint-disable */
@@ -17,7 +17,6 @@ export type TransactionInputPagingTableQueryVariables = {|
 |};
 export type TransactionInputPagingTableQueryResponse = {|
   +transaction: ?{|
-    +id: string,
     +inputs: {|
       +edges: $ReadOnlyArray<{|
         +node: {|
@@ -28,7 +27,7 @@ export type TransactionInputPagingTableQueryResponse = {|
         +hasPreviousPage: boolean,
         +hasNextPage: boolean,
       |},
-    |},
+    |}
   |}
 |};
 */
@@ -41,8 +40,7 @@ query TransactionInputPagingTableQuery(
   $after: String
 ) {
   transaction(hash: $hash) {
-    id
-    inputs(first: $first, after: $after, orderBy: [{name: "transaction_input_output.output_transaction_index", direction: "ASC NULLS LAST"}]) {
+    inputs(first: $first, after: $after, orderBy: [{name: "transaction_input_output.output_transaction_index", direction: "asc"}]) {
       edges {
         node {
           ...TransactionInputTable_inputs
@@ -54,12 +52,13 @@ query TransactionInputPagingTableQuery(
         hasNextPage
       }
     }
+    id
   }
 }
 
 fragment TransactionInputTable_inputs on TransactionInputOutput {
   ...TransactionInputOutputTable_input_outputs
-  output_transaction_id
+  output_transaction_hash
 }
 
 fragment TransactionInputOutputTable_input_outputs on TransactionInputOutput {
@@ -106,14 +105,7 @@ v1 = [
     "type": "String!"
   }
 ],
-v2 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "id",
-  "args": null,
-  "storageKey": null
-},
-v3 = [
+v2 = [
   {
     "kind": "Variable",
     "name": "after",
@@ -131,14 +123,14 @@ v3 = [
     "name": "orderBy",
     "value": [
       {
-        "direction": "ASC NULLS LAST",
+        "direction": "asc",
         "name": "transaction_input_output.output_transaction_index"
       }
     ],
     "type": "[OrderByInput!]"
   }
 ],
-v4 = {
+v3 = {
   "kind": "LinkedField",
   "alias": null,
   "name": "pageInfo",
@@ -162,12 +154,19 @@ v4 = {
       "storageKey": null
     }
   ]
+},
+v4 = {
+  "kind": "ScalarField",
+  "alias": null,
+  "name": "id",
+  "args": null,
+  "storageKey": null
 };
 return {
   "kind": "Request",
   "operationKind": "query",
   "name": "TransactionInputPagingTableQuery",
-  "id": "13",
+  "id": "37",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -186,13 +185,12 @@ return {
         "concreteType": "Transaction",
         "plural": false,
         "selections": [
-          v2,
           {
             "kind": "LinkedField",
             "alias": null,
             "name": "inputs",
             "storageKey": null,
-            "args": v3,
+            "args": v2,
             "concreteType": "TransactionToInputsConnection",
             "plural": false,
             "selections": [
@@ -223,7 +221,7 @@ return {
                   }
                 ]
               },
-              v4
+              v3
             ]
           }
         ]
@@ -244,13 +242,12 @@ return {
         "concreteType": "Transaction",
         "plural": false,
         "selections": [
-          v2,
           {
             "kind": "LinkedField",
             "alias": null,
             "name": "inputs",
             "storageKey": null,
-            "args": v3,
+            "args": v2,
             "concreteType": "TransactionToInputsConnection",
             "plural": false,
             "selections": [
@@ -295,7 +292,7 @@ return {
                         "concreteType": "Asset",
                         "plural": false,
                         "selections": [
-                          v2,
+                          v4,
                           {
                             "kind": "ScalarField",
                             "alias": null,
@@ -308,18 +305,19 @@ return {
                       {
                         "kind": "ScalarField",
                         "alias": null,
-                        "name": "output_transaction_id",
+                        "name": "output_transaction_hash",
                         "args": null,
                         "storageKey": null
                       },
-                      v2
+                      v4
                     ]
                   }
                 ]
               },
-              v4
+              v3
             ]
-          }
+          },
+          v4
         ]
       }
     ]
@@ -327,5 +325,5 @@ return {
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = 'c8bfd851c8a6606c5e0b71ffe74626fc';
+(node/*: any*/).hash = '3eb64677838705104a30aa1c4d0bc091';
 module.exports = node;

@@ -10,6 +10,8 @@ export default class BaseEdge<TID1: ID, TID2: ID> extends Base {
   static +id1Type: Class<BaseModel<TID1>>;
   static +id2Type: Class<BaseModel<TID2>>;
   static +materializedView: ?string = null;
+  static id2Desc: boolean = false;
+
   static indices: Array<IndexSchema> = [];
 
   static get modelSchema(): ModelSchema {
@@ -32,8 +34,17 @@ export default class BaseEdge<TID1: ID, TID2: ID> extends Base {
       isEdge: true,
       indices: [
         {
-          type: 'simple',
-          columnNames: ['id1', 'id2'],
+          type: 'order',
+          columns: [
+            {
+              name: 'id1',
+              order: 'asc',
+            },
+            {
+              name: 'id2',
+              order: this.id2Desc ? 'desc' : 'asc',
+            },
+          ],
           unique: true,
           name: `${this.tableName}_id1_id2`,
         },

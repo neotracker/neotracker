@@ -28,8 +28,8 @@ type Props = {|
 |};
 function BlockView({ block, className }: Props): React.Element<*> {
   const columns = [
-    ['Hash', getID(block.id)],
-    ['Index', formatNumber(block.index)],
+    ['Hash', block.hash],
+    ['Index', formatNumber(getID(block.id))],
     ['Time', <BlockTime blockTime={block.time} />],
   ];
   if (block.validator_address_id != null) {
@@ -41,7 +41,6 @@ function BlockView({ block, className }: Props): React.Element<*> {
   }
   columns.push(
     ...[
-      ['Confirmations', formatNumber(block.confirmations)],
       ['Size', getBlockSize(block.size)],
       ['Version', formatNumber(block.version)],
       ['Merkle Root', block.merkle_root],
@@ -49,24 +48,24 @@ function BlockView({ block, className }: Props): React.Element<*> {
     ],
   );
 
-  if (block.previous_block_id != null) {
+  if (block.previous_block_hash != null) {
     columns.push([
       'Previous Block',
-      <BlockHashLink blockHash={block.previous_block_id} />,
+      <BlockHashLink blockHash={block.previous_block_hash} />,
     ]);
   }
 
-  if (block.next_block_id != null) {
+  if (block.next_block_hash != null) {
     columns.push([
       'Next Block',
-      <BlockHashLink blockHash={block.next_block_id} />,
+      <BlockHashLink blockHash={block.next_block_hash} />,
     ]);
   }
 
   return (
     <PageView
       className={className}
-      id={getID(block.id)}
+      id={block.hash}
       title="Block"
       name="Block"
       pluralName="Blocks"
@@ -82,13 +81,12 @@ const enhance: HOC<*, *> = compose(
     block: graphql`
       fragment BlockView_block on Block {
         id
-        index
-        confirmations
+        hash
         size
         version
         time
-        previous_block_id
-        next_block_id
+        previous_block_hash
+        next_block_hash
         merkle_root
         transaction_count
         validator_address_id

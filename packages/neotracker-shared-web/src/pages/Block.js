@@ -11,7 +11,7 @@ import { Error404 } from '../lib/error';
 import { PageError } from '../components/common/error';
 import { PageLoading } from '../components/common/loading';
 
-import { queryRenderer } from '../graphql/relay';
+import { getNumericID, queryRenderer } from '../graphql/relay';
 
 import { type BlockQueryResponse } from './__generated__/BlockQuery.graphql';
 
@@ -50,7 +50,7 @@ function Block({ props, error, retry, className }: Props): React.Element<any> {
   return (
     <div className={className}>
       <Helmet>
-        <title>{`Block ${props.block.index}`}</title>
+        <title>{`Block ${getNumericID(props.block.id)}`}</title>
       </Helmet>
       <BlockView block={props.block} />
     </div>
@@ -63,9 +63,9 @@ const mapPropsToVariables = ({ match }) => ({
 });
 export default (queryRenderer(
   graphql`
-    query BlockQuery($hash: String, $index: String) {
+    query BlockQuery($hash: String, $index: Int) {
       block(hash: $hash, index: $index) {
-        index
+        id
         ...BlockView_block
       }
     }

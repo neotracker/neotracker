@@ -103,6 +103,7 @@ function TransactionViewExtra({
   return <div className={classNames(className, classes.root)}>{elements}</div>;
 }
 
+// TODO: Should transfers be ordered?
 const enhance: HOC<*, *> = compose(
   fragmentContainer({
     transaction: graphql`

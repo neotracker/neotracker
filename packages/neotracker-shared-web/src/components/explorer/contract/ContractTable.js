@@ -59,7 +59,7 @@ function ContractTable({
     authorValues.push(contract.author);
     registeredAt.push(
       <TransactionTimeLink
-        transactionHash={contract.transaction_id}
+        transactionHash={contract.transaction_hash}
         blockTime={contract.block_time}
       />,
     );
@@ -99,7 +99,7 @@ const enhance: HOC<*, *> = compose(
         id
         name
         author
-        transaction_id
+        transaction_hash
         block_time
       }
     `,

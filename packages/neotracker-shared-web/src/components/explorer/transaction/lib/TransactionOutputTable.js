@@ -70,7 +70,7 @@ function TransactionOutputTable({
         (Unspent)
       </Typography>
     );
-    if (output.input_transaction_id != null) {
+    if (output.input_transaction_hash != null) {
       link = (
         <div key={idx} className={classNames(classes.spentArea, classes.row)}>
           <Typography variant="body1" className={classes.spent}>
@@ -79,7 +79,7 @@ function TransactionOutputTable({
           <IconLink
             key={idx}
             icon="arrow_forward"
-            path={routes.makeTransaction(output.input_transaction_id)}
+            path={routes.makeTransaction(output.input_transaction_hash)}
           />
         </div>
       );
@@ -111,7 +111,7 @@ const enhance: HOC<*, *> = compose(
       fragment TransactionOutputTable_outputs on TransactionInputOutput
         @relay(plural: true) {
         ...TransactionInputOutputTable_input_outputs
-        input_transaction_id
+        input_transaction_hash
       }
     `,
   }),

@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash fd5554d5ec4662b8415a97105937a3d6
+ * @relayHash b916da3f7e5cbce9cf1edfd5e6d88159
  */
 
 /* eslint-disable */
@@ -11,7 +11,7 @@
 import type { ConcreteRequest } from 'relay-runtime';
 export type SearchQueryVariables = {|
   value: string,
-  index?: ?string,
+  index?: ?number,
 |};
 export type SearchQueryResponse = {|
   +address: ?{|
@@ -21,13 +21,13 @@ export type SearchQueryResponse = {|
     +id: string
   |},
   +block: ?{|
-    +index: number
+    +id: string
   |},
   +contract: ?{|
     +id: string
   |},
   +transaction: ?{|
-    +id: string
+    +hash: string
   |},
 |};
 */
@@ -36,7 +36,7 @@ export type SearchQueryResponse = {|
 /*
 query SearchQuery(
   $value: String!
-  $index: String
+  $index: Int
 ) {
   address(hash: $value) {
     id
@@ -45,13 +45,13 @@ query SearchQuery(
     id
   }
   block(hash: $value, index: $index) {
-    index
     id
   }
   contract(hash: $value) {
     id
   }
   transaction(hash: $value) {
+    hash
     id
   }
 }
@@ -68,7 +68,7 @@ var v0 = [
   {
     "kind": "LocalArgument",
     "name": "index",
-    "type": "String",
+    "type": "Int",
     "defaultValue": null
   }
 ],
@@ -110,28 +110,30 @@ v5 = {
   "plural": false,
   "selections": v3
 },
-v6 = [
-  {
-    "kind": "Variable",
-    "name": "hash",
-    "variableName": "value",
-    "type": "String"
-  },
-  {
-    "kind": "Variable",
-    "name": "index",
-    "variableName": "index",
-    "type": "String"
-  }
-],
-v7 = {
-  "kind": "ScalarField",
+v6 = {
+  "kind": "LinkedField",
   "alias": null,
-  "name": "index",
-  "args": null,
-  "storageKey": null
+  "name": "block",
+  "storageKey": null,
+  "args": [
+    {
+      "kind": "Variable",
+      "name": "hash",
+      "variableName": "value",
+      "type": "String"
+    },
+    {
+      "kind": "Variable",
+      "name": "index",
+      "variableName": "index",
+      "type": "Int"
+    }
+  ],
+  "concreteType": "Block",
+  "plural": false,
+  "selections": v3
 },
-v8 = {
+v7 = {
   "kind": "LinkedField",
   "alias": null,
   "name": "contract",
@@ -141,21 +143,18 @@ v8 = {
   "plural": false,
   "selections": v3
 },
-v9 = {
-  "kind": "LinkedField",
+v8 = {
+  "kind": "ScalarField",
   "alias": null,
-  "name": "transaction",
-  "storageKey": null,
-  "args": v1,
-  "concreteType": "Transaction",
-  "plural": false,
-  "selections": v3
+  "name": "hash",
+  "args": null,
+  "storageKey": null
 };
 return {
   "kind": "Request",
   "operationKind": "query",
   "name": "SearchQuery",
-  "id": "25",
+  "id": "48",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -167,20 +166,20 @@ return {
     "selections": [
       v4,
       v5,
+      v6,
+      v7,
       {
         "kind": "LinkedField",
         "alias": null,
-        "name": "block",
+        "name": "transaction",
         "storageKey": null,
-        "args": v6,
-        "concreteType": "Block",
+        "args": v1,
+        "concreteType": "Transaction",
         "plural": false,
         "selections": [
-          v7
+          v8
         ]
-      },
-      v8,
-      v9
+      }
     ]
   },
   "operation": {
@@ -190,25 +189,25 @@ return {
     "selections": [
       v4,
       v5,
+      v6,
+      v7,
       {
         "kind": "LinkedField",
         "alias": null,
-        "name": "block",
+        "name": "transaction",
         "storageKey": null,
-        "args": v6,
-        "concreteType": "Block",
+        "args": v1,
+        "concreteType": "Transaction",
         "plural": false,
         "selections": [
-          v7,
+          v8,
           v2
         ]
-      },
-      v8,
-      v9
+      }
     ]
   }
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = '67a60cb2cab0ab7643af5a2e195e9dcb';
+(node/*: any*/).hash = '200bb22a5672885a2a75490b1c024ad2';
 module.exports = node;

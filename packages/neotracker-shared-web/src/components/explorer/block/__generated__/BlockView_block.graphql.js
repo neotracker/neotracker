@@ -13,13 +13,12 @@ import type { FragmentReference } from "relay-runtime";
 declare export opaque type BlockView_block$ref: FragmentReference;
 export type BlockView_block = {|
   +id: string,
-  +index: number,
-  +confirmations: number,
+  +hash: string,
   +size: number,
   +version: number,
   +time: number,
-  +previous_block_id: ?string,
-  +next_block_id: ?string,
+  +previous_block_hash: ?string,
+  +next_block_hash: ?string,
   +merkle_root: string,
   +transaction_count: number,
   +validator_address_id: ?string,
@@ -39,7 +38,7 @@ const node/*: ConcreteFragment*/ = {
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "previous_block_id",
+      "name": "previous_block_hash",
       "args": null,
       "storageKey": null
     },
@@ -47,13 +46,6 @@ const node/*: ConcreteFragment*/ = {
       "kind": "ScalarField",
       "alias": null,
       "name": "id",
-      "args": null,
-      "storageKey": null
-    },
-    {
-      "kind": "ScalarField",
-      "alias": null,
-      "name": "confirmations",
       "args": null,
       "storageKey": null
     },
@@ -81,14 +73,14 @@ const node/*: ConcreteFragment*/ = {
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "index",
+      "name": "hash",
       "args": null,
       "storageKey": null
     },
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "next_block_id",
+      "name": "next_block_hash",
       "args": null,
       "storageKey": null
     },
@@ -121,5 +113,5 @@ const node/*: ConcreteFragment*/ = {
   ]
 };
 // prettier-ignore
-(node/*: any*/).hash = 'a0031152056cc4ae87e88544bc3059f3';
+(node/*: any*/).hash = '952cf7784552d0246a6908510315ff36';
 module.exports = node;

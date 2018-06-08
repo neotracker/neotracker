@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 8d3061cf55cf21ce2a4c89f6ee37c4ff
+ * @relayHash 10b55b5a31ae4d5ab6126aab737089cd
  */
 
 /* eslint-disable */
@@ -17,7 +17,6 @@ export type TransactionOutputPagingTableQueryVariables = {|
 |};
 export type TransactionOutputPagingTableQueryResponse = {|
   +transaction: ?{|
-    +id: string,
     +outputs: {|
       +edges: $ReadOnlyArray<{|
         +node: {|
@@ -28,7 +27,7 @@ export type TransactionOutputPagingTableQueryResponse = {|
         +hasPreviousPage: boolean,
         +hasNextPage: boolean,
       |},
-    |},
+    |}
   |}
 |};
 */
@@ -41,7 +40,6 @@ query TransactionOutputPagingTableQuery(
   $after: String
 ) {
   transaction(hash: $hash) {
-    id
     outputs(first: $first, after: $after, orderBy: [{name: "transaction_input_output.output_transaction_index", direction: "ASC NULLS LAST"}]) {
       edges {
         node {
@@ -54,12 +52,13 @@ query TransactionOutputPagingTableQuery(
         hasNextPage
       }
     }
+    id
   }
 }
 
 fragment TransactionOutputTable_outputs on TransactionInputOutput {
   ...TransactionInputOutputTable_input_outputs
-  input_transaction_id
+  input_transaction_hash
 }
 
 fragment TransactionInputOutputTable_input_outputs on TransactionInputOutput {
@@ -106,14 +105,7 @@ v1 = [
     "type": "String!"
   }
 ],
-v2 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "id",
-  "args": null,
-  "storageKey": null
-},
-v3 = [
+v2 = [
   {
     "kind": "Variable",
     "name": "after",
@@ -138,7 +130,7 @@ v3 = [
     "type": "[OrderByInput!]"
   }
 ],
-v4 = {
+v3 = {
   "kind": "LinkedField",
   "alias": null,
   "name": "pageInfo",
@@ -162,12 +154,19 @@ v4 = {
       "storageKey": null
     }
   ]
+},
+v4 = {
+  "kind": "ScalarField",
+  "alias": null,
+  "name": "id",
+  "args": null,
+  "storageKey": null
 };
 return {
   "kind": "Request",
   "operationKind": "query",
   "name": "TransactionOutputPagingTableQuery",
-  "id": "27",
+  "id": "50",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -186,13 +185,12 @@ return {
         "concreteType": "Transaction",
         "plural": false,
         "selections": [
-          v2,
           {
             "kind": "LinkedField",
             "alias": null,
             "name": "outputs",
             "storageKey": null,
-            "args": v3,
+            "args": v2,
             "concreteType": "TransactionToOutputsConnection",
             "plural": false,
             "selections": [
@@ -223,7 +221,7 @@ return {
                   }
                 ]
               },
-              v4
+              v3
             ]
           }
         ]
@@ -244,13 +242,12 @@ return {
         "concreteType": "Transaction",
         "plural": false,
         "selections": [
-          v2,
           {
             "kind": "LinkedField",
             "alias": null,
             "name": "outputs",
             "storageKey": null,
-            "args": v3,
+            "args": v2,
             "concreteType": "TransactionToOutputsConnection",
             "plural": false,
             "selections": [
@@ -295,7 +292,7 @@ return {
                         "concreteType": "Asset",
                         "plural": false,
                         "selections": [
-                          v2,
+                          v4,
                           {
                             "kind": "ScalarField",
                             "alias": null,
@@ -308,18 +305,19 @@ return {
                       {
                         "kind": "ScalarField",
                         "alias": null,
-                        "name": "input_transaction_id",
+                        "name": "input_transaction_hash",
                         "args": null,
                         "storageKey": null
                       },
-                      v2
+                      v4
                     ]
                   }
                 ]
               },
-              v4
+              v3
             ]
-          }
+          },
+          v4
         ]
       }
     ]
@@ -327,5 +325,5 @@ return {
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = '11bb465026f113aae00bcf63621a3cd8';
+(node/*: any*/).hash = '2805848e4f4b51f3b9d4e1ee0e9610c1';
 module.exports = node;

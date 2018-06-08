@@ -9,7 +9,7 @@ import { TransactionPagingView } from '../transaction';
 
 import {
   fragmentContainer,
-  getID,
+  getNumericID,
   queryRenderer,
 } from '../../../graphql/relay';
 import { getPagingVariables } from '../../../utils';
@@ -85,7 +85,7 @@ const mapPropsToVariables = ({
   block: BlockTransactionPagingView_block,
   page: number,
 |}) => ({
-  hash: getID(block.id),
+  index: getNumericID(block.id),
   ...getPagingVariables(PAGE_SIZE, page),
 });
 
@@ -103,18 +103,15 @@ const enhance: HOC<*, *> = compose(
   queryRenderer(
     graphql`
       query BlockTransactionPagingViewQuery(
-        $hash: String!
+        $index: Int!
         $first: Int!
         $after: String
       ) {
-        block(hash: $hash) {
-          id
+        block(index: $index) {
           transactions(
             first: $first
             after: $after
-            orderBy: [
-              { name: "transaction.index", direction: "asc nulls last" }
-            ]
+            orderBy: [{ name: "transaction.index", direction: "asc" }]
           ) {
             edges {
               node {

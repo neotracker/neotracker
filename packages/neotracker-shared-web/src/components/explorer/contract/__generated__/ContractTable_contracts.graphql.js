@@ -14,7 +14,7 @@ export type ContractTable_contracts = $ReadOnlyArray<{|
   +id: string,
   +name: string,
   +author: string,
-  +transaction_id: string,
+  +transaction_hash: string,
   +block_time: number,
   +$refType: ContractTable_contracts$ref,
 |}>;
@@ -54,7 +54,7 @@ const node/*: ConcreteFragment*/ = {
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "transaction_id",
+      "name": "transaction_hash",
       "args": null,
       "storageKey": null
     },
@@ -68,5 +68,5 @@ const node/*: ConcreteFragment*/ = {
   ]
 };
 // prettier-ignore
-(node/*: any*/).hash = '7e497841ab56b77e6d74378b29a00de1';
+(node/*: any*/).hash = '4a5e77019882be5072e6ecde2bc51400';
 module.exports = node;

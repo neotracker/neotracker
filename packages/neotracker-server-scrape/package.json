@@ -12,8 +12,8 @@
   "license": "MIT",
   "main": "./src/index.js",
   "dependencies": {
-    "@neo-one/client": "^1.0.0-alpha.48",
-    "@neo-one/monitor": "^1.0.0-alpha.26",
+    "@neo-one/client": "^1.0.0-alpha.52",
+    "@neo-one/monitor": "^1.0.0-alpha.28",
     "bignumber.js": "^7.2.0",
     "ix": "^2.3.5",
     "knex": "^0.14.6",

@@ -23,7 +23,7 @@ type Props = {|
 |};
 function TransferLink({ transfer, className }: Props): React.Element<*> {
   // TODO: Make this link directly to action on transaction page
-  const transactionHash = transfer.transaction_id;
+  const transactionHash = transfer.transaction_hash;
   return (
     <TransactionLink className={className} transactionHash={transactionHash} />
   );
@@ -33,7 +33,7 @@ const enhance: HOC<*, *> = compose(
   fragmentContainer({
     transfer: graphql`
       fragment TransferLink_transfer on Transfer {
-        transaction_id
+        transaction_hash
       }
     `,
   }),

@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 4555ad8fa0762cfe442d2af1054e5b74
+ * @relayHash 21d71b3e42bf7bf4ddf0657a776135cf
  */
 
 /* eslint-disable */
@@ -34,7 +34,7 @@ query BlockSearchQuery(
   $first: Int!
   $after: String
 ) {
-  blocks(orderBy: [{name: "block.index", direction: "desc nulls last"}], first: $first, after: $after) {
+  blocks(orderBy: [{name: "block.id", direction: "desc"}], first: $first, after: $after) {
     edges {
       node {
         ...BlockPagingView_blocks
@@ -52,7 +52,7 @@ fragment BlockPagingView_blocks on Block {
 }
 
 fragment BlockTable_blocks on Block {
-  index
+  id
   time
   transaction_count
   validator_address_id
@@ -93,8 +93,8 @@ v1 = [
     "name": "orderBy",
     "value": [
       {
-        "direction": "desc nulls last",
-        "name": "block.index"
+        "direction": "desc",
+        "name": "block.id"
       }
     ],
     "type": "[OrderByInput!]"
@@ -122,7 +122,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "BlockSearchQuery",
-  "id": "17",
+  "id": "41",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -208,7 +208,7 @@ return {
                   {
                     "kind": "ScalarField",
                     "alias": null,
-                    "name": "index",
+                    "name": "id",
                     "args": null,
                     "storageKey": null
                   },
@@ -239,13 +239,6 @@ return {
                     "name": "size",
                     "args": null,
                     "storageKey": null
-                  },
-                  {
-                    "kind": "ScalarField",
-                    "alias": null,
-                    "name": "id",
-                    "args": null,
-                    "storageKey": null
                   }
                 ]
               }
@@ -259,5 +252,5 @@ return {
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = '3fb266daa51f6a40b7227df7a1179a3d';
+(node/*: any*/).hash = '6688219afee81069bf3d564ccafc8307';
 module.exports = node;

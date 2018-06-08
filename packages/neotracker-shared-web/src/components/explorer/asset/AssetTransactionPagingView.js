@@ -112,10 +112,7 @@ const enhance: HOC<*, *> = compose(
           transactions(
             first: $first
             after: $after
-            orderBy: [
-              { name: "transaction.block_time", direction: "desc nulls first" }
-              { name: "transaction.index", direction: "asc nulls last" }
-            ]
+            orderBy: [{ name: "asset_to_transaction.id2", direction: "desc" }]
           ) {
             edges {
               node {

@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash db847df13d7b35b888a2bfcd2920422e
+ * @relayHash 70f9b593c21e2ac838a15f9595afff1e
  */
 
 /* eslint-disable */
@@ -17,7 +17,6 @@ export type TransactionClaimPagingTableQueryVariables = {|
 |};
 export type TransactionClaimPagingTableQueryResponse = {|
   +transaction: ?{|
-    +id: string,
     +claims: {|
       +edges: $ReadOnlyArray<{|
         +node: {|
@@ -28,7 +27,7 @@ export type TransactionClaimPagingTableQueryResponse = {|
         +hasPreviousPage: boolean,
         +hasNextPage: boolean,
       |},
-    |},
+    |}
   |}
 |};
 */
@@ -41,7 +40,6 @@ query TransactionClaimPagingTableQuery(
   $after: String
 ) {
   transaction(hash: $hash) {
-    id
     claims(first: $first, after: $after, orderBy: [{name: "transaction_input_output.output_transaction_index", direction: "ASC NULLS LAST"}]) {
       edges {
         node {
@@ -54,12 +52,13 @@ query TransactionClaimPagingTableQuery(
         hasNextPage
       }
     }
+    id
   }
 }
 
 fragment TransactionInputTable_inputs on TransactionInputOutput {
   ...TransactionInputOutputTable_input_outputs
-  output_transaction_id
+  output_transaction_hash
 }
 
 fragment TransactionInputOutputTable_input_outputs on TransactionInputOutput {
@@ -106,14 +105,7 @@ v1 = [
     "type": "String!"
   }
 ],
-v2 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "id",
-  "args": null,
-  "storageKey": null
-},
-v3 = [
+v2 = [
   {
     "kind": "Variable",
     "name": "after",
@@ -138,7 +130,7 @@ v3 = [
     "type": "[OrderByInput!]"
   }
 ],
-v4 = {
+v3 = {
   "kind": "LinkedField",
   "alias": null,
   "name": "pageInfo",
@@ -162,12 +154,19 @@ v4 = {
       "storageKey": null
     }
   ]
+},
+v4 = {
+  "kind": "ScalarField",
+  "alias": null,
+  "name": "id",
+  "args": null,
+  "storageKey": null
 };
 return {
   "kind": "Request",
   "operationKind": "query",
   "name": "TransactionClaimPagingTableQuery",
-  "id": "24",
+  "id": "47",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -186,13 +185,12 @@ return {
         "concreteType": "Transaction",
         "plural": false,
         "selections": [
-          v2,
           {
             "kind": "LinkedField",
             "alias": null,
             "name": "claims",
             "storageKey": null,
-            "args": v3,
+            "args": v2,
             "concreteType": "TransactionToClaimsConnection",
             "plural": false,
             "selections": [
@@ -223,7 +221,7 @@ return {
                   }
                 ]
               },
-              v4
+              v3
             ]
           }
         ]
@@ -244,13 +242,12 @@ return {
         "concreteType": "Transaction",
         "plural": false,
         "selections": [
-          v2,
           {
             "kind": "LinkedField",
             "alias": null,
             "name": "claims",
             "storageKey": null,
-            "args": v3,
+            "args": v2,
             "concreteType": "TransactionToClaimsConnection",
             "plural": false,
             "selections": [
@@ -295,7 +292,7 @@ return {
                         "concreteType": "Asset",
                         "plural": false,
                         "selections": [
-                          v2,
+                          v4,
                           {
                             "kind": "ScalarField",
                             "alias": null,
@@ -308,18 +305,19 @@ return {
                       {
                         "kind": "ScalarField",
                         "alias": null,
-                        "name": "output_transaction_id",
+                        "name": "output_transaction_hash",
                         "args": null,
                         "storageKey": null
                       },
-                      v2
+                      v4
                     ]
                   }
                 ]
               },
-              v4
+              v3
             ]
-          }
+          },
+          v4
         ]
       }
     ]
@@ -327,5 +325,5 @@ return {
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = '1503dfc5cbf3d08b99cda2a4bee5c451';
+(node/*: any*/).hash = 'ae692659f055939aaf59816b7d68ccd6';
 module.exports = node;

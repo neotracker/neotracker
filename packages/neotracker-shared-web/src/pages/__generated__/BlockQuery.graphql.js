@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 4a6c072375abdab501fdad6f60b5acda
+ * @relayHash a380bae4960fa6e1a9d7fbdf7d817501
  */
 
 /* eslint-disable */
@@ -12,11 +12,11 @@ import type { ConcreteRequest } from 'relay-runtime';
 type BlockView_block$ref = any;
 export type BlockQueryVariables = {|
   hash?: ?string,
-  index?: ?string,
+  index?: ?number,
 |};
 export type BlockQueryResponse = {|
   +block: ?{|
-    +index: number,
+    +id: string,
     +$fragmentRefs: BlockView_block$ref,
   |}
 |};
@@ -26,24 +26,22 @@ export type BlockQueryResponse = {|
 /*
 query BlockQuery(
   $hash: String
-  $index: String
+  $index: Int
 ) {
   block(hash: $hash, index: $index) {
-    index
-    ...BlockView_block
     id
+    ...BlockView_block
   }
 }
 
 fragment BlockView_block on Block {
   id
-  index
-  confirmations
+  hash
   size
   version
   time
-  previous_block_id
-  next_block_id
+  previous_block_hash
+  next_block_hash
   merkle_root
   transaction_count
   validator_address_id
@@ -74,7 +72,7 @@ var v0 = [
   {
     "kind": "LocalArgument",
     "name": "index",
-    "type": "String",
+    "type": "Int",
     "defaultValue": null
   }
 ],
@@ -89,13 +87,13 @@ v1 = [
     "kind": "Variable",
     "name": "index",
     "variableName": "index",
-    "type": "String"
+    "type": "Int"
   }
 ],
 v2 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "index",
+  "name": "id",
   "args": null,
   "storageKey": null
 };
@@ -103,7 +101,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "BlockQuery",
-  "id": "12",
+  "id": "36",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -149,18 +147,11 @@ return {
           {
             "kind": "ScalarField",
             "alias": null,
-            "name": "previous_block_id",
+            "name": "previous_block_hash",
             "args": null,
             "storageKey": null
           },
           v2,
-          {
-            "kind": "ScalarField",
-            "alias": null,
-            "name": "confirmations",
-            "args": null,
-            "storageKey": null
-          },
           {
             "kind": "ScalarField",
             "alias": null,
@@ -185,14 +176,14 @@ return {
           {
             "kind": "ScalarField",
             "alias": null,
-            "name": "id",
+            "name": "hash",
             "args": null,
             "storageKey": null
           },
           {
             "kind": "ScalarField",
             "alias": null,
-            "name": "next_block_id",
+            "name": "next_block_hash",
             "args": null,
             "storageKey": null
           },
@@ -249,5 +240,5 @@ return {
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = 'ff3b88b5d2d0126cb803952c2c0c2418';
+(node/*: any*/).hash = '5ee7a69c4768655426b47561cad77bba';
 module.exports = node;

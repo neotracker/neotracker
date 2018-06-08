@@ -112,14 +112,7 @@ const enhance: HOC<*, *> = compose(
           transfers(
             first: $first
             after: $after
-            orderBy: [
-              { name: "transfer.block_index", direction: "desc nulls first" }
-              {
-                name: "transfer.transaction_index"
-                direction: "desc nulls first"
-              }
-              { name: "transfer.action_index", direction: "desc nulls first" }
-            ]
+            orderBy: [{ name: "transfer.id", direction: "desc" }]
           ) {
             edges {
               node {

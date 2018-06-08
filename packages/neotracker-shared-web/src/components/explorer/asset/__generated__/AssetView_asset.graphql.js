@@ -13,7 +13,7 @@ import type { FragmentReference } from "relay-runtime";
 declare export opaque type AssetView_asset$ref: FragmentReference;
 export type AssetView_asset = {|
   +id: string,
-  +transaction_id: string,
+  +transaction_hash: string,
   +type: string,
   +symbol: string,
   +name: $ReadOnlyArray<{|
@@ -112,7 +112,7 @@ const node/*: ConcreteFragment*/ = {
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "transaction_id",
+      "name": "transaction_hash",
       "args": null,
       "storageKey": null
     },
@@ -166,5 +166,5 @@ const node/*: ConcreteFragment*/ = {
   ]
 };
 // prettier-ignore
-(node/*: any*/).hash = '38f127a71cd61a540fec6c474b90170d';
+(node/*: any*/).hash = 'd443fd0ab5f6cf93050eaaadbf27d489';
 module.exports = node;

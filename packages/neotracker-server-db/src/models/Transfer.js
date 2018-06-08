@@ -7,6 +7,7 @@ import {
   BLOCK_TIME_COLUMN,
   CONTRACT_VALIDATOR,
   HASH_VALIDATOR,
+  BIG_INT_ID,
   INTEGER_INDEX_VALIDATOR,
 } from './common';
 import BlockchainModel from './BlockchainModel';
@@ -15,18 +16,20 @@ import { type EdgeSchema, type FieldSchema } from '../lib';
 export default class Transfer extends BlockchainModel<string> {
   id: string;
   transaction_id: string;
+  transaction_hash: string;
   asset_id: string;
   contract_id: string;
   value: string;
   from_address_id: string;
   to_address_id: string;
-  block_index: number;
+  block_id: number;
   transaction_index: number;
   action_index: number;
   block_time: number;
 
   static modelName = 'Transfer';
   static exposeGraphQL: boolean = true;
+  static idDesc: boolean = true;
   static indices = [
     // AssetTransferPagingView
     {
@@ -34,59 +37,27 @@ export default class Transfer extends BlockchainModel<string> {
       columns: [
         {
           name: 'asset_id',
-          order: 'asc nulls last',
+          order: 'asc',
         },
-        {
-          name: 'block_index',
-          order: 'desc nulls first',
-        },
-        {
-          name: 'transaction_index',
-          order: 'desc nulls first',
-        },
-        {
-          name: 'action_index',
-          order: 'desc nulls first',
-        },
-      ],
-      name: 'transfer_asset_id_block_index_transaction_index_action_index',
-    },
-    // AddressTransferPagingView
-    {
-      type: 'order',
-      columns: [
         {
           name: 'id',
-          order: 'asc nulls last',
-        },
-        {
-          name: 'block_index',
-          order: 'desc nulls first',
-        },
-        {
-          name: 'transaction_index',
-          order: 'desc nulls first',
-        },
-        {
-          name: 'action_index',
-          order: 'desc nulls first',
+          order: 'desc',
         },
       ],
-      name: 'transfer_id_block_index_transaction_index_action_index',
+      name: 'transfer_asset_id_id',
     },
-    // TODO: Figure out where these queries are
+    // TransactionView
     {
       type: 'order',
       columns: [
         {
           name: 'transaction_id',
-          order: 'asc nulls last',
+          order: 'desc',
         },
       ],
       name: 'transfer_transaction_id',
     },
   ];
-  static bigIntID = true;
 
   static chainCustomAfter(schema: any): any {
     return schema.raw(`
@@ -121,11 +92,16 @@ export default class Transfer extends BlockchainModel<string> {
   static fieldSchema: FieldSchema = {
     // Action id
     id: {
-      type: { type: 'string' },
+      type: BIG_INT_ID,
       required: true,
       exposeGraphQL: true,
     },
     transaction_id: {
+      type: BIG_INT_ID,
+      exposeGraphQL: true,
+      required: true,
+    },
+    transaction_hash: {
       type: HASH_VALIDATOR,
       exposeGraphQL: true,
       required: true,
@@ -152,7 +128,7 @@ export default class Transfer extends BlockchainModel<string> {
       type: ADDRESS_VALIDATOR,
       exposeGraphQL: true,
     },
-    block_index: {
+    block_id: {
       type: INTEGER_INDEX_VALIDATOR,
       required: true,
     },

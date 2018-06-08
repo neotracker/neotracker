@@ -7,11 +7,7 @@ import { sanitizeError } from 'neotracker-shared-utils';
 
 import { ActionTable } from '../../action/lib';
 
-import {
-  fragmentContainer,
-  getID,
-  queryRenderer,
-} from '../../../../graphql/relay';
+import { fragmentContainer, queryRenderer } from '../../../../graphql/relay';
 import { getPagingVariables } from '../../../../utils';
 
 import { type TransactionActionPagingTable_transaction } from './__generated__/TransactionActionPagingTable_transaction.graphql';
@@ -88,7 +84,7 @@ const mapPropsToVariables = ({
   transaction: TransactionActionPagingTable_transaction,
   page: number,
 |}) => ({
-  hash: getID(transaction.id),
+  hash: transaction.hash,
   ...getPagingVariables(PAGE_SIZE, page),
 });
 
@@ -96,7 +92,7 @@ const enhance: HOC<*, *> = (compose(
   fragmentContainer({
     transaction: graphql`
       fragment TransactionActionPagingTable_transaction on Transaction {
-        id
+        hash
       }
     `,
   }),
@@ -111,11 +107,10 @@ const enhance: HOC<*, *> = (compose(
         $after: String
       ) {
         transaction(hash: $hash) {
-          id
           actions(
             first: $first
             after: $after
-            orderBy: [{ name: "action.index", direction: "ASC NULLS LAST" }]
+            orderBy: [{ name: "action.index", direction: "asc" }]
           ) {
             edges {
               node {

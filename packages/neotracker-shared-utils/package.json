@@ -12,7 +12,7 @@
   "license": "MIT",
   "main": "./src/index.js",
   "dependencies": {
-    "@neo-one/monitor": "^1.0.0-alpha.26",
+    "@neo-one/monitor": "^1.0.0-alpha.28",
     "bignumber.js": "^7.2.0",
     "rxjs": "^6.2.0",
     "uuid": "^3.2.1"

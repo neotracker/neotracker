@@ -10,7 +10,7 @@ export default class BlockRootCall extends BlockchainRootCall {
   static typeName: string = 'Block';
   static args: { [fieldName: string]: string } = {
     hash: 'String',
-    index: 'String',
+    index: 'Int',
   };
 
   static resolver = async (
@@ -26,9 +26,9 @@ export default class BlockRootCall extends BlockchainRootCall {
     const monitor = context.getMonitor(info);
     // Important it's in this order for the Search page
     if (index != null) {
-      return context.rootLoader.blockIndexLoader.load({ id: index, monitor });
+      return context.rootLoader.loaders.block.load({ id: index, monitor });
     }
 
-    return context.rootLoader.loaders.block.load({ id: hash, monitor });
+    return context.rootLoader.blockHashLoader.load({ id: hash, monitor });
   };
 }

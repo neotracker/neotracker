@@ -12,10 +12,10 @@ import {
   buildResolveInfo,
   collectFields,
   getFieldDef,
-  getOperationRootType,
   resolveFieldValueOrError,
   responsePathAsArray,
 } from 'graphql/execution/execute';
+import { getOperationRootType } from 'graphql/utilities/getOperationRootType';
 import type { GraphQLSchema } from 'graphql/type/schema';
 import invariant from 'graphql/jsutils/invariant';
 

@@ -5,8 +5,10 @@ import { Model } from 'objection';
 import { type EdgeSchema, type FieldSchema } from '../lib';
 
 import {
+  BIG_INT_ID,
   BLOCK_TIME_COLUMN,
   HASH_VALIDATOR,
+  INTEGER_INDEX_VALIDATOR,
   SUBTYPE_ENROLLMENT,
   TYPE_INPUT,
   TYPE_DUPLICATE_CLAIM,
@@ -27,6 +29,7 @@ export const TRANSACTION_TYPES = [
 
 export default class Transaction extends BlockchainModel<string> {
   id: string;
+  hash: string;
   type: string;
   size: number;
   version: number;
@@ -35,7 +38,7 @@ export default class Transaction extends BlockchainModel<string> {
   network_fee: string;
   nonce: string;
   pubkey: string;
-  block_id: string;
+  block_id: number;
   block_time: number;
   index: number;
   scripts_raw: string;
@@ -45,66 +48,50 @@ export default class Transaction extends BlockchainModel<string> {
 
   static modelName = 'Transaction';
   static exposeGraphQL: boolean = true;
+  static idDesc: boolean = true;
   static indices = [
-    // AddressTransactionPagingView, AssetTransactionPagingView
-    {
-      type: 'order',
-      columns: [
-        {
-          name: 'id',
-          order: 'asc nulls last',
-        },
-        {
-          name: 'block_time',
-          order: 'desc nulls first',
-        },
-        {
-          name: 'index',
-          order: 'asc nulls last',
-        },
-      ],
-      name: 'transaction_id_block_time_index',
-    },
     // BlockTransactionPagingView
     {
       type: 'order',
       columns: [
         {
           name: 'block_id',
-          order: 'asc nulls last',
+          order: 'desc',
         },
         {
           name: 'index',
-          order: 'asc nulls last',
+          order: 'asc',
         },
       ],
       name: 'transaction_block_id_index',
     },
-    // TransactionSearch and Home
+    // Home, TransactionSearch
     {
       type: 'order',
       columns: [
         {
-          name: 'block_time',
-          order: 'desc nulls first',
-        },
-        {
-          name: 'index',
-          order: 'asc nulls last',
-        },
-        {
           name: 'id',
-          order: 'desc nulls last',
+          order: 'desc',
         },
         {
           name: 'type',
-          order: 'asc nulls last',
+          order: 'asc',
         },
       ],
-      name: 'transaction_desc_block_index_id_type',
+      name: 'transaction_id_type',
+    },
+    // run$
+    {
+      type: 'order',
+      columns: [
+        {
+          name: 'hash',
+          order: 'asc',
+        },
+      ],
+      name: 'transaction_hash',
     },
   ];
-  static bigIntID = true;
 
   static chainCustomAfter(schema: any): any {
     return schema.raw(`
@@ -129,6 +116,11 @@ export default class Transaction extends BlockchainModel<string> {
 
   static fieldSchema: FieldSchema = {
     id: {
+      type: BIG_INT_ID,
+      required: true,
+      exposeGraphQL: true,
+    },
+    hash: {
       type: HASH_VALIDATOR,
       required: true,
       exposeGraphQL: true,
@@ -174,7 +166,7 @@ export default class Transaction extends BlockchainModel<string> {
       exposeGraphQL: true,
     },
     block_id: {
-      type: HASH_VALIDATOR,
+      type: INTEGER_INDEX_VALIDATOR,
       required: true,
       exposeGraphQL: true,
     },

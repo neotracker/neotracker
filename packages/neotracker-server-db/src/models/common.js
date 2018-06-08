@@ -1,4 +1,5 @@
 /* @flow */
+export const BIG_INT_ID = { type: 'bigInteger', minimum: 0 };
 export const HASH_VALIDATOR = { type: 'string', minLength: 64, maxLength: 64 };
 export const NONCE_VALIDATOR = { type: 'string', minLength: 16, maxLength: 16 };
 export const ADDRESS_VALIDATOR = {
@@ -16,7 +17,7 @@ export const ASSET_HASH_VALIDATOR = {
   minLength: 40,
   maxLength: 64,
 };
-export const INTEGER_INDEX_VALIDATOR = { type: 'integer', minimum: -1 };
+export const INTEGER_INDEX_VALIDATOR = { type: 'integer', minimum: 0 };
 
 export const BLOCK_TIME_VALIDATOR = { type: 'integer', minimum: 0 };
 export const BLOCK_TIME_COLUMN = {

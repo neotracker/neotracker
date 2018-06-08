@@ -11,46 +11,52 @@ import {
 import BlockchainModel from './BlockchainModel';
 import { type EdgeSchema, type FieldSchema } from '../lib';
 
-export default class Block extends BlockchainModel<string> {
-  id: string;
+export default class Block extends BlockchainModel<number> {
+  id: number;
+  hash: string;
   size: number;
   version: number;
   merkle_root: string;
   time: number;
-  index: number;
   nonce: string;
   validator_address_id: string;
   next_validator_address_id: string;
   invocation_script: string;
   verification_script: string;
-  confirmations: number;
   transaction_count: number;
-  previous_block_id: string;
-  next_block_id: string;
+  previous_block_id: number;
+  previous_block_hash: string;
+  next_block_id: number;
+  next_block_hash: string;
   system_fee: string;
   network_fee: string;
   aggregated_system_fee: string;
 
   static modelName = 'Block';
   static exposeGraphQL: boolean = true;
+  // Home, BlockSearch
+  static idDesc: boolean = true;
   static indices = [
-    // BlockSearch, Home, run$
+    // Block
     {
       type: 'order',
       columns: [
         {
-          name: 'index',
-          order: 'DESC NULLS LAST',
+          name: 'hash',
+          order: 'asc',
         },
       ],
-      name: 'block_index',
-      unique: true,
+      name: 'block_hash',
     },
   ];
-  static bigIntID = true;
 
   static fieldSchema: FieldSchema = {
     id: {
+      type: INTEGER_INDEX_VALIDATOR,
+      required: true,
+      exposeGraphQL: true,
+    },
+    hash: {
       type: HASH_VALIDATOR,
       required: true,
       exposeGraphQL: true,
@@ -72,11 +78,6 @@ export default class Block extends BlockchainModel<string> {
     },
     time: {
       type: BLOCK_TIME_VALIDATOR,
-      required: true,
-      exposeGraphQL: true,
-    },
-    index: {
-      type: INTEGER_INDEX_VALIDATOR,
       required: true,
       exposeGraphQL: true,
     },
@@ -104,26 +105,24 @@ export default class Block extends BlockchainModel<string> {
       required: true,
       exposeGraphQL: true,
     },
-    confirmations: {
-      type: { type: 'integer', minimum: 0 },
-      required: true,
-      exposeGraphQL: true,
-      computed: true,
-      graphqlResolver: async (obj, args, context) => {
-        const maxIndex = await context.rootLoader.maxIndexFetcher.get();
-        return maxIndex - obj.index + 1;
-      },
-    },
     transaction_count: {
       type: { type: 'integer', minimum: 0 },
       required: true,
       exposeGraphQL: true,
     },
     previous_block_id: {
+      type: INTEGER_INDEX_VALIDATOR,
+      exposeGraphQL: true,
+    },
+    previous_block_hash: {
       type: HASH_VALIDATOR,
       exposeGraphQL: true,
     },
     next_block_id: {
+      type: INTEGER_INDEX_VALIDATOR,
+      exposeGraphQL: true,
+    },
+    next_block_hash: {
       type: HASH_VALIDATOR,
       exposeGraphQL: true,
     },

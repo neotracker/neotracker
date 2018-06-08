@@ -4,8 +4,9 @@ import { Model } from 'objection';
 import {
   ADDRESS_VALIDATOR,
   ASSET_HASH_VALIDATOR,
-  HASH_VALIDATOR,
+  BIG_INT_ID,
   INTEGER_INDEX_VALIDATOR,
+  HASH_VALIDATOR,
   TYPE_INPUT,
   TYPE_DUPLICATE_CLAIM,
   SUBTYPE_NONE,
@@ -27,7 +28,7 @@ export default class TransactionInputOutput extends BlockchainModel<string> {
   input_transaction_id: string;
   claim_transaction_id: string;
   output_transaction_id: string;
-  output_block_index: number;
+  output_block_id: number;
   asset_id: string;
   value: string;
   address_id: string;
@@ -42,15 +43,15 @@ export default class TransactionInputOutput extends BlockchainModel<string> {
       columns: [
         {
           name: 'input_transaction_id',
-          order: 'asc nulls last',
+          order: 'desc',
         },
         {
           name: 'type',
-          order: 'asc nulls last',
+          order: 'asc',
         },
         {
           name: 'output_transaction_index',
-          order: 'asc nulls last',
+          order: 'asc',
         },
       ],
       name: 'tio_input_transaction_id_type_output_transaction_index',
@@ -61,15 +62,15 @@ export default class TransactionInputOutput extends BlockchainModel<string> {
       columns: [
         {
           name: 'output_transaction_id',
-          order: 'asc nulls last',
+          order: 'desc',
         },
         {
           name: 'type',
-          order: 'asc nulls last',
+          order: 'asc',
         },
         {
           name: 'output_transaction_index',
-          order: 'asc nulls last',
+          order: 'asc',
         },
       ],
       name: 'tio_output_transaction_id_type_output_transaction_index',
@@ -80,15 +81,15 @@ export default class TransactionInputOutput extends BlockchainModel<string> {
       columns: [
         {
           name: 'claim_transaction_id',
-          order: 'asc nulls last',
+          order: 'desc',
         },
         {
           name: 'type',
-          order: 'asc nulls last',
+          order: 'asc',
         },
         {
           name: 'output_transaction_index',
-          order: 'asc nulls last',
+          order: 'asc',
         },
       ],
       name: 'tio_claim_transaction_id_type_output_transaction_index',
@@ -99,21 +100,20 @@ export default class TransactionInputOutput extends BlockchainModel<string> {
       columns: [
         {
           name: 'address_id',
-          order: 'asc nulls last',
+          order: 'asc',
         },
         {
           name: 'asset_id',
-          order: 'asc nulls last',
+          order: 'asc',
         },
         {
           name: 'claim_transaction_id',
-          order: 'asc nulls last',
+          order: 'desc',
         },
       ],
       name: 'tio_address_id_asset_id_claim_transaction_id',
     },
   ];
-  static bigIntID = true;
 
   static chainCustomAfter(schema: any): any {
     return schema.raw(`
@@ -181,14 +181,27 @@ export default class TransactionInputOutput extends BlockchainModel<string> {
       exposeGraphQL: true,
     },
     input_transaction_id: {
-      type: HASH_VALIDATOR,
+      type: BIG_INT_ID,
       exposeGraphQL: true,
     },
     claim_transaction_id: {
-      type: HASH_VALIDATOR,
+      type: BIG_INT_ID,
       exposeGraphQL: true,
     },
     output_transaction_id: {
+      type: BIG_INT_ID,
+      required: true,
+      exposeGraphQL: true,
+    },
+    input_transaction_hash: {
+      type: HASH_VALIDATOR,
+      exposeGraphQL: true,
+    },
+    claim_transaction_hash: {
+      type: HASH_VALIDATOR,
+      exposeGraphQL: true,
+    },
+    output_transaction_hash: {
       type: HASH_VALIDATOR,
       required: true,
       exposeGraphQL: true,
@@ -198,7 +211,7 @@ export default class TransactionInputOutput extends BlockchainModel<string> {
       required: true,
       exposeGraphQL: true,
     },
-    output_block_index: {
+    output_block_id: {
       type: INTEGER_INDEX_VALIDATOR,
       required: true,
     },

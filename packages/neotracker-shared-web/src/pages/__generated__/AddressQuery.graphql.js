@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 115c5993e4a1e7840d1239c5328d1198
+ * @relayHash c52c4c1ce151ebd9782c70deab086c0a
  */
 
 /* eslint-disable */
@@ -33,8 +33,7 @@ query AddressQuery(
 
 fragment AddressView_address on Address {
   ...AddressViewExtra_address
-  id
-  transaction_id
+  transaction_hash
   block_time
   transaction_count
   transfer_count
@@ -84,7 +83,7 @@ fragment Coin_coin on Coin {
 }
 
 fragment TransactionSummary_transaction on Transaction {
-  id
+  hash
   ...TransactionSummaryHeader_transaction
 }
 
@@ -109,7 +108,7 @@ fragment TransactionHeaderBackground_transaction on Transaction {
 
 fragment TransactionTypeAndLink_transaction on Transaction {
   type
-  id
+  hash
 }
 */
 
@@ -177,7 +176,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "AddressQuery",
-  "id": "16",
+  "id": "40",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -229,7 +228,13 @@ return {
             "concreteType": "Transaction",
             "plural": false,
             "selections": [
-              v2,
+              {
+                "kind": "ScalarField",
+                "alias": null,
+                "name": "hash",
+                "args": null,
+                "storageKey": null
+              },
               {
                 "kind": "ScalarField",
                 "alias": null,
@@ -237,13 +242,14 @@ return {
                 "args": null,
                 "storageKey": null
               },
-              v3
+              v3,
+              v2
             ]
           },
           {
             "kind": "ScalarField",
             "alias": null,
-            "name": "transaction_id",
+            "name": "transaction_hash",
             "args": null,
             "storageKey": null
           },

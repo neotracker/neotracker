@@ -41,13 +41,13 @@ function AddressTable({
     addressValues.push(<AddressLink addressHash={getID(address.id)} />);
     createdAtValues.push(
       <TransactionTimeLink
-        transactionHash={address.transaction_id}
+        transactionHash={address.transaction_hash}
         blockTime={address.block_time}
       />,
     );
     lastTransactionValues.push(
       <TransactionTimeLink
-        transactionHash={address.last_transaction_id}
+        transactionHash={address.last_transaction_hash}
         blockTime={address.last_transaction_time}
       />,
     );
@@ -96,9 +96,9 @@ const enhance: HOC<*, *> = compose(
     addresses: graphql`
       fragment AddressTable_addresses on Address @relay(plural: true) {
         id
-        transaction_id
+        transaction_hash
         block_time
-        last_transaction_id
+        last_transaction_hash
         last_transaction_time
         transaction_count
       }

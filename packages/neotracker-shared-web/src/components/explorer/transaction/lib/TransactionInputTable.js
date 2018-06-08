@@ -65,7 +65,7 @@ function TransactionInputTable({
       key={idx}
       className={classNames(classes.margin, classes.row)}
       icon="arrow_back"
-      path={routes.makeTransaction(input.output_transaction_id)}
+      path={routes.makeTransaction(input.output_transaction_hash)}
     />
   ));
   return (
@@ -93,7 +93,7 @@ const enhance: HOC<*, *> = compose(
       fragment TransactionInputTable_inputs on TransactionInputOutput
         @relay(plural: true) {
         ...TransactionInputOutputTable_input_outputs
-        output_transaction_id
+        output_transaction_hash
       }
     `,
   }),

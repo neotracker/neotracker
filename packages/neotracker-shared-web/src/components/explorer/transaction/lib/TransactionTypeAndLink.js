@@ -10,7 +10,7 @@ import { type Theme } from '../../../../styles/createTheme';
 import { Icon, Typography, withStyles } from '../../../../lib/base';
 import Link from '../../../../lib/link/Link';
 
-import { fragmentContainer, getID } from '../../../../graphql/relay';
+import { fragmentContainer } from '../../../../graphql/relay';
 import * as routes from '../../../../routes';
 
 import { type TransactionTypeAndLink_transaction } from './__generated__/TransactionTypeAndLink_transaction.graphql';
@@ -74,8 +74,8 @@ function TransactionTypeAndLink({
       <Link
         component={hashComponent}
         variant={hashVariant || 'body1'}
-        path={routes.makeTransaction(getID(transaction.id))}
-        title={getID(transaction.id)}
+        path={routes.makeTransaction(transaction.hash)}
+        title={transaction.hash}
       />
     </div>
   );
@@ -86,7 +86,7 @@ const enhance: HOC<*, *> = compose(
     transaction: graphql`
       fragment TransactionTypeAndLink_transaction on Transaction {
         type
-        id
+        hash
       }
     `,
   }),

@@ -13,8 +13,8 @@ const createGetSystemFee = (rootLoader: RootLoader, monitor: Monitor) => async (
   let index = indexIn;
   while (block == null && index >= indexIn - 5) {
     // eslint-disable-next-line
-    block = await rootLoader.blockIndexLoader.load({
-      id: `${index}`,
+    block = await rootLoader.loaders.block.load({
+      id: index,
       monitor,
     });
 

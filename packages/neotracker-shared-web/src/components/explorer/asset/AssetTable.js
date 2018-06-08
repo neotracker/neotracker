@@ -47,7 +47,7 @@ function AssetTable({ assets, className }: Props): React.Element<*> {
     transactionCountValues.push(formatNumber(asset.transaction_count));
     registeredAt.push(
       <TransactionTimeLink
-        transactionHash={asset.transaction_id}
+        transactionHash={asset.transaction_hash}
         blockTime={asset.block_time}
       />,
     );
@@ -103,7 +103,7 @@ const enhance: HOC<*, *> = compose(
         type
         amount
         issued
-        transaction_id
+        transaction_hash
         block_time
         address_count
         transaction_count

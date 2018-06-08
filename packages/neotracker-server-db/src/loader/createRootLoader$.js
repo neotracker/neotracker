@@ -11,7 +11,12 @@ import { map, startWith } from 'rxjs/operators';
 import { pubsub } from 'neotracker-server-utils';
 
 import { PROCESSED_NEXT_INDEX } from '../channels';
-import { Block, ProcessedIndex, loaderModels as models } from '../models';
+import {
+  Block,
+  ProcessedIndex,
+  Transaction,
+  loaderModels as models,
+} from '../models';
 import {
   type BaseModel,
   type QueryContext,
@@ -79,7 +84,11 @@ const createLoaders = ({
   loaders: Loaders,
   loadersByField: LoadersByField,
   loadersByEdge: LoadersByEdge,
-  blockIndexLoader: DataLoader<{| id: string, monitor: Monitor |}, ?Block>,
+  blockHashLoader: DataLoader<{| id: string, monitor: Monitor |}, ?Block>,
+  transactionHashLoader: DataLoader<
+    {| id: string, monitor: Monitor |},
+    ?Transaction,
+  >,
   maxIndexFetcher: { get: () => Promise<string> },
 |} => {
   const loaders = {};
@@ -160,15 +169,26 @@ const createLoaders = ({
     });
   });
 
-  const blockIndexLoader = (addLoaderByField(
+  const blockHashLoader = (addLoaderByField(
     Block,
-    'index',
+    'hash',
     makeLoader({
       db,
       modelClass: Block,
-      fieldName: 'index',
+      fieldName: 'hash',
       makeQueryContext,
       options: getLoaderOptions(options, Block),
+    }),
+  ): $FlowFixMe);
+  const transactionHashLoader = (addLoaderByField(
+    Transaction,
+    'hash',
+    makeLoader({
+      db,
+      modelClass: Transaction,
+      fieldName: 'hash',
+      makeQueryContext,
+      options: getLoaderOptions(options, Transaction),
     }),
   ): $FlowFixMe);
   const maxIndexFetcher = makeMaxIndexFetcher(db, monitor, makeQueryContext);
@@ -177,7 +197,8 @@ const createLoaders = ({
     loaders,
     loadersByField,
     loadersByEdge,
-    blockIndexLoader,
+    blockHashLoader,
+    transactionHashLoader,
     maxIndexFetcher,
   };
 };
@@ -199,7 +220,8 @@ export const createRootLoader = (
     loaders,
     loadersByField,
     loadersByEdge,
-    blockIndexLoader,
+    blockHashLoader,
+    transactionHashLoader,
     maxIndexFetcher,
   } = createLoaders({ db, options, monitor: rootMonitor, makeQueryContext });
   rootLoader = new RootLoader({
@@ -214,7 +236,8 @@ export const createRootLoader = (
     loaders,
     loadersByField,
     loadersByEdge,
-    blockIndexLoader,
+    blockHashLoader,
+    transactionHashLoader,
     maxIndexFetcher,
   });
   return rootLoader;

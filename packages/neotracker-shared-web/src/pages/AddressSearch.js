@@ -112,8 +112,8 @@ export default (queryRenderer(
     query AddressSearchQuery($first: Int!, $after: String) {
       addresses(
         orderBy: [
-          { name: "address.block_time", direction: "desc nulls first" }
-          { name: "address.id", direction: "desc nulls last" }
+          { name: "address.block_id", direction: "desc" }
+          { name: "address.id", direction: "asc" }
         ]
         first: $first
         after: $after

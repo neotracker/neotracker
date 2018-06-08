@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 25f2f666928c48b2b931fe5baf8b2cb2
+ * @relayHash 65891c6f40c8cddd0dfa683c130569f0
  */
 
 /* eslint-disable */
@@ -15,7 +15,7 @@ export type TransactionQueryVariables = {|
 |};
 export type TransactionQueryResponse = {|
   +transaction: ?{|
-    +id: string,
+    +hash: string,
     +$fragmentRefs: TransactionView_transaction$ref,
   |}
 |};
@@ -27,24 +27,21 @@ query TransactionQuery(
   $hash: String!
 ) {
   transaction(hash: $hash) {
-    id
+    hash
     ...TransactionView_transaction
+    id
   }
 }
 
 fragment TransactionView_transaction on Transaction {
   ...TransactionSummaryBody_transaction
   type
-  id
+  hash
   network_fee
   system_fee
   size
   block_time
-  block {
-    confirmations
-    index
-    id
-  }
+  block_id
   ...TransactionViewExtra_transaction
 }
 
@@ -87,7 +84,7 @@ fragment TransferTable_transfers on Transfer {
 }
 
 fragment TransferLink_transfer on Transfer {
-  transaction_id
+  transaction_hash
 }
 
 fragment AssetNameLink_asset on Asset {
@@ -156,11 +153,11 @@ fragment TransactionInvocationSummaryBody_transaction on Transaction {
 }
 
 fragment TransactionInputPagingTable_transaction on Transaction {
-  id
+  hash
 }
 
 fragment TransactionOutputPagingTable_transaction on Transaction {
-  id
+  hash
 }
 
 fragment AssetRegistered_asset on Asset {
@@ -177,7 +174,7 @@ fragment ContractNameLink_contract on Contract {
 }
 
 fragment TransactionClaimPagingTable_transaction on Transaction {
-  id
+  hash
 }
 */
 
@@ -201,11 +198,18 @@ v1 = [
 v2 = {
   "kind": "ScalarField",
   "alias": null,
-  "name": "id",
+  "name": "hash",
   "args": null,
   "storageKey": null
 },
 v3 = {
+  "kind": "ScalarField",
+  "alias": null,
+  "name": "id",
+  "args": null,
+  "storageKey": null
+},
+v4 = {
   "kind": "LinkedField",
   "alias": null,
   "name": "asset",
@@ -214,7 +218,7 @@ v3 = {
   "concreteType": "Asset",
   "plural": false,
   "selections": [
-    v2,
+    v3,
     {
       "kind": "ScalarField",
       "alias": null,
@@ -224,7 +228,7 @@ v3 = {
     }
   ]
 },
-v4 = {
+v5 = {
   "kind": "ScalarField",
   "alias": null,
   "name": "block_time",
@@ -235,7 +239,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "TransactionQuery",
-  "id": "26",
+  "id": "49",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -304,10 +308,10 @@ return {
                 "concreteType": "Address",
                 "plural": false,
                 "selections": [
-                  v2
+                  v3
                 ]
               },
-              v2
+              v3
             ]
           },
           {
@@ -337,7 +341,7 @@ return {
                     "concreteType": "Contract",
                     "plural": false,
                     "selections": [
-                      v2,
+                      v3,
                       {
                         "kind": "ScalarField",
                         "alias": null,
@@ -351,7 +355,7 @@ return {
               }
             ]
           },
-          v3,
+          v4,
           {
             "kind": "ScalarField",
             "alias": null,
@@ -373,32 +377,13 @@ return {
             "args": null,
             "storageKey": null
           },
-          v4,
+          v5,
           {
-            "kind": "LinkedField",
+            "kind": "ScalarField",
             "alias": null,
-            "name": "block",
-            "storageKey": null,
+            "name": "block_id",
             "args": null,
-            "concreteType": "Block",
-            "plural": false,
-            "selections": [
-              {
-                "kind": "ScalarField",
-                "alias": null,
-                "name": "confirmations",
-                "args": null,
-                "storageKey": null
-              },
-              {
-                "kind": "ScalarField",
-                "alias": null,
-                "name": "index",
-                "args": null,
-                "storageKey": null
-              },
-              v2
-            ]
+            "storageKey": null
           },
           {
             "kind": "LinkedField",
@@ -455,7 +440,7 @@ return {
                       {
                         "kind": "ScalarField",
                         "alias": null,
-                        "name": "transaction_id",
+                        "name": "transaction_hash",
                         "args": null,
                         "storageKey": null
                       },
@@ -480,15 +465,16 @@ return {
                         "args": null,
                         "storageKey": null
                       },
-                      v3,
                       v4,
-                      v2
+                      v5,
+                      v3
                     ]
                   }
                 ]
               }
             ]
-          }
+          },
+          v3
         ]
       }
     ]
@@ -496,5 +482,5 @@ return {
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = '41720aa53fac5601b0810f0f0b932be0';
+(node/*: any*/).hash = '496b9e735d6768b6a046e818d2814d21';
 module.exports = node;

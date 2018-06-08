@@ -3,6 +3,7 @@ import { BaseEdge, type BaseModel } from '../lib';
 
 export default class AssetToTransaction extends BaseEdge<string, string> {
   static modelName = 'AssetToTransaction';
+  static id2Desc = true;
 
   static chainCustomAfter(schema: any): any {
     return schema.raw(`

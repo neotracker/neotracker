@@ -3,8 +3,8 @@ import { BaseEdge, type BaseModel } from '../lib';
 
 export default class AddressToTransfer extends BaseEdge<string, string> {
   static modelName = 'AddressToTransfer';
+  static id2Desc = true;
 
-  // TODO: Need to display transfer_count
   static chainCustomAfter(schema: any): any {
     return schema.raw(`
       CREATE OR REPLACE FUNCTION address_to_transfer_update_tables() RETURNS trigger AS $address_to_transfer_update_tables$

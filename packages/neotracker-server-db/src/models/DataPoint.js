@@ -21,7 +21,6 @@ export default class DataPoint extends BaseVisibleModel<number> {
 
   static modelName = 'DataPoint';
   static exposeGraphQL: boolean = true;
-  static bigIntID = true;
 
   static fieldSchema: FieldSchema = {
     id: {

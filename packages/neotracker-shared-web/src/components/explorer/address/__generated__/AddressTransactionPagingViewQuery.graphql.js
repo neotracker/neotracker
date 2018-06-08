@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 2b73f6fb57c19e7a9c009d3a8d37f342
+ * @relayHash 0e6b261d6aad0f8bb6a20e5fd1ff8992
  */
 
 /* eslint-disable */
@@ -42,7 +42,7 @@ query AddressTransactionPagingViewQuery(
 ) {
   address(hash: $hash) {
     id
-    transactions(first: $first, after: $after, orderBy: [{name: "transaction.block_time", direction: "desc nulls first"}, {name: "transaction.index", direction: "asc nulls last"}]) {
+    transactions(first: $first, after: $after, orderBy: [{name: "address_to_transaction.id2", direction: "desc"}]) {
       edges {
         node {
           ...TransactionPagingView_transactions
@@ -67,7 +67,7 @@ fragment TransactionTable_transactions on Transaction {
 }
 
 fragment TransactionSummary_transaction on Transaction {
-  id
+  hash
   ...TransactionSummaryHeader_transaction
 }
 
@@ -84,7 +84,7 @@ fragment TransactionHeaderBackground_transaction on Transaction {
 
 fragment TransactionTypeAndLink_transaction on Transaction {
   type
-  id
+  hash
 }
 */
 
@@ -142,12 +142,8 @@ v3 = [
     "name": "orderBy",
     "value": [
       {
-        "direction": "desc nulls first",
-        "name": "transaction.block_time"
-      },
-      {
-        "direction": "asc nulls last",
-        "name": "transaction.index"
+        "direction": "desc",
+        "name": "address_to_transaction.id2"
       }
     ],
     "type": "[OrderByInput!]"
@@ -182,7 +178,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "AddressTransactionPagingViewQuery",
-  "id": "20",
+  "id": "44",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -291,6 +287,13 @@ return {
                       {
                         "kind": "ScalarField",
                         "alias": null,
+                        "name": "hash",
+                        "args": null,
+                        "storageKey": null
+                      },
+                      {
+                        "kind": "ScalarField",
+                        "alias": null,
                         "name": "type",
                         "args": null,
                         "storageKey": null
@@ -316,5 +319,5 @@ return {
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = 'f7662983e870c931317ab5dbc452ce35';
+(node/*: any*/).hash = '6f3b9ec8d13b0a30b7330247b6216fdc';
 module.exports = node;

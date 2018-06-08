@@ -6,6 +6,7 @@ import {
   ADDRESS_VALIDATOR,
   ASSET_HASH_VALIDATOR,
   BLOCK_TIME_COLUMN,
+  BIG_INT_ID,
   HASH_VALIDATOR,
   NEP5_CONTRACT_TYPE,
 } from './common';
@@ -29,6 +30,7 @@ export const ASSET_TYPES = [
 export default class Asset extends BlockchainModel<string> {
   id: string;
   transaction_id: string;
+  transaction_hash: string;
   type: string;
   name_raw: string;
   name: string;
@@ -53,17 +55,16 @@ export default class Asset extends BlockchainModel<string> {
       columns: [
         {
           name: 'transaction_count',
-          order: 'DESC NULLS LAST',
+          order: 'desc',
         },
         {
           name: 'id',
-          order: 'DESC NULLS LAST',
+          order: 'asc',
         },
       ],
-      name: 'asset_desc_transaction_count',
+      name: 'asset_transaction_count_id',
     },
   ];
-  static bigIntID = true;
 
   static fieldSchema: FieldSchema = {
     id: {
@@ -72,6 +73,11 @@ export default class Asset extends BlockchainModel<string> {
       required: true,
     },
     transaction_id: {
+      type: BIG_INT_ID,
+      exposeGraphQL: true,
+      required: true,
+    },
+    transaction_hash: {
       type: HASH_VALIDATOR,
       exposeGraphQL: true,
       required: true,

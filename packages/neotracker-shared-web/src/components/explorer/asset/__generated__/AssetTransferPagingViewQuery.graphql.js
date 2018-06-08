@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 38364683dc47705525dce630cada8d8e
+ * @relayHash 24c48e8688628678ceda05d6148f5b03
  */
 
 /* eslint-disable */
@@ -42,7 +42,7 @@ query AssetTransferPagingViewQuery(
 ) {
   asset(hash: $hash) {
     id
-    transfers(first: $first, after: $after, orderBy: [{name: "transfer.block_index", direction: "desc nulls first"}, {name: "transfer.transaction_index", direction: "desc nulls first"}, {name: "transfer.action_index", direction: "desc nulls first"}]) {
+    transfers(first: $first, after: $after, orderBy: [{name: "transfer.id", direction: "desc"}]) {
       edges {
         node {
           ...TransferPagingView_transfers
@@ -74,7 +74,7 @@ fragment TransferTable_transfers on Transfer {
 }
 
 fragment TransferLink_transfer on Transfer {
-  transaction_id
+  transaction_hash
 }
 
 fragment AssetNameLink_asset on Asset {
@@ -137,16 +137,8 @@ v3 = [
     "name": "orderBy",
     "value": [
       {
-        "direction": "desc nulls first",
-        "name": "transfer.block_index"
-      },
-      {
-        "direction": "desc nulls first",
-        "name": "transfer.transaction_index"
-      },
-      {
-        "direction": "desc nulls first",
-        "name": "transfer.action_index"
+        "direction": "desc",
+        "name": "transfer.id"
       }
     ],
     "type": "[OrderByInput!]"
@@ -181,7 +173,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "AssetTransferPagingViewQuery",
-  "id": "29",
+  "id": "52",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -289,7 +281,7 @@ return {
                       {
                         "kind": "ScalarField",
                         "alias": null,
-                        "name": "transaction_id",
+                        "name": "transaction_hash",
                         "args": null,
                         "storageKey": null
                       },
@@ -355,5 +347,5 @@ return {
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = '9f288814310d023d79d5184ba7117f94';
+(node/*: any*/).hash = '950fd2e7c5dbf9d70d6d57ad308a8d5f';
 module.exports = node;

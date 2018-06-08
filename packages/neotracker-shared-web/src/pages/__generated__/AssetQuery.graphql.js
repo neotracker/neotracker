@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 8781ad96f42b244a335d712e34be556e
+ * @relayHash 5391679e27cfa01488934fab4b10a1a6
  */
 
 /* eslint-disable */
@@ -36,7 +36,7 @@ query AssetQuery(
 
 fragment AssetView_asset on Asset {
   id
-  transaction_id
+  transaction_hash
   type
   symbol
   name {
@@ -67,7 +67,7 @@ fragment AssetViewExtra_asset on Asset {
 }
 
 fragment TransactionSummary_transaction on Transaction {
-  id
+  hash
   ...TransactionSummaryHeader_transaction
 }
 
@@ -96,7 +96,7 @@ fragment TransactionHeaderBackground_transaction on Transaction {
 
 fragment TransactionTypeAndLink_transaction on Transaction {
   type
-  id
+  hash
 }
 */
 
@@ -149,7 +149,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "AssetQuery",
-  "id": "14",
+  "id": "38",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -204,7 +204,7 @@ return {
           {
             "kind": "ScalarField",
             "alias": null,
-            "name": "transaction_id",
+            "name": "transaction_hash",
             "args": null,
             "storageKey": null
           },
@@ -294,9 +294,16 @@ return {
             "concreteType": "Transaction",
             "plural": false,
             "selections": [
-              v2,
+              {
+                "kind": "ScalarField",
+                "alias": null,
+                "name": "hash",
+                "args": null,
+                "storageKey": null
+              },
               v4,
-              v5
+              v5,
+              v2
             ]
           }
         ]

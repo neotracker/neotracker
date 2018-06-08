@@ -4,6 +4,8 @@ import type {
   Asset,
   Attribute,
   Block,
+  ConfirmedContractTransaction,
+  ConfirmedIssueTransaction,
   ConfirmedTransaction,
   Contract,
   ContractParameter,
@@ -128,6 +130,7 @@ export const normalizeAction = (action: ActionRaw): ActionRaw => {
         transactionIndex: action.transactionIndex,
         transactionHash: normalizeHash(action.transactionHash),
         index: action.index,
+        globalIndex: action.globalIndex,
         scriptHash: normalizeHash(action.scriptHash),
         message: action.message,
       };
@@ -140,6 +143,7 @@ export const normalizeAction = (action: ActionRaw): ActionRaw => {
         transactionIndex: action.transactionIndex,
         transactionHash: normalizeHash(action.transactionHash),
         index: action.index,
+        globalIndex: action.globalIndex,
         scriptHash: normalizeHash(action.scriptHash),
         args: action.args.map(arg => normalizeContractParameter(arg)),
       };
@@ -214,149 +218,76 @@ const normalizeInvocationData = (
 const normalizeTransaction = (
   transaction: ConfirmedTransaction,
 ): ConfirmedTransaction => {
+  const transactionBase = {
+    txid: normalizeHash(transaction.txid),
+    size: transaction.size,
+    version: transaction.version,
+    attributes: transaction.attributes.map(attribute =>
+      normalizeAttribute(attribute),
+    ),
+    vin: transaction.vin.map(input => normalizeInput(input)),
+    vout: transaction.vout.map(output => normalizeOutput(output)),
+    scripts: transaction.scripts,
+    systemFee: transaction.systemFee,
+    networkFee: transaction.networkFee,
+    data: {
+      ...transaction.data,
+      blockHash: normalizeHash(transaction.data.blockHash),
+    },
+  };
   switch (transaction.type) {
     case 'MinerTransaction':
       return {
+        ...transactionBase,
         type: 'MinerTransaction',
-        txid: normalizeHash(transaction.txid),
-        size: transaction.size,
-        version: transaction.version,
-        attributes: transaction.attributes.map(attribute =>
-          normalizeAttribute(attribute),
-        ),
-        vin: transaction.vin.map(input => normalizeInput(input)),
-        vout: transaction.vout.map(output => normalizeOutput(output)),
-        scripts: transaction.scripts,
-        systemFee: transaction.systemFee,
-        networkFee: transaction.networkFee,
         nonce: transaction.nonce,
       };
     case 'IssueTransaction':
-      return {
+      return ({
+        ...transactionBase,
         type: 'IssueTransaction',
-        txid: normalizeHash(transaction.txid),
-        size: transaction.size,
-        version: transaction.version,
-        attributes: transaction.attributes.map(attribute =>
-          normalizeAttribute(attribute),
-        ),
-        vin: transaction.vin.map(input => normalizeInput(input)),
-        vout: transaction.vout.map(output => normalizeOutput(output)),
-        scripts: transaction.scripts,
-        systemFee: transaction.systemFee,
-        networkFee: transaction.networkFee,
-      };
+      }: ConfirmedIssueTransaction);
     case 'ClaimTransaction':
       return {
+        ...transactionBase,
         type: 'ClaimTransaction',
-        txid: normalizeHash(transaction.txid),
-        size: transaction.size,
-        version: transaction.version,
-        attributes: transaction.attributes.map(attribute =>
-          normalizeAttribute(attribute),
-        ),
-        vin: transaction.vin.map(input => normalizeInput(input)),
-        vout: transaction.vout.map(output => normalizeOutput(output)),
-        scripts: transaction.scripts,
-        systemFee: transaction.systemFee,
-        networkFee: transaction.networkFee,
         claims: transaction.claims.map(claim => normalizeInput(claim)),
       };
     case 'EnrollmentTransaction':
       return {
+        ...transactionBase,
         type: 'EnrollmentTransaction',
-        txid: normalizeHash(transaction.txid),
-        size: transaction.size,
-        version: transaction.version,
-        attributes: transaction.attributes.map(attribute =>
-          normalizeAttribute(attribute),
-        ),
-        vin: transaction.vin.map(input => normalizeInput(input)),
-        vout: transaction.vout.map(output => normalizeOutput(output)),
-        scripts: transaction.scripts,
-        systemFee: transaction.systemFee,
-        networkFee: transaction.networkFee,
         publicKey: transaction.publicKey,
       };
     case 'RegisterTransaction':
       return {
+        ...transactionBase,
         type: 'RegisterTransaction',
-        txid: normalizeHash(transaction.txid),
-        size: transaction.size,
-        version: transaction.version,
-        attributes: transaction.attributes.map(attribute =>
-          normalizeAttribute(attribute),
-        ),
-        vin: transaction.vin.map(input => normalizeInput(input)),
-        vout: transaction.vout.map(output => normalizeOutput(output)),
-        scripts: transaction.scripts,
-        systemFee: transaction.systemFee,
-        networkFee: transaction.networkFee,
         asset: transaction.asset,
       };
     case 'ContractTransaction':
-      return {
+      return ({
+        ...transactionBase,
         type: 'ContractTransaction',
-        txid: normalizeHash(transaction.txid),
-        size: transaction.size,
-        version: transaction.version,
-        attributes: transaction.attributes.map(attribute =>
-          normalizeAttribute(attribute),
-        ),
-        vin: transaction.vin.map(input => normalizeInput(input)),
-        vout: transaction.vout.map(output => normalizeOutput(output)),
-        scripts: transaction.scripts,
-        systemFee: transaction.systemFee,
-        networkFee: transaction.networkFee,
-      };
+      }: ConfirmedContractTransaction);
     case 'PublishTransaction':
       return {
+        ...transactionBase,
         type: 'PublishTransaction',
-        txid: normalizeHash(transaction.txid),
-        size: transaction.size,
-        version: transaction.version,
-        attributes: transaction.attributes.map(attribute =>
-          normalizeAttribute(attribute),
-        ),
-        vin: transaction.vin.map(input => normalizeInput(input)),
-        vout: transaction.vout.map(output => normalizeOutput(output)),
-        scripts: transaction.scripts,
-        systemFee: transaction.systemFee,
-        networkFee: transaction.networkFee,
         contract: normalizeContract(transaction.contract),
       };
     case 'InvocationTransaction':
       return {
+        ...transactionBase,
         type: 'InvocationTransaction',
-        txid: normalizeHash(transaction.txid),
-        size: transaction.size,
-        version: transaction.version,
-        attributes: transaction.attributes.map(attribute =>
-          normalizeAttribute(attribute),
-        ),
-        vin: transaction.vin.map(input => normalizeInput(input)),
-        vout: transaction.vout.map(output => normalizeOutput(output)),
-        scripts: transaction.scripts,
-        systemFee: transaction.systemFee,
-        networkFee: transaction.networkFee,
         script: transaction.script,
         gas: transaction.gas,
-        data: normalizeInvocationData(transaction.data),
+        invocationData: normalizeInvocationData(transaction.invocationData),
       };
     case 'StateTransaction':
       return {
+        ...transactionBase,
         type: 'StateTransaction',
-        txid: normalizeHash(transaction.txid),
-        size: transaction.size,
-        version: transaction.version,
-        attributes: transaction.attributes.map(attribute =>
-          normalizeAttribute(attribute),
-        ),
-        vin: transaction.vin.map(input => normalizeInput(input)),
-        vout: transaction.vout.map(output => normalizeOutput(output)),
-        scripts: transaction.scripts,
-        systemFee: transaction.systemFee,
-        networkFee: transaction.networkFee,
         descriptors: transaction.descriptors,
       };
     default:

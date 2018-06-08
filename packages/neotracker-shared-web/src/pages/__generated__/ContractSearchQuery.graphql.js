@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 136ad6077c18d28661c9383e28eb9a20
+ * @relayHash 1657a079d05b99c4a68ebe833cb3a5f2
  */
 
 /* eslint-disable */
@@ -35,7 +35,7 @@ query ContractSearchQuery(
   $first: Int!
   $after: String
 ) {
-  contracts(orderBy: [{name: "contract.block_time", direction: "desc nulls first"}, {name: "contract.id", direction: "desc nulls last"}], first: $first, after: $after) {
+  contracts(orderBy: [{name: "contract.block_id", direction: "desc"}, {name: "contract.id", direction: "desc"}], first: $first, after: $after) {
     edges {
       node {
         ...ContractPagingView_contracts
@@ -57,7 +57,7 @@ fragment ContractTable_contracts on Contract {
   id
   name
   author
-  transaction_id
+  transaction_hash
   block_time
 }
 */
@@ -95,11 +95,11 @@ v1 = [
     "name": "orderBy",
     "value": [
       {
-        "direction": "desc nulls first",
-        "name": "contract.block_time"
+        "direction": "desc",
+        "name": "contract.block_id"
       },
       {
-        "direction": "desc nulls last",
+        "direction": "desc",
         "name": "contract.id"
       }
     ],
@@ -135,7 +135,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "ContractSearchQuery",
-  "id": "15",
+  "id": "39",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -242,7 +242,7 @@ return {
                   {
                     "kind": "ScalarField",
                     "alias": null,
-                    "name": "transaction_id",
+                    "name": "transaction_hash",
                     "args": null,
                     "storageKey": null
                   },
@@ -265,5 +265,5 @@ return {
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = 'd4e7e7e761ce14af14d2ab41b568b4f4';
+(node/*: any*/).hash = '49137734fa329ca563e9d6e498bfd773';
 module.exports = node;

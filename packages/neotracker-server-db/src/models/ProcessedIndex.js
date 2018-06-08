@@ -19,7 +19,6 @@ export default class ProcessedIndex extends BlockchainModel<number> {
       unique: true,
     },
   ];
-  static bigIntID = true;
 
   static chainCustomAfter(schema: any): any {
     return schema.raw(`

@@ -244,10 +244,7 @@ function Home({
 
 export default (queryRenderer(graphql`
   query HomeQuery {
-    blocks(
-      orderBy: [{ name: "block.index", direction: "desc nulls last" }]
-      first: 16
-    ) {
+    blocks(orderBy: [{ name: "block.id", direction: "desc" }], first: 16) {
       edges {
         node {
           ...BlockTable_blocks
@@ -255,11 +252,7 @@ export default (queryRenderer(graphql`
       }
     }
     transactions(
-      orderBy: [
-        { name: "transaction.block_time", direction: "desc nulls first" }
-        { name: "transaction.index", direction: "asc nulls last" }
-        { name: "transaction.id", direction: "desc nulls last" }
-      ]
+      orderBy: [{ name: "transaction.id", direction: "desc" }]
       filters: [
         { name: "transaction.type", operator: "!=", value: "MinerTransaction" }
       ]

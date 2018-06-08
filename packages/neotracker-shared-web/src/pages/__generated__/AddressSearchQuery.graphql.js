@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash de97cbbcfb47fa1f65a1069eb36af73f
+ * @relayHash d8816e2eb5ea779e99cd4b9049487adc
  */
 
 /* eslint-disable */
@@ -43,7 +43,7 @@ query AddressSearchQuery(
   $first: Int!
   $after: String
 ) {
-  addresses(orderBy: [{name: "address.block_time", direction: "desc nulls first"}, {name: "address.id", direction: "desc nulls last"}], first: $first, after: $after) {
+  addresses(orderBy: [{name: "address.block_id", direction: "desc"}, {name: "address.id", direction: "asc"}], first: $first, after: $after) {
     edges {
       node {
         ...AddressPagingView_addresses
@@ -78,9 +78,9 @@ fragment CoinTable_coins on Coin {
 
 fragment AddressTable_addresses on Address {
   id
-  transaction_id
+  transaction_hash
   block_time
-  last_transaction_id
+  last_transaction_hash
   last_transaction_time
   transaction_count
 }
@@ -119,11 +119,11 @@ v1 = [
     "name": "orderBy",
     "value": [
       {
-        "direction": "desc nulls first",
-        "name": "address.block_time"
+        "direction": "desc",
+        "name": "address.block_id"
       },
       {
-        "direction": "desc nulls last",
+        "direction": "asc",
         "name": "address.id"
       }
     ],
@@ -159,7 +159,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "AddressSearchQuery",
-  "id": "23",
+  "id": "46",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -285,7 +285,7 @@ return {
                   {
                     "kind": "ScalarField",
                     "alias": null,
-                    "name": "transaction_id",
+                    "name": "transaction_hash",
                     "args": null,
                     "storageKey": null
                   },
@@ -299,7 +299,7 @@ return {
                   {
                     "kind": "ScalarField",
                     "alias": null,
-                    "name": "last_transaction_id",
+                    "name": "last_transaction_hash",
                     "args": null,
                     "storageKey": null
                   },
@@ -389,5 +389,5 @@ return {
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = '333ec241a076d27a42437e8e51aa3e30';
+(node/*: any*/).hash = 'a8a1b13954524ba8dcf44ea2b3b070bc';
 module.exports = node;

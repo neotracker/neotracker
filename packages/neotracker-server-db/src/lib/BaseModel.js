@@ -30,10 +30,10 @@ export default class BaseModel<TID: ID> extends Base {
   static exposeGraphQL: boolean = false;
   static exposeGraphQLType: boolean = true;
   static interfaces: Array<Class<IFace>> = [];
-  static bigIntID: boolean = false;
   static indices: Array<IndexSchema> = [];
   static cacheType: CacheType = 'none';
   static isModel = true;
+  static idDesc: boolean = false;
 
   static get modelSchema(): ModelSchema {
     return {
@@ -63,8 +63,13 @@ export default class BaseModel<TID: ID> extends Base {
       isEdge: false,
       indices: this.indices.concat([
         {
-          type: 'simple',
-          columnNames: ['id'],
+          type: 'order',
+          columns: [
+            {
+              name: 'id',
+              order: this.idDesc ? 'desc' : 'asc',
+            },
+          ],
           unique: true,
           name: `${this.tableName}_id`,
         },

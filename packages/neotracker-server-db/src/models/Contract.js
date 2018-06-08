@@ -4,6 +4,7 @@ import { Model } from 'objection';
 import {
   BLOCK_TIME_COLUMN,
   CONTRACT_VALIDATOR,
+  BIG_INT_ID,
   HASH_VALIDATOR,
   INTEGER_INDEX_VALIDATOR,
   NEP5_CONTRACT_TYPE,
@@ -24,8 +25,9 @@ export default class Contract extends BlockchainModel<string> {
   email: string;
   description: string;
   transaction_id: string;
+  transaction_hash: string;
   block_time: number;
-  block_index: number;
+  block_id: number;
   type: string;
 
   static modelName = 'Contract';
@@ -36,18 +38,17 @@ export default class Contract extends BlockchainModel<string> {
       type: 'order',
       columns: [
         {
-          name: 'block_time',
-          order: 'desc nulls first',
+          name: 'block_id',
+          order: 'desc',
         },
         {
           name: 'id',
-          order: 'desc nulls last',
+          order: 'desc',
         },
       ],
-      name: 'contract_desc_block_time_id',
+      name: 'contract_block_id_id',
     },
   ];
-  static bigIntID = true;
 
   static fieldSchema: FieldSchema = {
     id: {
@@ -101,12 +102,17 @@ export default class Contract extends BlockchainModel<string> {
       exposeGraphQL: true,
     },
     transaction_id: {
+      type: BIG_INT_ID,
+      exposeGraphQL: true,
+      required: true,
+    },
+    transaction_hash: {
       type: HASH_VALIDATOR,
       exposeGraphQL: true,
       required: true,
     },
     block_time: BLOCK_TIME_COLUMN,
-    block_index: {
+    block_id: {
       type: INTEGER_INDEX_VALIDATOR,
       required: true,
     },

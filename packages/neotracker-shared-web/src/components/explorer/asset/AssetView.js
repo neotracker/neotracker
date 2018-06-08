@@ -50,7 +50,7 @@ function AssetView({ asset, className }: Props): React.Element<*> {
     [
       'Created',
       <TransactionTimeLink
-        transactionHash={asset.transaction_id}
+        transactionHash={asset.transaction_hash}
         blockTime={asset.block_time}
       />,
     ],
@@ -80,7 +80,7 @@ const enhance: HOC<*, *> = compose(
     asset: graphql`
       fragment AssetView_asset on Asset {
         id
-        transaction_id
+        transaction_hash
         type
         symbol
         name {

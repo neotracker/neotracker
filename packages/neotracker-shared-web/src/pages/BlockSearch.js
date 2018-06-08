@@ -94,7 +94,7 @@ export default (queryRenderer(
   graphql`
     query BlockSearchQuery($first: Int!, $after: String) {
       blocks(
-        orderBy: [{ name: "block.index", direction: "desc nulls last" }]
+        orderBy: [{ name: "block.id", direction: "desc" }]
         first: $first
         after: $after
       ) {

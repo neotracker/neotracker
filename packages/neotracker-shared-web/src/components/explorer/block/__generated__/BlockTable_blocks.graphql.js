@@ -11,7 +11,7 @@ import type { ConcreteFragment } from 'relay-runtime';
 import type { FragmentReference } from "relay-runtime";
 declare export opaque type BlockTable_blocks$ref: FragmentReference;
 export type BlockTable_blocks = $ReadOnlyArray<{|
-  +index: number,
+  +id: string,
   +time: number,
   +transaction_count: number,
   +validator_address_id: ?string,
@@ -33,7 +33,7 @@ const node/*: ConcreteFragment*/ = {
     {
       "kind": "ScalarField",
       "alias": null,
-      "name": "index",
+      "name": "id",
       "args": null,
       "storageKey": null
     },
@@ -68,5 +68,5 @@ const node/*: ConcreteFragment*/ = {
   ]
 };
 // prettier-ignore
-(node/*: any*/).hash = 'b0c8bcdc10a1297c75827628b8c7072e';
+(node/*: any*/).hash = 'fd69e0df7270a37b71222ff2d6a3011f';
 module.exports = node;

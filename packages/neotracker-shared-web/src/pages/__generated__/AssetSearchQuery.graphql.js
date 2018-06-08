@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash aee2996644cccd0de7c10596954d588b
+ * @relayHash 358c52fa45edaafefced895c13ed7652
  */
 
 /* eslint-disable */
@@ -34,7 +34,7 @@ query AssetSearchQuery(
   $first: Int!
   $after: String
 ) {
-  assets(orderBy: [{name: "asset.transaction_count", direction: "desc nulls last"}, {name: "asset.id", direction: "desc nulls last"}], first: $first, after: $after, filters: [{name: "asset.id", operator: "!=", value: "cb453a56856a236cbae8b8f937db308a15421daada4ba6ce78123b59bfb7253c"}, {name: "asset.id", operator: "!=", value: "6161af8875eb78654e385a33e7334a473a2a0519281d33c06780ff3c8bce15ea"}]) {
+  assets(orderBy: [{name: "asset.transaction_count", direction: "desc"}, {name: "asset.id", direction: "asc"}], first: $first, after: $after, filters: [{name: "asset.id", operator: "!=", value: "cb453a56856a236cbae8b8f937db308a15421daada4ba6ce78123b59bfb7253c"}, {name: "asset.id", operator: "!=", value: "6161af8875eb78654e385a33e7334a473a2a0519281d33c06780ff3c8bce15ea"}]) {
     edges {
       node {
         ...AssetPagingView_assets
@@ -56,7 +56,7 @@ fragment AssetTable_assets on Asset {
   type
   amount
   issued
-  transaction_id
+  transaction_hash
   block_time
   address_count
   transaction_count
@@ -118,11 +118,11 @@ v1 = [
     "name": "orderBy",
     "value": [
       {
-        "direction": "desc nulls last",
+        "direction": "desc",
         "name": "asset.transaction_count"
       },
       {
-        "direction": "desc nulls last",
+        "direction": "asc",
         "name": "asset.id"
       }
     ],
@@ -151,7 +151,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "AssetSearchQuery",
-  "id": "21",
+  "id": "45",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -272,7 +272,7 @@ return {
                   {
                     "kind": "ScalarField",
                     "alias": null,
-                    "name": "transaction_id",
+                    "name": "transaction_hash",
                     "args": null,
                     "storageKey": null
                   },
@@ -309,5 +309,5 @@ return {
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = '2dfb714a4bd16caaa868569c269201cb';
+(node/*: any*/).hash = '3ecfd4b96256e4f43f120ae4d2fac0ae';
 module.exports = node;

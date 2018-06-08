@@ -55,7 +55,7 @@ const deleteNEP5 = async (
         await TransferModel.query(db)
           .context(makeQueryContext(span))
           .delete()
-          .where('id', asset.id);
+          .where('asset_id', asset.id);
         await asset
           .$query(db)
           .context(makeQueryContext(span))
@@ -90,15 +90,13 @@ export default (
               .filter(model => !hashesSet.has(model.id))
               .map(model => deleteNEP5(span, db, makeQueryContext, model)),
           );
-          const [contracts] = await Promise.all([
-            ContractModel.query(db)
-              .context(makeQueryContext(span))
-              .whereIn('id', hashes),
-            ContractModel.query(db)
-              .context(makeQueryContext(span))
-              .patch({ type: NEP5_CONTRACT_TYPE })
-              .whereIn('id', hashes),
-          ]);
+          await ContractModel.query(db)
+            .context(makeQueryContext(span))
+            .patch({ type: NEP5_CONTRACT_TYPE })
+            .whereIn('id', hashes);
+          const contracts = await ContractModel.query(db)
+            .context(makeQueryContext(span))
+            .whereIn('id', hashes);
 
           return contracts;
         },

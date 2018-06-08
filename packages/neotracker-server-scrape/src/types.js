@@ -62,8 +62,6 @@ export type Context = {|
   asset: WriteCache<string, AssetModel, AssetSave>,
   contract: WriteCache<string, ContractModel, ContractSave>,
   systemFee: WriteCache<number, string, SystemFeeSave>,
-  rpxFixed: boolean,
-  rhtFixed: boolean,
   contractModelsToProcess: Array<[ContractModel, ReadSmartContract]>,
   nep5Contracts: { [hash: string]: ReadSmartContract },
   migrationHandler: MigrationHandler,

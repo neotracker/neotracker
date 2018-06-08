@@ -1,11 +1,7 @@
 /* @flow */
 import { Model } from 'objection';
 
-import {
-  ADDRESS_VALIDATOR,
-  ASSET_HASH_VALIDATOR,
-  INTEGER_INDEX_VALIDATOR,
-} from './common';
+import { ADDRESS_VALIDATOR, ASSET_HASH_VALIDATOR } from './common';
 import BlockchainModel from './BlockchainModel';
 import { type EdgeSchema, type FieldSchema } from '../lib';
 
@@ -14,7 +10,7 @@ export default class Coin extends BlockchainModel<string> {
   address_id: string;
   asset_id: string;
   value: string;
-  block_index: number;
+  block_id: number;
   transaction_index: number;
   action_index: number;
 
@@ -26,32 +22,23 @@ export default class Coin extends BlockchainModel<string> {
       columns: [
         {
           name: 'asset_id',
-          order: 'asc nulls last',
-        },
-        {
-          name: 'value',
-          order: 'desc nulls first',
-        },
-        {
-          name: 'id',
-          order: 'desc nulls first',
+          order: 'asc',
         },
       ],
-      name: 'coin_asset_value_id',
+      name: 'coin_asset_id',
     },
-    // TODO: Figure out where these queries are
+    // AddressView, SendTransaction, AccountViewBase
     {
       type: 'order',
       columns: [
         {
           name: 'address_id',
-          order: 'asc nulls last',
+          order: 'asc',
         },
       ],
       name: 'coin_address_id',
     },
   ];
-  static bigIntID = true;
 
   static chainCustomAfter(schema: any): any {
     return schema.raw(`
@@ -104,16 +91,16 @@ export default class Coin extends BlockchainModel<string> {
       required: true,
       exposeGraphQL: true,
     },
-    block_index: {
-      type: INTEGER_INDEX_VALIDATOR,
+    block_id: {
+      type: { type: 'integer', minimum: -1 },
       required: true,
     },
     transaction_index: {
-      type: INTEGER_INDEX_VALIDATOR,
+      type: { type: 'integer', minimum: -1 },
       required: true,
     },
     action_index: {
-      type: INTEGER_INDEX_VALIDATOR,
+      type: { type: 'integer', minimum: -1 },
       required: true,
     },
   };

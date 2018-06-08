@@ -95,8 +95,8 @@ export default (queryRenderer(
     query AssetSearchQuery($first: Int!, $after: String) {
       assets(
         orderBy: [
-          { name: "asset.transaction_count", direction: "desc nulls last" }
-          { name: "asset.id", direction: "desc nulls last" }
+          { name: "asset.transaction_count", direction: "desc" }
+          { name: "asset.id", direction: "asc" }
         ]
         first: $first
         after: $after

@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash f7fb7637642815d48c6e19ea7b22688f
+ * @relayHash f8a1322de0a73b690f2ddf6f7c1cbdbe
  */
 
 /* eslint-disable */
@@ -55,7 +55,7 @@ fragment ContractViewExtra_contract on Contract {
 }
 
 fragment TransactionSummary_transaction on Transaction {
-  id
+  hash
   ...TransactionSummaryHeader_transaction
 }
 
@@ -72,7 +72,7 @@ fragment TransactionHeaderBackground_transaction on Transaction {
 
 fragment TransactionTypeAndLink_transaction on Transaction {
   type
-  id
+  hash
 }
 */
 
@@ -111,7 +111,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "ContractQuery",
-  "id": "9",
+  "id": "33",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -221,7 +221,13 @@ return {
             "concreteType": "Transaction",
             "plural": false,
             "selections": [
-              v3,
+              {
+                "kind": "ScalarField",
+                "alias": null,
+                "name": "hash",
+                "args": null,
+                "storageKey": null
+              },
               {
                 "kind": "ScalarField",
                 "alias": null,
@@ -235,7 +241,8 @@ return {
                 "name": "block_time",
                 "args": null,
                 "storageKey": null
-              }
+              },
+              v3
             ]
           }
         ]

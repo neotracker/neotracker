@@ -3,7 +3,13 @@ import { GAS_ASSET_ID } from 'neotracker-shared-utils';
 import type { GraphQLResolveInfo } from 'graphql';
 import { Model } from 'objection';
 
-import { ADDRESS_VALIDATOR, BLOCK_TIME_COLUMN, HASH_VALIDATOR } from './common';
+import {
+  ADDRESS_VALIDATOR,
+  BLOCK_TIME_COLUMN,
+  BIG_INT_ID,
+  HASH_VALIDATOR,
+  INTEGER_INDEX_VALIDATOR,
+} from './common';
 import BlockchainModel from './BlockchainModel';
 import { type EdgeSchema, type FieldSchema } from '../lib';
 import type { GraphQLContext } from '../types';
@@ -13,14 +19,13 @@ import { calculateAddressClaimValue } from '../utils';
 export default class Address extends BlockchainModel<string> {
   id: string;
   transaction_id: string;
+  transaction_hash: string;
+  block_id: number;
   block_time: number;
   transaction_count: string;
   transfer_count: string;
   last_transaction_id: string;
   last_transaction_time: number;
-  name: string;
-  name_url: string;
-  verified: boolean;
 
   static modelName = 'Address';
   static get pluralName(): string {
@@ -33,18 +38,17 @@ export default class Address extends BlockchainModel<string> {
       type: 'order',
       columns: [
         {
-          name: 'block_time',
-          order: 'DESC NULLS FIRST',
+          name: 'block_id',
+          order: 'desc',
         },
         {
           name: 'id',
-          order: 'DESC NULLS LAST',
+          order: 'asc',
         },
       ],
-      name: 'address_block_time_id',
+      name: 'address_block_id_id',
     },
   ];
-  static bigIntID = true;
 
   static fieldSchema: FieldSchema = {
     id: {
@@ -53,7 +57,15 @@ export default class Address extends BlockchainModel<string> {
       required: true,
     },
     transaction_id: {
+      type: BIG_INT_ID,
+      exposeGraphQL: true,
+    },
+    transaction_hash: {
       type: HASH_VALIDATOR,
+      exposeGraphQL: true,
+    },
+    block_id: {
+      type: INTEGER_INDEX_VALIDATOR,
       exposeGraphQL: true,
     },
     block_time: BLOCK_TIME_COLUMN,
@@ -68,6 +80,10 @@ export default class Address extends BlockchainModel<string> {
       exposeGraphQL: true,
     },
     last_transaction_id: {
+      type: BIG_INT_ID,
+      exposeGraphQL: true,
+    },
+    last_transaction_hash: {
       type: HASH_VALIDATOR,
       exposeGraphQL: true,
     },
@@ -102,20 +118,6 @@ export default class Address extends BlockchainModel<string> {
         };
       },
       computed: true,
-      required: true,
-      exposeGraphQL: true,
-    },
-    name: {
-      type: { type: 'string', maxLength: 34 },
-      required: true,
-      exposeGraphQL: true,
-    },
-    name_url: {
-      type: { type: 'string' },
-      exposeGraphQL: true,
-    },
-    verified: {
-      type: { type: 'boolean' },
       required: true,
       exposeGraphQL: true,
     },

@@ -5,6 +5,8 @@ import { type HOC, compose, pure, withStateHandlers } from 'recompose';
 import { graphql } from 'react-relay';
 import { sanitizeError } from 'neotracker-shared-utils';
 
+import _ from 'lodash';
+
 import { AddressPagingView } from '../address';
 import { Coin } from '../address/lib';
 
@@ -58,7 +60,7 @@ function AssetAddressPagingView({
   let hasPreviousPage = false;
   const asset = currentProps == null ? null : currentProps.asset;
   if (asset != null) {
-    coins = asset.coins.edges.map(edge => edge.node);
+    coins = _.sortBy(asset.coins.edges.map(edge => edge.node), ['value', 'id']);
     addresses = coins.map(coin => coin.address);
     // eslint-disable-next-line
     hasNextPage = asset.coins.pageInfo.hasNextPage;
@@ -118,17 +120,12 @@ const enhance: HOC<*, *> = compose(
       ) {
         asset(hash: $hash) {
           id
-          coins(
-            first: $first
-            after: $after
-            orderBy: [
-              { name: "coin.value", direction: "desc nulls first" }
-              { name: "coin.id", direction: "desc nulls first" }
-            ]
-          ) {
+          coins(first: $first, after: $after) {
             edges {
               node {
                 ...Coin_coin
+                id
+                value
                 address {
                   id
                   ...AddressPagingView_addresses

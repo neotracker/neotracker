@@ -88,20 +88,6 @@ const NEOTRACKER_PERSIST_BLOCK_LATENCY_SECONDS = metrics.createHistogram({
 
 const ZERO = new BigNumber('0');
 const ADD_CONTRACT_OFFSET = 10;
-const RPX_DEPLOY_BLOCK_INDEX = 1444843;
-const RPX_HASH = 'ecc6b20d3ccac1ee9ef109af5a7cdb85706b1df9';
-const RPX_DEPLOY_TRANSACTION_HASH =
-  'c920b2192e74eda4ca6140510813aa40fef1767d00c152aa6f8027c24bdf14f2';
-const QLC_TRANSACTION_HASH =
-  '4428f56f61048e504c203c6abb033ffa4ae9a3a992ca86084227d287c0175b8a';
-const QLC_TRANSFER_TO_ADDRESS_HASH = 'ASTin8w3BjRb7nKFwPeR5dfSQYjVKGUJJL';
-const QLC_CORRECTED_TRANSFER_TO_ADDRESS_HASH =
-  'ANvKJaBm2ynGMjd6Y1n2z2TcRnbwVtsaKo';
-const RHT_HASH = '2328008e6f6c7bd157a342e789389eb034d9cbc4';
-// First RHT transaction. Arbitrarily chosen so that the logic stays in
-// saveInvocationAction like RPX
-const RHT_TRANSACTION_HASH =
-  '3a5a5fa5bbd2f7684dfe73259098c62b2e2a620c4d175fe7e11c4e460a8e8ba9';
 
 class ExitError extends Error {}
 
@@ -222,7 +208,11 @@ export type InputOutputResult = {|
   addressIDs: Array<string>,
   coinChanges?: ?CoinChanges,
 |};
-export const EMPTY_INPUT_OUTPUT_RESULT = { assetIDs: [], addressIDs: [] };
+export const EMPTY_INPUT_OUTPUT_RESULT = {
+  assetIDs: [],
+  addressIDs: [],
+  coinChanges: undefined,
+};
 export const reduceInputOutputResults = (
   results: Array<InputOutputResult>,
 ): InputOutputResult =>
@@ -292,8 +282,7 @@ function getKnownContractModel(
               .insert({
                 id: hash,
                 processed_block_index: -1,
-                processed_transaction_index: -1,
-                processed_action_index: -1,
+                processed_action_global_index: new BigNumber(-1).toString(),
               })
               .returning('*')
               .first()
@@ -315,68 +304,8 @@ function isActionProcessed(
   action: ActionRaw,
   knownContractModel: KnownContractModel,
 ): boolean {
-  if (knownContractModel.processed_block_index < action.blockIndex) {
-    return false;
-  }
-
-  if (knownContractModel.processed_block_index > action.blockIndex) {
-    return true;
-  }
-
-  if (
-    knownContractModel.processed_transaction_index < action.transactionIndex
-  ) {
-    return false;
-  }
-
-  if (
-    knownContractModel.processed_transaction_index > action.transactionIndex
-  ) {
-    return true;
-  }
-
-  return knownContractModel.processed_action_index >= action.index;
-}
-
-function updateKnownContractModelPreRun(
-  context: Context,
-  monitor: Monitor,
-  action: ActionRaw,
-  contractModel: ContractModel,
-): Promise<void> {
-  return getMonitor(monitor).captureSpan(
-    span =>
-      dbTransaction(context.db, async trx => {
-        const knownContractModel = await KnownContractModel.query(trx)
-          .context(context.makeQueryContext(span))
-          .where('id', contractModel.id)
-          .forUpdate()
-          .first();
-        if (!isActionProcessed(action, knownContractModel)) {
-          let update;
-          if (knownContractModel.processed_block_index < action.blockIndex) {
-            update = {
-              processed_block_index: action.blockIndex - 1,
-              processed_transaction_index: action.transactionIndex - 1,
-            };
-          } else if (
-            knownContractModel.processed_transaction_index <
-            action.transactionIndex
-          ) {
-            update = {
-              processed_transaction_index: action.transactionIndex - 1,
-            };
-          }
-
-          if (!_.isEmpty(update)) {
-            await knownContractModel
-              .$query(trx)
-              .context(context.makeQueryContext(span))
-              .patch(update);
-          }
-        }
-      }),
-    { name: 'neotracker_scrape_run_update_known_contract_model_pre_run' },
+  return new BigNumber(knownContractModel.processed_action_global_index).gte(
+    action.globalIndex,
   );
 }
 
@@ -384,6 +313,7 @@ function updateKnownContractModelPostRun(
   context: Context,
   monitor: Monitor,
   action: ActionRaw,
+  blockModel: BlockModel,
   contractModel: ContractModel,
 ): Promise<void> {
   return getMonitor(monitor).captureSpan(
@@ -398,35 +328,13 @@ function updateKnownContractModelPostRun(
           await knownContractModel
             .$query(trx)
             .context(context.makeQueryContext(span))
-            .patch({ processed_action_index: action.index });
+            .patch({
+              processed_block_index: blockModel.id - 1,
+              processed_action_global_index: action.globalIndex.toString(),
+            });
         }
       }),
     { name: 'neotracker_scrape_run_update_known_contract_model_post_run' },
-  );
-}
-
-function updateKnownContractModelDone(
-  context: Context,
-  monitor: Monitor,
-  blockIndex: number,
-  contractModel: ContractModel,
-): Promise<void> {
-  return getMonitor(monitor).captureSpan(
-    span =>
-      dbTransaction(context.db, async trx => {
-        const knownContractModel = await KnownContractModel.query(trx)
-          .context(context.makeQueryContext(span))
-          .where('id', contractModel.id)
-          .forUpdate()
-          .first();
-        if (knownContractModel.processed_block_index < blockIndex) {
-          await knownContractModel
-            .$query(trx)
-            .context(context.makeQueryContext(span))
-            .patch({ processed_block_index: blockIndex });
-        }
-      }),
-    { name: 'neotracker_scrape_run_update_known_contract_model_done' },
   );
 }
 
@@ -515,7 +423,7 @@ function getPreviousBlockModel(
 
       const result = await BlockModel.query(context.db)
         .context(context.makeQueryContext(span))
-        .where('index', block.index - 1)
+        .where('id', block.index - 1)
         .first();
       return result;
     },
@@ -608,7 +516,7 @@ function saveCoin(
               address_id: address.id,
               asset_id: asset.id,
               value: new BigNumber('0').toFixed(asset.precision),
-              block_index: -1,
+              block_id: -1,
               transaction_index: -1,
               action_index: -1,
             })
@@ -619,10 +527,10 @@ function saveCoin(
             });
           return true;
         } else if (
-          blockModel.index > coinModel.block_index ||
-          (blockModel.index === coinModel.block_index &&
+          blockModel.index > coinModel.block_id ||
+          (blockModel.index === coinModel.block_id &&
             transactionModel.index > coinModel.transaction_index) ||
-          (blockModel.index === coinModel.block_index &&
+          (blockModel.index === coinModel.block_id &&
             transactionModel.index === coinModel.transaction_index &&
             (actionModel != null && actionModel.index > coinModel.action_index))
         ) {
@@ -633,7 +541,7 @@ function saveCoin(
               value: new BigNumber(coinModel.value)
                 .plus(value)
                 .toFixed(asset.precision),
-              block_index: blockModel.index,
+              block_id: blockModel.id,
               transaction_index: transactionModel.index,
               action_index: actionModel == null ? -1 : actionModel.index,
             });
@@ -799,16 +707,21 @@ export function processInputOutputResult(
             `
           UPDATE address SET
             last_transaction_id=?,
+            last_transaction_hash=?,
             last_transaction_time=?
           WHERE
             address.id IN (${addressIDsSet
               .map(id => `'${id}'`)
               .join(', ')}) AND (
-              address.last_transaction_time IS NULL OR
-              address.last_transaction_time <= ${transactionModel.block_time}
+              address.last_transaction_id IS NULL OR
+              address.last_transaction_id <= ${transactionModel.id}
             )
         `,
-            [transactionModel.id, transactionModel.block_time],
+            [
+              transactionModel.id,
+              transactionModel.hash,
+              transactionModel.block_time,
+            ],
           )
           .queryContext(context.makeQueryContext(span));
       }
@@ -825,7 +738,7 @@ function saveSingleTransfer(
     transactionModel,
     actionModel,
     fromAddressHash,
-    toAddressHash: toAddressHashIn,
+    toAddressHash,
     value,
   }: {|
     blockModel: BlockModel,
@@ -838,17 +751,6 @@ function saveSingleTransfer(
 ): Promise<TransferResult> {
   return getMonitor(monitor).captureSpan(
     async span => {
-      // For QLC
-      let toAddressHash = toAddressHashIn;
-      if (
-        transactionModel.id === QLC_TRANSACTION_HASH &&
-        fromAddressHash == null &&
-        toAddressHashIn != null &&
-        toAddressHashIn === QLC_TRANSFER_TO_ADDRESS_HASH
-      ) {
-        toAddressHash = QLC_CORRECTED_TRANSFER_TO_ADDRESS_HASH;
-      }
-
       const [
         fromAddressModelIn,
         toAddressModel,
@@ -891,13 +793,14 @@ function saveSingleTransfer(
         .insert({
           id: actionModel.id,
           transaction_id: transactionModel.id,
+          transaction_hash: transactionModel.hash,
           asset_id: assetModel.id,
           contract_id: contractModel.id,
           value: value.toFixed(assetModel.precision),
           from_address_id:
             fromAddressModel == null ? null : fromAddressModel.id,
           to_address_id: toAddressModel == null ? null : toAddressModel.id,
-          block_index: blockModel.index,
+          block_id: blockModel.id,
           transaction_index: transactionModel.index,
           action_index: actionModel.index,
           block_time: transactionModel.block_time,
@@ -973,7 +876,7 @@ export async function saveTransfer(
         .withData({
           [labels.ACTION_BLOCK_INDEX]: actionIn.blockIndex,
           [labels.ACTION_TRANSACTION_INDEX]: actionIn.transactionIndex,
-          [labels.ACTION_INDEX]: actionIn.index,
+          [labels.ACTION_INDEX]: actionIn.index.toString(10),
         })
         .logError({
           name: 'neotracker_scrape_run_scrape_convert_action_error',
@@ -1013,18 +916,15 @@ function saveSingleAction(
   return getMonitor(monitor).captureSpan(
     async span => {
       const action = normalizeAction(actionIn);
-      const id = ActionModel.makeID({
-        blockIndex: action.blockIndex,
-        transactionIndex: action.transactionIndex,
-        index: action.index,
-      });
+      const id = action.globalIndex.toString();
       const actionModel = await ActionModel.query(context.db)
         .context(context.makeQueryContext(span))
         .insert({
           id,
           type: action.type,
-          block_index: action.blockIndex,
+          block_id: action.blockIndex,
           transaction_id: transactionModel.id,
+          transaction_hash: transactionModel.hash,
           transaction_index: action.transactionIndex,
           index: action.index,
           script_hash: action.scriptHash,
@@ -1050,119 +950,6 @@ function saveSingleAction(
   );
 }
 
-function fixToken(
-  context: Context,
-  monitor: Monitor,
-  {
-    blockModel,
-    transactionHash,
-    scriptHash,
-    items,
-  }: {|
-    blockModel: BlockModel,
-    transactionHash: string,
-    scriptHash: string,
-    items: Array<[string, string, number]>,
-  |},
-): Promise<InputOutputResult> {
-  return getMonitor(monitor).captureSpan(
-    async span => {
-      const transactionModel = await TransactionModel.query(context.db)
-        .context(context.makeQueryContext(span))
-        .where('id', transactionHash)
-        .first();
-
-      if (blockModel == null || transactionModel == null) {
-        throw new Error('something went wrong');
-      }
-
-      const changes = await Promise.all(
-        items.map(async ([address, value, index]) => {
-          const actionModel = await saveSingleAction(context, span, {
-            transactionModel,
-            action: {
-              version: 0,
-              type: 'Notification',
-              blockHash: blockModel.id,
-              blockIndex: blockModel.index,
-              transactionHash: transactionModel.id,
-              transactionIndex: transactionModel.index,
-              index,
-              scriptHash,
-              args: [],
-            },
-          });
-
-          const result = await saveSingleTransfer(context, span, {
-            blockModel,
-            transactionModel,
-            actionModel,
-            fromAddressHash: null,
-            toAddressHash: address,
-            value: new BigNumber(value),
-          });
-
-          return result;
-        }),
-      );
-
-      // eslint-disable-next-line
-      const result = await processChanges(context, span, changes);
-
-      return result;
-    },
-    { name: 'neotracker_scrape_run_fix_token' },
-  );
-}
-
-function fixRPX(
-  context: Context,
-  monitor: Monitor,
-  blockModel: BlockModel,
-): Promise<InputOutputResult> {
-  return fixToken(context, monitor, {
-    blockModel,
-    transactionHash:
-      'c920b2192e74eda4ca6140510813aa40fef1767d00c152aa6f8027c24bdf14f2',
-    scriptHash: RPX_HASH,
-    items: [
-      ['AK25BtGXnVo3QNTmd277DhhDjWMdPxW94e', '67918562.5', 100],
-      ['ATW5cutjrtr3UWp6wUeNVSi9L89a8ApAPx', '543348500', 101],
-      ['AVN2HbTarsM6gfkZsJ6VYD3z2ezL9u5S3A', '203755687.5', 102],
-    ],
-  });
-}
-
-async function fixRHT(
-  context: Context,
-  monitor: Monitor,
-  blockModel: BlockModel,
-): Promise<InputOutputResult> {
-  return fixToken(context, monitor, {
-    blockModel,
-    transactionHash: RHT_TRANSACTION_HASH,
-    scriptHash: RHT_HASH,
-    items: [['AbuKqx6eHDbQizKnz3bgaq41agGGFFT35d', '13977', 100]],
-  });
-}
-
-export const isRPX = (
-  blockModel: BlockModel,
-  transactionModel: TransactionModel,
-  scriptHash: string,
-) =>
-  normalizeHash(scriptHash) === RPX_HASH &&
-  blockModel.index === RPX_DEPLOY_BLOCK_INDEX &&
-  transactionModel.id === RPX_DEPLOY_TRANSACTION_HASH;
-
-const isRHT = (
-  blockModel: BlockModel,
-  transactionModel: TransactionModel,
-  scriptHash: string,
-) =>
-  normalizeHash(scriptHash) === RHT_HASH &&
-  transactionModel.id === RHT_TRANSACTION_HASH;
-
 function saveInvocationAction(
   context: Context,
   monitor: Monitor,
@@ -1170,25 +957,13 @@ function saveInvocationAction(
   transactionModel: TransactionModel,
   blockModel: BlockModel,
   nep5ContractIn?: ReadSmartContract,
-): Promise<[InputOutputResult, ?TransferResult]> {
+): Promise<?TransferResult> {
   return getMonitor(monitor).captureSpan(
     async span => {
       const actionModel = await saveSingleAction(context, span, {
         transactionModel,
         action,
       });
-
-      let rpxResult = EMPTY_INPUT_OUTPUT_RESULT;
-      const rpx = isRPX(blockModel, transactionModel, actionModel.script_hash);
-      if (rpx && !context.rpxFixed) {
-        rpxResult = await fixRPX(context, span, blockModel);
-      }
-
-      let rhtResult = EMPTY_INPUT_OUTPUT_RESULT;
-      const rht = isRHT(blockModel, transactionModel, actionModel.script_hash);
-      if (rht && !context.rhtFixed) {
-        rhtResult = await fixRHT(context, span, blockModel);
-      }
 
       let result;
       const nep5Contract =
@@ -1205,7 +980,7 @@ function saveInvocationAction(
         );
       }
 
-      return [reduceInputOutputResults([rpxResult, rhtResult]), result];
+      return result;
     },
     { name: 'neotracker_scrape_run_save_invocation_action' },
   );
@@ -1299,12 +1074,10 @@ export function saveInvocationActions(
       const result = await processChanges(
         context,
         span,
-        changes.map(value => value[1]).filter(Boolean),
+        changes.filter(Boolean),
       );
 
-      return reduceInputOutputResults(
-        changes.map(value => value[0]).concat([result]),
-      );
+      return result;
     },
     { name: 'neotracker_scrape_run_save_invocation_actions' },
   );
@@ -1319,21 +1092,14 @@ function processActionFiltered(
 ): Promise<void> {
   return getMonitor(monitor).captureSpan(
     async span => {
-      await updateKnownContractModelPreRun(
-        context,
-        span,
-        action,
-        contractModel,
-      );
-
       const [blockModel, transactionModel] = await Promise.all([
         BlockModel.query(context.db)
           .context(context.makeQueryContext(span))
-          .where('index', action.blockIndex)
+          .where('id', action.blockIndex)
           .first(),
         TransactionModel.query(context.db)
           .context(context.makeQueryContext(span))
-          .where('id', normalizeHash(action.transactionHash))
+          .where('hash', normalizeHash(action.transactionHash))
           .first(),
       ]);
       if (blockModel == null) {
@@ -1361,12 +1127,9 @@ function processActionFiltered(
         context,
         span,
         action,
+        blockModel,
         contractModel,
       );
-      if (isRPX(blockModel, transactionModel, contractModel.id)) {
-        // eslint-disable-next-line
-        context.rpxFixed = true;
-      }
     },
     { name: 'neotracker_scrape_run_process_action_filtered' },
   );
@@ -1425,7 +1188,7 @@ function processContractActions(
         .iterActionsRaw({
           indexStart:
             knownContractModel.processed_block_index === -1
-              ? contractModel.block_index
+              ? contractModel.block_id
               : knownContractModel.processed_block_index,
           indexStop: blockIndexStop,
           monitor: span,
@@ -1444,13 +1207,6 @@ function processContractActions(
             nep5Contract,
           );
         });
-
-        await updateKnownContractModelDone(
-          context,
-          span,
-          blockIndexStop,
-          contractModel,
-        );
       } catch (error) {
         if (error instanceof ExitError) {
           return;
@@ -1476,28 +1232,28 @@ function saveInvocationTransaction(
         saveInvocationActions(
           context,
           span,
-          transaction.data.actions,
+          transaction.invocationData.actions,
           transactionModel,
           blockModel,
         ),
-        transaction.data.asset == null
+        transaction.invocationData.asset == null
           ? Promise.resolve()
           : context.asset.save(
               {
                 transactionModel,
                 asset: {
-                  type: transaction.data.asset.type,
-                  name: transaction.data.asset.name,
-                  precision: transaction.data.asset.precision,
-                  owner: transaction.data.asset.owner,
-                  admin: transaction.data.asset.admin,
-                  amount: transaction.data.asset.amount.toString(10),
+                  type: transaction.invocationData.asset.type,
+                  name: transaction.invocationData.asset.name,
+                  precision: transaction.invocationData.asset.precision,
+                  owner: transaction.invocationData.asset.owner,
+                  admin: transaction.invocationData.asset.admin,
+                  amount: transaction.invocationData.asset.amount.toString(10),
                 },
               },
               span,
             ),
         Promise.all(
-          transaction.data.contracts.map(contract =>
+          transaction.invocationData.contracts.map(contract =>
             context.contract.save(
               {
                 contract,
@@ -1536,6 +1292,7 @@ function saveClaim(
 
       const claimDB = {
         claim_transaction_id: transactionModel.id,
+        claim_transaction_hash: transactionModel.hash,
       };
 
       if (inputTransactionInputOutput.claim_transaction_id == null) {
@@ -1722,15 +1479,16 @@ function getOutput(
         result: { assetIDs: [asset.id], addressIDs: [address.id] },
         output: {
           id: TransactionInputOutputModel.makeID({
-            outputTransactionHash: transactionModel.id,
+            outputTransactionHash: transactionModel.hash,
             outputTransactionIndex: idx,
             type: TYPE_INPUT,
           }),
           type: TYPE_INPUT,
           subtype: getSubtype(output, references, transaction, idx),
           output_transaction_id: transactionModel.id,
+          output_transaction_hash: transactionModel.hash,
           output_transaction_index: idx,
-          output_block_index: blockModel.index,
+          output_block_id: blockModel.id,
           asset_id: asset.id,
           value: output.value.toFixed(asset.precision),
           address_id: address.id,
@@ -1802,7 +1560,7 @@ function saveInput(
           context,
           span,
           new BigNumber(reference.value),
-          reference.output_block_index,
+          reference.output_block_id,
           blockModel.index,
         );
       }
@@ -1941,8 +1699,9 @@ function saveTransaction(
         TransactionModel.query(context.db)
           .context(context.makeQueryContext(span))
           .insert({
+            id: transaction.data.globalIndex.toString(),
+            hash: transaction.txid,
             type: transaction.type,
-            id: transaction.txid,
             size: transaction.size,
             version: transaction.version,
             attributes_raw: JSON.stringify(transaction.attributes),
@@ -1963,9 +1722,10 @@ function saveTransaction(
             script: transaction.script == null ? null : transaction.script,
             gas: transaction.gas == null ? null : transaction.gas.toFixed(8),
             result_raw:
-              transaction.data == null || transaction.data.result == null
+              transaction.invocationData == null ||
+              transaction.invocationData.result == null
                 ? null
-                : JSON.stringify(transaction.data.result),
+                : JSON.stringify(transaction.invocationData.result),
           })
           .first()
           .returning('*')
@@ -1973,7 +1733,7 @@ function saveTransaction(
             if (error.code === CONFLICT_ERROR_CODE) {
               return TransactionModel.query(context.db)
                 .context(context.makeQueryContext(span))
-                .where('id', transaction.txid)
+                .where('id', transaction.data.globalIndex.toString())
                 .first();
             }
 
@@ -2033,6 +1793,7 @@ function saveBlock(
       if (prevBlockModel != null) {
         prevBlockData = {
           previous_block_id: prevBlockModel.id,
+          previous_block_hash: prevBlockModel.hash,
           validator_address_id: prevBlockModel.next_validator_address_id,
         };
       }
@@ -2042,12 +1803,12 @@ function saveBlock(
           .context(context.makeQueryContext(span))
           .insert({
             ...prevBlockData,
-            id: block.hash,
+            id: block.index,
+            hash: block.hash,
             size: block.size,
             version: block.version,
             merkle_root: block.merkleRoot,
             time: block.time,
-            index: block.index,
             nonce: block.nonce,
             next_validator_address_id: address.id,
             invocation_script: block.script.invocation,
@@ -2069,7 +1830,7 @@ function saveBlock(
             if (error.code === CONFLICT_ERROR_CODE) {
               return BlockModel.query(context.db)
                 .context(context.makeQueryContext(span))
-                .where('index', block.index)
+                .where('id', block.index)
                 .first();
             }
             throw error;
@@ -2171,10 +1932,12 @@ function processMinerBlocksFiltered(
         indexToBlockModel[blockModel.index] = blockModel;
         indexToBlockModelPatch[blockModel.index] = {
           previous_block_id: blockModel.id,
+          previous_block_hash: blockModel.hash,
           validator_address_id: blockModel.next_validator_address_id,
         };
         indexToPrevBlockModelPatch[blockModel.index] = {
           next_block_id: blockModel.id,
+          next_block_hash: blockModel.hash,
         };
       });
 

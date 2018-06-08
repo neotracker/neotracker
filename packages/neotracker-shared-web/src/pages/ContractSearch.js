@@ -95,8 +95,8 @@ export default (queryRenderer(
     query ContractSearchQuery($first: Int!, $after: String) {
       contracts(
         orderBy: [
-          { name: "contract.block_time", direction: "desc nulls first" }
-          { name: "contract.id", direction: "desc nulls last" }
+          { name: "contract.block_id", direction: "desc" }
+          { name: "contract.id", direction: "desc" }
         ]
         first: $first
         after: $after
