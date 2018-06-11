@@ -12,7 +12,7 @@
   "license": "MIT",
   "main": "./src/index.js",
   "dependencies": {
-    "@neo-one/client": "^1.0.0-alpha.54",
+    "@neo-one/client": "^1.0.0-alpha.55",
     "@neo-one/monitor": "^1.0.0-alpha.30",
     "app-root-dir": "^1.0.2",
     "css.escape": "^1.5.1",
