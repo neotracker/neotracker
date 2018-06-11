@@ -149,7 +149,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "AssetQuery",
-  "id": "38",
+  "id": "10",
   "text": null,
   "metadata": {},
   "fragment": {

@@ -154,7 +154,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "SearchQuery",
-  "id": "48",
+  "id": "21",
   "text": null,
   "metadata": {},
   "fragment": {

@@ -18,7 +18,9 @@ export default (
     if (thisRelationExpression === model.modelSchema.tableName) {
       thisRelationExpression = null;
     } else if (thisRelationExpression != null) {
-      thisRelationExpression = RelationExpression.parse(thisRelationExpression);
+      thisRelationExpression = RelationExpression.create(
+        thisRelationExpression,
+      );
     }
     return relationExpression == null
       ? thisRelationExpression

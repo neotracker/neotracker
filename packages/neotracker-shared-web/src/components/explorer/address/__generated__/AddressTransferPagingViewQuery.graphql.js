@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash dc54723124fc4180543b8e977c4e290a
+ * @relayHash 7e4e90764554f9abfe0bf93ced43f7af
  */
 
 /* eslint-disable */
@@ -42,7 +42,7 @@ query AddressTransferPagingViewQuery(
 ) {
   address(hash: $hash) {
     id
-    transfers(first: $first, after: $after, orderBy: [{name: "address_to_transfer.id2", direction: "desc"}]) {
+    transfers(first: $first, after: $after, orderBy: [{name: "address_to_transfer.id2", direction: "desc", type: "literal"}]) {
       edges {
         node {
           ...TransferPagingView_transfers
@@ -138,7 +138,8 @@ v3 = [
     "value": [
       {
         "direction": "desc",
-        "name": "address_to_transfer.id2"
+        "name": "address_to_transfer.id2",
+        "type": "literal"
       }
     ],
     "type": "[OrderByInput!]"
@@ -173,7 +174,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "AddressTransferPagingViewQuery",
-  "id": "34",
+  "id": "6",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -347,5 +348,5 @@ return {
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = '85dea9dd44752e7475ee7a4bc1601882';
+(node/*: any*/).hash = 'effcce37157ad1a5d4121bb9cd669d91';
 module.exports = node;

@@ -32,7 +32,7 @@ export default async (
     monitor: context.getMonitor(info),
     coins: unclaimed.filter(tio => tio.claim_value == null).map(tio => ({
       value: new BigNumber(tio.value),
-      startHeight: tio.output_block_index,
+      startHeight: tio.output_block_id,
       endHeight: parseInt(currentHeight, 10),
     })),
   });

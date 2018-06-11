@@ -173,7 +173,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "AssetTransferPagingViewQuery",
-  "id": "52",
+  "id": "25",
   "text": null,
   "metadata": {},
   "fragment": {

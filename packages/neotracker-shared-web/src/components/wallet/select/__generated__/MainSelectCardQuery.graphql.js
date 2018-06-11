@@ -98,7 +98,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "MainSelectCardQuery",
-  "id": "7",
+  "id": "3",
   "text": null,
   "metadata": {},
   "fragment": {

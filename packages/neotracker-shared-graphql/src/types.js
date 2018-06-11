@@ -46,4 +46,5 @@ export type OrderByInput = {|
     | 'desc nulls last'
     | 'asc nulls first'
     | 'desc nulls first',
+  type?: 'literal',
 |};

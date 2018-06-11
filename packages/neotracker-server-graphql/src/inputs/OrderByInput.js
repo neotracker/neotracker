@@ -12,6 +12,7 @@ export default class OrderByInput extends Input {
   static definition = {
     name: 'String!',
     direction: 'String!',
+    type: 'String',
   };
 
   static modifyQuery(
@@ -30,7 +31,9 @@ export default class OrderByInput extends Input {
   ): ?RelationExpression {
     return getRelationExpressionForColumns(
       model,
-      orderBys.map(orderBy => orderBy.name),
+      orderBys
+        .filter(orderBy => orderBy.type !== 'literal')
+        .map(orderBy => orderBy.name),
     );
   }
 }

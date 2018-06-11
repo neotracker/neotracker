@@ -177,7 +177,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "BlockTransactionPagingViewQuery",
-  "id": "32",
+  "id": "4",
   "text": null,
   "metadata": {},
   "fragment": {

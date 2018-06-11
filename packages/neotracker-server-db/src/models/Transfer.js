@@ -231,5 +231,27 @@ export default class Transfer extends BlockchainModel<string> {
       },
       exposeGraphQL: true,
     },
+    addresses: {
+      relation: {
+        relation: Model.ManyToManyRelation,
+        get modelClass() {
+          // eslint-disable-next-line
+          return require('./Address').default;
+        },
+        join: {
+          from: 'transfer.id',
+          through: {
+            get modelClass() {
+              // eslint-disable-next-line
+              return require('./AddressToTransfer').default;
+            },
+            from: 'address_to_transfer.id2',
+            to: 'address_to_transfer.id1',
+          },
+          to: 'address.id',
+        },
+      },
+      exposeGraphQL: true,
+    },
   };
 }

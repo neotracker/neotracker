@@ -145,7 +145,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "MainWalletViewQuery",
-  "id": "22",
+  "id": "18",
   "text": null,
   "metadata": {},
   "fragment": {

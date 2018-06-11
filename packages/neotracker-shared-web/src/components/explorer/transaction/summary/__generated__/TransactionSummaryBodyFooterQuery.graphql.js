@@ -167,7 +167,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "TransactionSummaryBodyFooterQuery",
-  "id": "53",
+  "id": "26",
   "text": null,
   "metadata": {},
   "fragment": {

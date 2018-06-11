@@ -123,7 +123,7 @@ const reduceCoinChanges = (
   }
 
   const changes = a.changes.concat(b.changes);
-  if (a.blockModel.index > b.blockModel.index) {
+  if (a.blockModel.id > b.blockModel.id) {
     return {
       blockModel: a.blockModel,
       transactionModel: a.transactionModel,
@@ -132,7 +132,7 @@ const reduceCoinChanges = (
     };
   }
 
-  if (a.blockModel.index < b.blockModel.index) {
+  if (a.blockModel.id < b.blockModel.id) {
     return {
       blockModel: b.blockModel,
       transactionModel: b.transactionModel,
@@ -417,7 +417,7 @@ function getPreviousBlockModel(
   return getMonitor(monitor).captureSpan(
     async span => {
       const prevBlockModel = context.prevBlock;
-      if (prevBlockModel != null && prevBlockModel.index + 1 === block.index) {
+      if (prevBlockModel != null && prevBlockModel.id + 1 === block.index) {
         return prevBlockModel;
       }
 
@@ -527,10 +527,10 @@ function saveCoin(
             });
           return true;
         } else if (
-          blockModel.index > coinModel.block_id ||
-          (blockModel.index === coinModel.block_id &&
+          blockModel.id > coinModel.block_id ||
+          (blockModel.id === coinModel.block_id &&
             transactionModel.index > coinModel.transaction_index) ||
-          (blockModel.index === coinModel.block_id &&
+          (blockModel.id === coinModel.block_id &&
             transactionModel.index === coinModel.transaction_index &&
             (actionModel != null && actionModel.index > coinModel.action_index))
         ) {
@@ -1561,7 +1561,7 @@ function saveInput(
           span,
           new BigNumber(reference.value),
           reference.output_block_id,
-          blockModel.index,
+          blockModel.id,
         );
       }
       await reference
@@ -1929,13 +1929,13 @@ function processMinerBlocksFiltered(
       const indexToBlockModelPatch = {};
       const indexToPrevBlockModelPatch = {};
       [prevBlockModel].concat(blockModels).forEach(blockModel => {
-        indexToBlockModel[blockModel.index] = blockModel;
-        indexToBlockModelPatch[blockModel.index] = {
+        indexToBlockModel[blockModel.id] = blockModel;
+        indexToBlockModelPatch[blockModel.id] = {
           previous_block_id: blockModel.id,
           previous_block_hash: blockModel.hash,
           validator_address_id: blockModel.next_validator_address_id,
         };
-        indexToPrevBlockModelPatch[blockModel.index] = {
+        indexToPrevBlockModelPatch[blockModel.id] = {
           next_block_id: blockModel.id,
           next_block_hash: blockModel.hash,
         };
@@ -1944,10 +1944,10 @@ function processMinerBlocksFiltered(
       await Promise.all([
         Promise.all(
           blockModels.map(async blockModel => {
-            indexToBlockModel[blockModel.index] = await blockModel
+            indexToBlockModel[blockModel.id] = await blockModel
               .$query(context.db)
               .context(context.makeQueryContext(span))
-              .patch(indexToBlockModelPatch[blockModel.index - 1])
+              .patch(indexToBlockModelPatch[blockModel.id - 1])
               .returning('*');
           }),
         ),
@@ -1966,11 +1966,11 @@ function processMinerBlocksFiltered(
       // Avoid lock contention and run separately
       await Promise.all(
         blockModels.map(async blockModel => {
-          const currentPrevBlockModel = indexToBlockModel[blockModel.index - 1];
-          indexToBlockModel[blockModel.index - 1] = await currentPrevBlockModel
+          const currentPrevBlockModel = indexToBlockModel[blockModel.id - 1];
+          indexToBlockModel[blockModel.id - 1] = await currentPrevBlockModel
             .$query(context.db)
             .context(context.makeQueryContext(span))
-            .patch(indexToPrevBlockModelPatch[blockModel.index])
+            .patch(indexToPrevBlockModelPatch[blockModel.id])
             .returning('*');
         }),
       );
@@ -1981,7 +1981,7 @@ function processMinerBlocksFiltered(
         blocks[blocks.length - 1].index,
       );
 
-      return indexToBlockModel[blockModels[blockModels.length - 1].index];
+      return indexToBlockModel[blockModels[blockModels.length - 1].id];
     },
     { name: 'neotracker_scrape_run_process_miner_blocks_filtered' },
   );
@@ -1999,7 +1999,7 @@ function processBlock(
         // eslint-disable-next-line
         context.prevBlock = await processBlockFiltered(context, span, block);
         // eslint-disable-next-line
-        context.currentHeight = context.prevBlock.index;
+        context.currentHeight = context.prevBlock.id;
       }
     },
     { name: 'neotracker_scrape_run_process_block' },
@@ -2023,7 +2023,7 @@ function processMinerBlocks(
           blocks,
         );
         // eslint-disable-next-line
-        context.currentHeight = context.prevBlock.index;
+        context.currentHeight = context.prevBlock.id;
       }
     },
     { name: 'neotracker_scrape_run_process_miner_blocks' },
