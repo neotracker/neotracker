@@ -1,9 +1,5 @@
 /* @flow */
-import {
-  BIG_INT_ID,
-  CONTRACT_VALIDATOR,
-  INTEGER_INDEX_VALIDATOR,
-} from './common';
+import { CONTRACT_VALIDATOR } from './common';
 
 import BaseVisibleModel from './BaseVisibleModel';
 import { type FieldSchema } from '../lib';
@@ -22,11 +18,11 @@ export default class KnownContract extends BaseVisibleModel<string> {
       exposeGraphQL: true,
     },
     processed_block_index: {
-      type: INTEGER_INDEX_VALIDATOR,
+      type: { type: 'integer', minimum: -1 },
       required: true,
     },
     processed_action_global_index: {
-      type: BIG_INT_ID,
+      type: { type: 'bigInteger', minimum: -1 },
       required: true,
     },
   };

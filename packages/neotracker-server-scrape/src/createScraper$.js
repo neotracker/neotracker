@@ -51,7 +51,7 @@ export type Options = {|
   rootLoader: RootLoaderOptions,
   rpcURL: string,
   migrationEnabled: boolean,
-  nep5Hashes: Array<string>,
+  blacklistNEP5Hashes: Array<string>,
   repairNEP5BlockFrequency: number,
   repairNEP5LatencySeconds: number,
 |};
@@ -272,8 +272,8 @@ export default ({
             monitor: rootMonitor,
             makeQueryContext,
           }),
-          nep5Hashes$: options$.pipe(
-            map(options => options.nep5Hashes),
+          blacklistNEP5Hashes$: options$.pipe(
+            map(options => options.blacklistNEP5Hashes),
             distinctUntilChanged(),
           ),
           repairNEP5BlockFrequency,

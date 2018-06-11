@@ -45,10 +45,10 @@ import {
 } from '@neo-one/client';
 import BigNumber from 'bignumber.js';
 import type { Monitor } from '@neo-one/monitor';
-import { Observable, concat, merge } from 'rxjs';
+import { Observable, concat, merge, of as _of } from 'rxjs';
 
 import _ from 'lodash';
-import { filter, mergeMap } from 'rxjs/operators';
+import { concatMap, filter, mergeMap, scan } from 'rxjs/operators';
 import { metrics } from '@neo-one/monitor';
 
 import {
@@ -329,8 +329,36 @@ function updateKnownContractModelPostRun(
             .$query(trx)
             .context(context.makeQueryContext(span))
             .patch({
-              processed_block_index: blockModel.id - 1,
+              processed_block_index: blockModel.id,
               processed_action_global_index: action.globalIndex.toString(),
+            });
+        }
+      }),
+    { name: 'neotracker_scrape_run_update_known_contract_model_post_run' },
+  );
+}
+
+function updateKnownContractBlockModelPostRun(
+  context: Context,
+  monitor: Monitor,
+  contractModel: ContractModel,
+  blockIndex: number,
+): Promise<void> {
+  return getMonitor(monitor).captureSpan(
+    span =>
+      dbTransaction(context.db, async trx => {
+        const knownContractModel = await KnownContractModel.query(trx)
+          .context(context.makeQueryContext(span))
+          .where('id', contractModel.id)
+          .forUpdate()
+          .first();
+        if (blockIndex > knownContractModel.processed_block_index) {
+          await knownContractModel
+            .$query(trx)
+            .context(context.makeQueryContext(span))
+            .patch({
+              processed_block_index: blockIndex,
+              processed_action_global_index: '-1',
             });
         }
       }),
@@ -737,7 +765,7 @@ function saveSingleTransfer(
     blockModel,
     transactionModel,
     actionModel,
-    fromAddressHash,
+    fromAddressHash: fromAddressHashIn,
     toAddressHash,
     value,
   }: {|
@@ -751,8 +779,12 @@ function saveSingleTransfer(
 ): Promise<TransferResult> {
   return getMonitor(monitor).captureSpan(
     async span => {
+      let fromAddressHash = fromAddressHashIn;
+      if (scriptHashToAddress(actionModel.script_hash) === fromAddressHash) {
+        fromAddressHash = null;
+      }
       const [
-        fromAddressModelIn,
+        fromAddressModel,
         toAddressModel,
         assetModel,
         contractModel,
@@ -778,11 +810,6 @@ function saveSingleTransfer(
         context.asset.get(actionModel.script_hash, span),
         context.contract.get(actionModel.script_hash, span),
       ]);
-
-      let fromAddressModel = fromAddressModelIn;
-      if (scriptHashToAddress(actionModel.script_hash) === fromAddressHash) {
-        fromAddressModel = null;
-      }
 
       if (assetModel == null) {
         throw new Error(`Could not find Asset for ${actionModel.script_hash}`);
@@ -1207,6 +1234,13 @@ function processContractActions(
             nep5Contract,
           );
         });
+
+        await updateKnownContractBlockModelPostRun(
+          context,
+          monitor,
+          contractModel,
+          blockIndexStop,
+        );
       } catch (error) {
         if (error instanceof ExitError) {
           return;
@@ -2060,7 +2094,7 @@ export function initializeNEP5Contract(
             contract.name(span),
             contract.symbol(span),
             contract.decimals(span),
-            contract.totalSupply(span),
+            contract.totalSupply(span).catch(() => new BigNumber(0)),
             TransactionModel.query(context.db)
               .context(context.makeQueryContext(span))
               .where('id', contractModel.transaction_id)
@@ -2282,11 +2316,40 @@ export default (context: Context, monitorIn: Monitor) => {
       monitor,
       context.db,
       context.makeQueryContext,
-      context.nep5Hashes$,
+      context.blacklistNEP5Hashes$,
     ).pipe(
-      filter(
-        contractModel => context.nep5Contracts[add0x(contractModel.id)] == null,
+      scan(
+        (acc, contractModels) => {
+          const { seenContracts } = acc || { seenContracts: new Set() };
+          const ids = new Set(
+            contractModels.map(contractModel => add0x(contractModel.id)),
+          );
+          for (const id of Object.keys(context.nep5Contracts)) {
+            if (!ids.has(id)) {
+              // eslint-disable-next-line
+              delete context.nep5Contracts[id];
+              seenContracts.delete(id);
+            }
+          }
+
+          const outputContractModels = contractModels.filter(
+            contractModel => !seenContracts.has(add0x(contractModel.id)),
+          );
+          outputContractModels.forEach(contractModel => {
+            seenContracts.add(add0x(contractModel.id));
+          });
+          return {
+            contractModels: outputContractModels,
+            seenContracts,
+          };
+        },
+        {
+          seenContracts: new Set(),
+          contractModels: ([]: Array<ContractModel>),
+        },
       ),
+      filter(({ contractModels }) => contractModels.length > 0),
+      concatMap(({ contractModels }) => _of(...contractModels)),
       mergeMap(contractModel => watchContract(context, monitor, contractModel)),
     ),
   );

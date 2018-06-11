@@ -8,6 +8,7 @@ import {
   HASH_VALIDATOR,
   INTEGER_INDEX_VALIDATOR,
   NEP5_CONTRACT_TYPE,
+  NEP5_BLACKLIST_CONTRACT_TYPE,
   UNKNOWN_CONTRACT_TYPE,
 } from './common';
 import BlockchainModel from './BlockchainModel';
@@ -119,7 +120,11 @@ export default class Contract extends BlockchainModel<string> {
     type: {
       type: {
         type: 'string',
-        enum: [NEP5_CONTRACT_TYPE, UNKNOWN_CONTRACT_TYPE],
+        enum: [
+          NEP5_CONTRACT_TYPE,
+          NEP5_BLACKLIST_CONTRACT_TYPE,
+          UNKNOWN_CONTRACT_TYPE,
+        ],
         default: UNKNOWN_CONTRACT_TYPE,
       },
       required: true,
