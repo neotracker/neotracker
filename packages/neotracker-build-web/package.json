@@ -12,8 +12,8 @@
   "license": "MIT",
   "main": "./src/index.js",
   "dependencies": {
-    "@babel/polyfill": "7.0.0-beta.49",
-    "@neo-one/monitor": "^1.0.0-alpha.30",
+    "@babel/polyfill": "7.0.0-beta.51",
+    "@neo-one/monitor": "^1.0.0-alpha.31",
     "app-root-dir": "^1.0.2",
     "css.escape": "^1.5.1",
     "execa": "^0.10.0",

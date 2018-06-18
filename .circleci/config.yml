@@ -26,7 +26,7 @@ aliases:
 
 defaults: &defaults
   docker:
-    - image: circleci/node:9.11.1
+    - image: circleci/node:10.4.1
 
 version: 2
 jobs:
