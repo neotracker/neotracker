@@ -13,7 +13,7 @@
   "main": "./src/index.js",
   "dependencies": {
     "@babel/polyfill": "7.0.0-beta.51",
-    "@neo-one/monitor": "^1.0.0-alpha.31",
+    "@neo-one/monitor": "^1.0.0-alpha.33",
     "neotracker-build-utils": "^0.0.1-alpha.0",
     "neotracker-server-db": "^0.0.1-alpha.0",
     "neotracker-server-scrape": "^0.0.1-alpha.0",

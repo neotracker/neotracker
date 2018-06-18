@@ -1,6 +1,6 @@
 /* @flow */
 import type { Context } from 'koa';
-import { LABELS, type Monitor, metrics } from '@neo-one/monitor';
+import { KnownLabel, type Monitor, metrics } from '@neo-one/monitor';
 import type { RootLoader } from 'neotracker-server-db';
 
 import { getUA } from 'neotracker-server-utils';
@@ -13,9 +13,9 @@ import { getMonitor, simpleMiddleware } from './common';
 const RATE_LIMIT_ERROR_CODE = 429;
 
 const labelNames = [
-  LABELS.HTTP_PATH,
-  LABELS.HTTP_STATUS_CODE,
-  LABELS.HTTP_METHOD,
+  KnownLabel.HTTP_PATH,
+  KnownLabel.HTTP_STATUS_CODE,
+  KnownLabel.HTTP_METHOD,
 ];
 const HTTP_SERVER_REQUEST_DURATION_SECONDS = metrics.createHistogram({
   name: 'http_server_request_duration_seconds',

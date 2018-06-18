@@ -72,8 +72,7 @@ export default ({
       ],
     },
     resolve: {
-      mainFields: ['browser', 'jsnext:main', 'module', 'main'],
-      // TODO: Support .mjs once it works with ix/tslib
+      mainFields: ['browser', 'main'],
       extensions: ['.js', '.json', '.jsx', '.css'],
     },
     parallelism: 16,

@@ -1,6 +1,6 @@
 /* @flow */
 import type { Context } from 'koa';
-import { LABELS, metrics } from '@neo-one/monitor';
+import { KnownLabel, metrics } from '@neo-one/monitor';
 
 import compose from 'koa-compose';
 import fetch from 'node-fetch';
@@ -9,7 +9,7 @@ import { routes } from 'neotracker-shared-web';
 import bodyParser from './bodyParser';
 import { getMonitor } from './common';
 
-const labelNames = [LABELS.HTTP_URL, LABELS.HTTP_STATUS_CODE];
+const labelNames = [KnownLabel.HTTP_URL, KnownLabel.HTTP_STATUS_CODE];
 const SERVER_PROXY_HTTP_CLIENT_JSONRPC_REQUEST_DURATION_SECONDS = metrics.createHistogram(
   {
     name: 'server_proxy_http_client_jsonrpc_request_duration_seconds',

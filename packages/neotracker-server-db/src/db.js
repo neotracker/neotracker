@@ -1,5 +1,10 @@
 /* @flow */
-import { LABELS, type Labels, type Monitor, metrics } from '@neo-one/monitor';
+import {
+  KnownLabel,
+  type Labels,
+  type Monitor,
+  metrics,
+} from '@neo-one/monitor';
 import { type Observable, interval } from 'rxjs';
 
 import { finalize } from 'neotracker-shared-utils';
@@ -72,7 +77,11 @@ const addProfiler = (db: knex<*>, labels: Labels) => {
   });
 };
 
-const labelNames = [LABELS.DB_INSTANCE, LABELS.DB_USER, LABELS.DB_TYPE];
+const labelNames = [
+  KnownLabel.DB_INSTANCE,
+  KnownLabel.DB_USER,
+  KnownLabel.DB_TYPE,
+];
 const numUsedGauge = metrics.createGauge({
   name: 'knex_pool_num_used',
   labelNames,
