@@ -19,7 +19,7 @@
     "@babel/preset-env": "7.0.0-beta.51",
     "@babel/preset-react": "7.0.0-beta.51",
     "@babel/register": "7.0.0-beta.51",
-    "@neo-one/cli": "1.0.0-alpha.80",
+    "@neo-one/cli": "1.0.0-alpha.81",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "8.2.3",
     "babel-plugin-relay": "1.6.0",
