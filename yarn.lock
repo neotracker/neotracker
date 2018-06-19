@@ -823,21 +823,21 @@
   version "0.0.2"
   resolved "https://registry.npmjs.org/@neo-one/boa/-/boa-0.0.2.tgz#a9dac47fd7f77b70bc7b96d968fc48b84cc56bd0"
 
-"@neo-one/cli@1.0.0-alpha.77":
-  version "1.0.0-alpha.77"
-  resolved "https://registry.npmjs.org/@neo-one/cli/-/cli-1.0.0-alpha.77.tgz#f71377d2c31045b9f482c989715008fb231906f0"
+"@neo-one/cli@1.0.0-alpha.80":
+  version "1.0.0-alpha.80"
+  resolved "https://registry.npmjs.org/@neo-one/cli/-/cli-1.0.0-alpha.80.tgz#16debf50c25cddb3821883326e33d26bf54550a8"
   dependencies:
     "@babel/polyfill" "^7.0.0-beta.51"
     "@grpc/surface" "^0.1.0"
-    "@neo-one/monitor" "^1.0.0-alpha.31"
-    "@neo-one/server" "^1.0.0-alpha.77"
-    "@neo-one/server-client" "^1.0.0-alpha.43"
-    "@neo-one/server-plugin" "^1.0.0-alpha.42"
-    "@neo-one/server-plugin-compiler" "^1.0.0-alpha.57"
-    "@neo-one/server-plugin-network" "^1.0.0-alpha.74"
-    "@neo-one/server-plugin-simulation" "^1.0.0-alpha.77"
-    "@neo-one/server-plugin-wallet" "^1.0.0-alpha.77"
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/monitor" "^1.0.0-alpha.33"
+    "@neo-one/server" "^1.0.0-alpha.80"
+    "@neo-one/server-client" "^1.0.0-alpha.45"
+    "@neo-one/server-plugin" "^1.0.0-alpha.44"
+    "@neo-one/server-plugin-compiler" "^1.0.0-alpha.59"
+    "@neo-one/server-plugin-network" "^1.0.0-alpha.77"
+    "@neo-one/server-plugin-simulation" "^1.0.0-alpha.80"
+    "@neo-one/server-plugin-wallet" "^1.0.0-alpha.80"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     chalk "^2.4.1"
     cli-table2 "^0.2.0"
     cli-truncate "^1.1.0"
@@ -856,12 +856,12 @@
     vorpal "^1.12.0"
     winston "^3.0.0"
 
-"@neo-one/client-core@^1.0.0-alpha.42":
-  version "1.0.0-alpha.42"
-  resolved "https://registry.npmjs.org/@neo-one/client-core/-/client-core-1.0.0-alpha.42.tgz#53051012c7c5163807d8132ae26524ed0b6b4598"
+"@neo-one/client-core@^1.0.0-alpha.44":
+  version "1.0.0-alpha.44"
+  resolved "https://registry.npmjs.org/@neo-one/client-core/-/client-core-1.0.0-alpha.44.tgz#e54b0ce07b584b9ec20b9de52baf89b16edb6c45"
   dependencies:
     "@neo-one/ec-key" "^0.0.3"
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     bignumber.js "^7.2.1"
     bn.js "^4.11.8"
     bs58 "^4.0.1"
@@ -871,14 +871,14 @@
     scrypt-js "^2.0.3"
     wif "^2.0.6"
 
-"@neo-one/client@^1.0.0-alpha.56":
-  version "1.0.0-alpha.56"
-  resolved "https://registry.npmjs.org/@neo-one/client/-/client-1.0.0-alpha.56.tgz#190d06f1610d641885863837fc8d7069b9802fe1"
+"@neo-one/client@^1.0.0-alpha.58":
+  version "1.0.0-alpha.58"
+  resolved "https://registry.npmjs.org/@neo-one/client/-/client-1.0.0-alpha.58.tgz#dcaa6df1335af82930b797ff3c93f5e45d20ac3f"
   dependencies:
-    "@neo-one/client-core" "^1.0.0-alpha.42"
-    "@neo-one/monitor" "^1.0.0-alpha.31"
-    "@neo-one/node-neo-settings" "^1.0.0-alpha.42"
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/client-core" "^1.0.0-alpha.44"
+    "@neo-one/monitor" "^1.0.0-alpha.33"
+    "@neo-one/node-neo-settings" "^1.0.0-alpha.44"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     bignumber.js "^7.2.1"
     bn.js "^4.11.8"
     cross-fetch "^2.2.1"
@@ -898,11 +898,11 @@
   dependencies:
     asn1.js "^1.0.4"
 
-"@neo-one/monitor@^1.0.0-alpha.31":
-  version "1.0.0-alpha.31"
-  resolved "https://registry.npmjs.org/@neo-one/monitor/-/monitor-1.0.0-alpha.31.tgz#264dca9ba979582e3f1f076476f723cbcb47457c"
+"@neo-one/monitor@^1.0.0-alpha.33":
+  version "1.0.0-alpha.33"
+  resolved "https://registry.npmjs.org/@neo-one/monitor/-/monitor-1.0.0-alpha.33.tgz#1a7f8171d35694ddfe6a495b5655769f5f438acc"
   dependencies:
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     koa "^2.5.1"
     koa-mount "^3.0.0"
     lodash "^4.17.10"
@@ -911,36 +911,36 @@
     prometheus-gc-stats "^0.5.1"
     rxjs "^6.2.1"
 
-"@neo-one/node-blockchain@^1.0.0-alpha.49":
-  version "1.0.0-alpha.49"
-  resolved "https://registry.npmjs.org/@neo-one/node-blockchain/-/node-blockchain-1.0.0-alpha.49.tgz#adcff17687d986de386e43261b9a5ebedeaba1ed"
+"@neo-one/node-blockchain@^1.0.0-alpha.51":
+  version "1.0.0-alpha.51"
+  resolved "https://registry.npmjs.org/@neo-one/node-blockchain/-/node-blockchain-1.0.0-alpha.51.tgz#dec8d87a109f3afe29e8a726f1cf615f147a17ca"
   dependencies:
-    "@neo-one/client-core" "^1.0.0-alpha.42"
-    "@neo-one/monitor" "^1.0.0-alpha.31"
-    "@neo-one/node-core" "^1.0.0-alpha.43"
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/client-core" "^1.0.0-alpha.44"
+    "@neo-one/monitor" "^1.0.0-alpha.33"
+    "@neo-one/node-core" "^1.0.0-alpha.45"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     bn.js "^4.11.8"
     js-priority-queue "^0.1.5"
     lodash "^4.17.10"
     rxjs "^6.2.1"
 
-"@neo-one/node-core@^1.0.0-alpha.43":
-  version "1.0.0-alpha.43"
-  resolved "https://registry.npmjs.org/@neo-one/node-core/-/node-core-1.0.0-alpha.43.tgz#7fc83cacc2800c126d25fe03c9084f674c60adac"
+"@neo-one/node-core@^1.0.0-alpha.45":
+  version "1.0.0-alpha.45"
+  resolved "https://registry.npmjs.org/@neo-one/node-core/-/node-core-1.0.0-alpha.45.tgz#756b4985bd739ab03a1cafcf257927298188c9e6"
   dependencies:
-    "@neo-one/client-core" "^1.0.0-alpha.42"
-    "@neo-one/monitor" "^1.0.0-alpha.31"
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/client-core" "^1.0.0-alpha.44"
+    "@neo-one/monitor" "^1.0.0-alpha.33"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     bn.js "^4.11.8"
     rxjs "^6.2.1"
 
-"@neo-one/node-data-backup@^1.0.0-alpha.41":
-  version "1.0.0-alpha.41"
-  resolved "https://registry.npmjs.org/@neo-one/node-data-backup/-/node-data-backup-1.0.0-alpha.41.tgz#cc5d8d17dc547ac2cea1f2d270a34f7f60716bf0"
+"@neo-one/node-data-backup@^1.0.0-alpha.44":
+  version "1.0.0-alpha.44"
+  resolved "https://registry.npmjs.org/@neo-one/node-data-backup/-/node-data-backup-1.0.0-alpha.44.tgz#014c9263bf55ad28c2639037207df27b27be0d00"
   dependencies:
     "@google-cloud/storage" "^1.7.0"
-    "@neo-one/monitor" "^1.0.0-alpha.31"
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/monitor" "^1.0.0-alpha.33"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     fs-extra "^6.0.1"
     leveldown "^4.0.1"
     levelup "^3.0.1"
@@ -949,45 +949,45 @@
     stream-throttle "^0.1.3"
     tar "^4.4.4"
 
-"@neo-one/node-neo-settings@^1.0.0-alpha.42":
-  version "1.0.0-alpha.42"
-  resolved "https://registry.npmjs.org/@neo-one/node-neo-settings/-/node-neo-settings-1.0.0-alpha.42.tgz#f63b826f333f6623df6f74dd94bbf283586819a3"
+"@neo-one/node-neo-settings@^1.0.0-alpha.44":
+  version "1.0.0-alpha.44"
+  resolved "https://registry.npmjs.org/@neo-one/node-neo-settings/-/node-neo-settings-1.0.0-alpha.44.tgz#5580cd6c671f6c70d85fc13ef5fcf5de92509332"
   dependencies:
-    "@neo-one/client-core" "^1.0.0-alpha.42"
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/client-core" "^1.0.0-alpha.44"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     bn.js "^4.11.8"
 
-"@neo-one/node-network@^1.0.0-alpha.47":
-  version "1.0.0-alpha.47"
-  resolved "https://registry.npmjs.org/@neo-one/node-network/-/node-network-1.0.0-alpha.47.tgz#b761e75f358fd071814470df251b436a034eeb7e"
+"@neo-one/node-network@^1.0.0-alpha.49":
+  version "1.0.0-alpha.49"
+  resolved "https://registry.npmjs.org/@neo-one/node-network/-/node-network-1.0.0-alpha.49.tgz#61c6d08cb5f12abcfdc2c8fdc7835600a2711e58"
   dependencies:
-    "@neo-one/client-core" "^1.0.0-alpha.42"
-    "@neo-one/monitor" "^1.0.0-alpha.31"
-    "@neo-one/node-core" "^1.0.0-alpha.43"
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/client-core" "^1.0.0-alpha.44"
+    "@neo-one/monitor" "^1.0.0-alpha.33"
+    "@neo-one/node-core" "^1.0.0-alpha.45"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     lodash "^4.17.10"
     rxjs "^6.2.1"
     through "^2.3.8"
 
-"@neo-one/node-offline@^1.0.0-alpha.43":
-  version "1.0.0-alpha.43"
-  resolved "https://registry.npmjs.org/@neo-one/node-offline/-/node-offline-1.0.0-alpha.43.tgz#39952ccee891defe775754dd38eee1d191d032be"
+"@neo-one/node-offline@^1.0.0-alpha.45":
+  version "1.0.0-alpha.45"
+  resolved "https://registry.npmjs.org/@neo-one/node-offline/-/node-offline-1.0.0-alpha.45.tgz#b87099ebbd7c1f81fc5ce5cdba517d0303044e03"
   dependencies:
-    "@neo-one/client-core" "^1.0.0-alpha.42"
-    "@neo-one/node-core" "^1.0.0-alpha.43"
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/client-core" "^1.0.0-alpha.44"
+    "@neo-one/node-core" "^1.0.0-alpha.45"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     lodash "^4.17.10"
 
-"@neo-one/node-protocol@^1.0.0-alpha.66":
-  version "1.0.0-alpha.66"
-  resolved "https://registry.npmjs.org/@neo-one/node-protocol/-/node-protocol-1.0.0-alpha.66.tgz#9db218365292bcb9f3cdb4e569962b9a658d049a"
+"@neo-one/node-protocol@^1.0.0-alpha.68":
+  version "1.0.0-alpha.68"
+  resolved "https://registry.npmjs.org/@neo-one/node-protocol/-/node-protocol-1.0.0-alpha.68.tgz#0ae26e90d65f7673e829c8b14bb58ae31c813f5a"
   dependencies:
-    "@neo-one/client" "^1.0.0-alpha.56"
-    "@neo-one/client-core" "^1.0.0-alpha.42"
-    "@neo-one/monitor" "^1.0.0-alpha.31"
-    "@neo-one/node-core" "^1.0.0-alpha.43"
-    "@neo-one/node-network" "^1.0.0-alpha.47"
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/client" "^1.0.0-alpha.58"
+    "@neo-one/client-core" "^1.0.0-alpha.44"
+    "@neo-one/monitor" "^1.0.0-alpha.33"
+    "@neo-one/node-core" "^1.0.0-alpha.45"
+    "@neo-one/node-network" "^1.0.0-alpha.49"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     bignumber.js "^7.2.1"
     bloem "^0.2.4"
     bloom-filter "^0.2.0"
@@ -998,14 +998,14 @@
     lru-cache "^4.1.3"
     rxjs "^6.2.1"
 
-"@neo-one/node-rpc@^1.0.0-alpha.59":
-  version "1.0.0-alpha.59"
-  resolved "https://registry.npmjs.org/@neo-one/node-rpc/-/node-rpc-1.0.0-alpha.59.tgz#0e4655f55c35cd242058ed53435f971337458846"
+"@neo-one/node-rpc@^1.0.0-alpha.61":
+  version "1.0.0-alpha.61"
+  resolved "https://registry.npmjs.org/@neo-one/node-rpc/-/node-rpc-1.0.0-alpha.61.tgz#337c058cdbdd9c14ea545bcde03d96daa8545894"
   dependencies:
-    "@neo-one/client-core" "^1.0.0-alpha.42"
-    "@neo-one/monitor" "^1.0.0-alpha.31"
-    "@neo-one/node-core" "^1.0.0-alpha.43"
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/client-core" "^1.0.0-alpha.44"
+    "@neo-one/monitor" "^1.0.0-alpha.33"
+    "@neo-one/node-core" "^1.0.0-alpha.45"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     cross-fetch "^2.2.1"
     koa "^2.5.1"
     koa-better-body "^3.0.4"
@@ -1017,67 +1017,67 @@
     lodash "^4.17.10"
     rxjs "^6.2.1"
 
-"@neo-one/node-storage-common@^1.0.0-alpha.45":
-  version "1.0.0-alpha.45"
-  resolved "https://registry.npmjs.org/@neo-one/node-storage-common/-/node-storage-common-1.0.0-alpha.45.tgz#81d467086218a920296325b6455b4e8128b84411"
+"@neo-one/node-storage-common@^1.0.0-alpha.47":
+  version "1.0.0-alpha.47"
+  resolved "https://registry.npmjs.org/@neo-one/node-storage-common/-/node-storage-common-1.0.0-alpha.47.tgz#12e652d353f17ee4b4d24079c301fae7fc5bb47d"
   dependencies:
-    "@neo-one/client-core" "^1.0.0-alpha.42"
-    "@neo-one/node-core" "^1.0.0-alpha.43"
+    "@neo-one/client-core" "^1.0.0-alpha.44"
+    "@neo-one/node-core" "^1.0.0-alpha.45"
     bn.js "^4.11.8"
     bytewise "^1.1.0"
 
-"@neo-one/node-storage-levelup@^1.0.0-alpha.45":
-  version "1.0.0-alpha.45"
-  resolved "https://registry.npmjs.org/@neo-one/node-storage-levelup/-/node-storage-levelup-1.0.0-alpha.45.tgz#5470318e012a0ffef3bb17d18b07c2fa350f80ed"
+"@neo-one/node-storage-levelup@^1.0.0-alpha.47":
+  version "1.0.0-alpha.47"
+  resolved "https://registry.npmjs.org/@neo-one/node-storage-levelup/-/node-storage-levelup-1.0.0-alpha.47.tgz#efc4b012078b66ff98b554597b7273ca335cb067"
   dependencies:
-    "@neo-one/client-core" "^1.0.0-alpha.42"
-    "@neo-one/node-core" "^1.0.0-alpha.43"
-    "@neo-one/node-storage-common" "^1.0.0-alpha.45"
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/client-core" "^1.0.0-alpha.44"
+    "@neo-one/node-core" "^1.0.0-alpha.45"
+    "@neo-one/node-storage-common" "^1.0.0-alpha.47"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     bytewise "^1.1.0"
     rxjs "^6.2.1"
 
-"@neo-one/node-vm@^1.0.0-alpha.44":
-  version "1.0.0-alpha.44"
-  resolved "https://registry.npmjs.org/@neo-one/node-vm/-/node-vm-1.0.0-alpha.44.tgz#a7b81d11cd93ce6413142a6fbfa14df107b43e5a"
+"@neo-one/node-vm@^1.0.0-alpha.46":
+  version "1.0.0-alpha.46"
+  resolved "https://registry.npmjs.org/@neo-one/node-vm/-/node-vm-1.0.0-alpha.46.tgz#d88b5e21b527a949dea5652ec281bdf0119261ac"
   dependencies:
-    "@neo-one/client-core" "^1.0.0-alpha.42"
-    "@neo-one/monitor" "^1.0.0-alpha.31"
-    "@neo-one/node-core" "^1.0.0-alpha.43"
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/client-core" "^1.0.0-alpha.44"
+    "@neo-one/monitor" "^1.0.0-alpha.33"
+    "@neo-one/node-core" "^1.0.0-alpha.45"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     bitwise "^1.4.1"
     bn.js "^4.11.8"
     ix "^2.3.5"
     lodash "^4.17.10"
     rxjs "^6.2.1"
 
-"@neo-one/node@^1.0.0-alpha.74":
-  version "1.0.0-alpha.74"
-  resolved "https://registry.npmjs.org/@neo-one/node/-/node-1.0.0-alpha.74.tgz#cd03780c1cc35eb6458f597e667f97b2d05ac765"
+"@neo-one/node@^1.0.0-alpha.77":
+  version "1.0.0-alpha.77"
+  resolved "https://registry.npmjs.org/@neo-one/node/-/node-1.0.0-alpha.77.tgz#3fbcb97ccda757cce4c2e3e93d04ab1ad3c8096d"
   dependencies:
-    "@neo-one/client-core" "^1.0.0-alpha.42"
-    "@neo-one/monitor" "^1.0.0-alpha.31"
-    "@neo-one/node-blockchain" "^1.0.0-alpha.49"
-    "@neo-one/node-core" "^1.0.0-alpha.43"
-    "@neo-one/node-data-backup" "^1.0.0-alpha.41"
-    "@neo-one/node-offline" "^1.0.0-alpha.43"
-    "@neo-one/node-protocol" "^1.0.0-alpha.66"
-    "@neo-one/node-rpc" "^1.0.0-alpha.59"
-    "@neo-one/node-storage-levelup" "^1.0.0-alpha.45"
-    "@neo-one/node-vm" "^1.0.0-alpha.44"
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/client-core" "^1.0.0-alpha.44"
+    "@neo-one/monitor" "^1.0.0-alpha.33"
+    "@neo-one/node-blockchain" "^1.0.0-alpha.51"
+    "@neo-one/node-core" "^1.0.0-alpha.45"
+    "@neo-one/node-data-backup" "^1.0.0-alpha.44"
+    "@neo-one/node-offline" "^1.0.0-alpha.45"
+    "@neo-one/node-protocol" "^1.0.0-alpha.68"
+    "@neo-one/node-rpc" "^1.0.0-alpha.61"
+    "@neo-one/node-storage-levelup" "^1.0.0-alpha.47"
+    "@neo-one/node-vm" "^1.0.0-alpha.46"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     leveldown "^4.0.1"
     levelup "^3.0.1"
     node-cron "^1.2.1"
     rxjs "^6.2.1"
 
-"@neo-one/server-client@^1.0.0-alpha.43":
-  version "1.0.0-alpha.43"
-  resolved "https://registry.npmjs.org/@neo-one/server-client/-/server-client-1.0.0-alpha.43.tgz#2fd139727614ad0ddbd7b4f418b14b09f3068724"
+"@neo-one/server-client@^1.0.0-alpha.45":
+  version "1.0.0-alpha.45"
+  resolved "https://registry.npmjs.org/@neo-one/server-client/-/server-client-1.0.0-alpha.45.tgz#7d0994baeb428c1cffd3ae03f065ec5d887efdb7"
   dependencies:
     "@neo-one/server-grpc" "^1.0.0-alpha.7"
-    "@neo-one/server-plugin" "^1.0.0-alpha.42"
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/server-plugin" "^1.0.0-alpha.44"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     env-paths "^1.0.0"
     execa "^0.10.0"
     fs-extra "^6.0.1"
@@ -1091,33 +1091,33 @@
   dependencies:
     google-protobuf "^3.5.0"
 
-"@neo-one/server-plugin-compiler@^1.0.0-alpha.57":
-  version "1.0.0-alpha.57"
-  resolved "https://registry.npmjs.org/@neo-one/server-plugin-compiler/-/server-plugin-compiler-1.0.0-alpha.57.tgz#0e281f69bc03e9a4b79c4ec8048a8e4aad1ec80f"
+"@neo-one/server-plugin-compiler@^1.0.0-alpha.59":
+  version "1.0.0-alpha.59"
+  resolved "https://registry.npmjs.org/@neo-one/server-plugin-compiler/-/server-plugin-compiler-1.0.0-alpha.59.tgz#bec2fe0e9842d00c0b265088926bf3e49e41be69"
   dependencies:
     "@neo-one/boa" "^0.0.2"
-    "@neo-one/client" "^1.0.0-alpha.56"
+    "@neo-one/client" "^1.0.0-alpha.58"
     "@neo-one/csharp" "^0.0.1"
-    "@neo-one/server-plugin" "^1.0.0-alpha.42"
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/server-plugin" "^1.0.0-alpha.44"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     execa "^0.10.0"
     fs-extra "^6.0.1"
     lodash "^4.17.10"
     rxjs "^6.2.1"
 
-"@neo-one/server-plugin-network@^1.0.0-alpha.74":
-  version "1.0.0-alpha.74"
-  resolved "https://registry.npmjs.org/@neo-one/server-plugin-network/-/server-plugin-network-1.0.0-alpha.74.tgz#e406fe2b1279976b296c7e343d0d2e3abb979af8"
+"@neo-one/server-plugin-network@^1.0.0-alpha.77":
+  version "1.0.0-alpha.77"
+  resolved "https://registry.npmjs.org/@neo-one/server-plugin-network/-/server-plugin-network-1.0.0-alpha.77.tgz#c0886b3fb10aa66c60d91dbd82be938a822d6500"
   dependencies:
-    "@neo-one/client" "^1.0.0-alpha.56"
-    "@neo-one/client-core" "^1.0.0-alpha.42"
-    "@neo-one/monitor" "^1.0.0-alpha.31"
-    "@neo-one/node" "^1.0.0-alpha.74"
-    "@neo-one/node-core" "^1.0.0-alpha.43"
-    "@neo-one/node-data-backup" "^1.0.0-alpha.41"
-    "@neo-one/node-neo-settings" "^1.0.0-alpha.42"
-    "@neo-one/server-plugin" "^1.0.0-alpha.42"
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/client" "^1.0.0-alpha.58"
+    "@neo-one/client-core" "^1.0.0-alpha.44"
+    "@neo-one/monitor" "^1.0.0-alpha.33"
+    "@neo-one/node" "^1.0.0-alpha.77"
+    "@neo-one/node-core" "^1.0.0-alpha.45"
+    "@neo-one/node-data-backup" "^1.0.0-alpha.44"
+    "@neo-one/node-neo-settings" "^1.0.0-alpha.44"
+    "@neo-one/server-plugin" "^1.0.0-alpha.44"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     cross-fetch "^2.2.1"
     execa "^0.10.0"
     fs-extra "^6.0.1"
@@ -1125,39 +1125,36 @@
     rxjs "^6.2.1"
     vorpal "^1.12.0"
 
-"@neo-one/server-plugin-simulation@^1.0.0-alpha.77":
-  version "1.0.0-alpha.77"
-  resolved "https://registry.npmjs.org/@neo-one/server-plugin-simulation/-/server-plugin-simulation-1.0.0-alpha.77.tgz#44a4176e2969555defb1aea928be3f4aef7c1921"
+"@neo-one/server-plugin-simulation@^1.0.0-alpha.80":
+  version "1.0.0-alpha.80"
+  resolved "https://registry.npmjs.org/@neo-one/server-plugin-simulation/-/server-plugin-simulation-1.0.0-alpha.80.tgz#bc66e3c35215b6b4fba3bf2645c3fc1f09c60e00"
   dependencies:
-    "@neo-one/client" "^1.0.0-alpha.56"
-    "@neo-one/client-core" "^1.0.0-alpha.42"
-    "@neo-one/server-plugin" "^1.0.0-alpha.42"
-    "@neo-one/server-plugin-compiler" "^1.0.0-alpha.57"
-    "@neo-one/server-plugin-network" "^1.0.0-alpha.74"
-    "@neo-one/server-plugin-wallet" "^1.0.0-alpha.77"
-    "@neo-one/simulation-ico" "^1.0.0-alpha.21"
-    "@neo-one/simulation-react" "^1.0.0-alpha.18"
-    "@neo-one/simulation-template" "^1.0.0-alpha.6"
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/client" "^1.0.0-alpha.58"
+    "@neo-one/client-core" "^1.0.0-alpha.44"
+    "@neo-one/server-plugin" "^1.0.0-alpha.44"
+    "@neo-one/server-plugin-compiler" "^1.0.0-alpha.59"
+    "@neo-one/server-plugin-network" "^1.0.0-alpha.77"
+    "@neo-one/server-plugin-wallet" "^1.0.0-alpha.80"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     bignumber.js "^7.2.1"
     execa "^0.10.0"
     fs-extra "^6.0.1"
     lodash "^4.17.10"
     rxjs "^6.2.1"
 
-"@neo-one/server-plugin-wallet@^1.0.0-alpha.77":
-  version "1.0.0-alpha.77"
-  resolved "https://registry.npmjs.org/@neo-one/server-plugin-wallet/-/server-plugin-wallet-1.0.0-alpha.77.tgz#2da637991b653200a635c5102bf1a8575dc30677"
+"@neo-one/server-plugin-wallet@^1.0.0-alpha.80":
+  version "1.0.0-alpha.80"
+  resolved "https://registry.npmjs.org/@neo-one/server-plugin-wallet/-/server-plugin-wallet-1.0.0-alpha.80.tgz#695236d6578e75bd11add7d239ac085fcd7b7b15"
   dependencies:
-    "@neo-one/client" "^1.0.0-alpha.56"
-    "@neo-one/client-core" "^1.0.0-alpha.42"
-    "@neo-one/server-plugin" "^1.0.0-alpha.42"
-    "@neo-one/server-plugin-compiler" "^1.0.0-alpha.57"
-    "@neo-one/server-plugin-network" "^1.0.0-alpha.74"
+    "@neo-one/client" "^1.0.0-alpha.58"
+    "@neo-one/client-core" "^1.0.0-alpha.44"
+    "@neo-one/server-plugin" "^1.0.0-alpha.44"
+    "@neo-one/server-plugin-compiler" "^1.0.0-alpha.59"
+    "@neo-one/server-plugin-network" "^1.0.0-alpha.77"
     "@neo-one/smart-contract" "^1.0.0-alpha.6"
-    "@neo-one/smart-contract-compiler" "^1.0.0-alpha.11"
-    "@neo-one/smart-contract-lib" "^1.0.0-alpha.11"
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/smart-contract-compiler" "^1.0.0-alpha.13"
+    "@neo-one/smart-contract-lib" "^1.0.0-alpha.14"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     bignumber.js "^7.2.1"
     fs-extra "^6.0.1"
     lodash "^4.17.10"
@@ -1165,12 +1162,12 @@
     redux-persist-node-storage "^2.0.0"
     rxjs "^6.2.1"
 
-"@neo-one/server-plugin@^1.0.0-alpha.42":
-  version "1.0.0-alpha.42"
-  resolved "https://registry.npmjs.org/@neo-one/server-plugin/-/server-plugin-1.0.0-alpha.42.tgz#01d9c9012713f04a901415a4190ee04a879a7c6c"
+"@neo-one/server-plugin@^1.0.0-alpha.44":
+  version "1.0.0-alpha.44"
+  resolved "https://registry.npmjs.org/@neo-one/server-plugin/-/server-plugin-1.0.0-alpha.44.tgz#a58a322415582d7896647c324f494a34d14fc5ab"
   dependencies:
-    "@neo-one/monitor" "^1.0.0-alpha.31"
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/monitor" "^1.0.0-alpha.33"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     ajv "^6.5.1"
     chalk "^2.4.1"
     chokidar "^2.0.3"
@@ -1181,19 +1178,19 @@
     seamless-immutable "^7.1.3"
     vorpal "^1.12.0"
 
-"@neo-one/server@^1.0.0-alpha.77":
-  version "1.0.0-alpha.77"
-  resolved "https://registry.npmjs.org/@neo-one/server/-/server-1.0.0-alpha.77.tgz#b781f7d87f903a668f72afb7ac158cc074010345"
+"@neo-one/server@^1.0.0-alpha.80":
+  version "1.0.0-alpha.80"
+  resolved "https://registry.npmjs.org/@neo-one/server/-/server-1.0.0-alpha.80.tgz#adccf7f6abf15fe9d899a2501bfd5488f134e455"
   dependencies:
-    "@neo-one/monitor" "^1.0.0-alpha.31"
-    "@neo-one/server-client" "^1.0.0-alpha.43"
+    "@neo-one/monitor" "^1.0.0-alpha.33"
+    "@neo-one/server-client" "^1.0.0-alpha.45"
     "@neo-one/server-grpc" "^1.0.0-alpha.7"
-    "@neo-one/server-plugin" "^1.0.0-alpha.42"
-    "@neo-one/server-plugin-compiler" "^1.0.0-alpha.57"
-    "@neo-one/server-plugin-network" "^1.0.0-alpha.74"
-    "@neo-one/server-plugin-simulation" "^1.0.0-alpha.77"
-    "@neo-one/server-plugin-wallet" "^1.0.0-alpha.77"
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/server-plugin" "^1.0.0-alpha.44"
+    "@neo-one/server-plugin-compiler" "^1.0.0-alpha.59"
+    "@neo-one/server-plugin-network" "^1.0.0-alpha.77"
+    "@neo-one/server-plugin-simulation" "^1.0.0-alpha.80"
+    "@neo-one/server-plugin-wallet" "^1.0.0-alpha.80"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     fs-extra "^6.0.1"
     grpc "^1.13.0-pre1"
     grpc-error "^1.0.0"
@@ -1205,47 +1202,21 @@
     toposort "^2.0.2"
     uuid "^3.2.1"
 
-"@neo-one/simulation-ico@^1.0.0-alpha.21":
-  version "1.0.0-alpha.21"
-  resolved "https://registry.npmjs.org/@neo-one/simulation-ico/-/simulation-ico-1.0.0-alpha.21.tgz#33c01d020d25d25d573391cc6f23f3d24bc636a5"
-  dependencies:
-    "@babel/polyfill" "^7.0.0-beta.51"
-    "@neo-one/simulation-utils" "^1.0.0-alpha.10"
-    fs-extra "^6.0.1"
-    nunjucks "^3.1.3"
-
-"@neo-one/simulation-react@^1.0.0-alpha.18":
-  version "1.0.0-alpha.18"
-  resolved "https://registry.npmjs.org/@neo-one/simulation-react/-/simulation-react-1.0.0-alpha.18.tgz#f5e591871f4761826bcaddbf8e168609459c430a"
-  dependencies:
-    "@babel/polyfill" "^7.0.0-beta.51"
-    "@neo-one/simulation-utils" "^1.0.0-alpha.10"
-
-"@neo-one/simulation-template@^1.0.0-alpha.6":
-  version "1.0.0-alpha.6"
-  resolved "https://registry.npmjs.org/@neo-one/simulation-template/-/simulation-template-1.0.0-alpha.6.tgz#f29a9f8f99caedb9920d997085f18b883ae4dfc5"
-
-"@neo-one/simulation-utils@^1.0.0-alpha.10":
-  version "1.0.0-alpha.10"
-  resolved "https://registry.npmjs.org/@neo-one/simulation-utils/-/simulation-utils-1.0.0-alpha.10.tgz#e39f536d3d693bb974dcc8426a1892db989b78e7"
-  dependencies:
-    execa "^0.10.0"
-
-"@neo-one/smart-contract-compiler@^1.0.0-alpha.11":
-  version "1.0.0-alpha.11"
-  resolved "https://registry.npmjs.org/@neo-one/smart-contract-compiler/-/smart-contract-compiler-1.0.0-alpha.11.tgz#46483f1709b2bca413f353555e39b52e71289ce4"
+"@neo-one/smart-contract-compiler@^1.0.0-alpha.13":
+  version "1.0.0-alpha.13"
+  resolved "https://registry.npmjs.org/@neo-one/smart-contract-compiler/-/smart-contract-compiler-1.0.0-alpha.13.tgz#98ae1a4fe84a0963be9ea20ae7bcee7c99cd8a17"
   dependencies:
     "@babel/polyfill" "^7.0.0-beta.49"
-    "@neo-one/client" "^1.0.0-alpha.56"
-    "@neo-one/client-core" "^1.0.0-alpha.42"
-    "@neo-one/monitor" "^1.0.0-alpha.31"
-    "@neo-one/node-blockchain" "^1.0.0-alpha.49"
-    "@neo-one/node-neo-settings" "^1.0.0-alpha.42"
-    "@neo-one/node-storage-levelup" "^1.0.0-alpha.45"
-    "@neo-one/node-vm" "^1.0.0-alpha.44"
+    "@neo-one/client" "^1.0.0-alpha.58"
+    "@neo-one/client-core" "^1.0.0-alpha.44"
+    "@neo-one/monitor" "^1.0.0-alpha.33"
+    "@neo-one/node-blockchain" "^1.0.0-alpha.51"
+    "@neo-one/node-neo-settings" "^1.0.0-alpha.44"
+    "@neo-one/node-storage-levelup" "^1.0.0-alpha.47"
+    "@neo-one/node-vm" "^1.0.0-alpha.46"
     "@neo-one/smart-contract" "^1.0.0-alpha.6"
     "@neo-one/smart-contract-internal" "^1.0.0-alpha.3"
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     "@types/node" "^10.1.4"
     app-root-dir "^1.0.2"
     bn.js "^4.11.8"
@@ -1260,23 +1231,23 @@
   version "1.0.0-alpha.3"
   resolved "https://registry.npmjs.org/@neo-one/smart-contract-internal/-/smart-contract-internal-1.0.0-alpha.3.tgz#6cf26aa959ce0fb18da6d771cd6b1faa9a597c13"
 
-"@neo-one/smart-contract-lib@^1.0.0-alpha.11":
-  version "1.0.0-alpha.11"
-  resolved "https://registry.npmjs.org/@neo-one/smart-contract-lib/-/smart-contract-lib-1.0.0-alpha.11.tgz#fece1bb46f83849e969f313a7133a98b64b02bde"
+"@neo-one/smart-contract-lib@^1.0.0-alpha.14":
+  version "1.0.0-alpha.14"
+  resolved "https://registry.npmjs.org/@neo-one/smart-contract-lib/-/smart-contract-lib-1.0.0-alpha.14.tgz#460afed77159c18e7b80f62d5c767d4d52c6891a"
   dependencies:
     "@neo-one/smart-contract" "^1.0.0-alpha.6"
-    "@neo-one/smart-contract-test" "^1.0.0-alpha.11"
+    "@neo-one/smart-contract-test" "^1.0.0-alpha.14"
 
-"@neo-one/smart-contract-test@^1.0.0-alpha.11":
-  version "1.0.0-alpha.11"
-  resolved "https://registry.npmjs.org/@neo-one/smart-contract-test/-/smart-contract-test-1.0.0-alpha.11.tgz#b21aedec86aa8cf8f11c1152fce0625cc0182468"
+"@neo-one/smart-contract-test@^1.0.0-alpha.14":
+  version "1.0.0-alpha.14"
+  resolved "https://registry.npmjs.org/@neo-one/smart-contract-test/-/smart-contract-test-1.0.0-alpha.14.tgz#554b8463bce3697b0c37d7567c2f0b2bf6af8188"
   dependencies:
-    "@neo-one/client" "^1.0.0-alpha.56"
-    "@neo-one/monitor" "^1.0.0-alpha.31"
-    "@neo-one/node" "^1.0.0-alpha.74"
-    "@neo-one/node-neo-settings" "^1.0.0-alpha.42"
-    "@neo-one/smart-contract-compiler" "^1.0.0-alpha.11"
-    "@neo-one/utils" "^1.0.0-alpha.36"
+    "@neo-one/client" "^1.0.0-alpha.58"
+    "@neo-one/monitor" "^1.0.0-alpha.33"
+    "@neo-one/node" "^1.0.0-alpha.77"
+    "@neo-one/node-neo-settings" "^1.0.0-alpha.44"
+    "@neo-one/smart-contract-compiler" "^1.0.0-alpha.13"
+    "@neo-one/utils" "^1.0.0-alpha.38"
     lodash "^4.17.10"
     memdown "^3.0.0"
     rxjs "^6.2.1"
@@ -1286,11 +1257,11 @@
   version "1.0.0-alpha.6"
   resolved "https://registry.npmjs.org/@neo-one/smart-contract/-/smart-contract-1.0.0-alpha.6.tgz#a3fd31cf915b50d3a0f37bb97be68a4209c39c23"
 
-"@neo-one/utils@^1.0.0-alpha.36":
-  version "1.0.0-alpha.36"
-  resolved "https://registry.npmjs.org/@neo-one/utils/-/utils-1.0.0-alpha.36.tgz#1cbc18d7a5c2e4ba97e809ec2c03f9232cfec531"
+"@neo-one/utils@^1.0.0-alpha.38":
+  version "1.0.0-alpha.38"
+  resolved "https://registry.npmjs.org/@neo-one/utils/-/utils-1.0.0-alpha.38.tgz#1a47b7fcff1d008a43a3e6c83a63f0022672fc6e"
   dependencies:
-    "@neo-one/monitor" "^1.0.0-alpha.31"
+    "@neo-one/monitor" "^1.0.0-alpha.33"
     lodash "^4.17.10"
     rxjs "^6.2.1"
 
@@ -1316,8 +1287,8 @@
     indefinite-observable "^1.0.1"
 
 "@types/node@^10.1.4":
-  version "10.3.3"
-  resolved "https://registry.npmjs.org/@types/node/-/node-10.3.3.tgz#8798d9e39af2fa604f715ee6a6b19796528e46c3"
+  version "10.3.4"
+  resolved "https://registry.npmjs.org/@types/node/-/node-10.3.4.tgz#c74e8aec19e555df44609b8057311052a2c84d9e"
 
 "@types/node@^9.4.6":
   version "9.6.22"
@@ -1330,8 +1301,8 @@
     "@types/react" "*"
 
 "@types/react@*":
-  version "16.3.18"
-  resolved "https://registry.npmjs.org/@types/react/-/react-16.3.18.tgz#bf195aed4d77dc86f06e4c9bb760214a3b822b8d"
+  version "16.4.0"
+  resolved "https://registry.npmjs.org/@types/react/-/react-16.4.0.tgz#f7f639837bf1f8635f57616b12a1b0d193b6343a"
   dependencies:
     csstype "^2.2.0"
 
@@ -1477,10 +1448,6 @@ JSONStream@^1.0.4:
   dependencies:
     jsonparse "^1.2.0"
     through ">=2.2.7 <3"
-
-a-sync-waterfall@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/a-sync-waterfall/-/a-sync-waterfall-1.0.0.tgz#38e8319d79379e24628845b53b96722b29e0e47c"
 
 abbrev@1:
   version "1.1.1"
@@ -1714,7 +1681,7 @@ arrify@^1.0.0, arrify@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/arrify/-/arrify-1.0.1.tgz#898508da2226f380df904728456849c1501a4b0d"
 
-asap@^2.0.3, asap@~2.0.3:
+asap@~2.0.3:
   version "2.0.6"
   resolved "https://registry.npmjs.org/asap/-/asap-2.0.6.tgz#e50347611d7e690943208bbdafebcbc2fb866d46"
 
@@ -1760,9 +1727,9 @@ assert@^1.1.1:
   dependencies:
     util "0.10.3"
 
-assets-webpack-plugin@^3.6.0:
-  version "3.8.0"
-  resolved "https://registry.npmjs.org/assets-webpack-plugin/-/assets-webpack-plugin-3.8.0.tgz#61cc1289fc7158e20dd219d6cca23122348e0015"
+assets-webpack-plugin@^3.8.3:
+  version "3.8.3"
+  resolved "https://registry.npmjs.org/assets-webpack-plugin/-/assets-webpack-plugin-3.8.3.tgz#18189bb5de2908b981832f1a013bc2b934746671"
   dependencies:
     camelcase "^5.0.0"
     escape-string-regexp "^1.0.3"
@@ -2712,7 +2679,7 @@ chardet@^0.5.0:
   version "0.5.0"
   resolved "https://registry.npmjs.org/chardet/-/chardet-0.5.0.tgz#fe3ac73c00c3d865ffcc02a0682e2c20b6a06029"
 
-chokidar@^2.0.0, chokidar@^2.0.2, chokidar@^2.0.3:
+chokidar@^2.0.2, chokidar@^2.0.3:
   version "2.0.4"
   resolved "https://registry.npmjs.org/chokidar/-/chokidar-2.0.4.tgz#356ff4e2b0e8e43e322d18a372460bbcf3accd26"
   dependencies:
@@ -3446,8 +3413,8 @@ csso@~2.3.1:
     source-map "^0.5.3"
 
 csstype@^2.0.0, csstype@^2.2.0:
-  version "2.5.3"
-  resolved "https://registry.npmjs.org/csstype/-/csstype-2.5.3.tgz#2504152e6e1cc59b32098b7f5d6a63f16294c1f7"
+  version "2.5.4"
+  resolved "https://registry.npmjs.org/csstype/-/csstype-2.5.4.tgz#93850187209b6d0a71d30a85abc95a6ae3f3e8cd"
 
 currently-unhandled@^0.4.1:
   version "0.4.1"
@@ -5123,8 +5090,8 @@ hmac-drbg@^1.0.0:
     minimalistic-crypto-utils "^1.0.1"
 
 hoist-non-react-statics@^2.3.1, hoist-non-react-statics@^2.5.0:
-  version "2.5.4"
-  resolved "https://registry.npmjs.org/hoist-non-react-statics/-/hoist-non-react-statics-2.5.4.tgz#fc3b1ac05d2ae3abedec84eba846511b0d4fcc4f"
+  version "2.5.5"
+  resolved "https://registry.npmjs.org/hoist-non-react-statics/-/hoist-non-react-statics-2.5.5.tgz#c5903cf409c0dfd908f388e619d86b9c1174cb47"
 
 home-or-tmp@^3.0.0:
   version "3.0.0"
@@ -7309,17 +7276,6 @@ number-is-nan@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npmjs.org/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
 
-nunjucks@^3.1.3:
-  version "3.1.3"
-  resolved "https://registry.npmjs.org/nunjucks/-/nunjucks-3.1.3.tgz#9a23c844af01c143a0b40f3bdd1212a9d7877260"
-  dependencies:
-    a-sync-waterfall "^1.0.0"
-    asap "^2.0.3"
-    postinstall-build "^5.0.1"
-    yargs "^3.32.0"
-  optionalDependencies:
-    chokidar "^2.0.0"
-
 oauth-sign@~0.8.2:
   version "0.8.2"
   resolved "https://registry.npmjs.org/oauth-sign/-/oauth-sign-0.8.2.tgz#46a6ab7f0aead8deae9ec0565780b7d4efeb9d43"
@@ -7341,8 +7297,8 @@ object-copy@^0.1.0:
     kind-of "^3.0.3"
 
 object-keys@^1.0.8:
-  version "1.0.11"
-  resolved "https://registry.npmjs.org/object-keys/-/object-keys-1.0.11.tgz#c54601778ad560f1142ce0e01bcca8b56d13426d"
+  version "1.0.12"
+  resolved "https://registry.npmjs.org/object-keys/-/object-keys-1.0.12.tgz#09c53855377575310cca62f55bb334abff7b3ed2"
 
 object-visit@^1.0.0:
   version "1.0.1"
@@ -8090,10 +8046,6 @@ postgres-interval@^1.1.0:
   resolved "https://registry.npmjs.org/postgres-interval/-/postgres-interval-1.1.1.tgz#acdb0f897b4b1c6e496d9d4e0a853e1c428f06f0"
   dependencies:
     xtend "^4.0.0"
-
-postinstall-build@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.npmjs.org/postinstall-build/-/postinstall-build-5.0.1.tgz#b917a9079b26178d9a24af5a5cd8cb4a991d11b9"
 
 prebuild-install@^4.0.0:
   version "4.0.0"
@@ -10379,7 +10331,7 @@ yargs-parser@^7.0.0:
   dependencies:
     camelcase "^4.1.0"
 
-yargs@^3.10.0, yargs@^3.32.0:
+yargs@^3.10.0:
   version "3.32.0"
   resolved "https://registry.npmjs.org/yargs/-/yargs-3.32.0.tgz#03088e9ebf9e756b69751611d2a5ef591482c995"
   dependencies:
