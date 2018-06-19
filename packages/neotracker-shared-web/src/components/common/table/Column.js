@@ -190,6 +190,9 @@ function Column({
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(Column): React.ComponentType<ExternalProps>);

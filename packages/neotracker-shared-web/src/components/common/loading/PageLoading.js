@@ -62,6 +62,9 @@ function PageLoading({
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(PageLoading): React.ComponentType<ExternalProps>);

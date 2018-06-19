@@ -42,6 +42,9 @@ function CoinBase({ coin, className, classes }: Props): React.Element<*> {
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(CoinBase): React.ComponentType<ExternalProps>);

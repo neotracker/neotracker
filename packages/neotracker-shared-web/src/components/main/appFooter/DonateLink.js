@@ -53,6 +53,10 @@ function DonateLink({
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), mapAppOptions, pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  mapAppOptions,
+  pure,
+);
 
 export default (enhance(DonateLink): React.ComponentType<ExternalProps>);

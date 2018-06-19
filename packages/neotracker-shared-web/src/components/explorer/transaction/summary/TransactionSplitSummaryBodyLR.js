@@ -88,7 +88,10 @@ function TransactionSplitSummaryBodyLR({
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(TransactionSplitSummaryBodyLR): React.ComponentType<
   ExternalProps,

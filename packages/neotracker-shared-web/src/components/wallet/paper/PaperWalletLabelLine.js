@@ -43,7 +43,10 @@ function PaperWalletLabelLine({
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(PaperWalletLabelLine): React.ComponentType<
   ExternalProps,

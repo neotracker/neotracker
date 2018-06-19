@@ -90,5 +90,8 @@ export default (queryRenderer(
     },
   },
 )(
-  compose(getContext({ appContext: () => null }), pure)(Address),
+  compose(
+    getContext({ appContext: () => null }),
+    pure,
+  )(Address),
 ): React.ComponentType<ExternalProps>);

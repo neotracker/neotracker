@@ -55,10 +55,13 @@ const enhance: HOC<*, *> = compose(
   getContext({
     appContext: () => null,
   }),
-  connect(null, dispatch => ({
-    showSnackbarError: ({ error }) =>
-      dispatch(setSnackbar({ message: sanitizeError(error).clientMessage })),
-  })),
+  connect(
+    null,
+    dispatch => ({
+      showSnackbarError: ({ error }) =>
+        dispatch(setSnackbar({ message: sanitizeError(error).clientMessage })),
+    }),
+  ),
   withHandlers({
     onClickSave: ({
       nep2,

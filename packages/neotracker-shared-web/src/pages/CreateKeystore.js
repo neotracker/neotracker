@@ -37,6 +37,9 @@ function CreateKeystore({ wallet, className }: Props): React.Element<any> {
   );
 }
 
-const enhance: HOC<*, *> = compose(walletAPI.mapCurrentLocalWallet, pure);
+const enhance: HOC<*, *> = compose(
+  walletAPI.mapCurrentLocalWallet,
+  pure,
+);
 
 export default (enhance(CreateKeystore): React.ComponentType<ExternalProps>);

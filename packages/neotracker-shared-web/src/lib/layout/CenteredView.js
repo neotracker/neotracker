@@ -65,6 +65,9 @@ function CenteredView({
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(CenteredView): React.ComponentType<ExternalProps>);

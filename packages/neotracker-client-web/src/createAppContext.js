@@ -83,7 +83,11 @@ export default ({
         return prevOptions;
       }),
     ),
-  ).pipe(distinctUntilChanged(), publishReplay(1), refCount());
+  ).pipe(
+    distinctUntilChanged(),
+    publishReplay(1),
+    refCount(),
+  );
 
   const provider = new NEOONEProvider({
     options: [{ network, rpcURL: options.rpcURL }],

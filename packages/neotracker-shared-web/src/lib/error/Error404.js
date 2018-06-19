@@ -45,6 +45,9 @@ const Error404 = ({ classes }: Props) => (
   </div>
 );
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default enhance(Error404);

@@ -118,7 +118,10 @@ export default ({
   function mapDistinct<Out>(
     func: (value: ServerCreateOptions) => Out,
   ): Observable<Out> {
-    return createOptions$.pipe(map(func), distinctUntilChanged());
+    return createOptions$.pipe(
+      map(func),
+      distinctUntilChanged(),
+    );
   }
 
   const rootLoader$ = createRootLoader$({
@@ -129,7 +132,10 @@ export default ({
     }),
     options$: mapDistinct(_ => _.options.rootLoader),
     monitor,
-  }).pipe(publishReplay(1), refCount());
+  }).pipe(
+    publishReplay(1),
+    refCount(),
+  );
 
   const rootCalls$ = startRootCalls$(
     combineLatest(mapDistinct(_ => _.options.appOptions), rootLoader$).pipe(

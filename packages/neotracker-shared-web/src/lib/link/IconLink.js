@@ -37,6 +37,9 @@ function IconLink({ path, icon, className, classes }: Props): React.Element<*> {
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(IconLink): React.ComponentType<ExternalProps>);

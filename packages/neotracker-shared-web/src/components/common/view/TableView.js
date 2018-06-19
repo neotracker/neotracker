@@ -139,6 +139,9 @@ function TableView({ columns, className, classes }: Props): React.Element<*> {
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(TableView): React.ComponentType<ExternalProps>);

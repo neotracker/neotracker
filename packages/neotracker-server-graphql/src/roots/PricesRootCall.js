@@ -67,16 +67,14 @@ export default class PricesRootCall extends RootCall {
       live: liveExecuteField((rootValue, args, context, info) =>
         concat(
           resolve(rootValue, args, context, info),
-          pubsub
-            .observable(PRICES)
-            .pipe(
-              filter(
-                payload =>
-                  (payload: any).from === args.from &&
-                  (payload: any).to === args.to,
-              ),
-              map(payload => (payload: any).prices),
+          pubsub.observable(PRICES).pipe(
+            filter(
+              payload =>
+                (payload: any).from === args.from &&
+                (payload: any).to === args.to,
             ),
+            map(payload => (payload: any).prices),
+          ),
         ),
       ),
     };

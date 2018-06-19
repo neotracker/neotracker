@@ -43,6 +43,9 @@ class AdUnit extends React.Component<Props, void> {
   }
 }
 
-const enhance: HOC<*, *> = compose(mapAppOptions, pure);
+const enhance: HOC<*, *> = compose(
+  mapAppOptions,
+  pure,
+);
 
 export default (enhance(AdUnit): React.ComponentType<ExternalProps>);

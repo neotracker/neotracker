@@ -76,6 +76,9 @@ function Table({
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(Table): React.ComponentType<ExternalProps>);

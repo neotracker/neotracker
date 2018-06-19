@@ -113,7 +113,10 @@ function NewWalletSaveCommon({
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(NewWalletSaveCommon): React.ComponentType<
   ExternalProps,

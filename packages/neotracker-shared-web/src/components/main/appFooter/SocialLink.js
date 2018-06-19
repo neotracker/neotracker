@@ -43,6 +43,9 @@ function SocialLink({
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(SocialLink): React.ComponentType<ExternalProps>);

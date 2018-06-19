@@ -54,6 +54,9 @@ function InfoLabeled({
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(InfoLabeled): React.ComponentType<ExternalProps>);

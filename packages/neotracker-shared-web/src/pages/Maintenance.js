@@ -64,6 +64,9 @@ const GenericErrorPage = ({ classes }: Props) => (
   </div>
 );
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(GenericErrorPage): React.ComponentType<ExternalProps>);

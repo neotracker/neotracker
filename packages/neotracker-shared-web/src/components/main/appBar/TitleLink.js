@@ -35,6 +35,9 @@ function TitleLink({ id, className, classes }: Props): React.Element<*> {
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(TitleLink): React.ComponentType<ExternalProps>);

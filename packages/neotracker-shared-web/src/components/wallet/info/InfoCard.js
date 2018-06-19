@@ -52,6 +52,9 @@ function InfoCard({
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(InfoCard): React.ComponentType<ExternalProps>);

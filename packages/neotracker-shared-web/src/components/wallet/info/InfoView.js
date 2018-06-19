@@ -141,6 +141,9 @@ function InfoView({
   return <div className={className}>{content}</div>;
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(InfoView): React.ComponentType<ExternalProps>);

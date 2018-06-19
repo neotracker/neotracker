@@ -49,6 +49,9 @@ function Leaderboard({ classes, className }: Props): React.Element<*> {
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(Leaderboard): React.ComponentType<ExternalProps>);

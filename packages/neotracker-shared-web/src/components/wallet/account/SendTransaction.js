@@ -174,7 +174,10 @@ const enhance: HOC<*, *> = compose(
     }),
     { setState: prevState => updater => updater(prevState) },
   ),
-  connect(null, dispatch => ({ dispatch })),
+  connect(
+    null,
+    dispatch => ({ dispatch }),
+  ),
   withHandlers({
     onChangeAddress: ({ setState }) => event => {
       const toAddress = event.target.value;

@@ -14,7 +14,7 @@ function getRelativeValue(value, min, max) {
 }
 
 function calcFallback(progress, size, negative) {
-  const result = (progress * size / 100 - THICKNESS) * PI;
+  const result = ((progress * size) / 100 - THICKNESS) * PI;
   return negative ? result * -1 : result;
 }
 
@@ -27,7 +27,7 @@ const styles = (theme: any) => {
   const TMP_SIZE = 40;
   // eslint-disable-next-line
   function calcFallback(progress, size, negative) {
-    const result = (progress * size / 100 - THICKNESS) * PI;
+    const result = ((progress * size) / 100 - THICKNESS) * PI;
     return negative ? result * -1 : result;
   }
   return {

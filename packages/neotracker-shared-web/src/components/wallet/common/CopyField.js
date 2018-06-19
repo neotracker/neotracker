@@ -44,11 +44,14 @@ function CopyField({
 
 const enhance: HOC<*, *> = compose(
   getContext({ appContext: () => null }),
-  connect(null, dispatch => ({
-    showSnackbar: ({ message }) => dispatch(setSnackbar({ message })),
-    showSnackbarError: ({ error }) =>
-      dispatch(setSnackbar({ message: sanitizeError(error).clientMessage })),
-  })),
+  connect(
+    null,
+    dispatch => ({
+      showSnackbar: ({ message }) => dispatch(setSnackbar({ message })),
+      showSnackbarError: ({ error }) =>
+        dispatch(setSnackbar({ message: sanitizeError(error).clientMessage })),
+    }),
+  ),
   withHandlers({
     onClick: ({
       value,

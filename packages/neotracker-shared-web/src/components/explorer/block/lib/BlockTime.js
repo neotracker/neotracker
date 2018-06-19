@@ -38,6 +38,9 @@ function BlockTime({ blockTime, className, classes }: Props): React.Element<*> {
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(BlockTime): React.ComponentType<ExternalProps>);
