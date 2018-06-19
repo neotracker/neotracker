@@ -1,4 +1,4 @@
 /* @flow */
-import Hidden from 'material-ui/Hidden/Hidden';
+import Hidden from '@material-ui/core/Hidden';
 
 export default Hidden;

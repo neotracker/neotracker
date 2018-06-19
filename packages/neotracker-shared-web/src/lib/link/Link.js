@@ -1,7 +1,7 @@
 /* @flow */
 import { Link as RRLink } from 'react-router-dom';
 import * as React from 'react';
-import type { Variant } from 'material-ui/Typography/Typography';
+import type { Variant } from '@material-ui/core/Typography';
 
 import classNames from 'classnames';
 import { type HOC, compose, pure } from 'recompose';
@@ -114,6 +114,9 @@ function Link({
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(Link): React.ComponentType<ExternalProps>);

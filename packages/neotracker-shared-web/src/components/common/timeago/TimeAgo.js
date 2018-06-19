@@ -1,6 +1,6 @@
 /* @flow */
 import * as React from 'react';
-import type { TypographyProps } from 'material-ui/Typography/Typography';
+import type { TypographyProps } from '@material-ui/core/Typography';
 
 import { type HOC, compose, pure } from 'recompose';
 import { connect } from 'react-redux';

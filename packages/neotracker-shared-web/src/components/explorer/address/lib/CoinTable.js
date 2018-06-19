@@ -1,7 +1,7 @@
 /* @flow */
 /* eslint-disable react/no-array-index-key */
 import * as React from 'react';
-import type { Variant } from 'material-ui/Typography/Typography';
+import type { Variant } from '@material-ui/core/Typography';
 
 import classNames from 'classnames';
 import { type HOC, compose, pure } from 'recompose';

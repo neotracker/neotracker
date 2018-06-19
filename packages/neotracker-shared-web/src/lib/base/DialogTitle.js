@@ -1,4 +1,4 @@
 /* @flow */
-import DialogTitle from 'material-ui/Dialog/DialogTitle';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 export default DialogTitle;

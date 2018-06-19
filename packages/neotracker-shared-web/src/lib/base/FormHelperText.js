@@ -1,4 +1,4 @@
 /* @flow */
-import FormHelperText from 'material-ui/Form/FormHelperText';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 export default FormHelperText;

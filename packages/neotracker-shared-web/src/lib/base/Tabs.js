@@ -1,4 +1,4 @@
 /* @flow */
-import Tabs from 'material-ui/Tabs/Tabs';
+import Tabs from '@material-ui/core/Tabs';
 
 export default Tabs;

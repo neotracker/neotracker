@@ -3,7 +3,7 @@ import { ClientError } from 'neotracker-shared-utils';
 import { JssProvider, SheetsRegistry } from 'react-jss';
 import * as React from 'react';
 
-import createGenerateClassName from 'material-ui/styles/createGenerateClassName';
+import createGenerateClassName from '@material-ui/core/styles/createGenerateClassName';
 import { create } from 'jss';
 import preset from 'jss-preset-default';
 import { renderToString } from 'react-dom/server';

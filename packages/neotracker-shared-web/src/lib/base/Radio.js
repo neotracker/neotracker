@@ -1,4 +1,4 @@
 /* @flow */
-import Radio from 'material-ui/Radio/Radio';
+import Radio from '@material-ui/core/Radio';
 
 export default Radio;

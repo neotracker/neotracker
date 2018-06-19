@@ -1,4 +1,4 @@
 /* @flow */
-import FormLabel from 'material-ui/Form/FormLabel';
+import FormLabel from '@material-ui/core/FormLabel';
 
 export default FormLabel;

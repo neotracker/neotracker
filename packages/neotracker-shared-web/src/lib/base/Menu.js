@@ -1,4 +1,4 @@
 /* @flow */
-import Menu from 'material-ui/Menu/Menu';
+import Menu from '@material-ui/core/Menu';
 
 export default Menu;

@@ -1,4 +1,4 @@
 /* @flow */
-import ListSubheader from 'material-ui/List/ListSubheader';
+import ListSubheader from '@material-ui/core/ListSubheader';
 
 export default ListSubheader;

@@ -1,4 +1,4 @@
 /* @flow */
-import DialogContent from 'material-ui/Dialog/DialogContent';
+import DialogContent from '@material-ui/core/DialogContent';
 
 export default DialogContent;

@@ -1,4 +1,4 @@
 /* @flow */
-import Slide from 'material-ui/transitions/Slide';
+import Slide from '@material-ui/core/Slide';
 
 export default Slide;

@@ -1,4 +1,4 @@
 /* @flow */
-import List from 'material-ui/List/List';
+import List from '@material-ui/core/List';
 
 export default List;

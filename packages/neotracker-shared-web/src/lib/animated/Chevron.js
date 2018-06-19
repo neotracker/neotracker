@@ -1,5 +1,5 @@
 /* @flow */
-import type { IconProps } from 'material-ui/Icon/Icon';
+import type { IconProps } from '@material-ui/core/Icon';
 import * as React from 'react';
 
 import classNames from 'classnames';
@@ -56,6 +56,9 @@ function Chevron({
   );
 }
 
-export default (hoistStatics(compose(withStyles(styles), pure))(
-  Chevron,
-): React.ComponentType<ExternalProps>);
+export default (hoistStatics(
+  compose(
+    withStyles(styles),
+    pure,
+  ),
+)(Chevron): React.ComponentType<ExternalProps>);

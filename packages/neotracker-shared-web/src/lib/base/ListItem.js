@@ -1,4 +1,4 @@
 /* @flow */
-import ListItem from 'material-ui/List/ListItem';
+import ListItem from '@material-ui/core/ListItem';
 
 export default ListItem;

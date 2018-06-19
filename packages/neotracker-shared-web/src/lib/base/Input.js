@@ -1,4 +1,4 @@
 /* @flow */
-import Input from 'material-ui/Input/Input';
+import Input from '@material-ui/core/Input';
 
 export default Input;

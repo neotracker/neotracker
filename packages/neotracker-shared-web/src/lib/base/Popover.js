@@ -1,4 +1,4 @@
 /* @flow */
-import Popover from 'material-ui/Popover/Popover';
+import Popover from '@material-ui/core/Popover';
 
 export default Popover;

@@ -1,6 +1,6 @@
 /* @flow */
 import * as React from 'react';
-import type { Variant } from 'material-ui/Typography/Typography';
+import type { Variant } from '@material-ui/core/Typography';
 
 import { type HOC, compose, pure } from 'recompose';
 
@@ -62,6 +62,9 @@ function TitleCard({
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(TitleCard): React.ComponentType<ExternalProps>);

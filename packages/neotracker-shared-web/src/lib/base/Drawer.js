@@ -1,4 +1,4 @@
 /* @flow */
-import Drawer from 'material-ui/Drawer/Drawer';
+import Drawer from '@material-ui/core/Drawer';
 
 export default Drawer;

@@ -1,5 +1,5 @@
 /* @flow */
-import MUIDialog, { type DialogProps } from 'material-ui/Dialog/Dialog';
+import MUIDialog, { type DialogProps } from '@material-ui/core/Dialog';
 import * as React from 'react';
 
 import { type HOC, compose, pure } from 'recompose';
@@ -85,7 +85,7 @@ function Dialog({
       onExiting={props.onExiting}
       open={props.open}
       PaperProps={props.PaperProps}
-      transition={props.transition}
+      TransitionComponent={props.TransitionComponent}
       transitionDuration={props.transitionDuration}
       className={className}
       classes={muiClasses}
@@ -96,6 +96,9 @@ function Dialog({
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(Dialog): React.ComponentType<ExternalProps>);

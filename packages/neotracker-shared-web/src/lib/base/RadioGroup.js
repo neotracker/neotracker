@@ -1,4 +1,4 @@
 /* @flow */
-import RadioGroup from 'material-ui/Radio/RadioGroup';
+import RadioGroup from '@material-ui/core/RadioGroup';
 
 export default RadioGroup;

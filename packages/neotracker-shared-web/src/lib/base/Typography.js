@@ -1,4 +1,4 @@
 /* @flow */
-import Typography from 'material-ui/Typography/Typography';
+import Typography from '@material-ui/core/Typography';
 
 export default Typography;

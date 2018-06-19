@@ -37,7 +37,7 @@ import type { UserAgent } from 'neotracker-shared-utils';
 import appRootDir from 'app-root-dir';
 import compose from 'koa-compose';
 import compress from 'koa-compress';
-import createGenerateClassName from 'material-ui/styles/createGenerateClassName';
+import createGenerateClassName from '@material-ui/core/styles/createGenerateClassName';
 import { create } from 'jss';
 import fs from 'fs';
 import { matchRoutes } from 'react-router-config';

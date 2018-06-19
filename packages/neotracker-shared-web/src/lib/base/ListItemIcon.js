@@ -1,4 +1,4 @@
 /* @flow */
-import ListItemIcon from 'material-ui/List/ListItemIcon';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 
 export default ListItemIcon;

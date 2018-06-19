@@ -1,4 +1,4 @@
 /* @flow */
-import Select from 'material-ui/Select/Select';
+import Select from '@material-ui/core/Select';
 
 export default Select;

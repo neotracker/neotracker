@@ -8,11 +8,11 @@ declare type MUI$BaseProps = {|
   id?: ?string,
 |};
 
-declare module 'material-ui/AppBar/AppBar' {
-  declare type Color = 'inherit' | 'primary' | 'secondary' | 'default';
-  declare type Position = 'fixed' | 'absolute' | 'sticky' | 'static';
+declare module '@material-ui/core/AppBar' {
+  declare export type Color = 'inherit' | 'primary' | 'secondary' | 'default';
+  declare export type Position = 'fixed' | 'absolute' | 'sticky' | 'static';
 
-  declare type AppBarClasses = {|
+  declare export type AppBarClasses = {|
     root?: Object,
     positionFixed?: Object,
     positionAbsolute?: Object,
@@ -22,7 +22,7 @@ declare module 'material-ui/AppBar/AppBar' {
     colorPrimary?: Object,
     colorSecondary?: Object,
   |};
-  declare type AppBarProps = {|
+  declare export type AppBarProps = {|
     ...MUI$BaseProps,
     children: React$Node,
     className?: string,
@@ -30,20 +30,18 @@ declare module 'material-ui/AppBar/AppBar' {
     color?: Color,
     position?: Position
   |};
-  declare module.exports: React$ComponentType<AppBarProps>;
+
+  declare var AppBar: React$ComponentType<AppBarProps>;
+  declare export default typeof AppBar;
 }
 
-declare module 'material-ui/AppBar' {
-  declare module.exports: $Exports<'material-ui/AppBar/AppBar'>;
-}
-
-declare module 'material-ui/Avatar/Avatar' {
-  declare type AvatarClasses = {|
+declare module '@material-ui/core/Avatar' {
+  declare export type AvatarClasses = {|
     root?: Object,
     colorDefault?: Object,
     img?: Object,
   |};
-  declare type AvatarProps = {|
+  declare export type AvatarProps = {|
     ...MUI$BaseProps,
     alt?: string,
     children?: string | React$Element<any>,
@@ -55,21 +53,19 @@ declare module 'material-ui/Avatar/Avatar' {
     src?: string,
     srcSet?: string
   |};
-  declare module.exports: React$ComponentType<AvatarProps>;
+
+  declare var Avatar: React$ComponentType<AvatarProps>;
+  declare export default typeof Avatar;
 }
 
-declare module 'material-ui/Avatar' {
-  declare module.exports: $Exports<'material-ui/Avatar/Avatar'>;
-}
+declare module '@material-ui/core/Backdrop' {
+  import type { TransitionDuration } from '@material-ui/core/internal/transition';
 
-declare module 'material-ui/Backdrop/Backdrop' {
-  import type { TransitionDuration } from 'material-ui/internal/transition';
-
-  declare type BackdropClasses = {|
+  declare export type BackdropClasses = {|
     root?: Object,
     invisible?: Object,
   |};
-  declare type BackdropProps = {|
+  declare export type BackdropProps = {|
     ...MUI$BaseProps,
     className?: string,
     classes?: BackdropClasses,
@@ -77,24 +73,22 @@ declare module 'material-ui/Backdrop/Backdrop' {
     open: boolean,
     transitionDuration?: TransitionDuration,
   |};
-  declare module.exports: React$ComponentType<BackdropProps>;
+
+  declare var Backdrop: React$ComponentType<BackdropProps>;
+  declare export default typeof Backdrop;
 }
 
-declare module 'material-ui/Backdrop' {
-  declare module.exports: $Exports<'material-ui/Backdrop/Backdrop'>;
-}
+declare module '@material-ui/core/Badge' {
+  declare export type Color = 'default' | 'primary' | 'secondary';
 
-declare module 'material-ui/Badge/Badge' {
-  declare type Color = 'default' | 'primary' | 'secondary';
-
-  declare type BadgeClasses = {|
+  declare export type BadgeClasses = {|
     root?: Object,
     badge?: Object,
     colorPrimary?: Object,
     colorSecondary?: Object,
     colorError?: Object,
   |};
-  declare type BadgeProps = {|
+  declare export type BadgeProps = {|
     ...MUI$BaseProps,
     badgeContent: React$Node,
     children: React$Node,
@@ -103,18 +97,16 @@ declare module 'material-ui/Badge/Badge' {
     color?: Color,
     component?: React$ElementType,
   |};
-  declare module.exports: React$ComponentType<BadgeProps>;
+
+  declare var Badge: React$ComponentType<BadgeProps>;
+  declare export default typeof Badge;
 }
 
-declare module 'material-ui/Badge' {
-  declare module.exports: $Exports<'material-ui/Badge/Badge'>;
-}
-
-declare module 'material-ui/BottomNavigation/BottomNavigation' {
-  declare type BottomNavigationClasses = {|
+declare module '@material-ui/core/BottomNavigation' {
+  declare export type BottomNavigationClasses = {|
     root?: Object,
   |};
-  declare type BottomNavigationProps = {|
+  declare export type BottomNavigationProps = {|
     ...MUI$BaseProps,
     children: React$Node,
     className?: string,
@@ -123,12 +115,14 @@ declare module 'material-ui/BottomNavigation/BottomNavigation' {
     showLabels?: boolean,
     value: any
   |};
-  declare module.exports: React$ComponentType<BottomNavigationProps>;
+
+  declare var BottomNavigation: React$ComponentType<BottomNavigationProps>;
+  declare export default typeof BottomNavigation;
 }
 
-declare module 'material-ui/BottomNavigation/BottomNavigationAction' {
-  import type { ButtonBaseProps } from 'material-ui/ButtonBase/ButtonBase';
-  declare type BottomNavigationActionClasses = {|
+declare module '@material-ui/core/BottomNavigationAction' {
+  import type { ButtonBaseProps } from '@material-ui/core/ButtonBase';
+  declare export type BottomNavigationActionClasses = {|
     root?: Object,
     selected?: Object,
     selectedIconOnly?: Object,
@@ -137,7 +131,7 @@ declare module 'material-ui/BottomNavigation/BottomNavigationAction' {
     selectedLabel?: Object,
     hiddenLabel?: Object,
   |};
-  declare type BottomNavigationActionProps = {|
+  declare export type BottomNavigationActionProps = {|
     ...MUI$BaseProps,
     ...ButtonBaseProps,
     className?: string,
@@ -147,32 +141,23 @@ declare module 'material-ui/BottomNavigation/BottomNavigationAction' {
     showLabel?: boolean,
     value?: any
   |};
-  declare module.exports: React$ComponentType<BottomNavigationActionProps>;
+  declare var BottomNavigationAction: React$ComponentType<BottomNavigationActionProps>;
+  declare export default typeof BottomNavigationAction;
 }
 
-declare module 'material-ui/BottomNavigation' {
-  declare module.exports: {
-    BottomNavigationAction: $Exports<
-      'material-ui/BottomNavigation/BottomNavigationAction'
-    >,
-    default: $Exports<'material-ui/BottomNavigation/BottomNavigation'>
-  };
-}
+declare module '@material-ui/core/Button' {
+  import type { ButtonBaseProps } from '@material-ui/core/ButtonBase';
+  declare export type Color = 'default' | 'inherit' | 'primary' | 'secondary';
+  declare export type ButtonSize = 'small' | 'medium' | 'large';
+  declare export type ButtonVariant = 'flat' | 'raised' | 'fab';
 
-declare module 'material-ui/Button/Button' {
-  import type { ButtonBaseProps } from 'material-ui/ButtonBase/ButtonBase';
-  declare type Color = 'default' | 'inherit' | 'primary' | 'secondary';
-  declare type ButtonSize = 'small' | 'medium' | 'large';
-  declare type ButtonVariant = 'flat' | 'raised' | 'fab';
-
-  declare type ButtonClasses = {|
+  declare export type ButtonClasses = {|
     root?: Object,
     label?: Object,
     flatPrimary?: Object,
     flatSecondary?: Object,
     colorInherit?: Object,
     raised?: Object,
-    keyboardFocused?: Object,
     raisedPrimary?: Object,
     raisedSecondary?: Object,
     disabled?: Object,
@@ -182,7 +167,7 @@ declare module 'material-ui/Button/Button' {
     sizeLarge?: Object,
     fullWidth?: Object,
   |};
-  declare type ButtonProps = {|
+  declare export type ButtonProps = {|
     ...MUI$BaseProps,
     ...ButtonBaseProps,
     children: React$Node,
@@ -197,21 +182,19 @@ declare module 'material-ui/Button/Button' {
     href?: string,
     mini?: boolean,
     size?: ButtonSize,
-    variant?: ButtonVariant
+    variant?: ButtonVariant,
+    focusVisibleClassName?: string,
   |};
-  declare module.exports: React$ComponentType<ButtonProps>;
+  declare var Button: React$ComponentType<ButtonProps>;
+  declare export default typeof Button;
 }
 
-declare module 'material-ui/Button' {
-  declare module.exports: $Exports<'material-ui/Button/Button'>;
-}
-
-declare module 'material-ui/ButtonBase/ButtonBase' {
-  declare type ButtonBaseClasses = {|
+declare module '@material-ui/core/ButtonBase' {
+  declare export type ButtonBaseClasses = {|
     root?: Object,
     disabled?: Object,
   |};
-  declare type ButtonBaseProps = {|
+  declare export type ButtonBaseProps = {|
     ...MUI$BaseProps,
     buttonRef?: React$Ref<>,
     centerRipple?: boolean,
@@ -222,7 +205,7 @@ declare module 'material-ui/ButtonBase/ButtonBase' {
     disabled?: boolean,
     disableRipple?: boolean,
     focusRipple?: boolean,
-    onKeyboardFocus?: (event: SyntheticEvent<>) => void,
+    onFocusVisible?: (event: SyntheticEvent<>) => void,
 
     onBlur?: (event: SyntheticEvent<>) => void,
     onClick?: (event: SyntheticEvent<>) => void,
@@ -238,10 +221,12 @@ declare module 'material-ui/ButtonBase/ButtonBase' {
     role?: string,
     tabIndex?: number | string,
   |};
-  declare module.exports: React$ComponentType<ButtonBaseProps>;
+
+  declare var ButtonBase: React$ComponentType<ButtonBaseProps>;
+  declare export default typeof ButtonBase;
 }
 
-declare module 'material-ui/ButtonBase/createRippleHandler' {
+declare module '@material-ui/core/ButtonBase/createRippleHandler' {
   declare function handleEvent(event: SyntheticUIEvent<>): void;
   declare module.exports: (
     instance: Object,
@@ -251,11 +236,7 @@ declare module 'material-ui/ButtonBase/createRippleHandler' {
   ) => handleEvent;
 }
 
-declare module 'material-ui/ButtonBase' {
-  declare module.exports: $Exports<'material-ui/ButtonBase/ButtonBase'>;
-}
-
-declare module 'material-ui/ButtonBase/Ripple' {
+declare module '@material-ui/core/ButtonBase/Ripple' {
   declare module.exports: React$ComponentType<{|
     className?: string,
     classes?: Object,
@@ -266,7 +247,7 @@ declare module 'material-ui/ButtonBase/Ripple' {
   |}>;
 }
 
-declare module 'material-ui/ButtonBase/TouchRipple' {
+declare module '@material-ui/core/ButtonBase/TouchRipple' {
   declare module.exports: React$ComponentType<{|
     center?: boolean,
     className?: string,
@@ -274,46 +255,49 @@ declare module 'material-ui/ButtonBase/TouchRipple' {
   |}>;
 }
 
-declare module 'material-ui/Card/Card' {
-  declare type CardProps = {|
+declare module '@material-ui/core/Card' {
+  declare export type CardProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     className?: string,
     raised?: boolean
   |};
-  declare module.exports: React$ComponentType<CardProps>;
+  declare var Card: React$ComponentType<CardProps>;
+  declare export default typeof Card;
 }
 
-declare module 'material-ui/Card/CardActions' {
-  declare type CardActionsClasses = {|
+declare module '@material-ui/core/CardActions' {
+  declare export type CardActionsClasses = {|
     root?: Object,
     action?: Object,
   |};
-  declare type CardActionsProps = {|
+  declare export type CardActionsProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     className?: string,
     classes?: CardActionsClasses,
     disableActionSpacing?: boolean
   |};
-  declare module.exports: React$ComponentType<CardActionsProps>;
+  declare var CardActions: React$ComponentType<CardActionsProps>;
+  declare export default typeof CardActions;
 }
 
-declare module 'material-ui/Card/CardContent' {
-  declare type CardContentClasses = {|
+declare module '@material-ui/core/CardContent' {
+  declare export type CardContentClasses = {|
     root?: Object,
   |};
-  declare type CardContentProps = {|
+  declare export type CardContentProps = {|
     ...MUI$BaseProps,
     className?: string,
     classes?: CardContentClasses,
     component?: React$ElementType,
   |};
-  declare module.exports: React$ComponentType<CardContentProps>;
+  declare var CardContent: React$ComponentType<CardContentProps>;
+  declare export default typeof CardContent;
 }
 
-declare module 'material-ui/Card/CardHeader' {
-  declare type CardHeaderClasses = {|
+declare module '@material-ui/core/CardHeader' {
+  declare export type CardHeaderClasses = {|
     root?: Object,
     avatar?: Object,
     action?: Object,
@@ -321,7 +305,7 @@ declare module 'material-ui/Card/CardHeader' {
     title?: Object,
     subheader?: Object,
   |};
-  declare type CardHeaderProps = {|
+  declare export type CardHeaderProps = {|
     ...MUI$BaseProps,
     action?: React$Node,
     avatar?: React$Node,
@@ -331,15 +315,16 @@ declare module 'material-ui/Card/CardHeader' {
     subheader?: React$Node,
     title?: React$Node
   |};
-  declare module.exports: React$ComponentType<CardHeaderProps>;
+  declare var CardHeader: React$ComponentType<CardHeaderProps>;
+  declare export default typeof CardHeader;
 }
 
-declare module 'material-ui/Card/CardMedia' {
-  declare type CardMediaClasses = {|
+declare module '@material-ui/core/CardMedia' {
+  declare export type CardMediaClasses = {|
     root?: Object,
     rootMedia?: Object,
   |};
-  declare type CardMediaProps = {|
+  declare export type CardMediaProps = {|
     ...MUI$BaseProps,
     className?: string,
     classes?: CardMediaClasses,
@@ -347,29 +332,20 @@ declare module 'material-ui/Card/CardMedia' {
     image?: string,
     src?: string,
   |};
-  declare module.exports: React$ComponentType<CardMediaProps>;
+  declare var CardMedia: React$ComponentType<CardMediaProps>;
+  declare export default typeof CardMedia;
 }
 
-declare module 'material-ui/Card' {
-  declare module.exports: {
-    CardActions: $Exports<'material-ui/Card/CardActions'>,
-    CardContent: $Exports<'material-ui/Card/CardContent'>,
-    CardHeader: $Exports<'material-ui/Card/CardHeader'>,
-    CardMedia: $Exports<'material-ui/Card/CardMedia'>,
-    default: $Exports<'material-ui/Card/Card'>
-  };
-}
-
-declare module 'material-ui/Checkbox/Checkbox' {
-  declare type Color = 'primary' | 'secondary';
-  declare type CheckboxClasses = {|
+declare module '@material-ui/core/Checkbox' {
+  declare export type Color = 'primary' | 'secondary';
+  declare export type CheckboxClasses = {|
     default?: Object,
     checked?: Object,
     checkedPrimary?: Object,
     checkedSecondary?: Object,
     disabled?: Object,
   |};
-  declare type CheckboxProps = {|
+  declare export type CheckboxProps = {|
     ...MUI$BaseProps,
     checked?: boolean | string,
     checkedIcon?: React$Node,
@@ -391,17 +367,14 @@ declare module 'material-ui/Checkbox/Checkbox' {
 
     tabIndex?: number | string,
   |};
-  declare module.exports: React$ComponentType<CheckboxProps>;
+  declare var Checkbox: React$ComponentType<CheckboxProps>;
+  declare export default typeof Checkbox;
 }
 
-declare module 'material-ui/Checkbox' {
-  declare module.exports: $Exports<'material-ui/Checkbox/Checkbox'>;
-}
+declare module '@material-ui/core/Chip' {
+  import typeof Avatar from '@material-ui/core/Avatar';
 
-declare module 'material-ui/Chip/Chip' {
-  import typeof Avatar from 'material-ui/Avatar/Avatar';
-
-  declare type ChipClasses = {|
+  declare export type ChipClasses = {|
     root?: Object,
     clickable?: Object,
     deletable?: Object,
@@ -410,7 +383,7 @@ declare module 'material-ui/Chip/Chip' {
     label?: Object,
     deleteIcon?: Object,
   |};
-  declare type ChipProps = {|
+  declare export type ChipProps = {|
     ...MUI$BaseProps,
     avatar?: React$Element<Avatar>,
     className?: string,
@@ -424,106 +397,103 @@ declare module 'material-ui/Chip/Chip' {
     onKeyDown?: (event: SyntheticEvent<>) => void,
     tabIndex?: number | string,
   |};
-  declare module.exports: React$ComponentType<ChipProps>;
+  declare var Chip: React$ComponentType<ChipProps>;
+  declare export default typeof Chip;
 }
 
-declare module 'material-ui/Chip' {
-  declare module.exports: $Exports<'material-ui/Chip/Chip'>;
-}
-
-declare module 'material-ui/colors/amber' {
+declare module '@material-ui/core/colors/amber' {
   declare module.exports: any;
 }
 
-declare module 'material-ui/colors/blue' {
+declare module '@material-ui/core/colors/blue' {
   declare module.exports: any;
 }
 
-declare module 'material-ui/colors/blueGrey' {
+declare module '@material-ui/core/colors/blueGrey' {
   declare module.exports: any;
 }
 
-declare module 'material-ui/colors/brown' {
+declare module '@material-ui/core/colors/brown' {
   declare module.exports: any;
 }
 
-declare module 'material-ui/colors/common' {
+declare module '@material-ui/core/colors/common' {
   declare module.exports: any;
 }
 
-declare module 'material-ui/colors/cyan' {
+declare module '@material-ui/core/colors/cyan' {
   declare module.exports: any;
 }
 
-declare module 'material-ui/colors/deepOrange' {
+declare module '@material-ui/core/colors/deepOrange' {
   declare module.exports: any;
 }
 
-declare module 'material-ui/colors/deepPurple' {
+declare module '@material-ui/core/colors/deepPurple' {
   declare module.exports: any;
 }
 
-declare module 'material-ui/colors/green' {
+declare module '@material-ui/core/colors/green' {
   declare module.exports: any;
 }
 
-declare module 'material-ui/colors/grey' {
+declare module '@material-ui/core/colors/grey' {
   declare module.exports: any;
 }
 
-declare module 'material-ui/colors' {
+declare module '@material-ui/core/colors' {
   declare module.exports: any;
 }
 
-declare module 'material-ui/colors/indigo' {
+declare module '@material-ui/core/colors/indigo' {
   declare module.exports: any;
 }
 
-declare module 'material-ui/colors/lightBlue' {
+declare module '@material-ui/core/colors/lightBlue' {
   declare module.exports: any;
 }
 
-declare module 'material-ui/colors/lightGreen' {
+declare module '@material-ui/core/colors/lightGreen' {
   declare module.exports: any;
 }
 
-declare module 'material-ui/colors/lime' {
+declare module '@material-ui/core/colors/lime' {
   declare module.exports: any;
 }
 
-declare module 'material-ui/colors/orange' {
+declare module '@material-ui/core/colors/orange' {
   declare module.exports: any;
 }
 
-declare module 'material-ui/colors/pink' {
+declare module '@material-ui/core/colors/pink' {
   declare module.exports: any;
 }
 
-declare module 'material-ui/colors/purple' {
+declare module '@material-ui/core/colors/purple' {
   declare module.exports: any;
 }
 
-declare module 'material-ui/colors/red' {
+declare module '@material-ui/core/colors/red' {
   declare module.exports: any;
 }
 
-declare module 'material-ui/colors/teal' {
+declare module '@material-ui/core/colors/teal' {
   declare module.exports: any;
 }
 
-declare module 'material-ui/colors/yellow' {
+declare module '@material-ui/core/colors/yellow' {
   declare module.exports: any;
 }
 
-declare module 'material-ui/Dialog/Dialog' {
-  import type { PaperProps } from 'material-ui/Paper/Paper';
+declare module '@material-ui/core/Dialog' {
+  import type { PaperProps } from '@material-ui/core/Paper';
   import type {
     TransitionCallback,
     TransitionDuration
-  } from 'material-ui/internal/transition';
-  declare type MaxWidth = 'xs' | 'sm' | 'md' | false;
+  } from '@material-ui/core/internal/transition';
+  declare export type MaxWidth = 'xs' | 'sm' | 'md' | false;
 
-  declare type DialogClasses = {|
+  declare export type DialogClasses = {|
     root?: Object,
     paper?: Object,
     paperWidthXs?: Object,
@@ -532,7 +502,7 @@ declare module 'material-ui/Dialog/Dialog' {
     fullWidth?: Object,
     fullScreen?: Object,
   |};
-  declare type DialogProps = {|
+  declare export type DialogProps = {|
     ...MUI$BaseProps,
     children: React$Node,
     className?: string,
@@ -553,91 +523,86 @@ declare module 'material-ui/Dialog/Dialog' {
     onExiting?: TransitionCallback,
     open: boolean,
     PaperProps?: PaperProps,
-    transition?: React$ComponentType<*>,
+    TransitionComponent?: React$ComponentType<*>,
     transitionDuration?: TransitionDuration
   |};
-  declare module.exports: React$ComponentType<DialogProps>;
+
+  declare var Dialog: React$ComponentType<DialogProps>;
+  declare export default typeof Dialog;
 }
 
-declare module 'material-ui/Dialog/DialogActions' {
-  declare type DialogActionsClasses = {|
+declare module '@material-ui/core/DialogActions' {
+  declare export type DialogActionsClasses = {|
     root?: Object,
     action?: Object,
     button?: Object,
   |};
-  declare type DialogActionsProps = {|
+  declare export type DialogActionsProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     className?: string,
     classes?: DialogActionsClasses
   |};
-  declare module.exports: React$ComponentType<DialogActionsProps>;
+  declare var DialogActions: React$ComponentType<DialogActionsProps>;
+  declare export default typeof DialogActions;
 }
 
-declare module 'material-ui/Dialog/DialogContent' {
-  declare type DialogContentClasses = {|
+declare module '@material-ui/core/DialogContent' {
+  declare export type DialogContentClasses = {|
     root?: Object,
   |};
-  declare type DialogContentProps = {|
+  declare export type DialogContentProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     className?: string,
     classes?: DialogContentClasses
   |};
-  declare module.exports: React$ComponentType<DialogContentProps>;
+  declare var DialogContent: React$ComponentType<DialogContentProps>;
+  declare export default typeof DialogContent;
 }
 
-declare module 'material-ui/Dialog/DialogContentText' {
-  declare type DialogContentClasses = {|
+declare module '@material-ui/core/DialogContentText' {
+  declare export type DialogContentClasses = {|
     root?: Object,
   |};
-  declare type DialogContentTextProps = {|
+  declare export type DialogContentTextProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     className?: string,
     classes?: DialogContentClasses
   |};
-  declare module.exports: React$ComponentType<DialogContentTextProps>;
+  declare var DialogContentText: React$ComponentType<DialogContentTextProps>;
+  declare export default typeof DialogContentText;
 }
 
-declare module 'material-ui/Dialog/DialogTitle' {
-  declare type DialogTitleClasses = {|
+declare module '@material-ui/core/DialogTitle' {
+  declare export type DialogTitleClasses = {|
     root?: Object,
   |};
-  declare type DialogTitleProps = {|
+  declare export type DialogTitleProps = {|
     ...MUI$BaseProps,
     children: React$Node,
     className?: string,
     classes?: DialogTitleClasses,
     disableTypography?: boolean
   |};
-  declare module.exports: React$ComponentType<DialogTitleProps>;
+  declare var DialogTitle: React$ComponentType<DialogTitleProps>;
+  declare export default typeof DialogTitle;
 }
 
-declare module 'material-ui/Dialog' {
-  declare module.exports: {
-    DialogActions: $Exports<'material-ui/Dialog/DialogActions'>,
-    DialogContent: $Exports<'material-ui/Dialog/DialogContent'>,
-    DialogContentText: $Exports<'material-ui/Dialog/DialogContentText'>,
-    DialogTitle: $Exports<'material-ui/Dialog/DialogTitle'>,
-    default: $Exports<'material-ui/Dialog/Dialog'>,
-    withMobileDialog: $Exports<'material-ui/Dialog/withMobileDialog'>
-  };
-}
-
-declare module 'material-ui/Dialog/withMobileDialog' {
+declare module '@material-ui/core/withMobileDialog' {
   declare module.exports: any;
 }
 
-declare module 'material-ui/Divider/Divider' {
-  declare type DividerClasses = {|
+declare module '@material-ui/core/Divider' {
+  declare export type DividerClasses = {|
     root?: Object,
     inset?: Object,
     default?: Object,
     light?: Object,
     absolute?: Object,
   |};
-  declare type DividerProps = {|
+  declare export type DividerProps = {|
     ...MUI$BaseProps,
     absolute?: boolean,
     className?: string,
@@ -646,23 +611,20 @@ declare module 'material-ui/Divider/Divider' {
     inset?: boolean,
     light?: boolean
   |};
-  declare module.exports: React$ComponentType<DividerProps>;
+  declare var Divider: React$ComponentType<DividerProps>;
+  declare export default typeof Divider;
 }
 
-declare module 'material-ui/Divider' {
-  declare module.exports: $Exports<'material-ui/Divider/Divider'>;
-}
+declare module '@material-ui/core/Drawer' {
+  import type { ModalProps } from '@material-ui/core/Modal';
+  import type { PaperProps } from '@material-ui/core/Paper';
+  import type { SlideProps } from '@material-ui/core/Slide';
+  import type { TransitionDuration } from '@material-ui/core/internal/transition';
 
-declare module 'material-ui/Drawer/Drawer' {
-  import type { ModalProps } from 'material-ui/Modal/Modal';
-  import type { PaperProps } from 'material-ui/Paper/Paper';
-  import type { SlideProps } from 'material-ui/transitions/Slide';
-  import type { TransitionDuration } from 'material-ui/internal/transition';
+  declare export type Anchor = 'left' | 'top' | 'right' | 'bottom';
+  declare export type Variant = 'permanent' | 'persistent' | 'temporary';
 
-  declare type Anchor = 'left' | 'top' | 'right' | 'bottom';
-  declare type Variant = 'permanent' | 'persistent' | 'temporary';
-
-  declare type DrawerClasses = {|
+  declare export type DrawerClasses = {|
     docked?: Object,
     paper?: Object,
     paperAnchorLeft?: Object,
@@ -675,7 +637,7 @@ declare module 'material-ui/Drawer/Drawer' {
     paperAnchorDockedBottom?: Object,
     modal?: Object,
   |};
-  declare type DrawerProps = {|
+  declare export type DrawerProps = {|
     ...MUI$BaseProps,
     ...ModalProps,
     anchor?: Anchor,
@@ -691,21 +653,18 @@ declare module 'material-ui/Drawer/Drawer' {
     transitionDuration?: TransitionDuration,
     variant?: Variant,
   |};
-  declare module.exports: React$ComponentType<DrawerProps>;
+  declare var Drawer: React$ComponentType<DrawerProps>;
+  declare export default typeof Drawer;
 }
 
-declare module 'material-ui/Drawer' {
-  declare module.exports: $Exports<'material-ui/Drawer/Drawer'>;
-}
-
-declare module 'material-ui/ExpansionPanel/ExpansionPanel' {
-  import type { PaperProps } from 'material-ui/Paper/Paper';
-  declare type ExpansionPanelClasses = {|
+declare module '@material-ui/core/ExpansionPanel' {
+  import type { PaperProps } from '@material-ui/core/Paper';
+  declare export type ExpansionPanelClasses = {|
     root?: Object,
     expanded?: Object,
     disabled?: Object,
   |};
-  declare type ExpansionPanelProps = {|
+  declare export type ExpansionPanelProps = {|
     ...MUI$BaseProps,
     ...PaperProps,
     children: React$Node,
@@ -717,39 +676,42 @@ declare module 'material-ui/ExpansionPanel/ExpansionPanel' {
     expanded?: boolean,
     onChange?: (event: SyntheticEvent<>, expanded: boolean) => void,
   |};
-  declare module.exports: React$ComponentType<ExpansionPanelProps>;
+  declare var ExpansionPanel: React$ComponentType<ExpansionPanelProps>;
+  declare export default typeof ExpansionPanel;
 }
 
-declare module 'material-ui/ExpansionPanel/ExpansionPanelActions' {
-  declare type ExpansionPanelActionsClasses = {|
+declare module '@material-ui/core/ExpansionPanelActions' {
+  declare export type ExpansionPanelActionsClasses = {|
     root?: Object,
     action?: Object,
   |};
-  declare type ExpansionPanelActionsProps = {|
+  declare export type ExpansionPanelActionsProps = {|
     ...MUI$BaseProps,
     children: React$Node,
     className?: string,
     classes?: ExpansionPanelActionsClasses,
   |};
-  declare module.exports: React$ComponentType<ExpansionPanelActionsProps>;
+  declare var ExpansionPanelActions: React$ComponentType<ExpansionPanelActionsProps>;
+  declare export default typeof ExpansionPanelActions;
 }
 
-declare module 'material-ui/ExpansionPanel/ExpansionPanelDetails' {
-  declare type ExpansionPanelDetailsClasses = {|
+declare module '@material-ui/core/ExpansionPanelDetails' {
+  declare export type ExpansionPanelDetailsClasses = {|
     root?: Object,
   |};
-  declare type ExpansionPanelDetailsProps = {|
+  declare export type ExpansionPanelDetailsProps = {|
     ...MUI$BaseProps,
     children: React$Node,
     className?: string,
     classes?: ExpansionPanelDetailsClasses,
   |};
-  declare module.exports: React$ComponentType<ExpansionPanelDetailsProps>;
+  declare var ExpansionPanelDetails: React$ComponentType<ExpansionPanelDetailsProps>;
+  declare export default typeof ExpansionPanelDetails;
 }
 
-declare module 'material-ui/ExpansionPanel/ExpansionPanelSummary' {
-  import type { ButtonBaseProps } from 'material-ui/ButtonBase/ButtonBase'
-  declare type ExpansionPanelSummaryClasses = {|
+declare module '@material-ui/core/ExpansionPanelSummary' {
+  import type { ButtonBaseProps } from '@material-ui/core/ButtonBase'
+  declare export type ExpansionPanelSummaryClasses = {|
     root?: Object,
     expanded?: Object,
     focused?: Object,
@@ -759,7 +721,7 @@ declare module 'material-ui/ExpansionPanel/ExpansionPanelSummary' {
     expandIcon?: Object,
     expandIconExpanded?: Object,
   |};
-  declare type ExpansionPanelSummaryProps = {|
+  declare export type ExpansionPanelSummaryProps = {|
     ...MUI$BaseProps,
     ...ButtonBaseProps,
     children?: React$Node,
@@ -767,34 +729,20 @@ declare module 'material-ui/ExpansionPanel/ExpansionPanelSummary' {
     classes?: ExpansionPanelSummaryClasses,
     expandIcon?: React$Node,
   |};
-  declare module.exports: React$ComponentType<ExpansionPanelSummaryProps>;
+  declare var ExpansionPanelSummary: React$ComponentType<ExpansionPanelSummaryProps>;
+  declare export default typeof ExpansionPanelSummary;
 }
 
-declare module 'material-ui/ExpansionPanel' {
-  declare module.exports: {
-    default: $Exports<'material-ui/ExpansionPanel/ExpansionPanel'>,
-    ExpansionPanelActions: $Exports<
-      'material-ui/ExpansionPanel/ExpansionPanelActions'
-    >,
-    ExpansionPanelDetails: $Exports<
-      'material-ui/ExpansionPanel/ExpansionPanelDetails'
-    >,
-    ExpansionPanelSummary: $Exports<
-      'material-ui/ExpansionPanel/ExpansionPanelSummary'
-    >
-  };
-}
+declare module '@material-ui/core/FormControl' {
+  declare export type Margin = 'none' | 'dense' | 'normal';
 
-declare module 'material-ui/Form/FormControl' {
-  declare type Margin = 'none' | 'dense' | 'normal';
-
-  declare type FormControlClasses = {|
+  declare export type FormControlClasses = {|
     root?: Object,
     marginNormal?: Object,
     marginDense?: Object,
     fullWidth?: Object,
   |};
-  declare type FormControlProps = {|
+  declare export type FormControlProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     classes?: FormControlClasses,
@@ -806,16 +754,17 @@ declare module 'material-ui/Form/FormControl' {
     margin?: Margin,
     required?: boolean
   |};
-  declare module.exports: React$ComponentType<FormControlProps>;
+  declare var FormControl: React$ComponentType<FormControlProps>;
+  declare export default typeof FormControl;
 }
 
-declare module 'material-ui/Form/FormControlLabel' {
-  declare type FormControlLabelClasses = {|
+declare module '@material-ui/core/FormControlLabel' {
+  declare export type FormControlLabelClasses = {|
     root?: Object,
     disabled?: Object,
     label?: Object,
   |};
-  declare type FormControlLabelProps = {|
+  declare export type FormControlLabelProps = {|
     ...MUI$BaseProps,
     checked?: boolean | string,
     className?: string,
@@ -828,32 +777,34 @@ declare module 'material-ui/Form/FormControlLabel' {
     onChange?: (event: SyntheticEvent<>, checked: boolean) => void,
     value?: string
   |};
-  declare module.exports: React$ComponentType<FormControlLabelProps>;
+  declare var FormControlLabel: React$ComponentType<FormControlLabelProps>;
+  declare export default typeof FormControlLabel;
 }
 
-declare module 'material-ui/Form/FormGroup' {
-  declare type FormGroupClasses = {|
+declare module '@material-ui/core/FormGroup' {
+  declare export type FormGroupClasses = {|
     root?: Object,
     row?: Object,
   |};
-  declare type FormGroupProps = {|
+  declare export type FormGroupProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     classes?: FormGroupClasses,
     className?: string,
     row?: boolean
   |};
-  declare module.exports: React$ComponentType<FormGroupProps>;
+  declare var FormGroup: React$ComponentType<FormGroupProps>;
+  declare export default typeof FormGroup;
 }
 
-declare module 'material-ui/Form/FormHelperText' {
-  declare type FormHelperTextClasses = {|
+declare module '@material-ui/core/FormHelperText' {
+  declare export type FormHelperTextClasses = {|
     root?: Object,
     dense?: Object,
     error?: Object,
     disabled?: Object,
   |};
-  declare type FormHelperTextProps = {|
+  declare export type FormHelperTextProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     classes?: FormHelperTextClasses,
@@ -863,17 +814,18 @@ declare module 'material-ui/Form/FormHelperText' {
     error?: boolean,
     margin?: 'dense',
   |};
-  declare module.exports: React$ComponentType<FormHelperTextProps>;
+  declare var FormHelperText: React$ComponentType<FormHelperTextProps>;
+  declare export default typeof FormHelperText;
 }
 
-declare module 'material-ui/Form/FormLabel' {
-  declare type FormLabelClasses = {|
+declare module '@material-ui/core/FormLabel' {
+  declare export type FormLabelClasses = {|
     root?: Object,
     focused?: Object,
     error?: Object,
     disabled?: Object,
   |};
-  declare type FormLabelProps = {|
+  declare export type FormLabelProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     classes?: FormLabelClasses,
@@ -887,21 +839,12 @@ declare module 'material-ui/Form/FormLabel' {
     // Default component is a "label"
     htmlFor?: string,
   |};
-  declare module.exports: React$ComponentType<FormLabelProps>;
+  declare var FormLabel: React$ComponentType<FormLabelProps>;
+  declare export default typeof FormLabel;
 }
 
-declare module 'material-ui/Form' {
-  declare module.exports: {
-    FormGroup: $Exports<'material-ui/Form/FormGroup'>,
-    FormLabel: $Exports<'material-ui/Form/FormLabel'>,
-    FormControl: $Exports<'material-ui/Form/FormControl'>,
-    FormHelperText: $Exports<'material-ui/Form/FormHelperText'>,
-    FormControlLabel: $Exports<'material-ui/Form/FormControlLabel'>
-  };
-}
-
-declare module 'material-ui/Grid/Grid' {
-  declare type GridSizes =
+declare module '@material-ui/core/Grid' {
+  declare export type GridSizes =
     | boolean
     | 1
     | 2
@@ -915,30 +858,30 @@ declare module 'material-ui/Grid/Grid' {
     | 10
     | 11
     | 12;
-  declare type AlignContent =
+  declare export type AlignContent =
     | 'stretch'
     | 'center'
     | 'flex-start'
     | 'flex-end'
     | 'space-between'
     | 'space-around';
-  declare type AlignItems =
+  declare export type AlignItems =
     | 'flex-start'
     | 'center'
     | 'flex-end'
     | 'stretch'
     | 'baseline';
-  declare type Direction = 'row' | 'row-reverse' | 'column' | 'column-reverse';
-  declare type Justify =
+  declare export type Direction = 'row' | 'row-reverse' | 'column' | 'column-reverse';
+  declare export type Justify =
     | 'flex-start'
     | 'center'
     | 'flex-end'
     | 'space-between'
     | 'space-around';
-  declare type Spacing = 0 | 8 | 16 | 24 | 40;
-  declare type Wrap = 'nowrap' | 'wrap' | 'wrap-reverse';
+  declare export type Spacing = 0 | 8 | 16 | 24 | 40;
+  declare export type Wrap = 'nowrap' | 'wrap' | 'wrap-reverse';
 
-  declare type GridClasses = {|
+  declare export type GridClasses = {|
     typeContainer?: Object,
     typeItem?: Object,
     zeroMinWidth?: Object,
@@ -978,7 +921,7 @@ declare module 'material-ui/Grid/Grid' {
     'grid-xs-11'?: Object,
     'grid-xs-12'?: Object,
   |};
-  declare type GridProps = {|
+  declare export type GridProps = {|
     ...MUI$BaseProps,
     alignContent?: AlignContent,
     alignItems?: AlignItems,
@@ -1000,20 +943,17 @@ declare module 'material-ui/Grid/Grid' {
     xs?: GridSizes,
     zeroMinWidth?: boolean,
   |};
-  declare module.exports: React$ComponentType<GridProps>;
+  declare var Grid: React$ComponentType<GridProps>;
+  declare export default typeof Grid;
 }
 
-declare module 'material-ui/Grid' {
-  declare module.exports: $Exports<'material-ui/Grid/Grid'>;
-}
+declare module '@material-ui/core/GridList' {
+  declare export type CellHeight = number | 'auto';
 
-declare module 'material-ui/GridList/GridList' {
-  declare type CellHeight = number | 'auto';
-
-  declare type GridListClasses = {|
+  declare export type GridListClasses = {|
     root?: Object,
   |};
-  declare type GridListProps = {|
+  declare export type GridListProps = {|
     ...MUI$BaseProps,
     cellHeight?: CellHeight,
     children: React$Node,
@@ -1023,17 +963,18 @@ declare module 'material-ui/GridList/GridList' {
     component?: React$ElementType,
     spacing?: number,
   |};
-  declare module.exports: React$ComponentType<GridListProps>;
+  declare var GridList: React$ComponentType<GridListProps>;
+  declare export default typeof GridList;
 }
 
-declare module 'material-ui/GridList/GridListTile' {
-  declare type GridListTileClasses = {|
+declare module '@material-ui/core/GridListTile' {
+  declare export type GridListTileClasses = {|
     root?: Object,
     tile?: Object,
     imgFullHeight?: Object,
     imgFullWidth?: Object,
   |};
-  declare type GridListTileProps = {|
+  declare export type GridListTileProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     classes?: GridListTileClasses,
@@ -1042,14 +983,15 @@ declare module 'material-ui/GridList/GridListTile' {
     component?: React$ElementType,
     rows?: number
   |};
-  declare module.exports: React$ComponentType<GridListTileProps>;
+  declare var GridListTitle: React$ComponentType<GridListTileProps>;
+  declare export default typeof GridListTitle;
 }
 
-declare module 'material-ui/GridList/GridListTileBar' {
-  declare type TitlePosition = 'top' | 'bottom';
-  declare type ActionPosition = 'left' | 'right';
+declare module '@material-ui/core/GridListTileBar' {
+  declare export type TitlePosition = 'top' | 'bottom';
+  declare export type ActionPosition = 'left' | 'right';
 
-  declare type GridListTileBarClasses = {|
+  declare export type GridListTileBarClasses = {|
     root?: Object,
     rootBottom?: Object,
     rootTop?: Object,
@@ -1062,7 +1004,7 @@ declare module 'material-ui/GridList/GridListTileBar' {
     actionIconPositionLeft?: Object,
     childImg?: Object,
   |};
-  declare type GridListTileBarProps = {|
+  declare export type GridListTileBarProps = {|
     ...MUI$BaseProps,
     actionIcon?: React$Node,
     actionPosition?: ActionPosition,
@@ -1072,22 +1014,14 @@ declare module 'material-ui/GridList/GridListTileBar' {
     title: React$Node,
     titlePosition?: TitlePosition
   |};
-  declare module.exports: React$ComponentType<GridListTileBarProps>;
+  declare var GridListTitleBar: React$ComponentType<GridListTileBarProps>;
+  declare export default typeof GridListTitleBar;
 }
 
-declare module 'material-ui/GridList' {
-  declare module.exports: {
-    default: $Exports<'material-ui/GridList/GridList'>,
-    GridList: $Exports<'material-ui/GridList/GridList'>,
-    GridListTile: $Exports<'material-ui/GridList/GridListTile'>,
-    GridListTileBar: $Exports<'material-ui/GridList/GridListTileBar'>
-  };
-}
+declare module '@material-ui/core/Hidden' {
+  import type { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
 
-declare module 'material-ui/Hidden/Hidden' {
-  import type { Breakpoint } from 'material-ui/styles/createBreakpoints';
-
-  declare type HiddenProps = {|
+  declare export type HiddenProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     className?: string,
@@ -1105,34 +1039,26 @@ declare module 'material-ui/Hidden/Hidden' {
     xsDown?: boolean,
     xsUp?: boolean,
   |};
-  declare module.exports: React$ComponentType<HiddenProps>;
+  declare var Hidden: React$ComponentType<HiddenProps>;
+  declare export default typeof Hidden;
 }
 
-declare module 'material-ui/Hidden/HiddenCss' {
-  import typeof Hidden from 'material-ui/Hidden/Hidden';
+declare module '@material-ui/core/Hidden/HiddenCss' {
+  import typeof Hidden from '@material-ui/core/Hidden';
 
-  declare module.exports: React$ComponentType<React$ElementProps<Hidden>>;
+  declare var HiddenCss: React$ComponentType<React$ElementProps<Hidden>>;
+  declare export default typeof HiddenCss;
 }
 
-declare module 'material-ui/Hidden/HiddenJs' {
-  import typeof Hidden from 'material-ui/Hidden/Hidden';
+declare module '@material-ui/core/Hidden/HiddenJs' {
+  import typeof Hidden from '@material-ui/core/Hidden';
 
-  declare module.exports: React$ComponentType<React$ElementProps<Hidden>>;
+  declare var HiddenJs: React$ComponentType<React$ElementProps<Hidden>>;
+  declare export default typeof HiddenJs;
 }
 
-declare module 'material-ui/Hidden' {
-  declare module.exports: {
-    default: $Exports<'material-ui/Hidden/Hidden'>,
-    HiddenJs: $Exports<'material-ui/Hidden/HiddenJs'>
-  };
-}
-
-declare module 'material-ui/Hidden/types' {
-  declare module.exports: any;
-}
-
-declare module 'material-ui/Icon/Icon' {
-  declare type Color =
+declare module '@material-ui/core/Icon' {
+  declare export type Color =
     | 'inherit'
     | 'secondary'
     | 'action'
@@ -1140,7 +1066,7 @@ declare module 'material-ui/Icon/Icon' {
     | 'error'
     | 'primary';
 
-  declare type IconClasses = {|
+  declare export type IconClasses = {|
     root?: Object,
     colorPrimary?: Object,
     colorSecondary?: Object,
@@ -1149,7 +1075,7 @@ declare module 'material-ui/Icon/Icon' {
     colorError?: Object,
     fontSize?: Object,
   |};
-  declare type IconProps = {|
+  declare export type IconProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     className?: string,
@@ -1157,22 +1083,19 @@ declare module 'material-ui/Icon/Icon' {
     color?: Color,
     fontSize?: boolean,
   |};
-  declare module.exports: React$ComponentType<IconProps>;
+  declare var Icon: React$ComponentType<IconProps>;
+  declare export default typeof Icon;
 }
 
-declare module 'material-ui/Icon' {
-  declare module.exports: $Exports<'material-ui/Icon/Icon'>;
-}
-
-declare module 'material-ui/IconButton/IconButton' {
-  import type { ButtonBaseProps } from 'material-ui/ButtonBase/ButtonBase';
-  declare type Color =
+declare module '@material-ui/core/IconButton' {
+  import type { ButtonBaseProps } from '@material-ui/core/ButtonBase';
+  declare export type Color =
     | 'default'
     | 'inherit'
     | 'primary'
     | 'secondary';
 
-  declare type IconButtonClasses = {|
+  declare export type IconButtonClasses = {|
     root?: Object,
     colorInherit?: Object,
     colorPrimary?: Object,
@@ -1180,7 +1103,7 @@ declare module 'material-ui/IconButton/IconButton' {
     disabled?: Object,
     label?: Object,
   |};
-  declare type IconButtonProps = {|
+  declare export type IconButtonProps = {|
     ...MUI$BaseProps,
     ...ButtonBaseProps,
     children?: React$Node,
@@ -1190,23 +1113,12 @@ declare module 'material-ui/IconButton/IconButton' {
     disabled?: boolean,
     disableRipple?: boolean,
   |};
-  declare module.exports: React$ComponentType<IconButtonProps>;
+  declare var IconButton: React$ComponentType<IconButtonProps>;
+  declare export default typeof IconButton;
 }
 
-declare module 'material-ui/IconButton' {
-  declare module.exports: $Exports<'material-ui/IconButton/IconButton'>;
-}
-
-declare module 'material-ui/Input' {
-  declare module.exports: {
-    default: $Exports<'material-ui/Input/Input'>,
-    InputAdornment: $Exports<'material-ui/Input/InputAdornment'>,
-    InputLabel: $Exports<'material-ui/Input/InputLabel'>
-  };
-}
-
-declare module 'material-ui/Input/Input' {
-  declare type InputClasses = {|
+declare module '@material-ui/core/Input' {
+  declare export type InputClasses = {|
     root?: Object,
     formControl?: Object,
     inkbar?: Object,
@@ -1223,7 +1135,7 @@ declare module 'material-ui/Input/Input' {
     inputMultiline?: Object,
     inputSearch?: Object,
   |};
-  declare type InputProps = {|
+  declare export type InputProps = {|
     ...MUI$BaseProps,
     autoComplete?: string,
     autoFocus?: boolean,
@@ -1258,16 +1170,17 @@ declare module 'material-ui/Input/Input' {
     onKeyDown?: (event: SyntheticKeyboardEvent<>) => void,
     onKeyUp?: (event: SyntheticKeyboardEvent<>) => void,
   |};
-  declare module.exports: React$ComponentType<InputProps>;
+  declare var Input: React$ComponentType<InputProps>;
+  declare export default typeof Input;
 }
 
-declare module 'material-ui/Input/InputAdornment' {
-  declare type InputAdornmentClasses = {|
+declare module '@material-ui/core/InputAdornment' {
+  declare export type InputAdornmentClasses = {|
     root?: Object,
     positionStart?: Object,
     positionEnd?: Object,
   |};
-  declare type InputAdornmentProps = {|
+  declare export type InputAdornmentProps = {|
     ...MUI$BaseProps,
     children: React$Node,
     classes?: InputAdornmentClasses,
@@ -1276,12 +1189,13 @@ declare module 'material-ui/Input/InputAdornment' {
     disableTypography?: boolean,
     position?: 'start' | 'end',
   |};
-  declare module.exports: React$ComponentType<InputAdornmentProps>;
+  declare var InputAdornment: React$ComponentType<InputAdornmentProps>;
+  declare export default typeof InputAdornment;
 }
 
-declare module 'material-ui/Input/InputLabel' {
-  import type { FormLabelProps, FormLabelClasses } from 'material-ui/Form/FormLabel';
-  declare type InputLabelClasses = {|
+declare module '@material-ui/core/InputLabel' {
+  import type { FormLabelProps, FormLabelClasses } from '@material-ui/core/FormLabel';
+  declare export type InputLabelClasses = {|
     root?: Object,
     formControl?: Object,
     labelDense?: Object,
@@ -1289,7 +1203,7 @@ declare module 'material-ui/Input/InputLabel' {
     animated?: Object,
     disabled?: Object,
   |};
-  declare type InputLabelProps = {|
+  declare export type InputLabelProps = {|
     ...MUI$BaseProps,
     ...FormLabelProps,
     children?: React$Node,
@@ -1304,13 +1218,14 @@ declare module 'material-ui/Input/InputLabel' {
     required?: boolean,
     shrink?: boolean
   |};
-  declare module.exports: React$ComponentType<InputLabelProps>;
+  declare var InputLabel: React$ComponentType<InputLabelProps>;
+  declare export default typeof InputLabel;
 }
 
-declare module 'material-ui/Input/Textarea' {
-  declare type Rows = string | number;
+declare module '@material-ui/core/Input/Textarea' {
+  declare export type Rows = string | number;
 
-  declare module.exports: React$ComponentType<{|
+  declare var Textarea: React$ComponentType<{|
     classes?: Object,
     className?: string,
     defaultValue?: string | number,
@@ -1321,26 +1236,25 @@ declare module 'material-ui/Input/Textarea' {
     textareaRef?: Function,
     value?: string | number
   |}>;
+
+  declare export default typeof Textarea;
 }
 
-declare module 'material-ui/internal/dom' {
-  declare module.exports: any;
-}
-
-declare module 'material-ui/Portal/Portal' {
-  declare type PortalProps = {|
+declare module '@material-ui/core/Portal' {
+  declare export type PortalProps = {|
     ...MUI$BaseProps,
     children: React$Node,
     container?: React$ElementType,
     onRendered?: () => void,
   |};
-  declare module.exports: React$ComponentType<PortalProps>;
+  declare var Portal: React$ComponentType<PortalProps>;
+  declare export default typeof Portal;
 }
 
-declare module 'material-ui/internal/transition' {
-  declare type TransitionDuration = number | { enter: number, exit: number };
-  declare type TransitionCallback = (element: HTMLElement) => void;
-  declare type TransitionClasses = {|
+declare module '@material-ui/core/internal/transition' {
+  declare export type TransitionDuration = number | { enter: number, exit: number };
+  declare export type TransitionCallback = (element: HTMLElement) => void;
+  declare export type TransitionClasses = {|
     appear?: string,
     appearActive?: string,
     enter?: string,
@@ -1348,7 +1262,7 @@ declare module 'material-ui/internal/transition' {
     exit?: string,
     exitActive?: string
   |};
-  declare type TransitionProps = {|
+  declare export type TransitionProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     in?: boolean,
@@ -1368,27 +1282,14 @@ declare module 'material-ui/internal/transition' {
   |};
 }
 
-declare module 'material-ui/List' {
-  declare module.exports: {
-    ListItem: $Exports<'material-ui/List/ListItem'>,
-    ListItemAvatar: $Exports<'material-ui/List/ListItemAvatar'>,
-    ListItemText: $Exports<'material-ui/List/ListItemText'>,
-    ListItemIcon: $Exports<'material-ui/List/ListItemIcon'>,
-    ListItemSecondaryAction: $Exports<
-      'material-ui/List/ListItemSecondaryAction'
-    >,
-    ListSubheader: $Exports<'material-ui/List/ListSubheader'>
-  };
-}
-
-declare module 'material-ui/List/List' {
-  declare type ListClasses = {|
+declare module '@material-ui/core/List' {
+  declare export type ListClasses = {|
     root?: Object,
     padding?: Object,
     dense?: Object,
     subheader?: Object,
   |};
-  declare type ListProps = {|
+  declare export type ListProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     classes?: ListClasses,
@@ -1398,11 +1299,12 @@ declare module 'material-ui/List/List' {
     disablePadding?: boolean,
     subheader?: React$Node
   |};
-  declare module.exports: React$ComponentType<ListProps>;
+  declare var List: React$ComponentType<ListProps>;
+  declare export default typeof List;
 }
 
-declare module 'material-ui/List/ListItem' {
-  declare type ListItemClasses = {|
+declare module '@material-ui/core/ListItem' {
+  declare export type ListItemClasses = {|
     root?: Object,
     container?: Object,
     keyboardFocused?: Object,
@@ -1414,7 +1316,7 @@ declare module 'material-ui/List/ListItem' {
     button?: Object,
     secondaryAction?: Object,
   |};
-  declare type ListItemProps = {|
+  declare export type ListItemProps = {|
     ...MUI$BaseProps,
     button?: boolean,
     children?: React$Node,
@@ -1427,51 +1329,55 @@ declare module 'material-ui/List/ListItem' {
     disableGutters?: boolean,
     divider?: boolean
   |};
-  declare module.exports: React$ComponentType<ListItemProps>;
+  declare var ListItem: React$ComponentType<ListItemProps>;
+  declare export default typeof ListItem;
 }
 
-declare module 'material-ui/List/ListItemAvatar' {
-  declare type ListItemAvatarClasses = {|
+declare module '@material-ui/core/ListItemAvatar' {
+  declare export type ListItemAvatarClasses = {|
     root?: Object,
     icon?: Object,
   |};
-  declare type ListItemAvatarProps = {|
+  declare export type ListItemAvatarProps = {|
     ...MUI$BaseProps,
     children: React$Element<any>,
     classes?: ListItemAvatarClasses,
     className?: string
   |};
-  declare module.exports: React$ComponentType<ListItemAvatarProps>;
+  declare var ListItemAvatar: React$ComponentType<ListItemAvatarProps>;
+  declare export default typeof ListItemAvatar;
 }
 
-declare module 'material-ui/List/ListItemIcon' {
-  declare type ListItemIconClasses = {|
+declare module '@material-ui/core/ListItemIcon' {
+  declare export type ListItemIconClasses = {|
     root?: Object,
   |};
-  declare type ListItemIconProps = {|
+  declare export type ListItemIconProps = {|
     ...MUI$BaseProps,
     children: React$Element<any>,
     classes?: ListItemIconClasses,
     className?: string
   |};
-  declare module.exports: React$ComponentType<ListItemIconProps>;
+  declare var ListItemIcon: React$ComponentType<ListItemIconProps>;
+  declare export default typeof ListItemIcon;
 }
 
-declare module 'material-ui/List/ListItemSecondaryAction' {
-  declare type ListItemSecondaryActionClasses = {|
+declare module '@material-ui/core/ListItemSecondaryAction' {
+  declare export type ListItemSecondaryActionClasses = {|
     root?: Object,
   |};
-  declare type ListItemSecondaryActionProps = {|
+  declare export type ListItemSecondaryActionProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     classes?: ListItemSecondaryActionClasses,
     className?: string
   |};
-  declare module.exports: React$ComponentType<ListItemSecondaryActionProps>;
+  declare var ListItemSecondaryAction: React$ComponentType<ListItemSecondaryActionProps>;
+  declare export default typeof ListItemSecondaryAction;
 }
 
-declare module 'material-ui/List/ListItemText' {
-  declare type ListItemTextClasses = {|
+declare module '@material-ui/core/ListItemText' {
+  declare export type ListItemTextClasses = {|
     root?: Object,
     inset?: Object,
     dense?: Object,
@@ -1479,7 +1385,7 @@ declare module 'material-ui/List/ListItemText' {
     secondary?: Object,
     textDense?: Object,
   |};
-  declare type ListItemTextProps = {|
+  declare export type ListItemTextProps = {|
     ...MUI$BaseProps,
     classes?: ListItemTextClasses,
     className?: string,
@@ -1488,20 +1394,21 @@ declare module 'material-ui/List/ListItemText' {
     primary?: React$Node,
     secondary?: React$Node
   |};
-  declare module.exports: React$ComponentType<ListItemTextProps>;
+  declare var ListItemText: React$ComponentType<ListItemTextProps>;
+  declare export default typeof ListItemText;
 }
 
-declare module 'material-ui/List/ListSubheader' {
-  declare type Color = 'default' | 'primary' | 'inherit';
+declare module '@material-ui/core/ListSubheader' {
+  declare export type Color = 'default' | 'primary' | 'inherit';
 
-  declare type ListSubheaderClasses = {|
+  declare export type ListSubheaderClasses = {|
     root?: Object,
     colorPrimary?: Object,
     colorInherit?: Object,
     inset?: Object,
     sticky?: Object,
   |};
-  declare type ListSubheaderProps = {|
+  declare export type ListSubheaderProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     classes?: ListSubheaderClasses,
@@ -1511,32 +1418,25 @@ declare module 'material-ui/List/ListSubheader' {
     disableSticky?: boolean,
     inset?: boolean
   |};
-  declare module.exports: React$ComponentType<ListSubheaderProps>;
+  declare var ListSubheader: React$ComponentType<ListSubheaderProps>;
+  declare export default typeof ListSubheader;
 }
 
-declare module 'material-ui/Menu' {
-  declare module.exports: {
-    default: $Exports<'material-ui/Menu/Menu'>,
-    MenuList: $Exports<'material-ui/Menu/MenuList'>,
-    MenuItem: $Exports<'material-ui/Menu/MenuItem'>
-  };
-}
+declare module '@material-ui/core/Menu' {
+  import type { MenuListProps } from '@material-ui/core/MenuList';
+  import type { PaperProps } from '@material-ui/core/Paper';
+  import type { PopoverClasses } from '@material-ui/core/Popover';
+  import type { TransitionCallback } from '@material-ui/core/internal/transition';
 
-declare module 'material-ui/Menu/Menu' {
-  import type { MenuListProps } from 'material-ui/Menu/MenuList';
-  import type { PaperProps } from 'material-ui/Paper/Paper';
-  import type { PopoverClasses } from 'material-ui/Popover/Popover';
-  import type { TransitionCallback } from 'material-ui/internal/transition';
-
-  declare type TransitionDuration =
+  declare export type TransitionDuration =
     | number
     | { enter?: number, exit?: number }
     | 'auto';
 
-  declare type MenuClasses = {|
+  declare export type MenuClasses = {|
     paper: Object,
   |};
-  declare type MenuProps = {|
+  declare export type MenuProps = {|
     ...MUI$BaseProps,
     anchorEl?: ?HTMLElement,
     children?: React$Node,
@@ -1552,19 +1452,21 @@ declare module 'material-ui/Menu/Menu' {
     open: boolean,
     PaperProps?: Object,
     PopoverClasses?: PopoverClasses,
+    TransitionComponent?: React$ElementType,
     transitionDuration?: TransitionDuration,
 
     id?: string,
   |};
-  declare module.exports: React$ComponentType<MenuProps>;
+  declare var Menu: React$ComponentType<MenuProps>;
+  declare export default typeof Menu;
 }
 
-declare module 'material-ui/Menu/MenuItem' {
-  declare type MenuItemClasses = {|
+declare module '@material-ui/core/MenuItem' {
+  declare export type MenuItemClasses = {|
     root?: Object,
     selected?: Object,
   |};
-  declare type MenuItemProps = {|
+  declare export type MenuItemProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     classes?: MenuItemClasses,
@@ -1575,27 +1477,26 @@ declare module 'material-ui/Menu/MenuItem' {
     // Typically want to add a value for the onChange event of the Menu/Select
     value?: any,
   |};
-  declare module.exports: React$ComponentType<MenuItemProps>;
+  declare var MenuItem: React$ComponentType<MenuItemProps>;
+  declare export default typeof MenuItem;
 }
 
-declare module 'material-ui/Menu/MenuList' {
-  declare type MenuListProps = {|
+declare module '@material-ui/core/MenuList' {
+  declare export type MenuListProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     className?: string,
   |};
-  declare module.exports: React$ComponentType<MenuListProps>;
+  declare var MenuList: React$ComponentType<MenuListProps>;
+  declare export default typeof MenuList;
 }
 
-declare module 'material-ui/MobileStepper' {
-  declare module.exports: $Exports<'material-ui/MobileStepper/MobileStepper'>;
-}
 
-declare module 'material-ui/MobileStepper/MobileStepper' {
-  declare type Position = 'bottom' | 'top' | 'static';
-  declare type Variant = 'text' | 'dots' | 'progress';
+declare module '@material-ui/core/MobileStepper' {
+  declare export type Position = 'bottom' | 'top' | 'static';
+  declare export type Variant = 'text' | 'dots' | 'progress';
 
-  declare type MobileStepperClasses = {|
+  declare export type MobileStepperClasses = {|
     root?: Object,
     positionBottom?: Object,
     positionTop?: Object,
@@ -1605,7 +1506,7 @@ declare module 'material-ui/MobileStepper/MobileStepper' {
     dotActive?: Object,
     progress?: Object,
   |};
-  declare type MobileStepperProps = {|
+  declare export type MobileStepperProps = {|
     ...MUI$BaseProps,
     activeStep?: number,
     backButton?: React$Node,
@@ -1616,30 +1517,30 @@ declare module 'material-ui/MobileStepper/MobileStepper' {
     steps: number,
     variant?: Variant,
   |};
-  declare module.exports: React$ComponentType<MobileStepperProps>;
+  declare var MobileStepper: React$ComponentType<MobileStepperProps>;
+  declare export default typeof MobileStepper;
 }
 
-declare module 'material-ui/Modal/Backdrop' {
-  declare module.exports: React$ComponentType<{|
-    children?: React$Node,
-    classes?: Object,
-    className?: string,
-    invisible?: boolean
-  |}>;
-}
+// declare module '@material-ui/core/Backdrop' {
+//   declare export type BackdropProps = {|
+//     children?: React$Node,
+//     classes?: Object,
+//     className?: string,
+//     invisible?: boolean
+//   |}
+//   declare var Backdrop: React$ComponentType<BackdropProps>;
+//
+//   declare export default typeof Backdrop;
+// }
 
-declare module 'material-ui/Modal' {
-  declare module.exports: $Exports<'material-ui/Modal/Modal'>;
-}
+declare module '@material-ui/core/Modal' {
+  import type { PortalProps } from '@material-ui/core/Portal';
 
-declare module 'material-ui/Modal/Modal' {
-  import type { PortalProps } from 'material-ui/Portal/Portal';
-
-  declare type ModalClasses = {|
+  declare export type ModalClasses = {|
     root?: Object,
     hidden?: Object,
   |};
-  declare type ModalProps = {|
+  declare export type ModalProps = {|
     ...MUI$BaseProps,
     ...PortalProps,
     BackdropComponent?: React$ElementType,
@@ -1662,19 +1563,17 @@ declare module 'material-ui/Modal/Modal' {
     onRendered?: () => void,
     open: boolean,
   |};
-  declare module.exports: React$ComponentType<ModalProps>;
+  declare var Modal: React$ComponentType<ModalProps>;
+  declare export default typeof Modal;
 }
 
-declare module 'material-ui/Modal/modalManager' {
-  declare module.exports: any;
+declare module '@material-ui/core/Modal/ModalManager' {
+  declare var ModalManager: any;
+  declare export default typeof ModalManager;
 }
 
-declare module 'material-ui/Paper' {
-  declare module.exports: $Exports<'material-ui/Paper/Paper'>;
-}
-
-declare module 'material-ui/Paper/Paper' {
-  declare type PaperClasses = {|
+declare module '@material-ui/core/Paper' {
+  declare export type PaperClasses = {|
     root?: Object,
     rounded?: Object,
     shadow0?: Object,
@@ -1703,7 +1602,7 @@ declare module 'material-ui/Paper/Paper' {
     shadow23?: Object,
     shadow24?: Object,
   |};
-  declare type PaperProps = {|
+  declare export type PaperProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     classes?: PaperClasses,
@@ -1712,34 +1611,31 @@ declare module 'material-ui/Paper/Paper' {
     elevation?: number,
     square?: boolean
   |};
-  declare module.exports: React$ComponentType<PaperProps>;
+  declare var Paper: React$ComponentType<PaperProps>;
+  declare export default typeof Paper;
 }
 
-declare module 'material-ui/Popover' {
-  declare module.exports: $Exports<'material-ui/Popover/Popover'>;
-}
-
-declare module 'material-ui/Popover/Popover' {
-  import type { ModalProps } from 'material-ui/Modal/Modal';
-  import type { PaperProps } from 'material-ui/Paper/Paper';
+declare module '@material-ui/core/Popover' {
+  import type { ModalProps } from '@material-ui/core/Modal';
+  import type { PaperProps } from '@material-ui/core/Paper';
   import type {
     TransitionCallback,
-  } from 'material-ui/internal/transition';
+  } from '@material-ui/core/internal/transition';
 
-  declare type Position = {
+  declare export type Position = {
     top: number,
     left: number
   };
 
-  declare type Origin = {
+  declare export type Origin = {
     horizontal: 'left' | 'center' | 'right' | number,
     vertical: 'top' | 'center' | 'bottom' | number
   };
 
-  declare type PopoverClasses = {|
+  declare export type PopoverClasses = {|
     paper?: Object,
   |};
-  declare type PopoverProps = {|
+  declare export type PopoverProps = {|
     ...MUI$BaseProps,
     ...ModalProps,
     action?: (actions: Object) => void,
@@ -1763,17 +1659,18 @@ declare module 'material-ui/Popover/Popover' {
     open: boolean,
     PaperProps?: PaperProps,
     transformOrigin?: Origin,
-    transition?: React$ElementType,
+    TransitionComponent?: React$ElementType,
     transitionDuration?: number | { enter?: number, exit?: number } | 'auto'
   |};
-  declare module.exports: React$ComponentType<PopoverProps>;
+  declare var Popover: React$ComponentType<PopoverProps>;
+  declare export default typeof Popover;
 }
 
-declare module 'material-ui/Progress/CircularProgress' {
-  declare type Color = 'primary' | 'secondary' | 'inherit';
-  declare type Mode = 'determinate' | 'indeterminate' | 'static';
+declare module '@material-ui/core/CircularProgress' {
+  declare export type Color = 'primary' | 'secondary' | 'inherit';
+  declare export type Mode = 'determinate' | 'indeterminate' | 'static';
 
-  declare type CircularProgressClases = {|
+  declare export type CircularProgressClases = {|
     root?: Object,
     colorPrimary?: Object,
     colorSecondary?: Object,
@@ -1782,33 +1679,25 @@ declare module 'material-ui/Progress/CircularProgress' {
     circle?: Object,
     circleIndeterminate?: Object,
   |};
-  declare type CircularProgressProps = {|
+  declare export type CircularProgressProps = {|
     ...MUI$BaseProps,
     classes?: CircularProgressClases,
     className?: string,
     color?: Color,
-    max?: number,
-    min?: number,
     size?: number,
     thickness?: number,
     value?: number,
     variant?: Mode,
   |};
-  declare module.exports: React$ComponentType<CircularProgressProps>;
+  declare var CircularProgress: React$ComponentType<CircularProgressProps>;
+  declare export default typeof CircularProgress;
 }
 
-declare module 'material-ui/Progress' {
-  declare module.exports: {
-    CircularProgress: $Exports<'material-ui/Progress/CircularProgress'>,
-    LinearProgress: $Exports<'material-ui/Progress/LinearProgress'>
-  };
-}
+declare module '@material-ui/core/LinearProgress' {
+  declare export type Color = 'primary' | 'secondary';
+  declare export type Variant = 'determinate' | 'indeterminate' | 'buffer' | 'query';
 
-declare module 'material-ui/Progress/LinearProgress' {
-  declare type Color = 'primary' | 'secondary';
-  declare type Variant = 'determinate' | 'indeterminate' | 'buffer' | 'query';
-
-  declare type LinearProgressClasses = {|
+  declare export type LinearProgressClasses = {|
     root?: Object,
     primaryColor?: Object,
     primaryColorBar?: Object,
@@ -1826,7 +1715,7 @@ declare module 'material-ui/Progress/LinearProgress' {
     determinateBar1?: Object,
     bufferBar1?: Object,
   |};
-  declare type LinearProgressProps = {|
+  declare export type LinearProgressProps = {|
     ...MUI$BaseProps,
     classes?: LinearProgressClasses,
     className?: string,
@@ -1835,25 +1724,19 @@ declare module 'material-ui/Progress/LinearProgress' {
     valueBuffer?: number,
     variant?: Variant,
   |};
-  declare module.exports: React$ComponentType<LinearProgressProps>;
+  declare var LinearProgress: React$ComponentType<LinearProgressProps>;
+  declare export default typeof LinearProgress;
 }
 
-declare module 'material-ui/Radio' {
-  declare module.exports: {
-    default: $Exports<'material-ui/Radio/Radio'>,
-    RadioGroup: $Exports<'material-ui/Radio/RadioGroup'>
-  };
-}
-
-declare module 'material-ui/Radio/Radio' {
-  declare type RadioClases = {|
+declare module '@material-ui/core/Radio' {
+  declare export type RadioClases = {|
     default?: Object,
     checked?: Object,
     checkedPrimary?: Object,
     checkedSecondary?: Object,
     disabled?: Object,
   |};
-  declare type RadioProps = {|
+  declare export type RadioProps = {|
     ...MUI$BaseProps,
     checked?: boolean | string,
     checkedIcon?: React$Node,
@@ -1870,12 +1753,13 @@ declare module 'material-ui/Radio/Radio' {
     type?: string,
     value?: string,
   |};
-  declare module.exports: React$ComponentType<RadioProps>;
+  declare var Radio: React$ComponentType<RadioProps>;
+  declare export default typeof Radio;
 }
 
-declare module 'material-ui/Radio/RadioGroup' {
-  import type { FormGroupProps } from 'material-ui/Form/FormGroup';
-  declare type RadioGroupProps = {|
+declare module '@material-ui/core/RadioGroup' {
+  import type { FormGroupProps } from '@material-ui/core/FormGroup';
+  declare export type RadioGroupProps = {|
     ...MUI$BaseProps,
     ...FormGroupProps,
     children?: React$Node,
@@ -1883,26 +1767,23 @@ declare module 'material-ui/Radio/RadioGroup' {
     onChange?: (event: SyntheticEvent<>, value: string) => void,
     value?: string
   |};
-  declare module.exports: React$ComponentType<RadioGroupProps>;
+  declare var RadioGroup: React$ComponentType<RadioGroupProps>;
+  declare export default typeof RadioGroup;
 }
 
-declare module 'material-ui/Select' {
-  declare module.exports: $Exports<'material-ui/Select/Select'>;
-}
-
-declare module 'material-ui/Select/Select' {
+declare module '@material-ui/core/Select' {
   import type { ChildrenArray } from 'react';
-  import type { InputProps } from 'material-ui/Input/Input';
-  import type { MenuProps } from 'material-ui/Menu/Menu';
+  import type { InputProps } from '@material-ui/core/Input';
+  import type { MenuProps } from '@material-ui/core/Menu';
 
-  declare type SelectClasses = {|
+  declare export type SelectClasses = {|
     root?: Object,
     select?: Object,
     selectMenu?: Object,
     disabled?: Object,
     icon?: Object,
   |};
-  declare type SelectProps = {|
+  declare export type SelectProps = {|
     ...MUI$BaseProps,
     ...InputProps,
     autoWidth?: boolean,
@@ -1922,11 +1803,12 @@ declare module 'material-ui/Select/Select' {
     renderValue?: (option: Object) => React$Node,
     value?: $ReadOnlyArray<string | number> | string | number
   |};
-  declare module.exports: React$ComponentType<SelectProps>;
+  declare var Select: React$ComponentType<SelectProps>;
+  declare export default typeof Select;
 }
 
-declare module 'material-ui/Select/SelectInput' {
-  declare module.exports: React$ComponentType<{|
+declare module '@material-ui/core/Select/SelectInput' {
+  declare var SelectInput: React$ComponentType<{|
     autoWidth: boolean,
     children?: React$Node,
     classes?: Object,
@@ -1945,28 +1827,23 @@ declare module 'material-ui/Select/SelectInput' {
     selectRef?: Function,
     value?: string | number | $ReadOnlyArray<string | number>
   |}>;
+
+  declare export default typeof SelectInput;
 }
 
-declare module 'material-ui/Snackbar' {
-  declare module.exports: {
-    default: $Exports<'material-ui/Snackbar/Snackbar'>,
-    SnackbarContent: $Exports<'material-ui/Snackbar/SnackbarContent'>
-  };
-}
-
-declare module 'material-ui/Snackbar/Snackbar' {
+declare module '@material-ui/core/Snackbar' {
   import type {
     TransitionDuration,
     TransitionCallback
-  } from 'material-ui/internal/transition';
-  import type { SnackbarContentProps } from 'material-ui/Snackbar/SnackbarContent';
+  } from '@material-ui/core/internal/transition';
+  import type { SnackbarContentProps } from '@material-ui/core/SnackbarContent';
 
-  declare type Origin = {
+  declare export type Origin = {
     horizontal?: 'left' | 'center' | 'right' | number,
     vertical?: 'top' | 'center' | 'bottom' | number
   };
 
-  declare type SnackbarClasses = {|
+  declare export type SnackbarClasses = {|
     root?: Object,
     anchorTopCenter?: Object,
     anchorBottomCenter?: Object,
@@ -1975,7 +1852,7 @@ declare module 'material-ui/Snackbar/Snackbar' {
     anchorTopLeft?: Object,
     anchorBottomLeft?: Object,
   |};
-  declare type SnackbarProps = {|
+  declare export type SnackbarProps = {|
     ...MUI$BaseProps,
     action?: React$Node,
     anchorOrigin?: Origin,
@@ -1994,21 +1871,22 @@ declare module 'material-ui/Snackbar/Snackbar' {
     onExiting?: TransitionCallback,
     open?: boolean,
     resumeHideDuration?: ?number,
-    SnackbarContentProps?: SnackbarContentProps,
-    transition?: React$ElementType,
+    ContentProps?: SnackbarContentProps,
+    TransitionComponent?: React$ElementType,
     transitionDuration?: TransitionDuration,
   |};
-  declare module.exports: React$ComponentType<SnackbarProps>;
+  declare var Snackbar: React$ComponentType<SnackbarProps>;
+  declare export default typeof Snackbar;
 }
 
-declare module 'material-ui/Snackbar/SnackbarContent' {
-  import type { PaperProps } from 'material-ui/Paper/Paper';
-  declare type SnackbarContentClasses = {|
+declare module '@material-ui/core/SnackbarContent' {
+  import type { PaperProps } from '@material-ui/core/Paper';
+  declare export type SnackbarContentClasses = {|
     root?: Object,
     message?: Object,
     action?: Object,
   |};
-  declare type SnackbarContentProps = {|
+  declare export type SnackbarContentProps = {|
     ...MUI$BaseProps,
     ...PaperProps,
     action?: React$Node,
@@ -2016,27 +1894,18 @@ declare module 'material-ui/Snackbar/SnackbarContent' {
     className?: string,
     message?: React$Node
   |};
-  declare module.exports: React$ComponentType<SnackbarContentProps>;
+  declare var SnackbarContent: React$ComponentType<SnackbarContentProps>;
+  declare export default typeof SnackbarContent;
 }
 
-declare module 'material-ui/Stepper' {
-  declare module.exports: {
-    default: $Exports<'material-ui/Stepper/Stepper'>,
-    Step: $Exports<'material-ui/Stepper/Step'>,
-    StepButton: $Exports<'material-ui/Stepper/StepButton'>,
-    StepContent: $Exports<'material-ui/Stepper/StepContent'>,
-    StepLabel: $Exports<'material-ui/Stepper/StepLabel'>
-  };
-}
-
-declare module 'material-ui/Stepper/Step' {
-  declare type StepClasses = {|
+declare module '@material-ui/core/Step' {
+  declare export type StepClasses = {|
     root?: Object,
     horizontal?: Object,
     vertical?: Object,
     alternativeLabel?: Object,
   |};
-  declare type StepProps = {|
+  declare export type StepProps = {|
     ...MUI$BaseProps,
     active?: boolean,
     children?: React$Node,
@@ -2045,16 +1914,17 @@ declare module 'material-ui/Stepper/Step' {
     completed?: boolean,
     disabled?: boolean,
   |};
-  declare module.exports: React$ComponentType<StepProps>;
+  declare var Step: React$ComponentType<StepProps>;
+  declare export default typeof Step;
 }
 
-declare module 'material-ui/Stepper/StepButton' {
-  import type { ButtonBaseProps } from 'material-ui/ButtonBase/ButtonBase';
+declare module '@material-ui/core/StepButton' {
+  import type { ButtonBaseProps } from '@material-ui/core/ButtonBase';
 
-  declare type StepButtonClasses = {|
+  declare export type StepButtonClasses = {|
     root?: Object,
   |};
-  declare type StepButtonProps = {|
+  declare export type StepButtonProps = {|
     ...MUI$BaseProps,
     ...ButtonBaseProps,
     children?: React$Node,
@@ -2063,35 +1933,37 @@ declare module 'material-ui/Stepper/StepButton' {
     icon?: React$Node,
     optional?: boolean,
   |}
-  declare module.exports: React$ComponentType<StepButtonProps>;
+  declare var StepButton: React$ComponentType<StepButtonProps>;
+  declare export default typeof StepButton;
 }
 
-declare module 'material-ui/Stepper/StepContent' {
-  import type { TransitionDuration } from 'material-ui/transitions/Collapse';
-  import type { Orientation } from 'material-ui/Stepper/Stepper';
+declare module '@material-ui/core/StepContent' {
+  import type { TransitionDuration } from '@material-ui/core/internal/transition';
+  import type { Orientation } from '@material-ui/core/Stepper';
 
-  declare type StepContentClasses = {|
+  declare export type StepContentClasses = {|
     root?: Object,
     last?: Object,
     transition?: Object,
   |};
-  declare type StepContentProps = {|
+  declare export type StepContentProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     className?: string,
     classes?: StepContentClasses,
-    transition?: React$ElementType,
+    TransitionComponent?: React$ElementType,
     transitionDuration?: TransitionDuration
   |};
-  declare module.exports: React$ComponentType<StepContentProps>;
+  declare var StepContent: React$ComponentType<StepContentProps>;
+  declare export default typeof StepContent;
 }
 
-declare module 'material-ui/Stepper/StepIcon' {
-  declare type StepIconClasses = {|
+declare module '@material-ui/core/StepIcon' {
+  declare export type StepIconClasses = {|
     root?: Object,
     completed?: Object,
   |};
-  declare type StepIconProps = {|
+  declare export type StepIconProps = {|
     ...MUI$BaseProps,
     active?: boolean,
     className?: string,
@@ -2099,13 +1971,14 @@ declare module 'material-ui/Stepper/StepIcon' {
     completed?: boolean,
     icon: React$Node,
   |};
-  declare module.exports: React$ComponentType<StepIconProps>;
+  declare var StepIcon: React$ComponentType<StepIconProps>;
+  declare export default typeof StepIcon;
 }
 
-declare module 'material-ui/Stepper/StepLabel' {
-  import type { Orientation } from 'material-ui/Stepper/Stepper';
+declare module '@material-ui/core/StepLabel' {
+  import type { Orientation } from '@material-ui/core/Stepper';
 
-  declare type StepLabelClasses = {|
+  declare export type StepLabelClasses = {|
     root?: Object,
     horizontal?: Object,
     vertical?: Object,
@@ -2119,7 +1992,7 @@ declare module 'material-ui/Stepper/StepLabel' {
     iconContainerNoAlternative?: Object,
     labelContainer?: Object,
   |};
-  declare type StepLabelProps = {|
+  declare export type StepLabelProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     classes?: StepLabelClasses,
@@ -2128,22 +2001,23 @@ declare module 'material-ui/Stepper/StepLabel' {
     icon?: React$Node,
     optional?: boolean,
   |};
-  declare module.exports: React$ComponentType<StepLabelProps>;
+  declare var StepLabel: React$ComponentType<StepLabelProps>;
+  declare export default typeof StepLabel;
 }
 
-declare module 'material-ui/Stepper/Stepper' {
+declare module '@material-ui/core/Stepper' {
   import type { ChildrenArray } from 'react';
-  import typeof Step from 'material-ui/Stepper/Step';
+  import typeof Step from '@material-ui/core/Step';
 
-  declare type Orientation = 'horizontal' | 'vertical';
+  declare export type Orientation = 'horizontal' | 'vertical';
 
-  declare type StepperClasses = {|
+  declare export type StepperClasses = {|
     root?: Object,
     horizontal?: Object,
     vertical?: Object,
     alternativeLabel?: Object,
   |};
-  declare type StepperProps = {|
+  declare export type StepperProps = {|
     ...MUI$BaseProps,
     activeStep?: number,
     alternativeLabel?: boolean,
@@ -2154,10 +2028,11 @@ declare module 'material-ui/Stepper/Stepper' {
     nonLinear?: boolean,
     orientation?: Orientation
   |};
-  declare module.exports: React$ComponentType<StepperProps>;
+  declare var Stepper: React$ComponentType<StepperProps>;
+  declare export default typeof Stepper;
 }
 
-declare module 'material-ui/styles/colorManipulator' {
+declare module '@material-ui/core/styles/colorManipulator' {
   declare module.exports: {
     convertColorToString: (color: Object) => any,
     convertHexToRGB: (color: string) => any,
@@ -2171,11 +2046,11 @@ declare module 'material-ui/styles/colorManipulator' {
   };
 }
 
-declare module 'material-ui/styles/createBreakpoints' {
-  declare type Breakpoint = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  declare type BreakpointValues = { [key: Breakpoint]: number };
+declare module '@material-ui/core/styles/createBreakpoints' {
+  declare export type Breakpoint = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  declare export type BreakpointValues = { [key: Breakpoint]: number };
 
-  declare type Breakpoints = {|
+  declare export type Breakpoints = {|
     keys: Breakpoint[];
     values: BreakpointValues;
     up: (key: Breakpoint | number) => string;
@@ -2191,12 +2066,12 @@ declare module 'material-ui/styles/createBreakpoints' {
   };
 }
 
-declare module 'material-ui/styles/createGenerateClassName' {
+declare module '@material-ui/core/styles/createGenerateClassName' {
   declare module.exports: () => any;
 }
 
-declare module 'material-ui/styles/createMixins' {
-  declare type Mixins = {|
+declare module '@material-ui/core/styles/createMixins' {
+  declare export type Mixins = {|
     gutters: (styles: Object) => Object;
     toolbar: Object;
   |};
@@ -2208,17 +2083,17 @@ declare module 'material-ui/styles/createMixins' {
   ) => any;
 }
 
-declare module 'material-ui/styles/createMuiTheme' {
-  import type { Breakpoints } from 'material-ui/styles/createBreakpoints';
-  import type { Mixins } from 'material-ui/styles/createMixins';
-  import type { Palette } from 'material-ui/styles/createPalette';
-  import type { Shadows } from 'material-ui/styles/shadows';
-  import type { Spacing } from 'material-ui/styles/spacing';
-  import type { Transitions } from 'material-ui/styles/transitions';
-  import type { Typography } from 'material-ui/styles/createTypography';
-  import type { ZIndex } from 'material-ui/styles/zIndex';
+declare module '@material-ui/core/styles/createMuiTheme' {
+  import type { Breakpoints } from '@material-ui/core/styles/createBreakpoints';
+  import type { Mixins } from '@material-ui/core/styles/createMixins';
+  import type { Palette } from '@material-ui/core/styles/createPalette';
+  import type { Shadows } from '@material-ui/core/styles/shadows';
+  import type { Spacing } from '@material-ui/core/styles/spacing';
+  import type { Transitions } from '@material-ui/core/styles/transitions';
+  import type { Typography } from '@material-ui/core/styles/createTypography';
+  import type { ZIndex } from '@material-ui/core/styles/zIndex';
 
-  declare type Direction = 'ltr' | 'rtl';
+  declare export type Direction = 'ltr' | 'rtl';
   declare export type Theme = {|
     direction: Direction;
     palette: Palette;
@@ -2235,16 +2110,16 @@ declare module 'material-ui/styles/createMuiTheme' {
   declare module.exports: (options: Object) => Theme;
 }
 
-declare module 'material-ui/styles/createPalette' {
+declare module '@material-ui/core/styles/createPalette' {
 
-  declare type CommonColors = {|
+  declare export type CommonColors = {|
     black: string;
     white: string;
   |};
 
-  declare type PaletteType = 'light' | 'dark';
+  declare export type PaletteType = 'light' | 'dark';
 
-  declare type Color = {|
+  declare export type Color = {|
     '50': string;
     '100': string;
     '200': string;
@@ -2260,14 +2135,14 @@ declare module 'material-ui/styles/createPalette' {
     A400: string;
     A700: string;
   |};
-  declare type TypeText = {|
+  declare export type TypeText = {|
     primary: string;
     secondary: string;
     disabled: string;
     hint: string;
   |};
 
-  declare type TypeAction = {|
+  declare export type TypeAction = {|
     active: string;
     hover: string;
     selected: string;
@@ -2275,25 +2150,25 @@ declare module 'material-ui/styles/createPalette' {
     disabledBackground: string;
   |};
 
-  declare type TypeBackground = {|
+  declare export type TypeBackground = {|
     default: string;
     paper: string;
   |}
 
-  declare type PaletteColor = {|
+  declare export type PaletteColor = {|
     light: string;
     main: string;
     dark: string;
     contrastText: string;
   |}
 
-  declare type TypeObject = {|
+  declare export type TypeObject = {|
     text: TypeText;
     action: TypeAction;
     background: TypeBackground;
   |}
 
-  declare type Palette = {|
+  declare export type Palette = {|
     common: CommonColors;
     type: PaletteType;
     contrastThreshold: number;
@@ -2316,8 +2191,8 @@ declare module 'material-ui/styles/createPalette' {
   };
 }
 
-declare module 'material-ui/styles/createTypography' {
-  declare type TextStyle =
+declare module '@material-ui/core/styles/createTypography' {
+  declare export type TextStyle =
     | 'display1'
     | 'display2'
     | 'display3'
@@ -2329,9 +2204,9 @@ declare module 'material-ui/styles/createTypography' {
     | 'body2'
     | 'caption';
 
-  declare type Style = TextStyle | 'button';
+  declare export type Style = TextStyle | 'button';
 
-  declare type FontStyle = {|
+  declare export type FontStyle = {|
     fontFamily: string,
     fontSize: string,
     fontWeightLight: number,
@@ -2340,7 +2215,7 @@ declare module 'material-ui/styles/createTypography' {
     htmlFontSize?: number;
   |}
 
-  declare type TypographyStyle = {|
+  declare export type TypographyStyle = {|
     color?: string,
     fontFamily: string,
     fontSize: string,
@@ -2350,11 +2225,11 @@ declare module 'material-ui/styles/createTypography' {
     textTransform?: string,
   |};
 
-  declare type TypographyUtils = {
+  declare export type TypographyUtils = {
     pxToRem: (px: number) => string;
   }
 
-  declare type Typography = {
+  declare export type Typography = {
     ...FontStyle,
     ...TypographyUtils,
     [key: Style]: TypographyStyle,
@@ -2366,21 +2241,21 @@ declare module 'material-ui/styles/createTypography' {
   ) => any;
 }
 
-declare module 'material-ui/styles/getStylesCreator' {
+declare module '@material-ui/core/styles/getStylesCreator' {
   declare module.exports: (stylesOrCreator: Object | (Object => Object)) => any;
 }
 
-declare module 'material-ui/styles' {
+declare module '@material-ui/core/styles' {
   declare module.exports: {
-    MuiThemeProvider: $Exports<'material-ui/styles/MuiThemeProvider'>,
-    withStyles: $Exports<'material-ui/styles/withStyles'>,
-    withTheme: $Exports<'material-ui/styles/withTheme'>,
-    createMuiTheme: $Exports<'material-ui/styles/createMuiTheme'>
+    MuiThemeProvider: $Exports<'@material-ui/core/styles/MuiThemeProvider'>,
+    withStyles: $Exports<'@material-ui/core/styles/withStyles'>,
+    withTheme: $Exports<'@material-ui/core/styles/withTheme'>,
+    createMuiTheme: $Exports<'@material-ui/core/styles/createMuiTheme'>
   };
 }
 
-declare module 'material-ui/styles/MuiThemeProvider' {
-  declare type MuiThemeProviderProps = {|
+declare module '@material-ui/core/styles/MuiThemeProvider' {
+  declare export type MuiThemeProviderProps = {|
     ...MUI$BaseProps,
     children: React$Node,
     disableStylesGeneration?: boolean,
@@ -2390,8 +2265,8 @@ declare module 'material-ui/styles/MuiThemeProvider' {
   declare module.exports: React$ComponentType<MuiThemeProviderProps>;
 }
 
-declare module 'material-ui/styles/shadows' {
-  declare type Shadows = [
+declare module '@material-ui/core/styles/shadows' {
+  declare export type Shadows = [
     'none',
     string,
     string,
@@ -2422,30 +2297,30 @@ declare module 'material-ui/styles/shadows' {
   declare module.exports: Array<any>;
 }
 
-declare module 'material-ui/styles/spacing' {
-  declare type Spacing = {|
+declare module '@material-ui/core/styles/spacing' {
+  declare export type Spacing = {|
     unit: number;
   |};
 
   declare module.exports: Object;
 }
 
-declare module 'material-ui/styles/themeListener' {
+declare module '@material-ui/core/styles/themeListener' {
   declare module.exports: {
     CHANNEL: string,
     default: Object
   };
 }
 
-declare module 'material-ui/styles/transitions' {
-  declare type Easing = {|
+declare module '@material-ui/core/styles/transitions' {
+  declare export type Easing = {|
     easeInOut: string;
     easeOut: string;
     easeIn: string;
     sharp: string;
   |};
 
-  declare type Duration = {|
+  declare export type Duration = {|
     shortest: number;
     shorter: number;
     short: number;
@@ -2455,7 +2330,7 @@ declare module 'material-ui/styles/transitions' {
     leavingScreen: number;
   |};
 
-  declare type Transitions = {|
+  declare export type Transitions = {|
     easing: Easing;
     duration: Duration;
     create(
@@ -2475,8 +2350,8 @@ declare module 'material-ui/styles/transitions' {
   };
 }
 
-declare module 'material-ui/styles/withStyles' {
-  declare type Options = {
+declare module '@material-ui/core/styles/withStyles' {
+  declare export type Options = {
     flip?: boolean,
     withTheme?: boolean,
     name?: string,
@@ -2504,14 +2379,14 @@ declare module 'material-ui/styles/withStyles' {
   ) => React$ComponentType<OwnProps>;
 }
 
-declare module 'material-ui/styles/withTheme' {
+declare module '@material-ui/core/styles/withTheme' {
   declare module.exports: () => <Props: {}>(
     Component: React$ComponentType<Props>
   ) => React$ComponentType<Props>;
 }
 
-declare module 'material-ui/styles/zIndex' {
-  declare type ZIndex = {|
+declare module '@material-ui/core/styles/zIndex' {
+  declare export type ZIndex = {|
     mobileStepper: number;
     appBar: number;
     drawer: number;
@@ -2523,57 +2398,53 @@ declare module 'material-ui/styles/zIndex' {
   declare module.exports: Object;
 }
 
-declare module 'material-ui/svg-icons/ArrowDownward' {
+declare module '@material-ui/icons/ArrowDownward' {
   declare module.exports: React$ComponentType<Object>;
 }
 
-declare module 'material-ui/svg-icons/ArrowDropDown' {
+declare module '@material-ui/icons/ArrowDropDown' {
   declare module.exports: React$ComponentType<Object>;
 }
 
-declare module 'material-ui/svg-icons/Cancel' {
+declare module '@material-ui/icons/Cancel' {
   declare module.exports: React$ComponentType<Object>;
 }
 
-declare module 'material-ui/svg-icons/CheckBox' {
+declare module '@material-ui/icons/CheckBox' {
   declare module.exports: React$ComponentType<Object>;
 }
 
-declare module 'material-ui/svg-icons/CheckBoxOutlineBlank' {
+declare module '@material-ui/icons/CheckBoxOutlineBlank' {
   declare module.exports: React$ComponentType<Object>;
 }
 
-declare module 'material-ui/svg-icons/CheckCircle' {
+declare module '@material-ui/icons/CheckCircle' {
   declare module.exports: React$ComponentType<Object>;
 }
 
-declare module 'material-ui/svg-icons/IndeterminateCheckBox' {
+declare module '@material-ui/icons/IndeterminateCheckBox' {
   declare module.exports: React$ComponentType<Object>;
 }
 
-declare module 'material-ui/svg-icons/KeyboardArrowLeft' {
+declare module '@material-ui/icons/KeyboardArrowLeft' {
   declare module.exports: React$ComponentType<Object>;
 }
 
-declare module 'material-ui/svg-icons/KeyboardArrowRight' {
+declare module '@material-ui/icons/KeyboardArrowRight' {
   declare module.exports: React$ComponentType<Object>;
 }
 
-declare module 'material-ui/svg-icons/RadioButtonChecked' {
+declare module '@material-ui/icons/RadioButtonChecked' {
   declare module.exports: React$ComponentType<Object>;
 }
 
-declare module 'material-ui/svg-icons/RadioButtonUnchecked' {
+declare module '@material-ui/icons/RadioButtonUnchecked' {
   declare module.exports: React$ComponentType<Object>;
 }
 
-declare module 'material-ui/SvgIcon' {
-  declare module.exports: $Exports<'material-ui/SvgIcon/SvgIcon'>;
-}
-
-declare module 'material-ui/SvgIcon/SvgIcon' {
-  declare type Color = 'action' | 'disabled' | 'error' | 'inherit' | 'primary' | 'secondary';
-  declare type SvgIconClasses = {|
+declare module '@material-ui/core/SvgIcon' {
+  declare export type Color = 'action' | 'disabled' | 'error' | 'inherit' | 'primary' | 'secondary';
+  declare export type SvgIconClasses = {|
     root?: Object,
     colorPrimary?: Object,
     colorSecondary?: Object,
@@ -2582,7 +2453,7 @@ declare module 'material-ui/SvgIcon/SvgIcon' {
     colorError?: Object,
     fontSize?: Object,
   |};
-  declare type SvgIconProps = {|
+  declare export type SvgIconProps = {|
     ...MUI$BaseProps,
     children: React$Node,
     classes?: SvgIconClasses,
@@ -2593,15 +2464,12 @@ declare module 'material-ui/SvgIcon/SvgIcon' {
     titleAccess?: string,
     viewBox?: string,
   |};
-  declare module.exports: React$ComponentType<SvgIconProps>;
+  declare var SvgIcon: React$ComponentType<SvgIconProps>;
+  declare export default typeof SvgIcon;
 }
 
-declare module 'material-ui/Switch' {
-  declare module.exports: $Exports<'material-ui/Switch/Switch'>;
-}
-
-declare module 'material-ui/Switch/Switch' {
-  declare type SwitchClasses = {|
+declare module '@material-ui/core/Switch' {
+  declare export type SwitchClasses = {|
     root?: Object,
     bar?: Object,
     icon?: Object,
@@ -2612,7 +2480,7 @@ declare module 'material-ui/Switch/Switch' {
     checkedSecondary?: Object,
     disabled?: Object,
   |};
-  declare type SwitchProps = {|
+  declare export type SwitchProps = {|
     ...MUI$BaseProps,
     checked?: boolean | string,
     checkedIcon?: React$Node,
@@ -2630,51 +2498,41 @@ declare module 'material-ui/Switch/Switch' {
     type?: string,
     value?: string,
   |};
-  declare module.exports: React$ComponentType<SwitchProps>;
+  declare var Switch: React$ComponentType<SwitchProps>;
+  declare export default typeof Switch;
 }
 
-declare module 'material-ui/Table' {
-  declare module.exports: {
-    default: $Exports<'material-ui/Table/Table'>,
-    TableBody: $Exports<'material-ui/Table/TableBody'>,
-    TableCell: $Exports<'material-ui/Table/TableCell'>,
-    TableFooter: $Exports<'material-ui/Table/TableFooter'>,
-    TableHead: $Exports<'material-ui/Table/TableHead'>,
-    TablePagination: $Exports<'material-ui/Table/TablePagination'>,
-    TableRow: $Exports<'material-ui/Table/TableRow'>,
-    TableSortLabel: $Exports<'material-ui/Table/TableSortLabel'>
-  };
-}
-
-declare module 'material-ui/Table/Table' {
-  declare type TableClasses = {|
+declare module '@material-ui/core/Table' {
+  declare export type TableClasses = {|
     root?: Object,
   |};
-  declare type TableProps = {|
+  declare export type TableProps = {|
     ...MUI$BaseProps,
     children: React$Node,
     classes?: TableClasses,
     className?: string,
     component?: React$ElementType
   |};
-  declare module.exports: React$ComponentType<TableProps>;
+  declare var Table: React$ComponentType<TableProps>;
+  declare export default typeof Table;
 }
 
-declare module 'material-ui/Table/TableBody' {
-  declare type TableBodyProps = {|
+declare module '@material-ui/core/TableBody' {
+  declare export type TableBodyProps = {|
     ...MUI$BaseProps,
     children: React$Node,
     component?: React$ElementType
   |};
-  declare module.exports: React$ComponentType<TableBodyProps>;
+  declare var TableBody: React$ComponentType<TableBodyProps>;
+  declare export default typeof TableBody;
 }
 
-declare module 'material-ui/Table/TableCell' {
-  declare type Padding = 'default' | 'checkbox' | 'dense' | 'none';
-  declare type Direction = 'asc' | 'desc' | false;
-  declare type Variant = 'head' | 'body' | 'footer';
+declare module '@material-ui/core/TableCell' {
+  declare export type Padding = 'default' | 'checkbox' | 'dense' | 'none';
+  declare export type Direction = 'asc' | 'desc' | false;
+  declare export type Variant = 'head' | 'body' | 'footer';
 
-  declare type TableCellClasses = {|
+  declare export type TableCellClasses = {|
     root?: Object,
     numeric?: Object,
     typeHead?: Object,
@@ -2684,7 +2542,7 @@ declare module 'material-ui/Table/TableCell' {
     paddingDense?: Object,
     paddingCheckbox?: Object,
   |};
-  declare type TableCellProps = {|
+  declare export type TableCellProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     classes?: TableCellClasses,
@@ -2696,39 +2554,42 @@ declare module 'material-ui/Table/TableCell' {
     sortDirection?: Direction,
     variant?: Variant,
   |};
-  declare module.exports: React$ComponentType<TableCellProps>;
+  declare var TableCell: React$ComponentType<TableCellProps>;
+  declare export default typeof TableCell;
 }
 
-declare module 'material-ui/Table/TableFooter' {
-  declare type TableFooterProps = {|
+declare module '@material-ui/core/TableFooter' {
+  declare export type TableFooterProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     component?: React$ElementType,
   |};
-  declare module.exports: React$ComponentType<TableFooterProps>;
+  declare var TableFooter: React$ComponentType<TableFooterProps>;
+  declare export default typeof TableFooter;
 }
 
-declare module 'material-ui/Table/TableHead' {
-  declare type TableHeadProps = {|
+declare module '@material-ui/core/TableHead' {
+  declare export type TableHeadProps = {|
     ...MUI$BaseProps,
     children: React$Node,
     component?: React$ElementType
   |};
-  declare module.exports: React$ComponentType<TableHeadProps>;
+  declare var TableHead: React$ComponentType<TableHeadProps>;
+  declare export default typeof TableHead;
 }
 
-declare module 'material-ui/Table/TablePagination' {
-  import type { IconButtonProps } from 'material-ui/IconButton/IconButton';
-  declare type LabelDisplayedRowsArgs = {
+declare module '@material-ui/core/TablePagination' {
+  import type { IconButtonProps } from '@material-ui/core/IconButton';
+  declare export type LabelDisplayedRowsArgs = {
     from: number,
     to: number,
     count: number,
   };
-  declare type LabelDisplayedRows = (
+  declare export type LabelDisplayedRows = (
     paginationInfo: LabelDisplayedRowsArgs
   ) => Node;
 
-  declare type TablePaginationClasses = {|
+  declare export type TablePaginationClasses = {|
     root?: Object,
     toolbar?: Object,
     spacer?: Object,
@@ -2739,9 +2600,9 @@ declare module 'material-ui/Table/TablePagination' {
     selectIcon?: Object,
     actions?: Object,
   |};
-  declare type TablePaginationProps = {|
+  declare export type TablePaginationProps = {|
     ...MUI$BaseProps,
-    Actions?: React$ElementType,
+    ActionsComponent?: React$ElementType,
     backIconButtonProps?: IconButtonProps,
     classes?: TablePaginationClasses,
     component?: React$ElementType,
@@ -2755,18 +2616,19 @@ declare module 'material-ui/Table/TablePagination' {
     rowsPerPage: number,
     rowsPerPageOptions?: Array<number>
   |};
-  declare module.exports: React$ComponentType<TablePaginationProps>;
+  declare var TablePagination: React$ComponentType<TablePaginationProps>;
+  declare export default typeof TablePagination;
 }
 
-declare module 'material-ui/Table/TableRow' {
-  declare type TableRowClasses = {|
+declare module '@material-ui/core/TableRow' {
+  declare export type TableRowClasses = {|
     root?: Object,
     typeHead?: Object,
     typeFooter?: Object,
     selected?: Object,
     hover?: Object,
   |};
-  declare type TableRowProps = {|
+  declare export type TableRowProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     classes?: TableRowClasses,
@@ -2775,21 +2637,22 @@ declare module 'material-ui/Table/TableRow' {
     hover?: boolean,
     selected?: boolean
   |};
-  declare module.exports: React$ComponentType<TableRowProps>;
+  declare var TableRow: React$ComponentType<TableRowProps>;
+  declare export default typeof TableRow;
 }
 
-declare module 'material-ui/Table/TableSortLabel' {
-  import type { ButtonBaseProps } from 'material-ui/ButtonBase/ButtonBase';
-  declare type Direction = 'asc' | 'desc';
+declare module '@material-ui/core/TableSortLabel' {
+  import type { ButtonBaseProps } from '@material-ui/core/ButtonBase';
+  declare export type Direction = 'asc' | 'desc';
 
-  declare type TableSortLabelClasses = {|
+  declare export type TableSortLabelClasses = {|
     root?: Object,
     active?: Object,
     icon?: Object,
     desc?: Object,
     asc?: Object,
   |};
-  declare type TableSortLabelProps = {|
+  declare export type TableSortLabelProps = {|
     ...MUI$BaseProps,
     ...ButtonBaseProps,
     active?: boolean,
@@ -2798,19 +2661,13 @@ declare module 'material-ui/Table/TableSortLabel' {
     className?: string,
     direction?: Direction
   |};
-  declare module.exports: React$ComponentType<TableSortLabelProps>;
+  declare var TableSortLabel: React$ComponentType<TableSortLabelProps>;
+  declare export default typeof TableSortLabel;
 }
 
-declare module 'material-ui/Tabs' {
-  declare module.exports: {
-    default: $Exports<'material-ui/Tabs/Tabs'>,
-    Tab: $Exports<'material-ui/Tabs/Tab'>
-  };
-}
-
-declare module 'material-ui/Tabs/Tab' {
-  import type { ButtonBaseProps } from 'material-ui/ButtonBase/ButtonBase';
-  declare type TabClasses = {|
+declare module '@material-ui/core/Tab' {
+  import type { ButtonBaseProps } from '@material-ui/core/ButtonBase';
+  declare export type TabClasses = {|
     root?: Object,
     rootLabelIcon?: Object,
     rootInherit?: Object,
@@ -2828,7 +2685,7 @@ declare module 'material-ui/Tabs/Tab' {
     label?: Object,
     labelWrapped?: Object,
   |};
-  declare type TabProps = {|
+  declare export type TabProps = {|
     ...MUI$BaseProps,
     ...ButtonBaseProps,
     classes?: TabClasses,
@@ -2838,15 +2695,16 @@ declare module 'material-ui/Tabs/Tab' {
     label?: React$Node,
     value?: any,
   |};
-  declare module.exports: React$ComponentType<TabProps>;
+  declare var Tab: React$ComponentType<TabProps>;
+  declare export default typeof Tab;
 }
 
-declare module 'material-ui/Tabs/Tabs' {
-  declare type IndicatorColor = 'secondary' | 'primary' | string;
-  declare type ScrollButtons = 'auto' | 'on' | 'off';
-  declare type TextColor = 'secondary' | 'primary' | 'inherit';
+declare module '@material-ui/core/Tabs' {
+  declare export type IndicatorColor = 'secondary' | 'primary' | string;
+  declare export type ScrollButtons = 'auto' | 'on' | 'off';
+  declare export type TextColor = 'secondary' | 'primary' | 'inherit';
 
-  declare type TabsClasses = {|
+  declare export type TabsClasses = {|
     root?: Object,
     flexContainer?: Object,
     scrollingContainer?: Object,
@@ -2855,7 +2713,7 @@ declare module 'material-ui/Tabs/Tabs' {
     centered?: Object,
     buttonAuto?: Object,
   |};
-  declare type TabsProps = {|
+  declare export type TabsProps = {|
     ...MUI$BaseProps,
     action?: (actions: Object) => void,
     centered?: boolean,
@@ -2867,25 +2725,22 @@ declare module 'material-ui/Tabs/Tabs' {
     onChange?: (event: SyntheticEvent<>, value: any) => void,
     scrollable?: boolean,
     scrollButtons?: ScrollButtons,
-    TabScrollButton?: React$ComponentType<>,
+    ScrollButtonComponent?: React$ComponentType<>,
     textColor?: TextColor,
     value: any,
   |};
-  declare module.exports: React$ComponentType<TabsProps>;
+  declare var Tabs: React$ComponentType<TabsProps>;
+  declare export default typeof Tabs;
 }
 
-declare module 'material-ui/TextField' {
-  declare module.exports: $Exports<'material-ui/TextField/TextField'>;
-}
+declare module '@material-ui/core/TextField' {
+  import type { FormControlProps } from '@material-ui/core/FormControl';
+  import type { FormHelperTextProps } from '@material-ui/core/FormHelperText';
+  import type { InputProps } from '@material-ui/core/Input';
+  import type { InputLabelProps } from '@material-ui/core/InputLabel';
+  import type { SelectProps } from '@material-ui/core/Select';
 
-declare module 'material-ui/TextField/TextField' {
-  import type { FormControlProps } from 'material-ui/Form/FormControl';
-  import type { FormHelperTextProps } from 'material-ui/Form/FormHelperText';
-  import type { InputProps } from 'material-ui/Input/Input';
-  import type { InputLabelProps } from 'material-ui/Input/InputLabel';
-  import type { SelectProps } from 'material-ui/Select/Select';
-
-  declare type TextFieldProps = {|
+  declare export type TextFieldProps = {|
     ...MUI$BaseProps,
     ...FormControlProps,
     autoComplete?: string,
@@ -2915,34 +2770,28 @@ declare module 'material-ui/TextField/TextField' {
     type?: string,
     value?: string | number | Array<string | number>,
   |};
-  declare module.exports: React$ComponentType<TextFieldProps>;
+  declare var TextField: React$ComponentType<TextFieldProps>;
+  declare export default typeof TextField;
 }
 
-declare module 'material-ui/Toolbar' {
-  declare module.exports: $Exports<'material-ui/Toolbar/Toolbar'>;
-}
-
-declare module 'material-ui/Toolbar/Toolbar' {
-  declare type ToolbarClasses = {|
+declare module '@material-ui/core/Toolbar' {
+  declare export type ToolbarClasses = {|
     root?: Object,
     gutters?: Object,
   |};
-  declare type ToolbarProps = {|
+  declare export type ToolbarProps = {|
     ...MUI$BaseProps,
     children?: React$Node,
     classes?: ToolbarClasses,
     className?: string,
     disableGutters?: boolean
   |};
-  declare module.exports: React$ComponentType<ToolbarProps>;
+  declare var Toolbar: React$ComponentType<ToolbarProps>;
+  declare export default typeof Toolbar;
 }
 
-declare module 'material-ui/Tooltip' {
-  declare module.exports: $Exports<'material-ui/Tooltip/Tooltip'>;
-}
-
-declare module 'material-ui/Tooltip/Tooltip' {
-  declare type Placement =
+declare module '@material-ui/core/Tooltip' {
+  declare export type Placement =
     | 'bottom-end'
     | 'bottom-start'
     | 'bottom'
@@ -2956,7 +2805,7 @@ declare module 'material-ui/Tooltip/Tooltip' {
     | 'top-start'
     | 'top';
 
-  declare type TooltipClasses = {|
+  declare export type TooltipClasses = {|
     root?: Object,
     popper?: Object,
     popperClose?: Object,
@@ -2967,7 +2816,7 @@ declare module 'material-ui/Tooltip/Tooltip' {
     tooltipBottom?: Object,
     tooltipOpen?: Object,
   |};
-  declare type TooltipProps = {|
+  declare export type TooltipProps = {|
     ...MUI$BaseProps,
     children: React$Element<any>,
     classes?: TooltipClasses,
@@ -2985,24 +2834,25 @@ declare module 'material-ui/Tooltip/Tooltip' {
     PopperProps?: Object,
     title: React$Node,
   |};
-  declare module.exports: React$ComponentType<TooltipProps>;
+  declare var Tooltip: React$ComponentType<TooltipProps>;
+  declare export default typeof Tooltip;
 }
 
-declare module 'material-ui/transitions/Collapse' {
-  import type { TransitionProps } from 'material-ui/internal/transition';
+declare module '@material-ui/core/Collapse' {
+  import type { TransitionProps } from '@material-ui/core/internal/transition';
 
-  declare type TransitionDuration =
+  declare export type TransitionDuration =
     | number
     | { enter?: number, exit?: number }
     | 'auto';
 
-  declare type CollapseClasses = {|
+  declare export type CollapseClasses = {|
     container?: Object,
     entered?: Object,
     wrapper?: Object,
     wrapperInner?: Object,
   |};
-  declare type CollapseProps = {|
+  declare export type CollapseProps = {|
     ...MUI$BaseProps,
     ...TransitionProps,
     children?: React$Node,
@@ -3013,86 +2863,77 @@ declare module 'material-ui/transitions/Collapse' {
     in?: boolean,
     timeout?: TransitionDuration,
   |};
-  declare module.exports: React$ComponentType<CollapseProps>;
+  declare var Collapse: React$ComponentType<CollapseProps>;
+  declare export default typeof Collapse;
 }
 
-declare module 'material-ui/transitions/Fade' {
+declare module '@material-ui/core/Fade' {
   import type {
     TransitionProps,
-  } from 'material-ui/internal/transition';
+  } from '@material-ui/core/internal/transition';
 
-  declare type FadeProps = {|
+  declare export type FadeProps = {|
     ...MUI$BaseProps,
     ...TransitionProps,
     children?: React$Element<any>,
     in?: boolean,
   |};
-  declare module.exports: React$ComponentType<FadeProps>;
+  declare var Fade: React$ComponentType<FadeProps>;
+  declare export default typeof Fade;
 }
 
-declare module 'material-ui/transitions/Grow' {
+declare module '@material-ui/core/Grow' {
   import type {
     TransitionProps,
-  } from 'material-ui/internal/transition';
+  } from '@material-ui/core/internal/transition';
 
-  declare type TransitionDuration =
+  declare export type TransitionDuration =
     | number
     | { enter?: number, exit?: number }
     | 'auto';
 
-  declare type GrowProps = {|
+  declare export type GrowProps = {|
     ...MUI$BaseProps,
     ...TransitionProps,
     children?: React$Element<any>,
     in?: boolean,
     timeout?: TransitionDuration
   |};
-  declare module.exports: React$ComponentType<GrowProps>;
+  declare var Grow: React$ComponentType<GrowProps>;
+  declare export default typeof Grow;
 }
 
-declare module 'material-ui/transitions' {
-  declare module.exports: {
-    Slide: $Exports<'material-ui/transitions/Slide'>,
-    Grow: $Exports<'material-ui/transitions/Grow'>,
-    Fade: $Exports<'material-ui/transitions/Fade'>,
-    Collapse: $Exports<'material-ui/transitions/Collapse'>
-  };
-}
+declare module '@material-ui/core/Slide' {
+  import type { TransitionProps } from '@material-ui/core/internal/transition';
 
-declare module 'material-ui/transitions/Slide' {
-  import type { TransitionProps } from 'material-ui/internal/transition';
-
-  declare type Direction = 'left' | 'right' | 'up' | 'down';
+  declare export type Direction = 'left' | 'right' | 'up' | 'down';
 
   declare function setTranslateValue(
     props: Object,
     node: HTMLElement | Object
   ): void;
 
-  declare type SlideProps = {|
+  declare export type SlideProps = {|
     ...MUI$BaseProps,
     ...TransitionProps,
     children?: React$Node,
     direction?: Direction,
     in?: boolean,
   |};
-  declare module.exports: React$ComponentType<SlideProps>;
+  declare var Slide: React$ComponentType<SlideProps>;
+  declare export default typeof Slide;
 }
 
-declare module 'material-ui/Typography' {
-  declare module.exports: $Exports<'material-ui/Typography/Typography'>;
-}
-
-declare module 'material-ui/Typography/Typography' {
-  declare type Align = 'inherit' | 'left' | 'center' | 'right' | 'justify';
-  declare type Color =
+declare module '@material-ui/core/Typography' {
+  declare export type Align = 'inherit' | 'left' | 'center' | 'right' | 'justify';
+  declare export type Color =
     | 'inherit'
     | 'primary'
     | 'secondary'
     | 'secondary'
     | 'error'
     | 'default';
-  declare type Variant =
+  declare export type Variant =
     | 'display4'
     | 'display3'
     | 'display2'
@@ -3105,7 +2946,7 @@ declare module 'material-ui/Typography/Typography' {
     | 'caption'
     | 'button';
 
-  declare type TypographyClasses = {|
+  declare export type TypographyClasses = {|
     root?: Object,
     display4?: Object,
     display3?: Object,
@@ -3131,7 +2972,7 @@ declare module 'material-ui/Typography/Typography' {
     colorTextSecondary?: Object,
     colorError?: Object,
   |};
-  declare type TypographyProps = {|
+  declare export type TypographyProps = {|
     ...MUI$BaseProps,
     align?: Align,
     children?: React$Node,
@@ -3145,37 +2986,43 @@ declare module 'material-ui/Typography/Typography' {
     paragraph?: boolean,
     variant?: Variant,
   |};
-  declare module.exports: React$ComponentType<TypographyProps>;
+
+  declare var Typography: React$ComponentType<TypographyProps>
+
+  declare export default typeof Typography;
 }
 
-declare module 'material-ui/utils/addEventListener' {
-  declare module.exports: (
-    node: React$Node,
-    event: string,
-    handler: EventHandler,
-    capture?: boolean
-  ) => any;
-}
+// declare module '@material-ui/core/utils/addEventListener' {
+//   declare module.exports: (
+//     node: React$Node,
+//     event: string,
+//     handler: EventHandler,
+//     capture?: boolean
+//   ) => any;
+// }
 
-declare module 'material-ui/utils/ClickAwayListener' {
-  declare type ClickAwayListenerProps = {|
+declare module '@material-ui/core/ClickAwayListener' {
+  declare export type ClickAwayListenerProps = {|
     ...MUI$BaseProps,
     children: React$Node,
     onClickAway: (event: SyntheticEvent<>) => void
   |};
-  declare module.exports: React$ComponentType<ClickAwayListenerProps>;
+  declare var ClickAwayListener: React$ComponentType<ClickAwayListenerProps>;
+  declare export default typeof ClickAwayListener;
 }
 
-declare module 'material-ui/utils/exactProp' {
-  declare module.exports: (
+declare module '@material-ui/core/utils/exactProp' {
+  declare function exactProp (
     propTypes: Object,
     componentNameInError: string
-  ) => any;
+  ): any;
+
+  declare export default typeof exactProp;
 }
 
-declare module 'material-ui/utils/helpers' {
+declare module '@material-ui/core/utils/helpers' {
   declare module.exports: {
-    capitalizeFirstLetter: Function,
+    capitalize: Function,
     contains: (obj: Object, pred: Object) => any,
     findIndex: (arr: Array<any>, pred: any) => any,
     find: (arr: Array<any>, pred: any) => any,
@@ -3183,23 +3030,23 @@ declare module 'material-ui/utils/helpers' {
   };
 }
 
-declare module 'material-ui/utils/keyboardFocus' {
-  declare module.exports: {
-    focusKeyPressed: Function,
-    detectKeyboardFocus: Function,
-    listenForFocusKeys: Function
-  };
-}
+// declare module '@material-ui/core/utils/keyboardFocus' {
+//   declare module.exports: {
+//     focusKeyPressed: Function,
+//     detectKeyboardFocus: Function,
+//     listenForFocusKeys: Function
+//   };
+// }
 
-declare module 'material-ui/utils/manageAriaHidden' {
-  declare module.exports: {
-    ariaHidden: Function,
-    hideSiblings: Function,
-    showSiblings: Function
-  };
-}
+// declare module '@material-ui/core/utils/manageAriaHidden' {
+//   declare module.exports: {
+//     ariaHidden: Function,
+//     hideSiblings: Function,
+//     showSiblings: Function
+//   };
+// }
 
-declare module 'material-ui/utils/reactHelpers' {
+declare module '@material-ui/core/utils/reactHelpers' {
   declare module.exports: {
     cloneChildrenWithClassName: (
       children?: React$Node,
@@ -3210,633 +3057,625 @@ declare module 'material-ui/utils/reactHelpers' {
   };
 }
 
-declare module 'material-ui/utils/requirePropFactory' {
-  declare module.exports: (componentNameInError: string) => any;
+declare module '@material-ui/core/utils/requirePropFactory' {
+  declare function requirePropFactory (componentNameInError: string): any;
+
+  declare export default typeof requirePropFactory;
 }
 
-declare module 'material-ui/utils/withWidth' {
-  declare module.exports: (
+declare module '@material-ui/core/withWidth' {
+  declare function withWidth (
     options: Object
-  ) => <Props: {}>(
+  ): <Props: {}>(
     Component: React$ComponentType<Props>
   ) => React$ComponentType<Props>;
+
+  declare export default typeof withWidth;
 }
 
 // Filename aliases
-declare module 'material-ui/AppBar/AppBar.js' {
-  declare module.exports: $Exports<'material-ui/AppBar/AppBar'>;
+declare module '@material-ui/core/AppBar.js' {
+  declare module.exports: $Exports<'@material-ui/core/AppBar'>;
 }
-declare module 'material-ui/AppBar/index.js' {
-  declare module.exports: $Exports<'material-ui/AppBar'>;
+declare module '@material-ui/core/AppBar/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/AppBar'>;
 }
-declare module 'material-ui/Avatar/Avatar.js' {
-  declare module.exports: $Exports<'material-ui/Avatar/Avatar'>;
+declare module '@material-ui/core/Avatar/Avatar.js' {
+  declare module.exports: $Exports<'@material-ui/core/Avatar'>;
 }
-declare module 'material-ui/Avatar/index.js' {
-  declare module.exports: $Exports<'material-ui/Avatar'>;
+declare module '@material-ui/core/Avatar/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Avatar'>;
 }
-declare module 'material-ui/Badge/Badge.js' {
-  declare module.exports: $Exports<'material-ui/Badge/Badge'>;
+declare module '@material-ui/core/Badge/Badge.js' {
+  declare module.exports: $Exports<'@material-ui/core/Badge'>;
 }
-declare module 'material-ui/Badge/index.js' {
-  declare module.exports: $Exports<'material-ui/Badge'>;
+declare module '@material-ui/core/Badge/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Badge'>;
 }
-declare module 'material-ui/BottomNavigation/BottomNavigation.js' {
+declare module '@material-ui/core/BottomNavigation/BottomNavigation.js' {
   declare module.exports: $Exports<
-    'material-ui/BottomNavigation/BottomNavigation'
+    '@material-ui/core/BottomNavigation'
   >;
 }
-declare module 'material-ui/BottomNavigation/BottomNavigationAction.js' {
+declare module '@material-ui/core/BottomNavigation/BottomNavigationAction.js' {
   declare module.exports: $Exports<
-    'material-ui/BottomNavigation/BottomNavigationAction'
+    '@material-ui/core/BottomNavigationAction'
   >;
 }
-declare module 'material-ui/BottomNavigation/index.js' {
-  declare module.exports: $Exports<'material-ui/BottomNavigation'>;
+declare module '@material-ui/core/BottomNavigation/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/BottomNavigation'>;
 }
-declare module 'material-ui/Button/Button.js' {
-  declare module.exports: $Exports<'material-ui/Button/Button'>;
+declare module '@material-ui/core/Button/Button.js' {
+  declare module.exports: $Exports<'@material-ui/core/Button'>;
 }
-declare module 'material-ui/Button/index.js' {
-  declare module.exports: $Exports<'material-ui/Button'>;
+declare module '@material-ui/core/Button/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Button'>;
 }
-declare module 'material-ui/ButtonBase/ButtonBase.js' {
-  declare module.exports: $Exports<'material-ui/ButtonBase/ButtonBase'>;
+declare module '@material-ui/core/ButtonBase/ButtonBase.js' {
+  declare module.exports: $Exports<'@material-ui/core/ButtonBase'>;
 }
-declare module 'material-ui/ButtonBase/createRippleHandler.js' {
+declare module '@material-ui/core/ButtonBase/createRippleHandler.js' {
   declare module.exports: $Exports<
-    'material-ui/ButtonBase/createRippleHandler'
+    '@material-ui/core/ButtonBase/createRippleHandler'
   >;
 }
-declare module 'material-ui/ButtonBase/index.js' {
-  declare module.exports: $Exports<'material-ui/ButtonBase'>;
+declare module '@material-ui/core/ButtonBase/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/ButtonBase'>;
 }
-declare module 'material-ui/ButtonBase/Ripple.js' {
-  declare module.exports: $Exports<'material-ui/ButtonBase/Ripple'>;
+declare module '@material-ui/core/ButtonBase/Ripple.js' {
+  declare module.exports: $Exports<'@material-ui/core/ButtonBase/Ripple'>;
 }
-declare module 'material-ui/ButtonBase/TouchRipple.js' {
-  declare module.exports: $Exports<'material-ui/ButtonBase/TouchRipple'>;
+declare module '@material-ui/core/ButtonBase/TouchRipple.js' {
+  declare module.exports: $Exports<'@material-ui/core/ButtonBase/TouchRipple'>;
 }
-declare module 'material-ui/Card/Card.js' {
-  declare module.exports: $Exports<'material-ui/Card/Card'>;
+declare module '@material-ui/core/Card/Card.js' {
+  declare module.exports: $Exports<'@material-ui/core/Card'>;
 }
-declare module 'material-ui/Card/CardActions.js' {
-  declare module.exports: $Exports<'material-ui/Card/CardActions'>;
+declare module '@material-ui/core/CardActions/CardActions.js' {
+  declare module.exports: $Exports<'@material-ui/core/CardActions'>;
 }
-declare module 'material-ui/Card/CardContent.js' {
-  declare module.exports: $Exports<'material-ui/Card/CardContent'>;
+declare module '@material-ui/core/CardContent/CardContent.js' {
+  declare module.exports: $Exports<'@material-ui/core/CardContent'>;
 }
-declare module 'material-ui/Card/CardHeader.js' {
-  declare module.exports: $Exports<'material-ui/Card/CardHeader'>;
+declare module '@material-ui/core/CardHeader/CardHeader.js' {
+  declare module.exports: $Exports<'@material-ui/core/CardHeader'>;
 }
-declare module 'material-ui/Card/CardMedia.js' {
-  declare module.exports: $Exports<'material-ui/Card/CardMedia'>;
+declare module '@material-ui/core/CardMedia/CardMedia.js' {
+  declare module.exports: $Exports<'@material-ui/core/CardMedia'>;
 }
-declare module 'material-ui/Card/index.js' {
-  declare module.exports: $Exports<'material-ui/Card'>;
+declare module '@material-ui/core/Card/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Card'>;
 }
-declare module 'material-ui/Checkbox/Checkbox.js' {
-  declare module.exports: $Exports<'material-ui/Checkbox/Checkbox'>;
+declare module '@material-ui/core/Checkbox/Checkbox.js' {
+  declare module.exports: $Exports<'@material-ui/core/Checkbox'>;
 }
-declare module 'material-ui/Checkbox/index.js' {
-  declare module.exports: $Exports<'material-ui/Checkbox'>;
+declare module '@material-ui/core/Checkbox/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Checkbox'>;
 }
-declare module 'material-ui/Chip/Chip.js' {
-  declare module.exports: $Exports<'material-ui/Chip/Chip'>;
+declare module '@material-ui/core/Chip/Chip.js' {
+  declare module.exports: $Exports<'@material-ui/core/Chip'>;
 }
-declare module 'material-ui/Chip/index.js' {
-  declare module.exports: $Exports<'material-ui/Chip'>;
+declare module '@material-ui/core/Chip/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Chip'>;
 }
-declare module 'material-ui/colors/amber.js' {
-  declare module.exports: $Exports<'material-ui/colors/amber'>;
+declare module '@material-ui/core/colors/amber.js' {
+  declare module.exports: $Exports<'@material-ui/core/colors/amber'>;
 }
-declare module 'material-ui/colors/blue.js' {
-  declare module.exports: $Exports<'material-ui/colors/blue'>;
+declare module '@material-ui/core/colors/blue.js' {
+  declare module.exports: $Exports<'@material-ui/core/colors/blue'>;
 }
-declare module 'material-ui/colors/blueGrey.js' {
-  declare module.exports: $Exports<'material-ui/colors/blueGrey'>;
+declare module '@material-ui/core/colors/blueGrey.js' {
+  declare module.exports: $Exports<'@material-ui/core/colors/blueGrey'>;
 }
-declare module 'material-ui/colors/brown.js' {
-  declare module.exports: $Exports<'material-ui/colors/brown'>;
+declare module '@material-ui/core/colors/brown.js' {
+  declare module.exports: $Exports<'@material-ui/core/colors/brown'>;
 }
-declare module 'material-ui/colors/common.js' {
-  declare module.exports: $Exports<'material-ui/colors/common'>;
+declare module '@material-ui/core/colors/common.js' {
+  declare module.exports: $Exports<'@material-ui/core/colors/common'>;
 }
-declare module 'material-ui/colors/cyan.js' {
-  declare module.exports: $Exports<'material-ui/colors/cyan'>;
+declare module '@material-ui/core/colors/cyan.js' {
+  declare module.exports: $Exports<'@material-ui/core/colors/cyan'>;
 }
-declare module 'material-ui/colors/deepOrange.js' {
-  declare module.exports: $Exports<'material-ui/colors/deepOrange'>;
+declare module '@material-ui/core/colors/deepOrange.js' {
+  declare module.exports: $Exports<'@material-ui/core/colors/deepOrange'>;
 }
-declare module 'material-ui/colors/deepPurple.js' {
-  declare module.exports: $Exports<'material-ui/colors/deepPurple'>;
+declare module '@material-ui/core/colors/deepPurple.js' {
+  declare module.exports: $Exports<'@material-ui/core/colors/deepPurple'>;
 }
-declare module 'material-ui/colors/green.js' {
-  declare module.exports: $Exports<'material-ui/colors/green'>;
+declare module '@material-ui/core/colors/green.js' {
+  declare module.exports: $Exports<'@material-ui/core/colors/green'>;
 }
-declare module 'material-ui/colors/grey.js' {
-  declare module.exports: $Exports<'material-ui/colors/grey'>;
+declare module '@material-ui/core/colors/grey.js' {
+  declare module.exports: $Exports<'@material-ui/core/colors/grey'>;
 }
-declare module 'material-ui/colors/index.js' {
-  declare module.exports: $Exports<'material-ui/colors'>;
+declare module '@material-ui/core/colors/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/colors'>;
 }
-declare module 'material-ui/colors/indigo.js' {
-  declare module.exports: $Exports<'material-ui/colors/indigo'>;
+declare module '@material-ui/core/colors/indigo.js' {
+  declare module.exports: $Exports<'@material-ui/core/colors/indigo'>;
 }
-declare module 'material-ui/colors/lightBlue.js' {
-  declare module.exports: $Exports<'material-ui/colors/lightBlue'>;
+declare module '@material-ui/core/colors/lightBlue.js' {
+  declare module.exports: $Exports<'@material-ui/core/colors/lightBlue'>;
 }
-declare module 'material-ui/colors/lightGreen.js' {
-  declare module.exports: $Exports<'material-ui/colors/lightGreen'>;
+declare module '@material-ui/core/colors/lightGreen.js' {
+  declare module.exports: $Exports<'@material-ui/core/colors/lightGreen'>;
 }
-declare module 'material-ui/colors/lime.js' {
-  declare module.exports: $Exports<'material-ui/colors/lime'>;
+declare module '@material-ui/core/colors/lime.js' {
+  declare module.exports: $Exports<'@material-ui/core/colors/lime'>;
 }
-declare module 'material-ui/colors/orange.js' {
-  declare module.exports: $Exports<'material-ui/colors/orange'>;
+declare module '@material-ui/core/colors/orange.js' {
+  declare module.exports: $Exports<'@material-ui/core/colors/orange'>;
 }
-declare module 'material-ui/colors/pink.js' {
-  declare module.exports: $Exports<'material-ui/colors/pink'>;
+declare module '@material-ui/core/colors/pink.js' {
+  declare module.exports: $Exports<'@material-ui/core/colors/pink'>;
 }
-declare module 'material-ui/colors/purple.js' {
-  declare module.exports: $Exports<'material-ui/colors/purple'>;
+declare module '@material-ui/core/colors/purple.js' {
+  declare module.exports: $Exports<'@material-ui/core/colors/purple'>;
 }
-declare module 'material-ui/colors/red.js' {
-  declare module.exports: $Exports<'material-ui/colors/red'>;
+declare module '@material-ui/core/colors/red.js' {
+  declare module.exports: $Exports<'@material-ui/core/colors/red'>;
 }
-declare module 'material-ui/colors/teal.js' {
-  declare module.exports: $Exports<'material-ui/colors/teal'>;
+declare module '@material-ui/core/colors/teal.js' {
+  declare module.exports: $Exports<'@material-ui/core/colors/teal'>;
 }
-declare module 'material-ui/colors/yellow.js' {
-  declare module.exports: $Exports<'material-ui/colors/yellow'>;
+declare module '@material-ui/core/colors/yellow.js' {
+  declare module.exports: $Exports<'@material-ui/core/colors/yellow'>;
 }
-declare module 'material-ui/Dialog/Dialog.js' {
-  declare module.exports: $Exports<'material-ui/Dialog/Dialog'>;
+declare module '@material-ui/core/Dialog/Dialog.js' {
+  declare module.exports: $Exports<'@material-ui/core/Dialog'>;
 }
-declare module 'material-ui/Dialog/DialogActions.js' {
-  declare module.exports: $Exports<'material-ui/Dialog/DialogActions'>;
+declare module '@material-ui/core/DialogActions/DialogActions.js' {
+  declare module.exports: $Exports<'@material-ui/core/DialogActions'>;
 }
-declare module 'material-ui/Dialog/DialogContent.js' {
-  declare module.exports: $Exports<'material-ui/Dialog/DialogContent'>;
+declare module '@material-ui/core/DialogContent/DialogContent.js' {
+  declare module.exports: $Exports<'@material-ui/core/DialogContent'>;
 }
-declare module 'material-ui/Dialog/DialogContentText.js' {
-  declare module.exports: $Exports<'material-ui/Dialog/DialogContentText'>;
+declare module '@material-ui/core/DialogContentText/DialogContentText.js' {
+  declare module.exports: $Exports<'@material-ui/core/DialogContentText'>;
 }
-declare module 'material-ui/Dialog/DialogTitle.js' {
-  declare module.exports: $Exports<'material-ui/Dialog/DialogTitle'>;
+declare module '@material-ui/core/DialogTitle/DialogTitle.js' {
+  declare module.exports: $Exports<'@material-ui/core/DialogTitle'>;
 }
-declare module 'material-ui/Dialog/index.js' {
-  declare module.exports: $Exports<'material-ui/Dialog'>;
+declare module '@material-ui/core/Dialog/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Dialog'>;
 }
-declare module 'material-ui/Dialog/withMobileDialog.js' {
-  declare module.exports: $Exports<'material-ui/Dialog/withMobileDialog'>;
+declare module '@material-ui/core/withMobileDialog/withMobileDialog.js' {
+  declare module.exports: $Exports<'@material-ui/core/withMobileDialog'>;
 }
-declare module 'material-ui/Divider/Divider.js' {
-  declare module.exports: $Exports<'material-ui/Divider/Divider'>;
+declare module '@material-ui/core/Divider.js' {
+  declare module.exports: $Exports<'@material-ui/core/Divider'>;
 }
-declare module 'material-ui/Divider/index.js' {
-  declare module.exports: $Exports<'material-ui/Divider'>;
+declare module '@material-ui/core/Divider/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Divider'>;
 }
-declare module 'material-ui/Drawer/Drawer.js' {
-  declare module.exports: $Exports<'material-ui/Drawer/Drawer'>;
+declare module '@material-ui/core/Drawer.js' {
+  declare module.exports: $Exports<'@material-ui/core/Drawer'>;
 }
-declare module 'material-ui/Drawer/index.js' {
-  declare module.exports: $Exports<'material-ui/Drawer'>;
+declare module '@material-ui/core/Drawer/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Drawer'>;
 }
-declare module 'material-ui/ExpansionPanel/ExpansionPanel.js' {
-  declare module.exports: $Exports<'material-ui/ExpansionPanel/ExpansionPanel'>;
+declare module '@material-ui/core/ExpansionPanel/ExpansionPanel.js' {
+  declare module.exports: $Exports<'@material-ui/core/ExpansionPanel'>;
 }
-declare module 'material-ui/ExpansionPanel/ExpansionPanelActions.js' {
+declare module '@material-ui/core/ExpansionPanelActions/ExpansionPanelActions.js' {
   declare module.exports: $Exports<
-    'material-ui/ExpansionPanel/ExpansionPanelActions'
+    '@material-ui/core/ExpansionPanelActions'
   >;
 }
-declare module 'material-ui/ExpansionPanel/ExpansionPanelDetails.js' {
+declare module '@material-ui/core/ExpansionPanelDetails/ExpansionPanelDetails.js' {
   declare module.exports: $Exports<
-    'material-ui/ExpansionPanel/ExpansionPanelDetails'
+    '@material-ui/core/ExpansionPanelDetails'
   >;
 }
-declare module 'material-ui/ExpansionPanel/ExpansionPanelSummary.js' {
+declare module '@material-ui/core/ExpansionPanelSummary/ExpansionPanelSummary.js' {
   declare module.exports: $Exports<
-    'material-ui/ExpansionPanel/ExpansionPanelSummary'
+    '@material-ui/core/ExpansionPanelSummary'
   >;
 }
-declare module 'material-ui/ExpansionPanel/index.js' {
-  declare module.exports: $Exports<'material-ui/ExpansionPanel'>;
+declare module '@material-ui/core/ExpansionPanel/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/ExpansionPanel'>;
 }
-declare module 'material-ui/Form/FormControl.js' {
-  declare module.exports: $Exports<'material-ui/Form/FormControl'>;
+declare module '@material-ui/core/FormControl/FormControl.js' {
+  declare module.exports: $Exports<'@material-ui/core/FormControl'>;
 }
-declare module 'material-ui/Form/FormControlLabel.js' {
-  declare module.exports: $Exports<'material-ui/Form/FormControlLabel'>;
+declare module '@material-ui/core/FormControlLabel/FormControlLabel.js' {
+  declare module.exports: $Exports<'@material-ui/core/FormControlLabel'>;
 }
-declare module 'material-ui/Form/FormGroup.js' {
-  declare module.exports: $Exports<'material-ui/Form/FormGroup'>;
+declare module '@material-ui/core/FormGroup/FormGroup.js' {
+  declare module.exports: $Exports<'@material-ui/core/FormGroup'>;
 }
-declare module 'material-ui/Form/FormHelperText.js' {
-  declare module.exports: $Exports<'material-ui/Form/FormHelperText'>;
+declare module '@material-ui/core/FormHelperText/FormHelperText.js' {
+  declare module.exports: $Exports<'@material-ui/core/FormHelperText'>;
 }
-declare module 'material-ui/Form/FormLabel.js' {
-  declare module.exports: $Exports<'material-ui/Form/FormLabel'>;
+declare module '@material-ui/core/FormLabel/FormLabel.js' {
+  declare module.exports: $Exports<'@material-ui/core/FormLabel'>;
 }
-declare module 'material-ui/Form/index.js' {
-  declare module.exports: $Exports<'material-ui/Form'>;
+declare module '@material-ui/core/Grid/Grid.js' {
+  declare module.exports: $Exports<'@material-ui/core/Grid'>;
 }
-declare module 'material-ui/Grid/Grid.js' {
-  declare module.exports: $Exports<'material-ui/Grid/Grid'>;
+declare module '@material-ui/core/Grid/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Grid'>;
 }
-declare module 'material-ui/Grid/index.js' {
-  declare module.exports: $Exports<'material-ui/Grid'>;
+declare module '@material-ui/core/GridList/GridList.js' {
+  declare module.exports: $Exports<'@material-ui/core/GridList'>;
 }
-declare module 'material-ui/GridList/GridList.js' {
-  declare module.exports: $Exports<'material-ui/GridList/GridList'>;
+declare module '@material-ui/core/GridListTitle/GridListTile.js' {
+  declare module.exports: $Exports<'@material-ui/core/GridListTile'>;
 }
-declare module 'material-ui/GridList/GridListTile.js' {
-  declare module.exports: $Exports<'material-ui/GridList/GridListTile'>;
+declare module '@material-ui/core/GridListTitleBar/GridListTileBar.js' {
+  declare module.exports: $Exports<'@material-ui/core/GridListTileBar'>;
 }
-declare module 'material-ui/GridList/GridListTileBar.js' {
-  declare module.exports: $Exports<'material-ui/GridList/GridListTileBar'>;
+declare module '@material-ui/core/GridList/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/GridList'>;
 }
-declare module 'material-ui/GridList/index.js' {
-  declare module.exports: $Exports<'material-ui/GridList'>;
+declare module '@material-ui/core/Hidden/Hidden.js' {
+  declare module.exports: $Exports<'@material-ui/core/Hidden'>;
 }
-declare module 'material-ui/Hidden/Hidden.js' {
-  declare module.exports: $Exports<'material-ui/Hidden/Hidden'>;
+declare module '@material-ui/core/Hidden/HiddenCss.js' {
+  declare module.exports: $Exports<'@material-ui/core/Hidden/HiddenCss'>;
 }
-declare module 'material-ui/Hidden/HiddenCss.js' {
-  declare module.exports: $Exports<'material-ui/Hidden/HiddenCss'>;
+declare module '@material-ui/core/Hidden/HiddenJs.js' {
+  declare module.exports: $Exports<'@material-ui/core/Hidden/HiddenJs'>;
 }
-declare module 'material-ui/Hidden/HiddenJs.js' {
-  declare module.exports: $Exports<'material-ui/Hidden/HiddenJs'>;
+declare module '@material-ui/core/Hidden/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Hidden'>;
 }
-declare module 'material-ui/Hidden/index.js' {
-  declare module.exports: $Exports<'material-ui/Hidden'>;
+// declare module '@material-ui/core/Hidden/types.js' {
+//   declare module.exports: $Exports<'@material-ui/core/Hidden/types'>;
+// }
+declare module '@material-ui/core/Icon/Icon.js' {
+  declare module.exports: $Exports<'@material-ui/core/Icon'>;
 }
-declare module 'material-ui/Hidden/types.js' {
-  declare module.exports: $Exports<'material-ui/Hidden/types'>;
+declare module '@material-ui/core/Icon/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Icon'>;
 }
-declare module 'material-ui/Icon/Icon.js' {
-  declare module.exports: $Exports<'material-ui/Icon/Icon'>;
+declare module '@material-ui/core/IconButton/IconButton.js' {
+  declare module.exports: $Exports<'@material-ui/core/IconButton'>;
 }
-declare module 'material-ui/Icon/index.js' {
-  declare module.exports: $Exports<'material-ui/Icon'>;
+declare module '@material-ui/core/IconButton/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/IconButton'>;
 }
-declare module 'material-ui/IconButton/IconButton.js' {
-  declare module.exports: $Exports<'material-ui/IconButton/IconButton'>;
+declare module '@material-ui/core/Input/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Input'>;
 }
-declare module 'material-ui/IconButton/index.js' {
-  declare module.exports: $Exports<'material-ui/IconButton'>;
+declare module '@material-ui/core/Input/Input.js' {
+  declare module.exports: $Exports<'@material-ui/core/Input'>;
 }
-declare module 'material-ui/Input/index.js' {
-  declare module.exports: $Exports<'material-ui/Input'>;
+declare module '@material-ui/core/InputAdornment/InputAdornment.js' {
+  declare module.exports: $Exports<'@material-ui/core/InputAdornment'>;
 }
-declare module 'material-ui/Input/Input.js' {
-  declare module.exports: $Exports<'material-ui/Input/Input'>;
+declare module '@material-ui/core/InputLabel/InputLabel.js' {
+  declare module.exports: $Exports<'@material-ui/core/InputLabel'>;
 }
-declare module 'material-ui/Input/InputAdornment.js' {
-  declare module.exports: $Exports<'material-ui/Input/InputAdornment'>;
+declare module '@material-ui/core/Input/Textarea.js' {
+  declare module.exports: $Exports<'@material-ui/core/Input/Textarea'>;
 }
-declare module 'material-ui/Input/InputLabel.js' {
-  declare module.exports: $Exports<'material-ui/Input/InputLabel'>;
+declare module '@material-ui/core/Portal/Portal.js' {
+  declare module.exports: $Exports<'@material-ui/core/Portal'>;
 }
-declare module 'material-ui/Input/Textarea.js' {
-  declare module.exports: $Exports<'material-ui/Input/Textarea'>;
+declare module '@material-ui/core/internal/transition.js' {
+  declare module.exports: $Exports<'@material-ui/core/internal/transition'>;
 }
-declare module 'material-ui/internal/dom.js' {
-  declare module.exports: $Exports<'material-ui/internal/dom'>;
+declare module '@material-ui/core/List/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/List'>;
 }
-declare module 'material-ui/Portal/Portal.js' {
-  declare module.exports: $Exports<'material-ui/Portal/Portal'>;
+declare module '@material-ui/core/List/List.js' {
+  declare module.exports: $Exports<'@material-ui/core/List'>;
 }
-declare module 'material-ui/internal/transition.js' {
-  declare module.exports: $Exports<'material-ui/internal/transition'>;
+declare module '@material-ui/core/ListItem/ListItem.js' {
+  declare module.exports: $Exports<'@material-ui/core/ListItem'>;
 }
-declare module 'material-ui/List/index.js' {
-  declare module.exports: $Exports<'material-ui/List'>;
+declare module '@material-ui/core/ListItemAvatar/ListItemAvatar.js' {
+  declare module.exports: $Exports<'@material-ui/core/ListItemAvatar'>;
 }
-declare module 'material-ui/List/List.js' {
-  declare module.exports: $Exports<'material-ui/List/List'>;
+declare module '@material-ui/core/ListItemIcon/ListItemIcon.js' {
+  declare module.exports: $Exports<'@material-ui/core/ListItemIcon'>;
 }
-declare module 'material-ui/List/ListItem.js' {
-  declare module.exports: $Exports<'material-ui/List/ListItem'>;
+declare module '@material-ui/core/ListItemSecondaryAction/ListItemSecondaryAction.js' {
+  declare module.exports: $Exports<'@material-ui/core/ListItemSecondaryAction'>;
 }
-declare module 'material-ui/List/ListItemAvatar.js' {
-  declare module.exports: $Exports<'material-ui/List/ListItemAvatar'>;
+declare module '@material-ui/core/ListItemText/ListItemText.js' {
+  declare module.exports: $Exports<'@material-ui/core/ListItemText'>;
 }
-declare module 'material-ui/List/ListItemIcon.js' {
-  declare module.exports: $Exports<'material-ui/List/ListItemIcon'>;
+declare module '@material-ui/core/ListItemSubheader/ListSubheader.js' {
+  declare module.exports: $Exports<'@material-ui/core/ListSubheader'>;
 }
-declare module 'material-ui/List/ListItemSecondaryAction.js' {
-  declare module.exports: $Exports<'material-ui/List/ListItemSecondaryAction'>;
+declare module '@material-ui/core/Menu/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Menu'>;
 }
-declare module 'material-ui/List/ListItemText.js' {
-  declare module.exports: $Exports<'material-ui/List/ListItemText'>;
+declare module '@material-ui/core/Menu/Menu.js' {
+  declare module.exports: $Exports<'@material-ui/core/Menu'>;
 }
-declare module 'material-ui/List/ListSubheader.js' {
-  declare module.exports: $Exports<'material-ui/List/ListSubheader'>;
+declare module '@material-ui/core/MenuItem/MenuItem.js' {
+  declare module.exports: $Exports<'@material-ui/core/MenuItem'>;
 }
-declare module 'material-ui/Menu/index.js' {
-  declare module.exports: $Exports<'material-ui/Menu'>;
+declare module '@material-ui/core/MenuList/MenuList.js' {
+  declare module.exports: $Exports<'@material-ui/core/MenuList'>;
 }
-declare module 'material-ui/Menu/Menu.js' {
-  declare module.exports: $Exports<'material-ui/Menu/Menu'>;
+declare module '@material-ui/core/MobileStepper/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/MobileStepper'>;
 }
-declare module 'material-ui/Menu/MenuItem.js' {
-  declare module.exports: $Exports<'material-ui/Menu/MenuItem'>;
+declare module '@material-ui/core/MobileStepper/MobileStepper.js' {
+  declare module.exports: $Exports<'@material-ui/core/MobileStepper'>;
 }
-declare module 'material-ui/Menu/MenuList.js' {
-  declare module.exports: $Exports<'material-ui/Menu/MenuList'>;
+declare module '@material-ui/core/Backdrop/Backdrop.js' {
+  declare module.exports: $Exports<'@material-ui/core/Backdrop'>;
 }
-declare module 'material-ui/MobileStepper/index.js' {
-  declare module.exports: $Exports<'material-ui/MobileStepper'>;
+declare module '@material-ui/core/Modal/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Modal'>;
 }
-declare module 'material-ui/MobileStepper/MobileStepper.js' {
-  declare module.exports: $Exports<'material-ui/MobileStepper/MobileStepper'>;
+declare module '@material-ui/core/Modal/Modal.js' {
+  declare module.exports: $Exports<'@material-ui/core/Modal'>;
 }
-declare module 'material-ui/Modal/Backdrop.js' {
-  declare module.exports: $Exports<'material-ui/Modal/Backdrop'>;
+declare module '@material-ui/core/Modal/ModalManager.js' {
+  declare module.exports: $Exports<'@material-ui/core/Modal/ModalManager'>;
 }
-declare module 'material-ui/Modal/index.js' {
-  declare module.exports: $Exports<'material-ui/Modal'>;
+declare module '@material-ui/core/Paper/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Paper'>;
 }
-declare module 'material-ui/Modal/Modal.js' {
-  declare module.exports: $Exports<'material-ui/Modal/Modal'>;
+declare module '@material-ui/core/Paper/Paper.js' {
+  declare module.exports: $Exports<'@material-ui/core/Paper'>;
 }
-declare module 'material-ui/Modal/modalManager.js' {
-  declare module.exports: $Exports<'material-ui/Modal/modalManager'>;
+declare module '@material-ui/core/Popover/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Popover'>;
 }
-declare module 'material-ui/Paper/index.js' {
-  declare module.exports: $Exports<'material-ui/Paper'>;
+declare module '@material-ui/core/Popover/Popover.js' {
+  declare module.exports: $Exports<'@material-ui/core/Popover'>;
 }
-declare module 'material-ui/Paper/Paper.js' {
-  declare module.exports: $Exports<'material-ui/Paper/Paper'>;
+declare module '@material-ui/core/CircularProgress/CircularProgress.js' {
+  declare module.exports: $Exports<'@material-ui/core/CircularProgress'>;
 }
-declare module 'material-ui/Popover/index.js' {
-  declare module.exports: $Exports<'material-ui/Popover'>;
+declare module '@material-ui/core/LinearProgress/LinearProgress.js' {
+  declare module.exports: $Exports<'@material-ui/core/LinearProgress'>;
 }
-declare module 'material-ui/Popover/Popover.js' {
-  declare module.exports: $Exports<'material-ui/Popover/Popover'>;
+declare module '@material-ui/core/Radio/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Radio'>;
 }
-declare module 'material-ui/Progress/CircularProgress.js' {
-  declare module.exports: $Exports<'material-ui/Progress/CircularProgress'>;
+declare module '@material-ui/core/Radio/Radio.js' {
+  declare module.exports: $Exports<'@material-ui/core/Radio'>;
 }
-declare module 'material-ui/Progress/index.js' {
-  declare module.exports: $Exports<'material-ui/Progress'>;
+declare module '@material-ui/core/RadioGroup/RadioGroup.js' {
+  declare module.exports: $Exports<'@material-ui/core/RadioGroup'>;
 }
-declare module 'material-ui/Progress/LinearProgress.js' {
-  declare module.exports: $Exports<'material-ui/Progress/LinearProgress'>;
+declare module '@material-ui/core/Select/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Select'>;
 }
-declare module 'material-ui/Radio/index.js' {
-  declare module.exports: $Exports<'material-ui/Radio'>;
+declare module '@material-ui/core/Select/Select.js' {
+  declare module.exports: $Exports<'@material-ui/core/Select'>;
 }
-declare module 'material-ui/Radio/Radio.js' {
-  declare module.exports: $Exports<'material-ui/Radio/Radio'>;
+declare module '@material-ui/core/Select/SelectInput.js' {
+  declare module.exports: $Exports<'@material-ui/core/Select/SelectInput'>;
 }
-declare module 'material-ui/Radio/RadioGroup.js' {
-  declare module.exports: $Exports<'material-ui/Radio/RadioGroup'>;
+declare module '@material-ui/core/Snackbar/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Snackbar'>;
 }
-declare module 'material-ui/Select/index.js' {
-  declare module.exports: $Exports<'material-ui/Select'>;
+declare module '@material-ui/core/Snackbar/Snackbar.js' {
+  declare module.exports: $Exports<'@material-ui/core/Snackbar'>;
 }
-declare module 'material-ui/Select/Select.js' {
-  declare module.exports: $Exports<'material-ui/Select/Select'>;
+declare module '@material-ui/core/SnackbarContent/SnackbarContent.js' {
+  declare module.exports: $Exports<'@material-ui/core/SnackbarContent'>;
 }
-declare module 'material-ui/Select/SelectInput.js' {
-  declare module.exports: $Exports<'material-ui/Select/SelectInput'>;
+declare module '@material-ui/core/Stepper/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Stepper'>;
 }
-declare module 'material-ui/Snackbar/index.js' {
-  declare module.exports: $Exports<'material-ui/Snackbar'>;
+declare module '@material-ui/core/Step/Step.js' {
+  declare module.exports: $Exports<'@material-ui/core/Step'>;
 }
-declare module 'material-ui/Snackbar/Snackbar.js' {
-  declare module.exports: $Exports<'material-ui/Snackbar/Snackbar'>;
+declare module '@material-ui/core/StepButton/StepButton.js' {
+  declare module.exports: $Exports<'@material-ui/core/StepButton'>;
 }
-declare module 'material-ui/Snackbar/SnackbarContent.js' {
-  declare module.exports: $Exports<'material-ui/Snackbar/SnackbarContent'>;
+declare module '@material-ui/core/StepContent/StepContent.js' {
+  declare module.exports: $Exports<'@material-ui/core/StepContent'>;
 }
-declare module 'material-ui/Stepper/index.js' {
-  declare module.exports: $Exports<'material-ui/Stepper'>;
+declare module '@material-ui/core/StepIcon/StepIcon.js' {
+  declare module.exports: $Exports<'@material-ui/core/StepIcon'>;
 }
-declare module 'material-ui/Stepper/Step.js' {
-  declare module.exports: $Exports<'material-ui/Stepper/Step'>;
+declare module '@material-ui/core/StepLabel/StepLabel.js' {
+  declare module.exports: $Exports<'@material-ui/core/StepLabel'>;
 }
-declare module 'material-ui/Stepper/StepButton.js' {
-  declare module.exports: $Exports<'material-ui/Stepper/StepButton'>;
+declare module '@material-ui/core/Stepper/Stepper.js' {
+  declare module.exports: $Exports<'@material-ui/core/Stepper'>;
 }
-declare module 'material-ui/Stepper/StepContent.js' {
-  declare module.exports: $Exports<'material-ui/Stepper/StepContent'>;
+declare module '@material-ui/core/styles/colorManipulator.js' {
+  declare module.exports: $Exports<'@material-ui/core/styles/colorManipulator'>;
 }
-declare module 'material-ui/Stepper/StepIcon.js' {
-  declare module.exports: $Exports<'material-ui/Stepper/StepIcon'>;
+declare module '@material-ui/core/styles/createBreakpoints.js' {
+  declare module.exports: $Exports<'@material-ui/core/styles/createBreakpoints'>;
 }
-declare module 'material-ui/Stepper/StepLabel.js' {
-  declare module.exports: $Exports<'material-ui/Stepper/StepLabel'>;
-}
-declare module 'material-ui/Stepper/Stepper.js' {
-  declare module.exports: $Exports<'material-ui/Stepper/Stepper'>;
-}
-declare module 'material-ui/styles/colorManipulator.js' {
-  declare module.exports: $Exports<'material-ui/styles/colorManipulator'>;
-}
-declare module 'material-ui/styles/createBreakpoints.js' {
-  declare module.exports: $Exports<'material-ui/styles/createBreakpoints'>;
-}
-declare module 'material-ui/styles/createGenerateClassName.js' {
+declare module '@material-ui/core/styles/createGenerateClassName.js' {
   declare module.exports: $Exports<
-    'material-ui/styles/createGenerateClassName'
+    '@material-ui/core/styles/createGenerateClassName'
   >;
 }
-declare module 'material-ui/styles/createMixins.js' {
-  declare module.exports: $Exports<'material-ui/styles/createMixins'>;
+declare module '@material-ui/core/styles/createMixins.js' {
+  declare module.exports: $Exports<'@material-ui/core/styles/createMixins'>;
 }
-declare module 'material-ui/styles/createMuiTheme.js' {
-  declare module.exports: $Exports<'material-ui/styles/createMuiTheme'>;
+declare module '@material-ui/core/styles/createMuiTheme.js' {
+  declare module.exports: $Exports<'@material-ui/core/styles/createMuiTheme'>;
 }
-declare module 'material-ui/styles/createPalette.js' {
-  declare module.exports: $Exports<'material-ui/styles/createPalette'>;
+declare module '@material-ui/core/styles/createPalette.js' {
+  declare module.exports: $Exports<'@material-ui/core/styles/createPalette'>;
 }
-declare module 'material-ui/styles/createTypography.js' {
-  declare module.exports: $Exports<'material-ui/styles/createTypography'>;
+declare module '@material-ui/core/styles/createTypography.js' {
+  declare module.exports: $Exports<'@material-ui/core/styles/createTypography'>;
 }
-declare module 'material-ui/styles/getStylesCreator.js' {
-  declare module.exports: $Exports<'material-ui/styles/getStylesCreator'>;
+declare module '@material-ui/core/styles/getStylesCreator.js' {
+  declare module.exports: $Exports<'@material-ui/core/styles/getStylesCreator'>;
 }
-declare module 'material-ui/styles/index.js' {
-  declare module.exports: $Exports<'material-ui/styles'>;
+declare module '@material-ui/core/styles/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/styles'>;
 }
-declare module 'material-ui/styles/MuiThemeProvider.js' {
-  declare module.exports: $Exports<'material-ui/styles/MuiThemeProvider'>;
+declare module '@material-ui/core/styles/MuiThemeProvider.js' {
+  declare module.exports: $Exports<'@material-ui/core/styles/MuiThemeProvider'>;
 }
-declare module 'material-ui/styles/shadows.js' {
-  declare module.exports: $Exports<'material-ui/styles/shadows'>;
+declare module '@material-ui/core/styles/shadows.js' {
+  declare module.exports: $Exports<'@material-ui/core/styles/shadows'>;
 }
-declare module 'material-ui/styles/spacing.js' {
-  declare module.exports: $Exports<'material-ui/styles/spacing'>;
+declare module '@material-ui/core/styles/spacing.js' {
+  declare module.exports: $Exports<'@material-ui/core/styles/spacing'>;
 }
-declare module 'material-ui/styles/themeListener.js' {
-  declare module.exports: $Exports<'material-ui/styles/themeListener'>;
+declare module '@material-ui/core/styles/themeListener.js' {
+  declare module.exports: $Exports<'@material-ui/core/styles/themeListener'>;
 }
-declare module 'material-ui/styles/transitions.js' {
-  declare module.exports: $Exports<'material-ui/styles/transitions'>;
+declare module '@material-ui/core/styles/transitions.js' {
+  declare module.exports: $Exports<'@material-ui/core/styles/transitions'>;
 }
-declare module 'material-ui/styles/withStyles.js' {
-  declare module.exports: $Exports<'material-ui/styles/withStyles'>;
+declare module '@material-ui/core/styles/withStyles.js' {
+  declare module.exports: $Exports<'@material-ui/core/styles/withStyles'>;
 }
-declare module 'material-ui/styles/withTheme.js' {
-  declare module.exports: $Exports<'material-ui/styles/withTheme'>;
+declare module '@material-ui/core/styles/withTheme.js' {
+  declare module.exports: $Exports<'@material-ui/core/styles/withTheme'>;
 }
-declare module 'material-ui/styles/zIndex.js' {
-  declare module.exports: $Exports<'material-ui/styles/zIndex'>;
+declare module '@material-ui/core/styles/zIndex.js' {
+  declare module.exports: $Exports<'@material-ui/core/styles/zIndex'>;
 }
-declare module 'material-ui/svg-icons/ArrowDownward.js' {
-  declare module.exports: $Exports<'material-ui/svg-icons/ArrowDownward'>;
+declare module '@material-ui/icons/ArrowDownward.js' {
+  declare module.exports: $Exports<'@material-ui/icons/ArrowDownward'>;
 }
-declare module 'material-ui/svg-icons/ArrowDropDown.js' {
-  declare module.exports: $Exports<'material-ui/svg-icons/ArrowDropDown'>;
+declare module '@material-ui/icons/ArrowDropDown.js' {
+  declare module.exports: $Exports<'@material-ui/icons/ArrowDropDown'>;
 }
-declare module 'material-ui/svg-icons/Cancel.js' {
-  declare module.exports: $Exports<'material-ui/svg-icons/Cancel'>;
+declare module '@material-ui/icons/Cancel.js' {
+  declare module.exports: $Exports<'@material-ui/icons/Cancel'>;
 }
-declare module 'material-ui/svg-icons/CheckBox.js' {
-  declare module.exports: $Exports<'material-ui/svg-icons/CheckBox'>;
+declare module '@material-ui/icons/CheckBox.js' {
+  declare module.exports: $Exports<'@material-ui/icons/CheckBox'>;
 }
-declare module 'material-ui/svg-icons/CheckBoxOutlineBlank.js' {
+declare module '@material-ui/icons/CheckBoxOutlineBlank.js' {
   declare module.exports: $Exports<
-    'material-ui/svg-icons/CheckBoxOutlineBlank'
+    '@material-ui/icons/CheckBoxOutlineBlank'
   >;
 }
-declare module 'material-ui/svg-icons/CheckCircle.js' {
-  declare module.exports: $Exports<'material-ui/svg-icons/CheckCircle'>;
+declare module '@material-ui/icons/CheckCircle.js' {
+  declare module.exports: $Exports<'@material-ui/icons/CheckCircle'>;
 }
-declare module 'material-ui/svg-icons/IndeterminateCheckBox.js' {
+declare module '@material-ui/icons/IndeterminateCheckBox.js' {
   declare module.exports: $Exports<
-    'material-ui/svg-icons/IndeterminateCheckBox'
+    '@material-ui/icons/IndeterminateCheckBox'
   >;
 }
-declare module 'material-ui/svg-icons/KeyboardArrowLeft.js' {
-  declare module.exports: $Exports<'material-ui/svg-icons/KeyboardArrowLeft'>;
+declare module '@material-ui/icons/KeyboardArrowLeft.js' {
+  declare module.exports: $Exports<'@material-ui/icons/KeyboardArrowLeft'>;
 }
-declare module 'material-ui/svg-icons/KeyboardArrowRight.js' {
-  declare module.exports: $Exports<'material-ui/svg-icons/KeyboardArrowRight'>;
+declare module '@material-ui/icons/KeyboardArrowRight.js' {
+  declare module.exports: $Exports<'@material-ui/icons/KeyboardArrowRight'>;
 }
-declare module 'material-ui/svg-icons/RadioButtonChecked.js' {
-  declare module.exports: $Exports<'material-ui/svg-icons/RadioButtonChecked'>;
+declare module '@material-ui/icons/RadioButtonChecked.js' {
+  declare module.exports: $Exports<'@material-ui/icons/RadioButtonChecked'>;
 }
-declare module 'material-ui/svg-icons/RadioButtonUnchecked.js' {
+declare module '@material-ui/icons/RadioButtonUnchecked.js' {
   declare module.exports: $Exports<
-    'material-ui/svg-icons/RadioButtonUnchecked'
+    '@material-ui/icons/RadioButtonUnchecked'
   >;
 }
-declare module 'material-ui/SvgIcon/index.js' {
-  declare module.exports: $Exports<'material-ui/SvgIcon'>;
+declare module '@material-ui/core/SvgIcon/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/SvgIcon'>;
 }
-declare module 'material-ui/SvgIcon/SvgIcon.js' {
-  declare module.exports: $Exports<'material-ui/SvgIcon/SvgIcon'>;
+declare module '@material-ui/core/SvgIcon/SvgIcon.js' {
+  declare module.exports: $Exports<'@material-ui/core/SvgIcon'>;
 }
-declare module 'material-ui/Switch/index.js' {
-  declare module.exports: $Exports<'material-ui/Switch'>;
+declare module '@material-ui/core/Switch/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Switch'>;
 }
-declare module 'material-ui/Switch/Switch.js' {
-  declare module.exports: $Exports<'material-ui/Switch/Switch'>;
+declare module '@material-ui/core/Switch/Switch.js' {
+  declare module.exports: $Exports<'@material-ui/core/Switch'>;
 }
-declare module 'material-ui/Table/index.js' {
-  declare module.exports: $Exports<'material-ui/Table'>;
+declare module '@material-ui/core/Table/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Table'>;
 }
-declare module 'material-ui/Table/Table.js' {
-  declare module.exports: $Exports<'material-ui/Table/Table'>;
+declare module '@material-ui/core/Table/Table.js' {
+  declare module.exports: $Exports<'@material-ui/core/Table'>;
 }
-declare module 'material-ui/Table/TableBody.js' {
-  declare module.exports: $Exports<'material-ui/Table/TableBody'>;
+declare module '@material-ui/core/TableBody/TableBody.js' {
+  declare module.exports: $Exports<'@material-ui/core/TableBody'>;
 }
-declare module 'material-ui/Table/TableCell.js' {
-  declare module.exports: $Exports<'material-ui/Table/TableCell'>;
+declare module '@material-ui/core/TableCell/TableCell.js' {
+  declare module.exports: $Exports<'@material-ui/core/TableCell'>;
 }
-declare module 'material-ui/Table/TableFooter.js' {
-  declare module.exports: $Exports<'material-ui/Table/TableFooter'>;
+declare module '@material-ui/core/TableFooter/TableFooter.js' {
+  declare module.exports: $Exports<'@material-ui/core/TableFooter'>;
 }
-declare module 'material-ui/Table/TableHead.js' {
-  declare module.exports: $Exports<'material-ui/Table/TableHead'>;
+declare module '@material-ui/core/TableHead/TableHead.js' {
+  declare module.exports: $Exports<'@material-ui/core/TableHead'>;
 }
-declare module 'material-ui/Table/TablePagination.js' {
-  declare module.exports: $Exports<'material-ui/Table/TablePagination'>;
+declare module '@material-ui/core/TablePagination/TablePagination.js' {
+  declare module.exports: $Exports<'@material-ui/core/TablePagination'>;
 }
-declare module 'material-ui/Table/TableRow.js' {
-  declare module.exports: $Exports<'material-ui/Table/TableRow'>;
+declare module '@material-ui/core/TableRow/TableRow.js' {
+  declare module.exports: $Exports<'@material-ui/core/TableRow'>;
 }
-declare module 'material-ui/Table/TableSortLabel.js' {
-  declare module.exports: $Exports<'material-ui/Table/TableSortLabel'>;
+declare module '@material-ui/core/TableSortLabel/TableSortLabel.js' {
+  declare module.exports: $Exports<'@material-ui/core/TableSortLabel'>;
 }
-declare module 'material-ui/Tabs/index.js' {
-  declare module.exports: $Exports<'material-ui/Tabs'>;
+declare module '@material-ui/core/Tabs/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Tabs'>;
 }
-declare module 'material-ui/Tabs/Tab.js' {
-  declare module.exports: $Exports<'material-ui/Tabs/Tab'>;
+declare module '@material-ui/core/Tab/Tab.js' {
+  declare module.exports: $Exports<'@material-ui/core/Tab'>;
 }
-declare module 'material-ui/Tabs/Tabs.js' {
-  declare module.exports: $Exports<'material-ui/Tabs/Tabs'>;
+declare module '@material-ui/core/Tabs/Tabs.js' {
+  declare module.exports: $Exports<'@material-ui/core/Tabs'>;
 }
-declare module 'material-ui/TextField/index.js' {
-  declare module.exports: $Exports<'material-ui/TextField'>;
+declare module '@material-ui/core/TextField/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/TextField'>;
 }
-declare module 'material-ui/TextField/TextField.js' {
-  declare module.exports: $Exports<'material-ui/TextField/TextField'>;
+declare module '@material-ui/core/TextField/TextField.js' {
+  declare module.exports: $Exports<'@material-ui/core/TextField'>;
 }
-declare module 'material-ui/Toolbar/index.js' {
-  declare module.exports: $Exports<'material-ui/Toolbar'>;
+declare module '@material-ui/core/Toolbar/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Toolbar'>;
 }
-declare module 'material-ui/Toolbar/Toolbar.js' {
-  declare module.exports: $Exports<'material-ui/Toolbar/Toolbar'>;
+declare module '@material-ui/core/Toolbar/Toolbar.js' {
+  declare module.exports: $Exports<'@material-ui/core/Toolbar'>;
 }
-declare module 'material-ui/Tooltip/index.js' {
-  declare module.exports: $Exports<'material-ui/Tooltip'>;
+declare module '@material-ui/core/Tooltip/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Tooltip'>;
 }
-declare module 'material-ui/Tooltip/Tooltip.js' {
-  declare module.exports: $Exports<'material-ui/Tooltip/Tooltip'>;
+declare module '@material-ui/core/Tooltip/Tooltip.js' {
+  declare module.exports: $Exports<'@material-ui/core/Tooltip'>;
 }
-declare module 'material-ui/transitions/Collapse.js' {
-  declare module.exports: $Exports<'material-ui/transitions/Collapse'>;
+declare module '@material-ui/core/Collapse/Collapse.js' {
+  declare module.exports: $Exports<'@material-ui/core/Collapse'>;
 }
-declare module 'material-ui/transitions/Fade.js' {
-  declare module.exports: $Exports<'material-ui/transitions/Fade'>;
+declare module '@material-ui/core/Fade/Fade.js' {
+  declare module.exports: $Exports<'@material-ui/core/Fade'>;
 }
-declare module 'material-ui/transitions/Grow.js' {
-  declare module.exports: $Exports<'material-ui/transitions/Grow'>;
+declare module '@material-ui/core/Grow/Grow.js' {
+  declare module.exports: $Exports<'@material-ui/core/Grow'>;
 }
-declare module 'material-ui/transitions/index.js' {
-  declare module.exports: $Exports<'material-ui/transitions'>;
+declare module '@material-ui/core/Slide/Slide.js' {
+  declare module.exports: $Exports<'@material-ui/core/Slide'>;
 }
-declare module 'material-ui/transitions/Slide.js' {
-  declare module.exports: $Exports<'material-ui/transitions/Slide'>;
+declare module '@material-ui/core/Typography/index.js' {
+  declare module.exports: $Exports<'@material-ui/core/Typography'>;
 }
-declare module 'material-ui/Typography/index.js' {
-  declare module.exports: $Exports<'material-ui/Typography'>;
+declare module '@material-ui/core/Typography/Typography.js' {
+  declare module.exports: $Exports<'@material-ui/core/Typography'>;
 }
-declare module 'material-ui/Typography/Typography.js' {
-  declare module.exports: $Exports<'material-ui/Typography/Typography'>;
+// declare module '@material-ui/core/utils/addEventListener.js' {
+//   declare module.exports: $Exports<'@material-ui/core/utils/addEventListener'>;
+// }
+declare module '@material-ui/core/ClickAwayListener/ClickAwayListener.js' {
+  declare module.exports: $Exports<'@material-ui/core/ClickAwayListener'>;
 }
-declare module 'material-ui/utils/addEventListener.js' {
-  declare module.exports: $Exports<'material-ui/utils/addEventListener'>;
+declare module '@material-ui/core/utils/exactProp.js' {
+  declare module.exports: $Exports<'@material-ui/core/utils/exactProp'>;
 }
-declare module 'material-ui/utils/ClickAwayListener.js' {
-  declare module.exports: $Exports<'material-ui/utils/ClickAwayListener'>;
+declare module '@material-ui/core/utils/helpers.js' {
+  declare module.exports: $Exports<'@material-ui/core/utils/helpers'>;
 }
-declare module 'material-ui/utils/exactProp.js' {
-  declare module.exports: $Exports<'material-ui/utils/exactProp'>;
+// declare module '@material-ui/core/utils/keyboardFocus.js' {
+//   declare module.exports: $Exports<'@material-ui/core/utils/keyboardFocus'>;
+// }
+// declare module '@material-ui/core/utils/manageAriaHidden.js' {
+//   declare module.exports: $Exports<'@material-ui/core/utils/manageAriaHidden'>;
+// }
+declare module '@material-ui/core/utils/reactHelpers.js' {
+  declare module.exports: $Exports<'@material-ui/core/utils/reactHelpers'>;
 }
-declare module 'material-ui/utils/helpers.js' {
-  declare module.exports: $Exports<'material-ui/utils/helpers'>;
+declare module '@material-ui/core/utils/requirePropFactory.js' {
+  declare module.exports: $Exports<'@material-ui/core/utils/requirePropFactory'>;
 }
-declare module 'material-ui/utils/keyboardFocus.js' {
-  declare module.exports: $Exports<'material-ui/utils/keyboardFocus'>;
-}
-declare module 'material-ui/utils/manageAriaHidden.js' {
-  declare module.exports: $Exports<'material-ui/utils/manageAriaHidden'>;
-}
-declare module 'material-ui/utils/reactHelpers.js' {
-  declare module.exports: $Exports<'material-ui/utils/reactHelpers'>;
-}
-declare module 'material-ui/utils/requirePropFactory.js' {
-  declare module.exports: $Exports<'material-ui/utils/requirePropFactory'>;
-}
-declare module 'material-ui/utils/withWidth.js' {
-  declare module.exports: $Exports<'material-ui/utils/withWidth'>;
+declare module '@material-ui/core/withWidth/withWidth.js' {
+  declare module.exports: $Exports<'@material-ui/core/withWidth'>;
 }

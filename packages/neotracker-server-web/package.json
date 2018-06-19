@@ -29,7 +29,7 @@
     "koa-helmet": "^4.0.0",
     "koa-ratelimit-lru": "^1.0.2",
     "koa-router": "^7.4.0",
-    "material-ui": "^1.0.0-beta.41",
+    "@material-ui/core": "^1.2.1",
     "mz": "^2.7.0",
     "neotracker-server-db": "^0.0.1-alpha.0",
     "neotracker-server-graphql": "^0.0.1-alpha.0",

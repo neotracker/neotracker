@@ -1,4 +1,4 @@
 /* @flow */
-import Paper from 'material-ui/Paper/Paper';
+import Paper from '@material-ui/core/Paper';
 
 export default Paper;

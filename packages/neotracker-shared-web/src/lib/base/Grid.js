@@ -1,4 +1,4 @@
 /* @flow */
-import Grid from 'material-ui/Grid/Grid';
+import Grid from '@material-ui/core/Grid';
 
 export default Grid;

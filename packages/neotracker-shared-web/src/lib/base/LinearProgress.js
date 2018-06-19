@@ -1,4 +1,4 @@
 /* @flow */
-import LinearProgress from 'material-ui/Progress/LinearProgress';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 export default LinearProgress;

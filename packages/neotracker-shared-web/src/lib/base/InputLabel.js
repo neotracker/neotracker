@@ -1,4 +1,4 @@
 /* @flow */
-import InputLabel from 'material-ui/Input/InputLabel';
+import InputLabel from '@material-ui/core/InputLabel';
 
 export default InputLabel;

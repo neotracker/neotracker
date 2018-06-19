@@ -1,4 +1,4 @@
 /* @flow */
-import Snackbar from 'material-ui/Snackbar/Snackbar';
+import Snackbar from '@material-ui/core/Snackbar';
 
 export default Snackbar;

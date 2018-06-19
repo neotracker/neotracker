@@ -1,7 +1,7 @@
 /* @flow */
 import { type HOC, compose, pure } from 'recompose';
 import * as React from 'react';
-import MUIIcon, { type IconProps } from 'material-ui/Icon/Icon';
+import MUIIcon, { type IconProps } from '@material-ui/core/Icon';
 
 import classNames from 'classnames';
 import withStyles from './withStyles';
@@ -41,6 +41,9 @@ function Icon({
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(Icon): React.ComponentType<ExternalProps>);

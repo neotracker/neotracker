@@ -1,4 +1,4 @@
 /* @flow */
-import Card from 'material-ui/Card/Card';
+import Card from '@material-ui/core/Card';
 
 export default Card;

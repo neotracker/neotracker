@@ -1,4 +1,4 @@
 /* @flow */
-import Checkbox from 'material-ui/Checkbox/Checkbox';
+import Checkbox from '@material-ui/core/Checkbox';
 
 export default Checkbox;

@@ -1,4 +1,4 @@
 /* @flow */
-import ClickAwayListener from 'material-ui/utils/ClickAwayListener';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 export default ClickAwayListener;
