@@ -23,6 +23,7 @@ import {
   scan,
   filter,
   switchMap,
+  take,
 } from 'rxjs/operators';
 
 const deleteNEP5 = async (
@@ -118,7 +119,7 @@ class ContractPoller {
   _makeQueryContext: (monitor: Monitor) => QueryContext;
   _running: boolean;
   _observer: Observer<Array<ContractModel>>;
-  _seenContracts: Set<string>;
+  _blacklistHashes$: Observable<Array<string>>;
   _pollTimeout: ?TimeoutID;
 
   constructor(
@@ -126,13 +127,14 @@ class ContractPoller {
     db: knex<*>,
     makeQueryContext: (monitor: Monitor) => QueryContext,
     observer: Observer<Array<ContractModel>>,
+    blacklistHashes$: Observable<Array<string>>,
   ) {
     this._monitor = monitor;
     this._db = db;
     this._makeQueryContext = makeQueryContext;
     this._observer = observer;
+    this._blacklistHashes$ = blacklistHashes$;
     this._running = false;
-    this._seenContracts = new Set();
     this._pollTimeout = null;
   }
 
@@ -187,6 +189,14 @@ class ContractPoller {
   }
 
   async _isNEP5(contractModel: ContractModel): Promise<boolean> {
+    const blacklistHashes = await this._blacklistHashes$
+      .pipe(take(1))
+      .toPromise();
+    const hashesSet = new Set(blacklistHashes);
+    if (hashesSet.has(contractModel.id)) {
+      return false;
+    }
+
     const attributes = [
       'totalSupply',
       'name',
@@ -218,7 +228,13 @@ export default (
   blacklistHashes$: Observable<Array<string>>,
 ): Observable<Array<ContractModel>> => {
   const contracts$ = Observable.create(observer => {
-    const poller = new ContractPoller(monitor, db, makeQueryContext, observer);
+    const poller = new ContractPoller(
+      monitor,
+      db,
+      makeQueryContext,
+      observer,
+      blacklistHashes$,
+    );
     poller.start();
     return poller;
   });
@@ -239,12 +255,11 @@ export default (
       }
       return contracts;
     }),
-    distinctUntilChanged(
-      (a, b) =>
-        !_.isEqual(
-          a.map(contract => contract.id).sort(),
-          b.map(contract => contract.id).sort(),
-        ),
+    distinctUntilChanged((a, b) =>
+      _.isEqual(
+        a.map(contract => contract.id).sort(),
+        b.map(contract => contract.id).sort(),
+      ),
     ),
   );
 };
