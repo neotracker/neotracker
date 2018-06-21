@@ -105,7 +105,9 @@ function ClaimGASStep({
 
   let loadingElement;
   if (inProgress) {
-    loadingElement = <CircularProgress className={classes.margin} size={24} />;
+    loadingElement = (
+      <CircularProgress className={classes.margin} size={24} thickness={5} />
+    );
   }
 
   const color = classNames({

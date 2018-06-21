@@ -118,7 +118,7 @@ function CreateKeystoreView({
             {error}
           </Typography>
         )}
-        {loading ? <CircularProgress size={32} /> : null}
+        {loading ? <CircularProgress size={32} thickness={5} /> : null}
         <Button
           className={classes.createButton}
           color="primary"

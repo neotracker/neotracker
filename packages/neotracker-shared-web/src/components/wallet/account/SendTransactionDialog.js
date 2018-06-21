@@ -106,7 +106,11 @@ function SendTransactionDialog({
   let actions = (
     <DialogActions>
       {loading ? (
-        <CircularProgress className={classes.progress} size={32} />
+        <CircularProgress
+          className={classes.progress}
+          size={32}
+          thickness={5}
+        />
       ) : (
         <span />
       )}

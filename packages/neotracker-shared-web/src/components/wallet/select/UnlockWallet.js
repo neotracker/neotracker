@@ -118,7 +118,11 @@ function UnlockWallet({
           </Typography>
         </Button>
         {loading ? (
-          <CircularProgress className={classes.progress} size={32} />
+          <CircularProgress
+            className={classes.progress}
+            size={32}
+            thickness={5}
+          />
         ) : (
           <div className={classes.spacer} />
         )}

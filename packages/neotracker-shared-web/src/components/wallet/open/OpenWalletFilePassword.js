@@ -129,7 +129,7 @@ function OpenWalletFilePassword({
           hasSubtext
         />
         <div className={classes.unlockArea}>
-          {loading ? <CircularProgress size={32} /> : null}
+          {loading ? <CircularProgress size={32} thickness={5} /> : null}
           <Button
             className={classes.unlockButton}
             color="primary"

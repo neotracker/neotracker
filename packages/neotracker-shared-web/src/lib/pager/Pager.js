@@ -93,7 +93,7 @@ function Pager({
         </Typography>
       ) : null}
       {isLoading ? (
-        <CircularProgress size={32} className={classes.margin} />
+        <CircularProgress size={32} thickness={5} className={classes.margin} />
       ) : null}
       {totalElement}
       <IconButton
