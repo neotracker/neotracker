@@ -17,6 +17,7 @@ export type TransactionViewExtra_transaction = {|
     +invocation_script: string,
     +verification_script: string,
   |}>,
+  +script: ?string,
   +transfers: {|
     +edges: $ReadOnlyArray<{|
       +node: {|
@@ -69,6 +70,13 @@ const node/*: ConcreteFragment*/ = {
       ]
     },
     {
+      "kind": "ScalarField",
+      "alias": null,
+      "name": "script",
+      "args": null,
+      "storageKey": null
+    },
+    {
       "kind": "LinkedField",
       "alias": null,
       "name": "transfers",
@@ -109,5 +117,5 @@ const node/*: ConcreteFragment*/ = {
   ]
 };
 // prettier-ignore
-(node/*: any*/).hash = 'e37bcd0303711c3d77652b72ac1abe55';
+(node/*: any*/).hash = '2f9bb227d8656628bef2a56a0fbb0b39';
 module.exports = node;

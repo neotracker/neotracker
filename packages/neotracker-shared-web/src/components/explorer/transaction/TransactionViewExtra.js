@@ -82,22 +82,32 @@ function TransactionViewExtra({
     );
   });
 
-  if (
-    transaction.type === 'InvocationTransaction' &&
-    transaction.transfers.edges.length > 0
-  ) {
-    elements.push(
-      <ExpandoCard
-        key="transfer"
-        title="Transfers"
-        content={
-          <TransferTable
-            transfers={transaction.transfers.edges.map(edge => edge.node)}
-          />
-        }
-        initialShowContent
-      />,
-    );
+  if (transaction.type === 'InvocationTransaction') {
+    if (transaction.transfers.edges.length > 0) {
+      elements.push(
+        <ExpandoCard
+          key="transfer"
+          title="Transfers"
+          content={
+            <TransferTable
+              transfers={transaction.transfers.edges.map(edge => edge.node)}
+            />
+          }
+          initialShowContent
+        />,
+      );
+    }
+    if (transaction.script != null) {
+      elements.push(
+        <ExpandoCard
+          key="script"
+          title="Script"
+          content={
+            <Script className={classes.padding} script={transaction.script} />
+          }
+        />,
+      );
+    }
   }
 
   return <div className={classNames(className, classes.root)}>{elements}</div>;
@@ -113,6 +123,7 @@ const enhance: HOC<*, *> = compose(
           invocation_script
           verification_script
         }
+        script
         transfers {
           edges {
             node {

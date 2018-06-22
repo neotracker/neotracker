@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 65891c6f40c8cddd0dfa683c130569f0
+ * @relayHash bdb4415854facb016272d6aa574fdca3
  */
 
 /* eslint-disable */
@@ -61,6 +61,7 @@ fragment TransactionViewExtra_transaction on Transaction {
     invocation_script
     verification_script
   }
+  script
   transfers {
     edges {
       node {
@@ -239,7 +240,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "TransactionQuery",
-  "id": "22",
+  "id": "30",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -285,7 +286,7 @@ return {
           {
             "kind": "ScalarField",
             "alias": null,
-            "name": "system_fee",
+            "name": "size",
             "args": null,
             "storageKey": null
           },
@@ -366,14 +367,14 @@ return {
           {
             "kind": "ScalarField",
             "alias": null,
-            "name": "type",
+            "name": "system_fee",
             "args": null,
             "storageKey": null
           },
           {
             "kind": "ScalarField",
             "alias": null,
-            "name": "size",
+            "name": "type",
             "args": null,
             "storageKey": null
           },
@@ -409,6 +410,13 @@ return {
                 "storageKey": null
               }
             ]
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "name": "script",
+            "args": null,
+            "storageKey": null
           },
           {
             "kind": "LinkedField",
