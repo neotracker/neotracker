@@ -41,7 +41,20 @@ const repairAssetSupply = async (
   assetHash: string,
   contract: ReadSmartContract,
 ) => {
-  const issued = await contract.totalSupply(monitor);
+  let issued;
+  try {
+    issued = await contract.totalSupply(monitor);
+  } catch (error) {
+    if (
+      error.message.includes(
+        'Expected one of ["Integer","ByteArray"] ContractParameterTypes',
+      )
+    ) {
+      return;
+    }
+
+    throw error;
+  }
   await AssetModel.query(context.db)
     .context(context.makeQueryContext(monitor))
     .patch({ issued: issued.toString() })
