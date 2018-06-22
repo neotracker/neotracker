@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash d8816e2eb5ea779e99cd4b9049487adc
+ * @relayHash a70bb752d6208a40357394ce26758f23
  */
 
 /* eslint-disable */
@@ -23,7 +23,12 @@ export type AddressSearchQueryResponse = {|
         +coins: {|
           +edges: $ReadOnlyArray<{|
             +node: {|
-              +$fragmentRefs: CoinTable_coins$ref
+              +value: string,
+              +asset: {|
+                +id: string,
+                +symbol: string,
+              |},
+              +$fragmentRefs: CoinTable_coins$ref,
             |}
           |}>
         |},
@@ -52,6 +57,11 @@ query AddressSearchQuery(
           edges {
             node {
               ...CoinTable_coins
+              value
+              asset {
+                id
+                symbol
+              }
               id
             }
           }
@@ -138,6 +148,32 @@ v2 = {
   "storageKey": null
 },
 v3 = {
+  "kind": "ScalarField",
+  "alias": null,
+  "name": "value",
+  "args": null,
+  "storageKey": null
+},
+v4 = {
+  "kind": "LinkedField",
+  "alias": null,
+  "name": "asset",
+  "storageKey": null,
+  "args": null,
+  "concreteType": "Asset",
+  "plural": false,
+  "selections": [
+    v2,
+    {
+      "kind": "ScalarField",
+      "alias": null,
+      "name": "symbol",
+      "args": null,
+      "storageKey": null
+    }
+  ]
+},
+v5 = {
   "kind": "LinkedField",
   "alias": null,
   "name": "pageInfo",
@@ -159,7 +195,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "AddressSearchQuery",
-  "id": "19",
+  "id": "32",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -233,7 +269,9 @@ return {
                                 "kind": "FragmentSpread",
                                 "name": "CoinTable_coins",
                                 "args": null
-                              }
+                              },
+                              v3,
+                              v4
                             ]
                           }
                         ]
@@ -244,7 +282,7 @@ return {
               }
             ]
           },
-          v3
+          v5
         ]
       }
     ]
@@ -344,32 +382,8 @@ return {
                             "concreteType": "Coin",
                             "plural": false,
                             "selections": [
-                              {
-                                "kind": "ScalarField",
-                                "alias": null,
-                                "name": "value",
-                                "args": null,
-                                "storageKey": null
-                              },
-                              {
-                                "kind": "LinkedField",
-                                "alias": null,
-                                "name": "asset",
-                                "storageKey": null,
-                                "args": null,
-                                "concreteType": "Asset",
-                                "plural": false,
-                                "selections": [
-                                  v2,
-                                  {
-                                    "kind": "ScalarField",
-                                    "alias": null,
-                                    "name": "symbol",
-                                    "args": null,
-                                    "storageKey": null
-                                  }
-                                ]
-                              },
+                              v3,
+                              v4,
                               v2
                             ]
                           }
@@ -381,7 +395,7 @@ return {
               }
             ]
           },
-          v3
+          v5
         ]
       }
     ]
@@ -389,5 +403,5 @@ return {
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = 'a8a1b13954524ba8dcf44ea2b3b070bc';
+(node/*: any*/).hash = 'f393a032080f1d13e44a484710244ff9';
 module.exports = node;

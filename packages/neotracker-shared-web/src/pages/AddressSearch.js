@@ -13,6 +13,7 @@ import { CoinTable } from '../components/explorer/address/lib';
 import { AddressPagingView } from '../components/explorer/address';
 import { SearchView } from '../components/common/view';
 
+import getSortedCoins from '../components/explorer/address/lib/getSortedCoins';
 import { getID, queryRenderer } from '../graphql/relay';
 import * as routes from '../routes';
 
@@ -72,7 +73,10 @@ function AddressSearch({
     addresses = currentProps.addresses.edges.map(edge => edge.node);
     currentProps.addresses.edges.forEach((edge, idx) => {
       addressesMap[getID(edge.node.id)] = edge.node;
-      rowHeightMap[idx] = edge.node.coins.edges.length * COIN_TABLE_ROW_HEIGHT;
+      const sortedCoins = getSortedCoins(
+        edge.node.coins.edges.map(coinEdge => coinEdge.node),
+      );
+      rowHeightMap[idx] = sortedCoins.length * COIN_TABLE_ROW_HEIGHT;
     });
     // eslint-disable-next-line
     hasNextPage = currentProps.addresses.pageInfo.hasNextPage;
@@ -126,6 +130,11 @@ export default (queryRenderer(
               edges {
                 node {
                   ...CoinTable_coins
+                  value
+                  asset {
+                    id
+                    symbol
+                  }
                 }
               }
             }
