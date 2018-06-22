@@ -15,6 +15,7 @@ import { privateKeyToAddress, wifToPrivateKey } from '@neo-one/client';
 import { sanitizeError } from 'neotracker-shared-utils';
 
 import type { AppContext } from '../../../AppContext';
+import OpenWalletEncryptedKey from './OpenWalletEncryptedKey';
 import { Button, Typography, withStyles } from '../../../lib/base';
 import { type Theme } from '../../../styles/createTheme';
 import { GenerateKeystore } from '../keystore';
@@ -48,11 +49,13 @@ const styles = (theme: Theme) => ({
 
 type ExternalProps = {|
   className?: string,
+  initialPrivateKey?: string,
 |};
 type InternalProps = {|
   privateKey: string,
   unlocked: boolean,
   error?: string,
+  nep2Key?: string,
   onChange: (event: Object) => void,
   onSubmit: () => void,
   classes: Object,
@@ -68,6 +71,7 @@ function OpenWalletPrivateKey({
   error,
   onChange,
   onSubmit,
+  nep2Key,
   classes,
 }: Props): React.Element<*> {
   let setup;
@@ -83,6 +87,11 @@ function OpenWalletPrivateKey({
           </Button>
         </Link>
       </div>
+    );
+  }
+  if (nep2Key != null) {
+    return (
+      <OpenWalletEncryptedKey className={className} initialNEP2Key={nep2Key} />
     );
   }
   return (
@@ -116,11 +125,22 @@ function OpenWalletPrivateKey({
 const enhance: HOC<*, *> = compose(
   getContext({ appContext: () => null }),
   withStateHandlers(
-    () => ({
-      unlocked: false,
-      privateKey: '',
-      error: undefined,
-    }),
+    ({ initialPrivateKey }) => {
+      if (initialPrivateKey == null) {
+        return {
+          unlocked: false,
+          privateKey: '',
+          nep2Key: undefined,
+          error: undefined,
+        };
+      }
+      return {
+        unlocked: false,
+        privateKey: initialPrivateKey,
+        nep2Key: undefined,
+        error: undefined,
+      };
+    },
     { setState: prevState => updater => updater(prevState) },
   ),
   withHandlers({
@@ -153,8 +173,15 @@ const enhance: HOC<*, *> = compose(
             `L4afVEGodWqHnuMfAaw2HegcLgnQqG7D38rWC1UET7cicoNeJoZZ.`,
         }));
       };
-
       const privateKeyTrimmed = privateKeyIn.trim();
+      if (walletAPI.isNEP2(privateKeyTrimmed)) {
+        setState(prevState => ({
+          ...prevState,
+          nep2Key: privateKeyTrimmed,
+          error: undefined,
+        }));
+        return;
+      }
 
       let privateKey;
       let errorMessage;

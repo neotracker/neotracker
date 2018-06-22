@@ -1,5 +1,5 @@
 /* @flow */
-import { ClientError, sanitizeError } from 'neotracker-shared-utils';
+import { ClientError } from 'neotracker-shared-utils';
 import {
   type HOC,
   compose,
@@ -10,40 +10,15 @@ import {
 import * as React from 'react';
 
 import classNames from 'classnames';
-import { withRouter } from 'react-router-dom';
 
-import {
-  Button,
-  CircularProgress,
-  Typography,
-  withStyles,
-} from '../../../lib/base';
-import { PasswordField } from '../common';
+import OpenWalletPassword from './OpenWalletPassword';
+import { Button, Typography, withStyles } from '../../../lib/base';
 import { type Theme } from '../../../styles/createTheme';
 
-import * as routes from '../../../routes';
-
 const styles = (theme: Theme) => ({
-  [theme.breakpoints.down('sm')]: {
-    passwordField: {
-      paddingTop: theme.spacing.unit,
-    },
-  },
-  [theme.breakpoints.up('sm')]: {
-    passwordField: {
-      paddingTop: theme.spacing.unit * 2,
-    },
-  },
   root: {
     flex: '1 1 auto',
     maxWidth: theme.spacing.unit * 70,
-  },
-  passwordArea: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  passwordField: {
-    flex: '1 1 auto',
   },
   buttonText: {
     color: theme.custom.colors.common.white,
@@ -51,14 +26,6 @@ const styles = (theme: Theme) => ({
   error: {
     color: theme.palette.error[500],
     paddingTop: theme.spacing.unit,
-  },
-  unlockArea: {
-    alignItems: 'center',
-    display: 'flex',
-    justifyContent: 'flex-end',
-  },
-  unlockButton: {
-    marginLeft: theme.spacing.unit,
   },
   hidden: {
     display: 'none',
@@ -70,7 +37,6 @@ type ExternalProps = {|
   read: (reader: FileReader, file: any) => void,
   onUploadFileError: (error: Error) => void,
   extractWallet: (readerResult: string | Buffer) => any,
-  unlockWallet: (wallet: any, password: string) => Promise<void>,
   onOpen: () => void,
   onOpenError: (error: Error) => void,
   className?: string,
@@ -96,14 +62,11 @@ function OpenWalletFilePassword({
   className,
   wallet,
   error,
-  loading,
-  password,
-  validation,
   setUploadFileRef,
   onClickUploadFile,
   onUploadFile,
-  onChange,
-  onSubmit,
+  onOpen,
+  onOpenError,
   classes,
 }: Props): React.Element<*> {
   let errorElement;
@@ -114,37 +77,7 @@ function OpenWalletFilePassword({
       </Typography>
     );
   }
-  let passwordElement;
-  if (wallet != null) {
-    passwordElement = (
-      <div className={classes.passwordArea}>
-        <PasswordField
-          id="owfp-password"
-          className={classes.passwordField}
-          value={password}
-          validation={validation}
-          onChange={onChange}
-          onEnter={onSubmit}
-          label="Enter password."
-          hasSubtext
-        />
-        <div className={classes.unlockArea}>
-          {loading ? <CircularProgress size={32} thickness={5} /> : null}
-          <Button
-            className={classes.unlockButton}
-            color="primary"
-            disabled={validation != null || loading}
-            onClick={onSubmit}
-          >
-            <Typography color="inherit" variant="body1">
-              UNLOCK
-            </Typography>
-          </Button>
-        </div>
-      </div>
-    );
-  }
-  return (
+  const fileUploadElement = (
     <div className={classNames(className, classes.root)}>
       <input
         className={classes.hidden}
@@ -158,8 +91,17 @@ function OpenWalletFilePassword({
         </Typography>
       </Button>
       {errorElement}
-      {passwordElement}
     </div>
+  );
+  return (
+    <OpenWalletPassword
+      className={classNames(className, classes.root)}
+      accessType="Keystore"
+      keyElement={fileUploadElement}
+      onOpen={onOpen}
+      onOpenError={onOpenError}
+      wallet={wallet}
+    />
   );
 }
 
@@ -167,15 +109,11 @@ const enhance: HOC<*, *> = compose(
   withStateHandlers(
     () => ({
       uploadFileRef: null,
+      error: undefined,
       wallet: null,
-      error: null,
-      password: '',
-      validation: undefined,
-      loading: false,
     }),
     { setState: prevState => updater => updater(prevState) },
   ),
-  withRouter,
   withHandlers({
     setUploadFileRef: ({ setState }) => uploadFileRef =>
       setState(prevState => ({
@@ -213,7 +151,7 @@ const enhance: HOC<*, *> = compose(
           onError((reader.error: any));
         } else {
           try {
-            const wallet = extractWallet(reader.result);
+            const wallet = extractWallet((reader.result: $FlowFixMe));
             setState(prevState => ({
               ...prevState,
               wallet,
@@ -229,41 +167,6 @@ const enhance: HOC<*, *> = compose(
       } catch (error) {
         onError(error);
       }
-    },
-    onChange: ({ setState }) => event => {
-      const password = event.target.value;
-      setState(prevState => ({ ...prevState, password, validation: null }));
-    },
-    onSubmit: ({
-      setState,
-      wallet,
-      password,
-      history,
-      fileTypeName,
-      unlockWallet,
-      onOpen,
-      onOpenError,
-    }) => () => {
-      setState(prevState => ({
-        ...prevState,
-        loading: true,
-      }));
-
-      unlockWallet(wallet, password)
-        .then(() => {
-          history.replace(routes.WALLET_HOME);
-          onOpen();
-        })
-        .catch(error => {
-          setState(prevState => ({
-            ...prevState,
-            loading: false,
-            validation:
-              `Open ${fileTypeName} failed: ` +
-              `${sanitizeError(error).clientMessage}`,
-          }));
-          onOpenError(error);
-        });
     },
   }),
   withStyles(styles),

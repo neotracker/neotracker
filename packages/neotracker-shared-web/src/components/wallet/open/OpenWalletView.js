@@ -23,6 +23,7 @@ import { type Theme } from '../../../styles/createTheme';
 
 import OpenWalletKeystore from './OpenWalletKeystore';
 import OpenWalletPrivateKey from './OpenWalletPrivateKey';
+import OpenWalletEncryptedKey from './OpenWalletEncryptedKey';
 
 const styles = (theme: Theme) => ({
   [theme.breakpoints.down('sm')]: {
@@ -53,7 +54,7 @@ const styles = (theme: Theme) => ({
   },
 });
 
-type Option = 'keystore' | 'privatekey' | 'neo-web-app';
+type Option = 'keystore' | 'privatekey' | 'encryptedkey';
 
 type ExternalProps = {|
   className?: string,
@@ -81,6 +82,9 @@ function OpenWalletView({
     case 'privatekey':
       open = <OpenWalletPrivateKey className={classes.margin} />;
       break;
+    case 'encryptedkey':
+      open = <OpenWalletEncryptedKey className={classes.margin} />;
+      break;
     default:
       open = null;
   }
@@ -103,6 +107,11 @@ function OpenWalletView({
             value="privatekey"
             control={<Radio />}
             label="Private Key"
+          />
+          <FormControlLabel
+            value="encryptedkey"
+            control={<Radio />}
+            label="Encrypted Key"
           />
         </RadioGroup>
       </FormControl>

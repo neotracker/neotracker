@@ -14,7 +14,6 @@ type InternalProps = {|
   read: (reader: FileReader, file: any) => void,
   onUploadFileError: (error: Error) => void,
   extractWallet: (readerResult: string | Buffer) => any,
-  unlockWallet: (wallet: any, password: string) => Promise<void>,
   onOpen: () => void,
   onOpenError: (error: Error) => void,
 |};
@@ -27,7 +26,6 @@ function OpenWalletKeystore({
   read,
   onUploadFileError,
   extractWallet,
-  unlockWallet,
   onOpen,
   onOpenError,
 }: Props): React.Element<*> {
@@ -38,7 +36,6 @@ function OpenWalletKeystore({
       read={read}
       onUploadFileError={onUploadFileError}
       extractWallet={extractWallet}
-      unlockWallet={unlockWallet}
       onOpen={onOpen}
       onOpenError={onOpenError}
     />
@@ -65,25 +62,6 @@ const enhance: HOC<*, *> = compose(
         type: 'deprecated',
         wallet: walletAPI.extractKeystore({ text: readerResult }),
       };
-    },
-    unlockWallet: ({ appContext }) => (result, password) => {
-      if (result.type === 'deprecated') {
-        return walletAPI
-          .getPrivateKey({ keystore: result.wallet, password })
-          .then(privateKey =>
-            walletAPI.addAccount({
-              appContext,
-              privateKey,
-              password,
-            }),
-          );
-      }
-
-      return walletAPI.addNEP2Account({
-        appContext,
-        nep2: result.wallet,
-        password,
-      });
     },
     onOpen: ({ appContext: appContextIn }) => () => {
       const appContext = ((appContextIn: $FlowFixMe): AppContext);
