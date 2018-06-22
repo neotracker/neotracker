@@ -58,7 +58,7 @@ import {
 } from './constants';
 import type { Context } from './types';
 
-import { add0x } from './utils';
+import { add0x, strip0x } from './utils';
 import createContractObservable from './createContractObservable';
 import normalizeBlock, {
   normalizeAction,
@@ -341,7 +341,7 @@ function updateKnownContractModelPostRun(
 function updateKnownContractBlockModelPostRun(
   context: Context,
   monitor: Monitor,
-  contractModel: ContractModel,
+  hash: string,
   blockIndex: number,
 ): Promise<void> {
   return getMonitor(monitor).captureSpan(
@@ -349,7 +349,7 @@ function updateKnownContractBlockModelPostRun(
       dbTransaction(context.db, async trx => {
         const knownContractModel = await KnownContractModel.query(trx)
           .context(context.makeQueryContext(span))
-          .where('id', contractModel.id)
+          .where('id', strip0x(hash))
           .forUpdate()
           .first();
         if (blockIndex > knownContractModel.processed_block_index) {
@@ -363,6 +363,18 @@ function updateKnownContractBlockModelPostRun(
         }
       }),
     { name: 'neotracker_scrape_run_update_known_contract_model_post_run' },
+  );
+}
+
+async function updateKnownContractsBlockModelPostRun(
+  context: Context,
+  monitor: Monitor,
+  blockIndex: number,
+): Promise<void> {
+  await Promise.all(
+    Object.keys(context.nep5Contracts).map(hash =>
+      updateKnownContractBlockModelPostRun(context, monitor, hash, blockIndex),
+    ),
   );
 }
 
@@ -1238,7 +1250,7 @@ function processContractActions(
         await updateKnownContractBlockModelPostRun(
           context,
           monitor,
-          contractModel,
+          contractModel.id,
           blockIndexStop,
         );
       } catch (error) {
@@ -1923,6 +1935,7 @@ function processBlockFiltered(
         saveTransactions(context, span, block, blockModel),
       ]);
 
+      await updateKnownContractsBlockModelPostRun(context, span, block.index);
       await updateProcessedIndex(context, span, block.index);
 
       return blockModel;
