@@ -113,9 +113,13 @@ const repair = async (context: Context, monitor: Monitor) => {
 
 export default async (context: Context, monitorIn: Monitor) => {
   const monitor = monitorIn.at('repair_nep5');
-  await monitor.captureSpanLog(span => repair(context, span), {
-    name: 'neotracker_scrape_repair_nep5',
-    level: { log: 'verbose', span: 'info' },
-    error: {},
-  });
+  try {
+    await monitor.captureSpanLog(span => repair(context, span), {
+      name: 'neotracker_scrape_repair_nep5',
+      level: { log: 'verbose', span: 'info' },
+      error: {},
+    });
+  } catch (error) {
+    // do nothing
+  }
 };
