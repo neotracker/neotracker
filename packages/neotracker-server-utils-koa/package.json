@@ -15,6 +15,7 @@
     "@neo-one/monitor": "^1.0.0-alpha.35",
     "koa": "^2.5.0",
     "koa-better-body": "^3.0.4",
+    "koa-convert": "^1.2.0",
     "koa-router": "^7.4.0",
     "neotracker-server-utils": "^0.0.1-alpha.0",
     "neotracker-shared-utils": "^0.0.1-alpha.0",
