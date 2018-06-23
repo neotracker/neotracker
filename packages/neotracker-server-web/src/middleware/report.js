@@ -8,34 +8,35 @@ import { routes } from 'neotracker-shared-web';
 import { bodyParser, getMonitor } from 'neotracker-server-utils-koa';
 
 const labelNames = [KnownLabel.HTTP_URL, KnownLabel.HTTP_STATUS_CODE];
-const SERVER_PROXY_HTTP_CLIENT_JSONRPC_REQUEST_DURATION_SECONDS = metrics.createHistogram(
+const SERVER_PROXY_HTTP_CLIENT_REQUEST_DURATION_SECONDS = metrics.createHistogram(
   {
-    name: 'server_proxy_http_client_jsonrpc_request_duration_seconds',
+    name: 'server_proxy_http_client_request_duration_seconds',
     labelNames,
   },
 );
-const SERVER_PROXY_HTTP_CLIENT_JSONRPC_REQUEST_FAILURES_TOTAL = metrics.createCounter(
-  {
-    name: 'server_proxy_http_client_jsonrpc_request_failures_total',
-    labelNames,
-  },
-);
+const SERVER_PROXY_HTTP_CLIENT_REQUEST_FAILURES_TOTAL = metrics.createCounter({
+  name: 'server_proxy_http_client_request_failures_total',
+  labelNames,
+});
 
-export default ({ rpcURL }: {| rpcURL: string |}) => ({
+export default ({ reportURL }: {| reportURL?: string |}) => ({
   type: 'route',
-  name: 'nodeRPC',
+  name: 'report',
   method: 'post',
-  path: routes.RPC,
+  path: routes.REPORT,
   middleware: compose([
-    bodyParser({ fields: 'body' }),
+    bodyParser(),
     async (ctx: Context): Promise<void> => {
+      if (reportURL == null) {
+        ctx.status = 200;
+        return;
+      }
       const monitor = getMonitor(ctx);
       const headers = { ...ctx.header };
       const response = await monitor
         .withLabels({
-          [monitor.labels.HTTP_URL]: rpcURL,
+          [monitor.labels.HTTP_URL]: reportURL,
           [monitor.labels.HTTP_METHOD]: ctx.method,
-          [monitor.labels.RPC_TYPE]: 'jsonrpc',
           [monitor.labels.SPAN_KIND]: 'client',
         })
         .captureSpanLog(
@@ -43,10 +44,10 @@ export default ({ rpcURL }: {| rpcURL: string |}) => ({
             span.inject(monitor.formats.HTTP, headers);
             let status = -1;
             try {
-              const resp = await fetch(rpcURL, {
+              const resp = await fetch(reportURL, {
                 method: ctx.method,
                 headers,
-                body: JSON.stringify(ctx.request.body),
+                body: JSON.stringify(ctx.request.fields),
               });
               ({ status } = resp);
               return resp;
@@ -55,11 +56,11 @@ export default ({ rpcURL }: {| rpcURL: string |}) => ({
             }
           },
           {
-            name: 'server_proxy_http_client_jsonrpc_request',
+            name: 'server_proxy_http_client_request',
             level: { log: 'verbose', span: 'info' },
             metric: {
-              total: SERVER_PROXY_HTTP_CLIENT_JSONRPC_REQUEST_DURATION_SECONDS,
-              error: SERVER_PROXY_HTTP_CLIENT_JSONRPC_REQUEST_FAILURES_TOTAL,
+              total: SERVER_PROXY_HTTP_CLIENT_REQUEST_DURATION_SECONDS,
+              error: SERVER_PROXY_HTTP_CLIENT_REQUEST_FAILURES_TOTAL,
             },
             trace: true,
           },

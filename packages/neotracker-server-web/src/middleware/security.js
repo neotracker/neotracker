@@ -1,9 +1,9 @@
 /* @flow */
 import compose from 'koa-compose';
 import helmet from 'koa-helmet';
+import { simpleMiddleware } from 'neotracker-server-utils-koa';
 
 import enforceHttps from './enforceHttps';
-import { simpleMiddleware } from './common';
 
 export type Options = {|
   enforceHTTPs: boolean,

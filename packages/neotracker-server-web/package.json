@@ -16,21 +16,19 @@
     "@neo-one/client": "^1.0.0-alpha.62",
     "@neo-one/monitor": "^1.0.0-alpha.35",
     "app-root-dir": "^1.0.2",
-    "css.escape": "^1.5.1",
     "debug": "^3.1.0",
     "http-errors": "^1.6.3",
     "jss": "^9.8.6",
     "jss-preset-default": "^4.3.0",
     "koa": "^2.5.0",
-    "koa-better-body": "^3.0.4",
     "koa-compose": "^4.1.0",
     "koa-compress": "^3.0.0",
     "koa-convert": "^1.2.0",
     "koa-cors": "^0.0.16",
     "koa-helmet": "^4.0.0",
     "koa-ratelimit-lru": "^1.0.2",
-    "koa-router": "^7.4.0",
     "mz": "^2.7.0",
+    "neotracker-server-utils-koa": "^0.0.1-alpha.0",
     "neotracker-server-db": "^0.0.1-alpha.0",
     "neotracker-server-graphql": "^0.0.1-alpha.0",
     "neotracker-server-utils": "^0.0.1-alpha.0",
@@ -48,8 +46,6 @@
     "rxjs": "^6.2.0",
     "serialize-javascript": "^1.5.0",
     "sitemap": "^1.13.0",
-    "source-map-support": "^0.5.6",
-    "toobusy-js": "^0.5.1",
-    "uuid": "^3.2.1"
+    "toobusy-js": "^0.5.1"
   }
 }

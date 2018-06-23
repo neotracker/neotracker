@@ -1,7 +1,6 @@
 /* @flow */
 import type { Context } from 'koa';
 import { KnownLabel, type Monitor, metrics } from '@neo-one/monitor';
-import type { RootLoader } from 'neotracker-server-db';
 
 import { getUA } from 'neotracker-server-utils';
 import uuidV4 from 'uuid/v4';
@@ -26,17 +25,10 @@ const HTTP_SERVER_REQUEST_FAILURES_TOTAL = metrics.createCounter({
   labelNames,
 });
 
-export default ({
-  rootLoader,
-  monitor: monitorIn,
-}: {|
-  rootLoader: RootLoader,
-  monitor: Monitor,
-|}) =>
+export default ({ monitor: monitorIn }: {| monitor: Monitor |}) =>
   simpleMiddleware(
     'context',
     async (ctx: Context, next: () => Promise<void>) => {
-      ctx.state.rootLoader = rootLoader;
       ctx.state.nonce = uuidV4();
       // $FlowFixMe
       ctx.req.nonce = ctx.state.nonce;

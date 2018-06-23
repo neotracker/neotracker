@@ -3,8 +3,9 @@ import type { Context } from 'koa';
 
 import { isHealthyDB } from 'neotracker-server-db';
 import { routes } from 'neotracker-shared-web';
+import { getMonitor } from 'neotracker-server-utils-koa';
 
-import { getMonitor, getRootLoader } from './common';
+import { getRootLoader } from './common';
 
 export type Options = {|
   maintenance: boolean,

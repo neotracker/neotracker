@@ -2,8 +2,7 @@
 import type { Context } from 'koa';
 
 import ratelimit from 'koa-ratelimit-lru';
-
-import { simpleMiddleware } from './common';
+import { simpleMiddleware } from 'neotracker-server-utils-koa';
 
 export type Options = {|
   enabled: boolean,

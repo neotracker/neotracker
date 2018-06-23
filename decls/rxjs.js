@@ -292,6 +292,21 @@ declare module 'rxjs' {
     k: rxjs$Observable<K>,
     l: rxjs$Observable<L>,
   ): rxjs$Observable<[A, B, C, D, E, F, G, H, I, J, K, L]>;
+  declare export function combineLatest<A, B, C, D, E, F, G, H, I, J, K, L, M>(
+    a: rxjs$Observable<A>,
+    b: rxjs$Observable<B>,
+    c: rxjs$Observable<C>,
+    d: rxjs$Observable<D>,
+    e: rxjs$Observable<E>,
+    f: rxjs$Observable<F>,
+    g: rxjs$Observable<G>,
+    h: rxjs$Observable<H>,
+    i: rxjs$Observable<I>,
+    j: rxjs$Observable<J>,
+    k: rxjs$Observable<K>,
+    l: rxjs$Observable<L>,
+    m: rxjs$Observable<M>,
+  ): rxjs$Observable<[A, B, C, D, E, F, G, H, I, J, K, L, M]>;
   declare export function combineLatest<T>(
     array: Array<rxjs$ObservableInput<T>>,
     scheduler?: rxjs$SchedulerClass,

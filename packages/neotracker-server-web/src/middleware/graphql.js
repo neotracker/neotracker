@@ -11,9 +11,9 @@ import compose from 'koa-compose';
 import compress from 'koa-compress';
 import { routes } from 'neotracker-shared-web';
 import { sanitizeError } from 'neotracker-shared-utils';
+import { bodyParser, getMonitor } from 'neotracker-server-utils-koa';
 
-import bodyParser from './bodyParser';
-import { getMonitor, getRootLoader } from './common';
+import { getRootLoader } from './common';
 
 export default () => ({
   type: 'route',

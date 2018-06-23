@@ -15,7 +15,6 @@ import {
   subscribeProcessedNextIndex,
 } from 'neotracker-server-db';
 import type { Monitor } from '@neo-one/monitor';
-import Router from 'koa-router';
 
 import {
   distinctUntilChanged,
@@ -28,6 +27,13 @@ import { finalize, mergeScanLatest } from 'neotracker-shared-utils';
 import { handleServer, finalizeServer } from 'neotracker-server-utils';
 import http from 'http';
 import { routes } from 'neotracker-shared-web';
+import {
+  type ServerMiddleware,
+  type ServerRoute,
+  context,
+  onError as createOnError,
+  routeMiddleware,
+} from 'neotracker-server-utils-koa';
 
 import {
   type AddHeadElements,
@@ -37,12 +43,8 @@ import {
   type ReactOptions,
   type SecurityOptions,
   type ServeAssetsOptions,
-  type ServerMiddleware,
-  type ServerRoute,
   type TooBusyOptions,
-  onError as createOnError,
   clientAssets,
-  context,
   cors,
   graphql,
   healthCheck,
@@ -50,7 +52,9 @@ import {
   publicAssets,
   ratelimit,
   reactApplication,
+  report,
   rootAssets,
+  setRootLoader,
   security,
   sitemap,
   toobusy,
@@ -85,6 +89,7 @@ export type Options = {|
   rootAssets: ServeAssetsOptions,
   domain: string,
   rpcURL: string,
+  reportURL?: string,
   server: HTTPServerOptions,
   appOptions: AppOptions,
   subscribeProcessedNextIndex: SubscribeProcessedNextIndexOptions,
@@ -158,7 +163,7 @@ export default ({
   const graphqlMiddleware = graphql();
 
   const app$ = combineLatest(
-    rootLoader$.pipe(map(rootLoader => context({ rootLoader, monitor }))),
+    rootLoader$.pipe(map(rootLoader => setRootLoader({ rootLoader }))),
     mapDistinct(_ => _.options.appOptions.maintenance).pipe(
       map(maintenance => healthCheck({ options: { maintenance } })),
     ),
@@ -182,6 +187,9 @@ export default ({
     ),
     mapDistinct(_ => _.options.domain).pipe(map(domain => sitemap({ domain }))),
     mapDistinct(_ => _.options.rpcURL).pipe(map(rpcURL => nodeRPC({ rpcURL }))),
+    mapDistinct(_ => _.options.reportURL).pipe(
+      map(reportURL => report({ reportURL })),
+    ),
     combineLatest(
       mapDistinct(_ => _.addHeadElements || noOpAddHeadElements),
       mapDistinct(_ => _.addBodyElements || noOpAddBodyElements),
@@ -204,7 +212,7 @@ export default ({
   ).pipe(
     map(
       ([
-        contextMiddleware,
+        setRootLoaderMiddleware,
         healthCheckMiddleware,
         toobusyMiddleware,
         ratelimitMiddleware,
@@ -214,6 +222,7 @@ export default ({
         rootAssetsMiddleware,
         sitemapMiddleware,
         nodeRPCMiddleware,
+        reportMiddleware,
         reactApplicationMiddleware,
         addMiddleware,
       ]) => {
@@ -225,7 +234,8 @@ export default ({
         app.on('error', createOnError({ monitor }));
 
         const middlewares = addMiddleware([
-          contextMiddleware,
+          setRootLoaderMiddleware,
+          context({ monitor }),
           healthCheckMiddleware,
           cors,
           toobusyMiddleware,
@@ -237,39 +247,11 @@ export default ({
           sitemapMiddleware,
           graphqlMiddleware,
           nodeRPCMiddleware,
+          reportMiddleware,
           reactApplicationMiddleware,
         ]);
 
-        const router = new Router();
-        for (const middleware of middlewares) {
-          if (middleware.type === 'route') {
-            switch (middleware.method) {
-              case 'get':
-                router.get(
-                  middleware.name,
-                  middleware.path,
-                  middleware.middleware,
-                );
-                break;
-              case 'post':
-                router.post(
-                  middleware.name,
-                  middleware.path,
-                  middleware.middleware,
-                );
-                break;
-              default:
-                // eslint-disable-next-line
-                (middleware.method: empty);
-                throw new Error(`Unknown method ${middleware.method}`);
-            }
-          } else {
-            router.use(middleware.middleware);
-          }
-        }
-
-        app.use(router.routes());
-        app.use(router.allowedMethods());
+        routeMiddleware({ app, middlewares });
 
         return app;
       },

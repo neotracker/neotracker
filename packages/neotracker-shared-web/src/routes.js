@@ -12,6 +12,7 @@ export const makeRoot = (path: string) => path;
 export const ERROR = '/error';
 
 export const RPC = '/rpc';
+export const REPORT = '/report';
 
 // Wallet
 export const WALLET_HOME = '/wallet';

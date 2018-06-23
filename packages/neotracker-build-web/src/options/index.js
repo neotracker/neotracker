@@ -13,5 +13,8 @@ export const getOptions = ({ port }: {| port: number |}) =>
   getNetworkOptions({
     main: main({ port }),
     test: test({ port }),
-    priv: priv({ rpcURL: getPrivRPCURL(), port }),
+    priv: priv({
+      rpcURL: getPrivRPCURL(),
+      port,
+    }),
   });

@@ -15,6 +15,8 @@ export type AppOptions = {|
   |},
   url: string,
   rpcURL: string,
+  reportURL?: string,
+  reportTimer?: number,
   maintenance: boolean,
   disableWalletModify: boolean,
   confirmLimitMS: number,

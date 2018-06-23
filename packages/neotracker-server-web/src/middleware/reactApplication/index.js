@@ -45,8 +45,9 @@ import { of as _of } from 'rxjs';
 import path from 'path';
 import preset from 'jss-preset-default';
 import { renderToString } from 'react-dom/server';
+import { getMonitor } from 'neotracker-server-utils-koa';
 
-import { getMonitor, getNonce, getRootLoader, getUserAgent } from '../common';
+import { getNonce, getRootLoader, getUserAgent } from '../common';
 import makeServerHTML, {
   type AddHeadElements,
   type AddBodyElements,
