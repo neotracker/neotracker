@@ -53,7 +53,7 @@ const getSmartContract = async ({
   client: ReadClient<NEOONEDataProvider>,
 |}): Promise<ReadSmartContract> => {
   const nep5ABI = await abi.NEP5({ client, hash: add0x(asset) });
-  return client.smartContract(add0x(asset), nep5ABI);
+  return client.smartContract({ hash: add0x(asset), abi: nep5ABI });
 };
 
 const getSmartContracts = async ({

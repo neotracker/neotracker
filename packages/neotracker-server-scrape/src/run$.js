@@ -1225,7 +1225,10 @@ function processContractActions(
         contractModel.id,
       );
       const actions = context.client
-        .smartContract(add0x(contractModel.id), { functions: [] })
+        .smartContract({
+          hash: add0x(contractModel.id),
+          abi: { functions: [] },
+        })
         .iterActionsRaw({
           indexStart:
             knownContractModel.processed_block_index === -1
@@ -2095,10 +2098,10 @@ export function initializeNEP5Contract(
             client: context.client,
             hash: add0x(contractModel.id),
           });
-          const contract = context.client.smartContract(
-            add0x(contractModel.id),
-            contractABI,
-          );
+          const contract = context.client.smartContract({
+            hash: add0x(contractModel.id),
+            abi: contractABI,
+          });
           const [
             name,
             symbol,
