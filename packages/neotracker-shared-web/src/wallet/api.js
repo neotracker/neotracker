@@ -368,7 +368,7 @@ export const doSendAsset = async ({
   const transactionOptions = { from: account };
 
   if (assetType === 'NEP5') {
-    const contractABI = await abi.NEP5(readClient, asset);
+    const contractABI = await abi.NEP5({ client: readClient, hash: asset });
     const contract = client.smartContract({
       networks: { [network]: { hash: asset } },
       abi: contractABI,

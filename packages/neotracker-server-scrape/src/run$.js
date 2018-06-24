@@ -566,7 +566,9 @@ function saveCoin(
               }
             });
           return true;
-        } else if (
+        }
+
+        if (
           blockModel.id > coinModel.block_id ||
           (blockModel.id === coinModel.block_id &&
             transactionModel.index > coinModel.transaction_index) ||
@@ -2089,10 +2091,10 @@ export function initializeNEP5Contract(
     .captureSpanLog(
       async span => {
         if (contractModel.type === NEP5_CONTRACT_TYPE) {
-          const contractABI = await abi.NEP5(
-            context.client,
-            add0x(contractModel.id),
-          );
+          const contractABI = await abi.NEP5({
+            client: context.client,
+            hash: add0x(contractModel.id),
+          });
           const contract = context.client.smartContract(
             add0x(contractModel.id),
             contractABI,
