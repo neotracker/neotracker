@@ -609,15 +609,18 @@ export const addNEP2Account = async ({
   appContext: { network, client },
   nep2,
   password,
+  address,
 }: {|
   appContext: AppContext,
   nep2: string,
-  password: string,
+  password?: string,
+  address?: string,
 |}): Promise<void> => {
   const wallet = await client.providers.localStorage.keystore.addAccount({
     network,
     nep2,
     password,
+    address,
   });
   await client.selectAccount(wallet.account.id);
 };

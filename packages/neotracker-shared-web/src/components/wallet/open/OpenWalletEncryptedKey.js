@@ -79,6 +79,7 @@ function OpenWalletEncryptedKey({
         validation={error}
         hasSubtext
         onChange={onChangeNEP2}
+        onEnter={onSubmit}
         error={error != null}
         label="Paste or type encrypted key."
       />

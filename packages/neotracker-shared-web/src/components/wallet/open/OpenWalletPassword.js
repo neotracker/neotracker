@@ -150,7 +150,7 @@ const enhance: HOC<*, *> = compose(
         loading: true,
       }));
 
-      unlockWallet({ appContext, wallet, password })
+      unlockWallet({ appContext, wallet: { ...wallet, password } })
         .then(() => {
           history.replace(routes.WALLET_HOME);
           onOpen();

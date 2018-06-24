@@ -2,6 +2,8 @@
 import { type HOC, compose, getContext, pure, withHandlers } from 'recompose';
 import * as React from 'react';
 
+import _ from 'lodash';
+
 import type { AppContext } from '../../../AppContext';
 import { api as walletAPI } from '../../../wallet';
 
@@ -42,6 +44,65 @@ function OpenWalletKeystore({
   );
 }
 
+const extractJSONStandardWallet = (fileContents: string) => {
+  const jsonKeystore = JSON.parse(fileContents);
+  if (jsonKeystore.accounts == null) {
+    throw new Error('Invalid Keystore File.');
+  }
+  return {
+    origin: 'json-standard',
+    type: 'nep2',
+    wallet: jsonKeystore.accounts[0].key,
+  };
+  // TODO: Support multiple wallets in file
+  // if (jsonKeystore.accounts.length === 1) {
+  //   return {
+  //     origin: 'json-standard',
+  //     type: 'nep2',
+  //     wallet: jsonKeystore.accounts[0].key,
+  //   };
+  // }
+  // return {
+  //   origin: 'json-standard',
+  //   type: 'nep2Array',
+  //   wallet: jsonKeystore.accounts.map(account => ({
+  //     address: account.address,
+  //     nep2: account.key,
+  //   })),
+  // };
+};
+
+const extractNEXWallet = (fileContents: string) => {
+  const nexKeystore = fileContents.split('\n');
+  const nexAddressArray = nexKeystore
+    .filter(element => element.includes('Address'))
+    .map(addressLine => addressLine.split(': ')[1]);
+  const nexKeyArray = nexKeystore
+    .filter(element => element.includes('Encrypted Key'))
+    .map(keyLine => keyLine.split(': ')[1]);
+  const nexWalletArray = _.zip(nexAddressArray, nexKeyArray).map(account => ({
+    address: account[0],
+    nep2: account[1],
+  }));
+  if (nexWalletArray.length === 0) {
+    throw new Error('Invalid Keystore File.');
+  }
+  return {
+    origin: 'nex',
+    type: 'nep2',
+    wallet: nexWalletArray[0].nep2,
+  };
+  // TODO: Support multiple wallets in file
+  // if (nexWalletArray.length === 1) {
+  //   return {
+  //     origin: 'nex',
+  //     type: 'nep2',
+  //     wallet: nexWalletArray[0].nep2,
+  //   };
+  // }
+  // return { origin: 'nex', type: 'nep2Array', wallet: nexWalletArray };
+};
+
 const enhance: HOC<*, *> = compose(
   getContext({ appContext: () => null }),
   (withHandlers({
@@ -53,12 +114,27 @@ const enhance: HOC<*, *> = compose(
         error,
       });
     },
-    extractWallet: () => (readerResult: string | Buffer) => {
+    extractWallet: () => (readerResultIn: string | Buffer) => {
+      const readerResult =
+        readerResultIn instanceof Buffer
+          ? readerResultIn.toString('utf8')
+          : readerResultIn;
       if (walletAPI.isNEP2(readerResult)) {
-        return { type: 'nep2', wallet: readerResult };
+        return { origin: 'neotracker', type: 'nep2', wallet: readerResult };
+      }
+      try {
+        return extractJSONStandardWallet(readerResult);
+      } catch (error) {
+        // do nothing
+      }
+      try {
+        return extractNEXWallet(readerResult);
+      } catch (error) {
+        // do nothing
       }
 
       return {
+        origin: 'neotracker',
         type: 'deprecated',
         wallet: walletAPI.extractKeystore({ text: readerResult }),
       };

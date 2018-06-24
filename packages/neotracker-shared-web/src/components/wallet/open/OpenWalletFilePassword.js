@@ -1,11 +1,11 @@
 /* @flow */
-import { ClientError } from 'neotracker-shared-utils';
 import {
   type HOC,
   compose,
   pure,
   withHandlers,
   withStateHandlers,
+  getContext,
 } from 'recompose';
 import * as React from 'react';
 
@@ -106,6 +106,7 @@ function OpenWalletFilePassword({
 }
 
 const enhance: HOC<*, *> = compose(
+  getContext({ appContext: () => null }),
   withStateHandlers(
     () => ({
       uploadFileRef: null,
@@ -139,9 +140,7 @@ const enhance: HOC<*, *> = compose(
       const onError = (error: Error) => {
         setState(prevState => ({
           ...prevState,
-          error: `${fileTypeName} file upload failed${
-            error instanceof ClientError ? `: ${error.clientMessage}` : '.'
-          }`,
+          error: `${fileTypeName} file upload failed. Invalid wallet file.`,
         }));
         onUploadFileError(error);
       };
@@ -152,6 +151,13 @@ const enhance: HOC<*, *> = compose(
         } else {
           try {
             const wallet = extractWallet((reader.result: $FlowFixMe));
+            // TODO: Support multiple wallets in file
+            // if (wallet.type === 'nep2Array') {
+            //   unlockWallet({appContext, wallet}).then(() => {
+            //     history.replace(routes.WALLET_HOME);
+            //   })
+            //   return;
+            // }
             setState(prevState => ({
               ...prevState,
               wallet,
