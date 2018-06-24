@@ -12,7 +12,7 @@
   "license": "MIT",
   "main": "./src/index.js",
   "dependencies": {
-    "@neo-one/client": "^1.0.0-alpha.62",
+    "@neo-one/client": "^1.0.0-alpha.63",
     "@neo-one/monitor": "^1.0.0-alpha.35",
     "bignumber.js": "^7.2.0",
     "knex": "^0.14.6",

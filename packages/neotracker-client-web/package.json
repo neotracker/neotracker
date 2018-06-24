@@ -13,7 +13,7 @@
   "main": "./src/index.js",
   "dependencies": {
     "@babel/polyfill": "7.0.0-beta.51",
-    "@neo-one/client": "^1.0.0-alpha.62",
+    "@neo-one/client": "^1.0.0-alpha.63",
     "@neo-one/monitor": "^1.0.0-alpha.35",
     "backo2": "^1.0.2",
     "file-saver": "^1.3.8",
@@ -29,7 +29,7 @@
     "react-router-dom": "^4.3.1",
     "react-tap-event-plugin": "^3.0.3",
     "recompose": "^0.27.1",
-    "regenerator-runtime": "^0.11.1",
+    "regenerator-runtime": "^0.12.0",
     "relay-runtime": "^1.6.0",
     "rxjs": "^6.2.0",
     "seamless-immutable": "^7.1.3",

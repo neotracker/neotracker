@@ -152,7 +152,7 @@ const enhance: HOC<*, *> = compose(
     try {
       return {
         opCodes: disassembleByteCode(Buffer.from(script, 'hex')).map(
-          original => {
+          ({ value: original }) => {
             const [idx, value] = original.split(':');
             return [`${idx}:`, value];
           },
