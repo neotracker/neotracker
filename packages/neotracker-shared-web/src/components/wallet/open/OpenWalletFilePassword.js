@@ -14,6 +14,7 @@ import classNames from 'classnames';
 import OpenWalletPassword from './OpenWalletPassword';
 import { Button, Typography, withStyles } from '../../../lib/base';
 import { type Theme } from '../../../styles/createTheme';
+import { Selector } from '../../../lib/selector';
 
 const styles = (theme: Theme) => ({
   root: {
@@ -30,6 +31,10 @@ const styles = (theme: Theme) => ({
   hidden: {
     display: 'none',
   },
+  selector: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
 });
 
 type ExternalProps = {|
@@ -42,7 +47,13 @@ type ExternalProps = {|
   className?: string,
 |};
 type InternalProps = {|
-  wallet: ?mixed,
+  wallet?: {|
+    type: 'nep2',
+    wallet: string,
+    password?: string,
+    address?: string,
+  |},
+  multipleWallets?: Array<{| address: string, nep2: string |}>,
   error: ?string,
   loading: boolean,
   password: string,
@@ -52,6 +63,7 @@ type InternalProps = {|
   onUploadFile: (event: Object) => void,
   onChange: (event: Object) => void,
   onSubmit: () => void,
+  onSelect: (option: ?Object) => void,
   classes: Object,
 |};
 type Props = {|
@@ -61,12 +73,14 @@ type Props = {|
 function OpenWalletFilePassword({
   className,
   wallet,
+  multipleWallets,
   error,
   setUploadFileRef,
   onClickUploadFile,
   onUploadFile,
   onOpen,
   onOpenError,
+  onSelect,
   classes,
 }: Props): React.Element<*> {
   let errorElement;
@@ -75,6 +89,23 @@ function OpenWalletFilePassword({
       <Typography className={classes.error} variant="body1">
         {error}
       </Typography>
+    );
+  }
+  let selectAccountElement;
+  if (multipleWallets != null) {
+    selectAccountElement = (
+      <Selector
+        className={classes.selector}
+        id="select-account"
+        selectText="Select Wallet"
+        label="Select Wallet"
+        options={multipleWallets.map(account => ({
+          id: account.nep2,
+          text: account.address,
+        }))}
+        selectedID={wallet == null ? null : wallet.wallet}
+        onSelect={onSelect}
+      />
     );
   }
   const fileUploadElement = (
@@ -98,6 +129,7 @@ function OpenWalletFilePassword({
       className={classNames(className, classes.root)}
       accessType="Keystore"
       keyElement={fileUploadElement}
+      selectAccountElement={selectAccountElement}
       onOpen={onOpen}
       onOpenError={onOpenError}
       wallet={wallet}
@@ -111,7 +143,8 @@ const enhance: HOC<*, *> = compose(
     () => ({
       uploadFileRef: null,
       error: undefined,
-      wallet: null,
+      wallet: undefined,
+      multipleWallets: null,
     }),
     { setState: prevState => updater => updater(prevState) },
   ),
@@ -151,13 +184,14 @@ const enhance: HOC<*, *> = compose(
         } else {
           try {
             const wallet = extractWallet((reader.result: $FlowFixMe));
-            // TODO: Support multiple wallets in file
-            // if (wallet.type === 'nep2Array') {
-            //   unlockWallet({appContext, wallet}).then(() => {
-            //     history.replace(routes.WALLET_HOME);
-            //   })
-            //   return;
-            // }
+            if (wallet.type === 'nep2Array') {
+              setState(prevState => ({
+                ...prevState,
+                multipleWallets: wallet.wallet,
+                wallet: null,
+              }));
+              return;
+            }
             setState(prevState => ({
               ...prevState,
               wallet,
@@ -173,6 +207,15 @@ const enhance: HOC<*, *> = compose(
       } catch (error) {
         onError(error);
       }
+    },
+    onSelect: ({ setState }) => option => {
+      setState(prevState => ({
+        ...prevState,
+        wallet:
+          option.id == null
+            ? null
+            : { type: 'nep2', wallet: option.id, address: option.text },
+      }));
     },
   }),
   withStyles(styles),

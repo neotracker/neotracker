@@ -52,6 +52,7 @@ type ExternalProps = {|
   onOpen: () => void,
   onOpenError: (error: Error) => void,
   keyElement: React.Element<any>,
+  selectAccountElement?: React.Element<any>,
   className?: string,
   accessType: string,
   wallet: ?mixed,
@@ -77,6 +78,7 @@ function OpenWalletPassword({
   onChange,
   onSubmit,
   keyElement,
+  selectAccountElement,
   classes,
 }: Props): React.Element<*> {
   let passwordElement;
@@ -112,6 +114,7 @@ function OpenWalletPassword({
   return (
     <div className={classNames(className, classes.root)}>
       {keyElement}
+      {selectAccountElement}
       {passwordElement}
     </div>
   );
