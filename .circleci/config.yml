@@ -11,28 +11,16 @@ aliases:
       - ~/.cache/yarn
     key: v1-yarn-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
-  - &filter-only-master
-    branches:
-      only:
-        - master
-
-  - &filter-ignore-gh-pages
-    branches:
-      ignore: gh-pages
-
   - &yarn
     |
       yarn install --non-interactive --cache-folder ~/.cache/yarn --frozen-lockfile
 
-defaults: &defaults
-  docker:
-    - image: circleci/node:10.4.1
+  - &defaults
+    docker:
+      - image: circleci/node:10.4.1
+    working_directory: ~/neotracker
 
-version: 2
-jobs:
-  test:
-    <<: *defaults
-    working_directory: ~/neo-one
+  - &test
     steps:
       - checkout
       - restore-cache: *restore-yarn-cache
@@ -42,15 +30,37 @@ jobs:
           name: Prettier
           command: yarn nit
       - run:
-          name: ESLint
-          command: yarn lint
+          name: Typescript
+          command: yarn tsc
       - run:
           name: Flow
           command: yarn flow
+      - run:
+          name: Lint
+          command: yarn lint
+      - run:
+          name: Test
+          command: yarn test-ci --testResultsProcessor="jest-junit"
+          environment:
+            JEST_JUNIT_OUTPUT: reports/jest/results.xml
+      - run:
+          name: E2E
+          command: yarn e2e-ci --testResultsProcessor="jest-junit"
+          environment:
+            JEST_JUNIT_OUTPUT: reports/jest-e2e/results.xml
+      - store_test_results:
+          path: reports
+      - store_artifacts:
+          path: reports
+
+version: 2
+jobs:
+  test10:
+    <<: *defaults
+    <<: *test
 
 workflows:
   version: 2
   test:
     jobs:
-      - test:
-          filters: *filter-ignore-gh-pages
+      - test10
