@@ -153,7 +153,7 @@
     "lint:js": "eslint",
     "lint:js:all": "yarn run lint:js \"packages/*/src/**/*.js\"",
     "lint:ts": "tslint --project .",
-    "nit:all": "yarn run nit:source",
+    "nit": "yarn run nit:source",
     "nit:source": "yarn run nit:source:ts && yarn run nit:source:js",
     "nit:source:js": "prettier --list-different \"packages/*/src/**/*.js\"",
     "nit:source:ts": "prettier --list-different \"packages/*/src/**/*.ts\"",
