@@ -10,8 +10,10 @@ module.exports = {
   "plugins": [
     "babel-plugin-relay",
     "@babel/plugin-proposal-async-generator-functions",
-    '@babel/plugin-proposal-class-properties',
-    '@babel/plugin-proposal-optional-catch-binding'
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-proposal-object-rest-spread",
+    "@babel/plugin-proposal-export-namespace-from",
+    "@babel/transform-flow-strip-types"
   ],
   "ignore": [
     "node_modules"
