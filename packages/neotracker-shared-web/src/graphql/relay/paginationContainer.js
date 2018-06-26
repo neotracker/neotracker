@@ -4,6 +4,7 @@ import {
   type GraphQLTaggedNode,
   createPaginationContainer,
 } from 'react-relay';
+// $FlowFixMe
 import { sanitizeError } from 'neotracker-shared-utils';
 import * as React from 'react';
 
@@ -27,19 +28,19 @@ export default (
         error: null,
       }),
       {
-        setState: prevState => updater => updater(prevState),
+        setState: (prevState) => (updater) => updater(prevState),
       },
     ),
     withHandlers({
       onLoadMore: ({ relay, setState }) => () => {
         if (relay.hasMore() && !relay.isLoading()) {
-          setState(prevState => ({
+          setState((prevState) => ({
             ...prevState,
             isLoadingMore: true,
             error: null,
           }));
-          relay.loadMore((config || { pageSize: 10 }).pageSize, error => {
-            setState(prevState => ({
+          relay.loadMore((config || { pageSize: 10 }).pageSize, (error) => {
+            setState((prevState) => ({
               ...prevState,
               isLoadingMore: false,
               error: error == null ? null : sanitizeError(error).message,

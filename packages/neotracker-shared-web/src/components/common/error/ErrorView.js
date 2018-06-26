@@ -6,7 +6,7 @@ import { type HOC, compose, pure } from 'recompose';
 
 import { type Theme } from '../../../styles/createTheme';
 import { Button, Typography, withStyles } from '../../../lib/base';
-import { Logo } from '../../common/logo';
+import { Logo } from '../logo';
 
 const styles = (theme: Theme) => ({
   [theme.breakpoints.down('sm')]: {

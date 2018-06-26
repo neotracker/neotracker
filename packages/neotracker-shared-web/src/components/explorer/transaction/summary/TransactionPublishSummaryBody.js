@@ -8,7 +8,7 @@ import {
   ContractPublished,
   TransactionInputPagingTable,
   TransactionOutputPagingTable,
-} from '../../transaction/lib';
+} from '../lib';
 
 import { fragmentContainer } from '../../../../graphql/relay';
 

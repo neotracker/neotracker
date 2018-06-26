@@ -139,7 +139,7 @@ function SelectCard({
           className={classes.selector}
           id="select-account"
           selectText="Select Wallet"
-          options={accounts.map(accountOption => ({
+          options={accounts.map((accountOption) => ({
             id: accountOption.id.address,
             text: accountOption.name,
             account: accountOption,
@@ -291,7 +291,7 @@ const enhance: HOC<*, *> = compose(
             error: {},
           },
         )
-        .catch(error => {
+        .catch((error) => {
           showSnackbarError(error);
         });
     },

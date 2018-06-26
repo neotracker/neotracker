@@ -48,7 +48,7 @@ function TransactionSummaryList({
 }: Props): React.Element<*> {
   let content = <PageLoading />;
   if (!loading) {
-    content = transactions.map(transaction => (
+    content = transactions.map((transaction) => (
       <TransactionSummary
         key={getID(transaction.id)}
         className={classes.summary}

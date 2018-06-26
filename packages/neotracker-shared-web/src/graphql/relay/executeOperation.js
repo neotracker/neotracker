@@ -35,7 +35,7 @@ export default ({
       monitor,
     })
     .do({
-      next: executePayload => {
+      next: (executePayload) => {
         const responsePayload = normalizePayload(executePayload);
         const { source, fieldPayloads, deferrableSelections } = responsePayload;
         for (const selectionKey of deferrableSelections || new Set()) {

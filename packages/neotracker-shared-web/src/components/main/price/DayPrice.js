@@ -118,7 +118,7 @@ function DayPrice({
     </div>
   );
 
-  const formatUSD = value => formatNumber(value, { decimalPlaces: 2 });
+  const formatUSD = (value) => formatNumber(value, { decimalPlaces: 2 });
   return (
     <div className={classNames(className, classes.root)}>
       <div className={classes.header}>

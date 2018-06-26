@@ -1,4 +1,5 @@
 /* @flow */
+// $FlowFixMe
 import { GAS_ASSET_HASH } from 'neotracker-shared-utils';
 
 // eslint-disable-next-line

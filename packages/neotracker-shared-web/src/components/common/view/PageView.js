@@ -3,7 +3,7 @@ import * as React from 'react';
 
 import { type HOC, compose, pure } from 'recompose';
 
-import { Card } from '../../../lib//base';
+import { Card } from '../../../lib/base';
 import { CenteredView } from '../../../lib/layout';
 
 import PageViewHeader from './PageViewHeader';

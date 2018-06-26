@@ -58,7 +58,7 @@ function AssetSearch({
   let hasPreviousPage = false;
   const page = getPage(match);
   if (currentProps != null) {
-    assets = currentProps.assets.edges.map(edge => edge.node);
+    assets = currentProps.assets.edges.map((edge) => edge.node);
     // eslint-disable-next-line
     hasNextPage = currentProps.assets.pageInfo.hasNextPage;
     hasPreviousPage = page > 1;
@@ -134,7 +134,7 @@ export default (queryRenderer(
   compose(
     withRouter,
     withHandlers({
-      onUpdatePage: ({ history }) => page =>
+      onUpdatePage: ({ history }) => (page) =>
         history.push(routes.makeAssetSearch(page)),
     }),
     pure,

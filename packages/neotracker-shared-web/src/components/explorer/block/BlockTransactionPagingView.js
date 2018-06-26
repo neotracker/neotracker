@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import { type HOC, compose, pure, withStateHandlers } from 'recompose';
 import { graphql } from 'react-relay';
+// $FlowFixMe
 import { sanitizeError } from 'neotracker-shared-utils';
 
 import { TransactionPagingView } from '../transaction';
@@ -56,7 +57,7 @@ function BlockTransactionPagingView({
   let hasPreviousPage = false;
   const block = currentProps == null ? null : currentProps.block;
   if (block != null) {
-    transactions = block.transactions.edges.map(edge => edge.node);
+    transactions = block.transactions.edges.map((edge) => edge.node);
     // eslint-disable-next-line
     hasNextPage = block.transactions.pageInfo.hasNextPage;
     hasPreviousPage = page > 1;
@@ -98,7 +99,7 @@ const enhance: HOC<*, *> = compose(
     `,
   }),
   withStateHandlers(() => ({ page: 1 }), {
-    onUpdatePage: prevState => page => ({ ...prevState, page }),
+    onUpdatePage: (prevState) => (page) => ({ ...prevState, page }),
   }),
   queryRenderer(
     graphql`

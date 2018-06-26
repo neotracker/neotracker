@@ -61,20 +61,20 @@ function AddressSearch({
   let hasPreviousPage = false;
   const addressesMap = {};
   const rowHeightMap = {};
-  const renderCoin = hash => (
+  const renderCoin = (hash) => (
     <CoinTable
-      coins={addressesMap[hash].coins.edges.map(coinEdge => coinEdge.node)}
+      coins={addressesMap[hash].coins.edges.map((coinEdge) => coinEdge.node)}
     />
   );
-  const getRowHeight = idx => rowHeightMap[idx];
+  const getRowHeight = (idx) => rowHeightMap[idx];
 
   const page = getPage(match);
   if (currentProps != null) {
-    addresses = currentProps.addresses.edges.map(edge => edge.node);
+    addresses = currentProps.addresses.edges.map((edge) => edge.node);
     currentProps.addresses.edges.forEach((edge, idx) => {
       addressesMap[getID(edge.node.id)] = edge.node;
       const sortedCoins = getSortedCoins(
-        edge.node.coins.edges.map(coinEdge => coinEdge.node),
+        edge.node.coins.edges.map((coinEdge) => coinEdge.node),
       );
       rowHeightMap[idx] = sortedCoins.length * COIN_TABLE_ROW_HEIGHT;
     });
@@ -156,7 +156,7 @@ export default (queryRenderer(
   compose(
     withRouter,
     withHandlers({
-      onUpdatePage: ({ history }) => page =>
+      onUpdatePage: ({ history }) => (page) =>
         history.push(routes.makeAddressSearch(page)),
     }),
     pure,

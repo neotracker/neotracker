@@ -1,4 +1,5 @@
 /* @flow */
+// $FlowFixMe
 import { GAS_ASSET_HASH } from 'neotracker-shared-utils';
 import * as React from 'react';
 
@@ -11,7 +12,7 @@ import { TransactionTimeLink } from '../transaction/lib';
 
 import { formatNumber } from '../../../utils';
 import { fragmentContainer, getID } from '../../../graphql/relay';
-import { getName } from '../asset/lib';
+import { getName } from './lib';
 import * as routes from '../../../routes';
 
 import { type AssetView_asset } from './__generated__/AssetView_asset.graphql';

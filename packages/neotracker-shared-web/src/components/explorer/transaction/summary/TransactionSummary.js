@@ -83,16 +83,16 @@ const enhance: HOC<*, *> = compose(
     ({ initialShowBody }) => ({
       showBody: initialShowBody || false,
     }),
-    { setState: prevState => updater => updater(prevState) },
+    { setState: (prevState) => (updater) => updater(prevState) },
   ),
   withHandlers({
     onShowBody: ({ setState }) => () =>
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         showBody: true,
       })),
     onHideBody: ({ setState }) => () =>
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         showBody: false,
       })),

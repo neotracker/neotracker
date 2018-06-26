@@ -103,11 +103,11 @@ const enhance: HOC<*, *> = compose(
     () => ({
       privateKeySaved: false,
     }),
-    { setState: prevState => updater => updater(prevState) },
+    { setState: (prevState) => (updater) => updater(prevState) },
   ),
   withHandlers({
     onSave: ({ setState }) => () =>
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         privateKeySaved: true,
       })),

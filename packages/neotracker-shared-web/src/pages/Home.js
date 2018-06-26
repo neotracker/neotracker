@@ -220,7 +220,7 @@ function Home({
           'Explore Blocks',
           makeViewAllButton(routes.makeBlockSearch(1)),
           <BlockTable
-            blocks={props.blocks.edges.map(edge => edge.node)}
+            blocks={props.blocks.edges.map((edge) => edge.node)}
             sizeVisibleAt="xs"
             validatorVisibleAt="md"
           />,
@@ -231,7 +231,7 @@ function Home({
           'Explore Transactions',
           makeViewAllButton(routes.makeTransactionSearch(1)),
           <TransactionTable
-            transactions={props.transactions.edges.map(edge => edge.node)}
+            transactions={props.transactions.edges.map((edge) => edge.node)}
             dense
           />,
           classes.transactions,

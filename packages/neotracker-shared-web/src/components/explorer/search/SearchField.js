@@ -100,9 +100,9 @@ const enhance: HOC<*, *> = compose(
         onSearch();
       }
     },
-    onChange: ({ setState }) => event => {
+    onChange: ({ setState }) => (event) => {
       const { value } = event.target;
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         value,
       }));

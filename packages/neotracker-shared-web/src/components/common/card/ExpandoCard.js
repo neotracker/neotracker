@@ -117,12 +117,12 @@ const enhance: HOC<*, *> = compose(
   withProps(({ state }) => state),
   withHandlers({
     onShowContent: ({ setState }) => () =>
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         showContent: true,
       })),
     onHideContent: ({ setState }) => () =>
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         showContent: false,
       })),

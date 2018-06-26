@@ -1,4 +1,5 @@
 /* @flow */
+// $FlowFixMe
 import { ClientError, sanitizeError } from 'neotracker-shared-utils';
 import * as React from 'react';
 
@@ -57,7 +58,7 @@ const enhance: HOC<*, *> = compose(
   }),
   connect(
     null,
-    dispatch => ({
+    (dispatch) => ({
       showSnackbarError: ({ error }) =>
         dispatch(setSnackbar({ message: sanitizeError(error).clientMessage })),
     }),
@@ -70,7 +71,7 @@ const enhance: HOC<*, *> = compose(
       appContext: appContextIn,
       onError,
       showSnackbarError,
-    }) => event => {
+    }) => (event) => {
       const appContext = ((appContextIn: $FlowFixMe): AppContext);
       try {
         appContext.monitor.captureLog(

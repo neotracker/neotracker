@@ -4,7 +4,7 @@ import * as React from 'react';
 import { type HOC, compose, pure } from 'recompose';
 import { graphql } from 'react-relay';
 
-import { AssetNameLink } from '../asset/lib';
+import { AssetNameLink } from './lib';
 import { Table } from '../../common/table';
 import { TransactionTimeLink } from '../transaction/lib';
 
@@ -32,7 +32,7 @@ function AssetTable({ assets, className }: Props): React.Element<*> {
   const addressCountValues = [];
   const transactionCountValues = [];
   const registeredAt = [];
-  assets.forEach(asset => {
+  assets.forEach((asset) => {
     let supply =
       asset.amount === '-0.00000001' ? 'Unlimited' : formatNumber(asset.amount);
     if (asset.type === 'NEP5') {

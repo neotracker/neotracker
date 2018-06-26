@@ -14,8 +14,8 @@ import { fragmentContainer } from '../../../graphql/relay';
 import {
   getBackgroundClassName,
   styles as bgStyles,
-} from '../transaction/lib/TransactionHeaderBackground';
-import { getIcon, getTitle } from '../transaction/lib';
+} from './lib/TransactionHeaderBackground';
+import { getIcon, getTitle } from './lib';
 import * as routes from '../../../routes';
 import { withStyles } from '../../../lib/base';
 

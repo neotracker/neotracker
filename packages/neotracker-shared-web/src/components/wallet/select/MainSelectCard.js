@@ -5,7 +5,7 @@ import type { LocalWallet, UserAccount } from '@neo-one/client';
 
 import { graphql } from 'react-relay';
 
-import { SelectCard } from '../select';
+import SelectCard from './SelectCard';
 
 import { api as walletAPI } from '../../../wallet';
 import { createSafeRetry } from '../../../utils';

@@ -44,7 +44,7 @@ function NewWalletSaveKeystore({
 const enhance: HOC<*, *> = compose(
   pure,
   (withStateHandlers(() => ({ keystoreSaved: false }), {
-    onSave: prevState => () => ({
+    onSave: (prevState) => () => ({
       ...prevState,
       keystoreSaved: true,
     }),

@@ -1,4 +1,5 @@
 /* @flow */
+// $FlowFixMe
 import { NEO_ASSET_HASH, GAS_ASSET_HASH } from 'neotracker-shared-utils';
 import locale2 from 'locale2';
 
@@ -10,7 +11,7 @@ const NAME_MAP = {
 };
 
 const getName = (name, lang) => {
-  const nameObj = name.find(n => n.lang === lang);
+  const nameObj = name.find((n) => n.lang === lang);
   return nameObj == null ? null : nameObj.name;
 };
 
@@ -34,7 +35,7 @@ export default (symbol: NameLangs | string, hash: string) => {
   if (finalName == null && typeof name === 'string') {
     finalName = name;
   } else if (finalName == null && typeof name !== 'string') {
-    const langs = name.map(n => n.lang);
+    const langs = name.map((n) => n.lang);
     const lang = getBest(langs, locale2);
 
     if (lang == null) {

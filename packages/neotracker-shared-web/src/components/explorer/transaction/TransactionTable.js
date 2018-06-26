@@ -4,7 +4,7 @@ import * as React from 'react';
 import { type HOC, compose, pure } from 'recompose';
 import { graphql } from 'react-relay';
 
-import { TransactionSummary } from '../transaction/summary';
+import { TransactionSummary } from './summary';
 
 import { fragmentContainer, getID } from '../../../graphql/relay';
 
@@ -31,7 +31,7 @@ function TransactionTable({
 }: Props): React.Element<*> {
   return (
     <div className={className}>
-      {transactions.map(transaction => (
+      {transactions.map((transaction) => (
         <TransactionSummary
           key={getID(transaction.id)}
           transaction={transaction}

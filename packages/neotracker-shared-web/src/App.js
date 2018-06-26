@@ -12,6 +12,7 @@ import {
   withContext,
   withStateHandlers,
 } from 'recompose';
+// $FlowFixMe
 import { labels } from 'neotracker-shared-utils';
 import { withRouter } from 'react-router';
 
@@ -43,7 +44,7 @@ import type { AppContext, AppOptions } from './AppContext';
 import * as routes from './routes';
 import { mapAppOptions } from './utils';
 
-const renderComponent = Component => (props: Object) => (
+const renderComponent = (Component) => (props: Object) => (
   <Component {...props} />
 );
 
@@ -193,7 +194,7 @@ function App({ reactError, appOptions }: Props): React.Element<*> {
   } else {
     content = (
       <Switch>
-        {routeConfigs.map(config => (
+        {routeConfigs.map((config) => (
           <Route
             key={config.path == null ? 'nopath' : config.path}
             exact={config.exact}
@@ -226,7 +227,7 @@ const enhance: HOC<*, *> = hoistStatics(
   compose(
     withRouter,
     withStateHandlers(() => ({ reactError: false }), {
-      onError: prevState => () => ({ ...prevState, reactError: true }),
+      onError: (prevState) => () => ({ ...prevState, reactError: true }),
     }),
     lifecycle({
       componentDidCatch(error, info) {

@@ -7,7 +7,7 @@ import { graphql } from 'react-relay';
 import { AddressLink } from '../address/lib';
 import { AssetNameLink } from '../asset/lib';
 import { BlockTime } from '../block/lib';
-import { TransferLink } from '../transfer/lib';
+import { TransferLink } from './lib';
 import { Table } from '../../common/table';
 import { TransactionValue } from '../transaction/lib';
 
@@ -51,7 +51,7 @@ function TransferTable({
   const valueValues = [];
   const assetValues = [];
   const timeValues = [];
-  transfers.forEach(transfer => {
+  transfers.forEach((transfer) => {
     transferValues.push(<TransferLink transfer={transfer} />);
     fromValues.push(
       transfer.from_address_id == null ? (

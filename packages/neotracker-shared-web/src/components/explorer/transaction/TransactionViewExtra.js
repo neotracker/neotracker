@@ -90,7 +90,7 @@ function TransactionViewExtra({
           title="Transfers"
           content={
             <TransferTable
-              transfers={transaction.transfers.edges.map(edge => edge.node)}
+              transfers={transaction.transfers.edges.map((edge) => edge.node)}
             />
           }
           initialShowContent

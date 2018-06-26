@@ -5,7 +5,7 @@ import { type HOC, compose, pure } from 'recompose';
 import { graphql } from 'react-relay';
 
 import { AddressLink } from '../address/lib';
-import { BlockIndexLink, BlockTime, getBlockSize } from '../block/lib';
+import { BlockIndexLink, BlockTime, getBlockSize } from './lib';
 import { Table } from '../../common/table';
 
 import { formatNumber } from '../../../utils';
@@ -49,7 +49,7 @@ function BlockTable({
   const transactionsValues = [];
   const validatorValues = [];
   const sizeValues = [];
-  blocks.forEach(block => {
+  blocks.forEach((block) => {
     heightValues.push(<BlockIndexLink blockIndex={getNumericID(block.id)} />);
     timeValues.push(<BlockTime blockTime={block.time} />);
     transactionsValues.push(formatNumber(block.transaction_count));

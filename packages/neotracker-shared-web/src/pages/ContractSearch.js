@@ -58,7 +58,7 @@ function ContractSearch({
   let hasPreviousPage = false;
   const page = getPage(match);
   if (currentProps != null) {
-    contracts = currentProps.contracts.edges.map(edge => edge.node);
+    contracts = currentProps.contracts.edges.map((edge) => edge.node);
     // eslint-disable-next-line
     hasNextPage = currentProps.contracts.pageInfo.hasNextPage;
     hasPreviousPage = page > 1;
@@ -123,7 +123,7 @@ export default (queryRenderer(
   compose(
     withRouter,
     withHandlers({
-      onUpdatePage: ({ history }) => page =>
+      onUpdatePage: ({ history }) => (page) =>
         history.push(routes.makeContractSearch(page)),
     }),
     pure,

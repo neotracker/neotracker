@@ -18,7 +18,7 @@ export default async ({
   if (wallet.type === 'deprecated') {
     return walletAPI
       .getPrivateKey({ keystore: wallet.wallet, password: wallet.password })
-      .then(privateKey =>
+      .then((privateKey) =>
         walletAPI.addAccount({
           appContext,
           privateKey,
@@ -29,7 +29,7 @@ export default async ({
 
   if (wallet.type === 'nep2Array') {
     return Promise.all(
-      wallet.wallet.map(account =>
+      wallet.wallet.map((account) =>
         walletAPI.addNEP2Account({
           appContext,
           nep2: account.nep2,

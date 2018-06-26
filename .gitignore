@@ -23,7 +23,6 @@ npm-debug.log
 .idea
 
 # Visual Studio Code
-.vscode
 .history
 
 # Flow Coverage Report
@@ -38,6 +37,7 @@ flow-coverage/
 build
 data
 keys
+.awcache
 
 __pycache__
 

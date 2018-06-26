@@ -197,19 +197,19 @@ const enhance: HOC<*, *> = compose(
   })),
   withProps(({ state }) => state),
   withHandlers({
-    onHideSearch: ({ setState, showSearch }) => event => {
+    onHideSearch: ({ setState, showSearch }) => (event) => {
       if (showSearch) {
         event.preventDefault();
-        setState(prevState => ({
+        setState((prevState) => ({
           ...prevState,
           showSearch: false,
         }));
       }
     },
-    onShowSearch: ({ setState, searchFieldRef, showSearch }) => event => {
+    onShowSearch: ({ setState, searchFieldRef, showSearch }) => (event) => {
       event.preventDefault();
       if (!showSearch) {
-        setState(prevState => ({
+        setState((prevState) => ({
           ...prevState,
           showSearch: true,
         }));
@@ -220,14 +220,14 @@ const enhance: HOC<*, *> = compose(
     },
     onSearch: ({ setState, showSearch }) => () => {
       if (showSearch) {
-        setState(prevState => ({
+        setState((prevState) => ({
           ...prevState,
           showSearch: false,
         }));
       }
     },
-    setSearchFieldRef: ({ setState }) => searchFieldRef =>
-      setState(prevState => ({
+    setSearchFieldRef: ({ setState }) => (searchFieldRef) =>
+      setState((prevState) => ({
         ...prevState,
         searchFieldRef,
       })),

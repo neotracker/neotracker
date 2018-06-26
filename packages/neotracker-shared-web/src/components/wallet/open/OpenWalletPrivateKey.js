@@ -12,9 +12,11 @@ import * as React from 'react';
 
 import classNames from 'classnames';
 import { privateKeyToAddress, wifToPrivateKey } from '@neo-one/client';
+// $FlowFixMe
 import { sanitizeError } from 'neotracker-shared-utils';
 
 import type { AppContext } from '../../../AppContext';
+// eslint-disable-next-line
 import OpenWalletEncryptedKey from './OpenWalletEncryptedKey';
 import { Button, Typography, withStyles } from '../../../lib/base';
 import { type Theme } from '../../../styles/createTheme';
@@ -141,12 +143,12 @@ const enhance: HOC<*, *> = compose(
         error: undefined,
       };
     },
-    { setState: prevState => updater => updater(prevState) },
+    { setState: (prevState) => (updater) => updater(prevState) },
   ),
   withHandlers({
-    onChange: ({ setState }) => event => {
+    onChange: ({ setState }) => (event) => {
       const privateKey = event.target.value;
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         privateKey,
         error: undefined,
@@ -166,7 +168,7 @@ const enhance: HOC<*, *> = compose(
       };
 
       const onError = (errorMessage: string) => {
-        setState(prevState => ({
+        setState((prevState) => ({
           ...prevState,
           error:
             `${errorMessage} A valid WIF Private Key looks like ` +
@@ -175,7 +177,7 @@ const enhance: HOC<*, *> = compose(
       };
       const privateKeyTrimmed = privateKeyIn.trim();
       if (walletAPI.isNEP2(privateKeyTrimmed)) {
-        setState(prevState => ({
+        setState((prevState) => ({
           ...prevState,
           nep2Key: privateKeyTrimmed,
           error: undefined,
@@ -215,12 +217,12 @@ const enhance: HOC<*, *> = compose(
           privateKey,
         })
         .then(() => {
-          setState(prevState => ({
+          setState((prevState) => ({
             ...prevState,
             unlocked: true,
           }));
         })
-        .catch(error => {
+        .catch((error) => {
           logError(error);
           onError(sanitizeError(error).clientMessage);
         });

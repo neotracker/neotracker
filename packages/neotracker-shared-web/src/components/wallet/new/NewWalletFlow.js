@@ -2,6 +2,7 @@
 import { type HOC, compose, getContext, pure, withHandlers } from 'recompose';
 import * as React from 'react';
 
+// $FlowFixMe
 import { labels } from 'neotracker-shared-utils';
 import { withRouter } from 'react-router-dom';
 
@@ -80,7 +81,7 @@ const enhance: HOC<*, *> = compose(
       history,
       appContext: appContextIn,
       showSnackbarError,
-    }) => stage => {
+    }) => (stage) => {
       const appContext = ((appContextIn: $FlowFixMe): AppContext);
       appContext.monitor
         .withLabels({
@@ -107,7 +108,7 @@ const enhance: HOC<*, *> = compose(
         .then(() => {
           history.replace(routes.WALLET_HOME);
         })
-        .catch(error => {
+        .catch((error) => {
           showSnackbarError(error);
         });
     },

@@ -3,7 +3,7 @@ import * as React from 'react';
 
 import { type HOC, compose, pure } from 'recompose';
 
-import { PageLoading } from '../../../components/common/loading';
+import { PageLoading } from '../loading';
 
 import RightPager from './RightPager';
 

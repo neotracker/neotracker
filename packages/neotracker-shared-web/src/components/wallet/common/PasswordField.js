@@ -124,12 +124,12 @@ const enhance: HOC<*, *> = compose(
   withProps(({ state }) => state),
   withHandlers({
     onHidePassword: ({ setState }) => () =>
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         visible: false,
       })),
     onShowPassword: ({ setState }) => () =>
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         visible: true,
       })),

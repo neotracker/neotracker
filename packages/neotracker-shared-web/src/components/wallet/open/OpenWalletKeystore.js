@@ -59,7 +59,7 @@ const extractJSONStandardWallet = (fileContents: string) => {
   return {
     origin: 'json-standard',
     type: 'nep2Array',
-    wallet: jsonKeystore.accounts.map(account => ({
+    wallet: jsonKeystore.accounts.map((account) => ({
       address: account.address,
       nep2: account.key,
     })),
@@ -69,12 +69,12 @@ const extractJSONStandardWallet = (fileContents: string) => {
 const extractNEXWallet = (fileContents: string) => {
   const nexKeystore = fileContents.split('\n');
   const nexAddressArray = nexKeystore
-    .filter(element => element.includes('Address'))
-    .map(addressLine => addressLine.split(': ')[1]);
+    .filter((element) => element.includes('Address'))
+    .map((addressLine) => addressLine.split(': ')[1]);
   const nexKeyArray = nexKeystore
-    .filter(element => element.includes('Encrypted Key'))
-    .map(keyLine => keyLine.split(': ')[1]);
-  const nexWalletArray = _.zip(nexAddressArray, nexKeyArray).map(account => ({
+    .filter((element) => element.includes('Encrypted Key'))
+    .map((keyLine) => keyLine.split(': ')[1]);
+  const nexWalletArray = _.zip(nexAddressArray, nexKeyArray).map((account) => ({
     address: account[0],
     nep2: account[1],
   }));
@@ -95,7 +95,7 @@ const enhance: HOC<*, *> = compose(
   getContext({ appContext: () => null }),
   (withHandlers({
     read: () => (reader, file) => reader.readAsText(file),
-    onUploadFileError: ({ appContext: appContextIn }) => error => {
+    onUploadFileError: ({ appContext: appContextIn }) => (error) => {
       const appContext = ((appContextIn: $FlowFixMe): AppContext);
       appContext.monitor.logError({
         name: 'neotracker_wallet_open_keystore_upload_file_error',
@@ -135,7 +135,7 @@ const enhance: HOC<*, *> = compose(
         error: {},
       });
     },
-    onOpenError: ({ appContext: appContextIn }) => error => {
+    onOpenError: ({ appContext: appContextIn }) => (error) => {
       const appContext = ((appContextIn: $FlowFixMe): AppContext);
       appContext.monitor.log({
         name: 'neotracker_wallet_open_keystore',

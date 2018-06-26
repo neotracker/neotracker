@@ -5,6 +5,7 @@ import type { UserAccount } from '@neo-one/client';
 import classNames from 'classnames';
 import { type HOC, compose, getContext, pure, withHandlers } from 'recompose';
 import { connect } from 'react-redux';
+// $FlowFixMe
 import { sanitizeError } from 'neotracker-shared-utils';
 
 import type { AppContext } from '../../../AppContext';
@@ -76,10 +77,10 @@ const enhance: HOC<*, *> = compose(
     (state, { account }: {| account: UserAccount |}) => ({
       claiming: selectClaiming(state)[account.id.address],
     }),
-    dispatch => ({ dispatch }),
+    (dispatch) => ({ dispatch }),
   ),
   withHandlers({
-    onClaimGas: options => () => {
+    onClaimGas: (options) => () => {
       const {
         account,
         dispatch,
@@ -96,7 +97,7 @@ const enhance: HOC<*, *> = compose(
         .claimAllGAS({
           appContext,
           account: account.id,
-          onProgress: progress => {
+          onProgress: (progress) => {
             dispatch(claimProgress({ address: account.id.address, progress }));
             switch (progress.type) {
               case 'fetch-unspent-sending':
@@ -136,7 +137,7 @@ const enhance: HOC<*, *> = compose(
         .then(() => {
           dispatch(endClaiming({ address: account.id.address }));
         })
-        .catch(error => {
+        .catch((error) => {
           dispatch(endClaiming({ address: account.id.address }));
           dispatch(
             claimError({

@@ -92,7 +92,7 @@ const enhance: HOC<*, *> = compose(
   withProps(({ state }) => state),
   withHandlers({
     onError: ({ setState }) => () =>
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         error: true,
       })),

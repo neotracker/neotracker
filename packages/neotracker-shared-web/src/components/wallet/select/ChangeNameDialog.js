@@ -11,6 +11,7 @@ import {
 import * as React from 'react';
 import type { UserAccount } from '@neo-one/client';
 
+// $FlowFixMe
 import { sanitizeError } from 'neotracker-shared-utils';
 
 import type { AppContext } from '../../../AppContext';
@@ -116,10 +117,10 @@ const enhance: HOC<*, *> = compose(
       name: account.name,
       validation: (null: ?string),
     }),
-    { setState: prevState => updater => updater(prevState) },
+    { setState: (prevState) => (updater) => updater(prevState) },
   ),
   withHandlers({
-    onChangeName: ({ setState }) => name => {
+    onChangeName: ({ setState }) => (name) => {
       let validation;
       try {
         walletAPI.validateName(name);
@@ -127,7 +128,7 @@ const enhance: HOC<*, *> = compose(
         validation = sanitizeError(error).clientMessage;
       }
 
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         name,
         validation,
@@ -135,10 +136,10 @@ const enhance: HOC<*, *> = compose(
     },
   }),
   withHandlers({
-    onChange: ({ onChangeName }) => event => {
+    onChange: ({ onChangeName }) => (event) => {
       onChangeName(event.target.value);
     },
-    onConfirm: options => () => {
+    onConfirm: (options) => () => {
       const {
         account,
         name,
@@ -154,11 +155,11 @@ const enhance: HOC<*, *> = compose(
       |});
       appContext.monitor
         .captureSpan(
-          span =>
+          (span) =>
             walletAPI
               .updateName({ appContext, id: account.id, name })
               .then(() => onClose())
-              .catch(error => {
+              .catch((error) => {
                 span.logError({
                   name: 'neotracker_wallet_change_name',
                   error,
@@ -167,7 +168,7 @@ const enhance: HOC<*, *> = compose(
               }),
           { name: 'neotracker_wallet_change_name' },
         )
-        .catch(error => {
+        .catch((error) => {
           showSnackbarError(error);
         });
     },

@@ -68,7 +68,7 @@ function ActionTable({
   const content = (
     <div className={classes.contentRoot}>
       {actions.map(
-        action =>
+        (action) =>
           action.type === 'Log' ? (
             <LogItem key={getID(action.id)} action={action} />
           ) : (

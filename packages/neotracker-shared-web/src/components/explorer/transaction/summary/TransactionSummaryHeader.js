@@ -9,10 +9,7 @@ import { type Theme } from '../../../../styles/createTheme';
 import { BlockTime } from '../../block/lib';
 import { Chevron } from '../../../../lib/animated';
 import { IconButton, withStyles } from '../../../../lib/base';
-import {
-  TransactionHeaderBackground,
-  TransactionTypeAndLink,
-} from '../../transaction/lib';
+import { TransactionHeaderBackground, TransactionTypeAndLink } from '../lib';
 
 import { fragmentContainer } from '../../../../graphql/relay';
 

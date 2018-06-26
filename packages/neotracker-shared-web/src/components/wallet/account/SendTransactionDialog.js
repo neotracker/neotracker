@@ -1,5 +1,6 @@
 /* @flow */
 import BigNumber from 'bignumber.js';
+// $FlowFixMe
 import { ClientError } from 'neotracker-shared-utils';
 import * as React from 'react';
 import type { UserAccount } from '@neo-one/client';
@@ -124,7 +125,7 @@ function SendTransactionDialog({
   );
   if (confirmTransactionIn != null) {
     const confirmTransaction = confirmTransactionIn;
-    const makeText = prelude => (
+    const makeText = (prelude) => (
       <Typography>
         {prelude}
         <CoinValue
@@ -226,10 +227,10 @@ function SendTransactionDialog({
 const enhance: HOC<*, *> = compose(
   getContext({ appContext: () => null }),
   connect(
-    state => ({
+    (state) => ({
       confirmTransaction: selectConfirmTransaction(state),
     }),
-    dispatch => ({ dispatch }),
+    (dispatch) => ({ dispatch }),
   ),
   withStateHandlers(
     () => ({
@@ -240,16 +241,16 @@ const enhance: HOC<*, *> = compose(
       error: null,
       timer: null,
     }),
-    { setState: prevState => updater => updater(prevState) },
+    { setState: (prevState) => (updater) => updater(prevState) },
   ),
   withHandlers({
     onClose: ({ dispatch, setState }) => () => {
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         open: false,
         timer: setTimeout(() => {
           dispatch(clearConfirmTransaction());
-          setState(prevStateInner => ({
+          setState((prevStateInner) => ({
             ...prevStateInner,
             loading: false,
             confirmed: false,
@@ -275,7 +276,7 @@ const enhance: HOC<*, *> = compose(
       appContext: appContextIn,
     }) => () => {
       const appContext = ((appContextIn: $FlowFixMe): AppContext);
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         loading: true,
         confirmed: false,
@@ -299,8 +300,8 @@ const enhance: HOC<*, *> = compose(
             error: {},
           },
         )
-        .then(hash => {
-          setState(prevState => ({
+        .then((hash) => {
+          setState((prevState) => ({
             ...prevState,
             loading: false,
             confirmed: true,
@@ -308,8 +309,8 @@ const enhance: HOC<*, *> = compose(
             error: null,
           }));
         })
-        .catch(error => {
-          setState(prevState => ({
+        .catch((error) => {
+          setState((prevState) => ({
             ...prevState,
             loading: false,
             confirmed: true,
@@ -331,7 +332,7 @@ const enhance: HOC<*, *> = compose(
         if (nextProps.timer != null) {
           clearTimeout(nextProps.timer);
         }
-        nextProps.setState(prevState => ({
+        nextProps.setState((prevState) => ({
           ...prevState,
           open: true,
           loading: false,

@@ -12,6 +12,7 @@ import {
   withProps,
   withState,
 } from 'recompose';
+// $FlowFixMe
 import { sanitizeError } from 'neotracker-shared-utils';
 
 import type { AppContext } from '../../../AppContext';
@@ -143,9 +144,9 @@ const enhance: HOC<*, *> = compose(
   })),
   withProps(({ state }) => state),
   withHandlers({
-    onChange: ({ setState }) => event => {
+    onChange: ({ setState }) => (event) => {
       const password = event.target.value;
-      setState(prevState => ({ ...prevState, password, error: null }));
+      setState((prevState) => ({ ...prevState, password, error: null }));
     },
     onSubmit: ({
       privateKey,
@@ -154,7 +155,7 @@ const enhance: HOC<*, *> = compose(
       setState,
       appContext: appContextIn,
     }) => () => {
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         loading: true,
         error: null,
@@ -167,15 +168,15 @@ const enhance: HOC<*, *> = compose(
           level: 'verbose',
           error: {},
         })
-        .then(nep2 => {
-          setState(prevState => ({
+        .then((nep2) => {
+          setState((prevState) => ({
             ...prevState,
             loading: false,
           }));
           onCreate(password, nep2);
         })
-        .catch(error => {
-          setState(prevState => ({
+        .catch((error) => {
+          setState((prevState) => ({
             ...prevState,
             loading: false,
             error: `Keystore creation failed: ${

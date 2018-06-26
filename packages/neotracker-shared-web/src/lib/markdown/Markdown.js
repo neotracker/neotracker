@@ -7,7 +7,7 @@ import markdown from 'markdown-it';
 
 import { withStyles } from '../base';
 
-const styles = theme => {
+const styles = (theme) => {
   const headerMargins = {
     marginTop: 16,
     marginBottom: 16,

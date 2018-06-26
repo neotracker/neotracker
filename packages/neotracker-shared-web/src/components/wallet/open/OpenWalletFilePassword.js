@@ -99,7 +99,7 @@ function OpenWalletFilePassword({
         id="select-account"
         selectText="Select Wallet"
         label="Select Wallet"
-        options={multipleWallets.map(account => ({
+        options={multipleWallets.map((account) => ({
           id: account.nep2,
           text: account.address,
         }))}
@@ -146,11 +146,11 @@ const enhance: HOC<*, *> = compose(
       wallet: undefined,
       multipleWallets: null,
     }),
-    { setState: prevState => updater => updater(prevState) },
+    { setState: (prevState) => (updater) => updater(prevState) },
   ),
   withHandlers({
-    setUploadFileRef: ({ setState }) => uploadFileRef =>
-      setState(prevState => ({
+    setUploadFileRef: ({ setState }) => (uploadFileRef) =>
+      setState((prevState) => ({
         ...prevState,
         uploadFileRef,
       })),
@@ -165,13 +165,13 @@ const enhance: HOC<*, *> = compose(
       fileTypeName,
       extractWallet,
       onUploadFileError,
-    }) => event => {
+    }) => (event) => {
       if (event.target.files == null || event.target.files.length === 0) {
         return;
       }
 
       const onError = (error: Error) => {
-        setState(prevState => ({
+        setState((prevState) => ({
           ...prevState,
           error: `${fileTypeName} file upload failed. Invalid wallet file.`,
         }));
@@ -185,14 +185,14 @@ const enhance: HOC<*, *> = compose(
           try {
             const wallet = extractWallet((reader.result: $FlowFixMe));
             if (wallet.type === 'nep2Array') {
-              setState(prevState => ({
+              setState((prevState) => ({
                 ...prevState,
                 multipleWallets: wallet.wallet,
                 wallet: null,
               }));
               return;
             }
-            setState(prevState => ({
+            setState((prevState) => ({
               ...prevState,
               wallet,
               error: null,
@@ -208,8 +208,8 @@ const enhance: HOC<*, *> = compose(
         onError(error);
       }
     },
-    onSelect: ({ setState }) => option => {
-      setState(prevState => ({
+    onSelect: ({ setState }) => (option) => {
+      setState((prevState) => ({
         ...prevState,
         wallet:
           option.id == null

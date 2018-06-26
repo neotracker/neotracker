@@ -4,11 +4,11 @@ import { map, switchMap } from 'rxjs/operators';
 
 export default compose(
   getContext({ appContext: () => null }),
-  mapPropsStream(props$ =>
+  mapPropsStream((props$) =>
     props$.pipe(
-      switchMap(props =>
+      switchMap((props) =>
         props.appContext.options$.pipe(
-          map(appOptions => ({
+          map((appOptions) => ({
             ...props,
             appOptions,
           })),

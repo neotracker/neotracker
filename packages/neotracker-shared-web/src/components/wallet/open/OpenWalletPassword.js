@@ -1,4 +1,5 @@
 /* @flow */
+// $FlowFixMe
 import { sanitizeError } from 'neotracker-shared-utils';
 import {
   type HOC,
@@ -128,13 +129,13 @@ const enhance: HOC<*, *> = compose(
       validation: undefined,
       loading: false,
     }),
-    { setState: prevState => updater => updater(prevState) },
+    { setState: (prevState) => (updater) => updater(prevState) },
   ),
   withRouter,
   withHandlers({
-    onChange: ({ setState }) => event => {
+    onChange: ({ setState }) => (event) => {
       const password = event.target.value;
-      setState(prevState => ({ ...prevState, password, validation: null }));
+      setState((prevState) => ({ ...prevState, password, validation: null }));
     },
     onSubmit: ({
       setState,
@@ -148,7 +149,7 @@ const enhance: HOC<*, *> = compose(
     }) => () => {
       const appContext = ((appContextIn: $FlowFixMe): AppContext);
 
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         loading: true,
       }));
@@ -158,8 +159,8 @@ const enhance: HOC<*, *> = compose(
           history.replace(routes.WALLET_HOME);
           onOpen();
         })
-        .catch(error => {
-          setState(prevState => ({
+        .catch((error) => {
+          setState((prevState) => ({
             ...prevState,
             loading: false,
             validation:

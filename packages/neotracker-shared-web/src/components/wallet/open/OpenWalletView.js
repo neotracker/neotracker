@@ -127,7 +127,7 @@ const enhance: HOC<*, *> = compose(
   withProps(({ state }) => state),
   withHandlers({
     onSelectOption: ({ setState }) => (event, option) =>
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         option,
       })),

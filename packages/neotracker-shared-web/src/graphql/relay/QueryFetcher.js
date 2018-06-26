@@ -8,6 +8,7 @@ import type {
   Snapshot,
 } from 'relay-runtime';
 
+// $FlowFixMe
 import { labels } from 'neotracker-shared-utils';
 
 import executeOperation from './executeOperation';
@@ -109,7 +110,7 @@ export default class QueryFetcher {
         this._disposeCacheReference();
       })
       .subscribe({
-        next: payload => {
+        next: (payload) => {
           logPayload();
           const operationForPayload = createOperationSelector(
             operation.node,
@@ -131,7 +132,7 @@ export default class QueryFetcher {
             },
           });
         },
-        error: err => {
+        error: (err) => {
           logPayload();
           if (span != null) {
             span.end(true);
@@ -254,7 +255,7 @@ export default class QueryFetcher {
     this._snapshot = environment.lookup(operation.fragment);
 
     // Subscribe to changes in the data of the root fragment
-    this._rootSubscription = environment.subscribe(this._snapshot, snapshot =>
+    this._rootSubscription = environment.subscribe(this._snapshot, (snapshot) =>
       onDataChange({ snapshot }),
     );
 

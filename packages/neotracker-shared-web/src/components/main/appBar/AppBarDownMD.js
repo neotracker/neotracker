@@ -166,7 +166,7 @@ const AppBarDownMD = ({
       <Collapse in={showMenu} timeout="auto">
         <ClickAwayListener onClickAway={onHideMenu}>
           <div className={classNames(classes.menu, classes.padding)}>
-            {buttons.map(button => (
+            {buttons.map((button) => (
               <Link key={button.id} className={classes.link} to={button.href}>
                 <Button
                   color={button.selected ? 'primary' : 'default'}
@@ -191,10 +191,10 @@ const enhance: HOC<*, *> = compose(
   })),
   withProps(({ state }) => state),
   withHandlers({
-    onHideMenu: ({ setState, showMenu }) => event => {
+    onHideMenu: ({ setState, showMenu }) => (event) => {
       if (showMenu) {
         event.preventDefault();
-        setState(prevState => ({
+        setState((prevState) => ({
           ...prevState,
           showMenu: false,
         }));
@@ -202,16 +202,16 @@ const enhance: HOC<*, *> = compose(
     },
     onClickButton: ({ setState, showMenu }) => () => {
       if (showMenu) {
-        setState(prevState => ({
+        setState((prevState) => ({
           ...prevState,
           showMenu: false,
         }));
       }
     },
-    onShowMenu: ({ setState, showMenu }) => event => {
+    onShowMenu: ({ setState, showMenu }) => (event) => {
       event.preventDefault();
       if (!showMenu) {
-        setState(prevState => ({
+        setState((prevState) => ({
           ...prevState,
           showMenu: true,
         }));

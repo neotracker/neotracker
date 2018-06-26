@@ -139,7 +139,7 @@ function AccountViewBase({
   let confirmedCoins = [];
   let claimValueAvailable = '0';
   if (address != null) {
-    confirmedCoins = address.coins.edges.map(edge => edge.node);
+    confirmedCoins = address.coins.edges.map((edge) => edge.node);
     claimValueAvailable = address.claim_value_available_coin.value;
   }
 

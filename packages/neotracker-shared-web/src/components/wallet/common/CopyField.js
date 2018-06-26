@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import { type HOC, compose, getContext, pure, withHandlers } from 'recompose';
 import { connect } from 'react-redux';
+// $FlowFixMe
 import { labels, sanitizeError } from 'neotracker-shared-utils';
 
 import type { AppContext } from '../../../AppContext';
@@ -46,7 +47,7 @@ const enhance: HOC<*, *> = compose(
   getContext({ appContext: () => null }),
   connect(
     null,
-    dispatch => ({
+    (dispatch) => ({
       showSnackbar: ({ message }) => dispatch(setSnackbar({ message })),
       showSnackbarError: ({ error }) =>
         dispatch(setSnackbar({ message: sanitizeError(error).clientMessage })),
@@ -60,7 +61,7 @@ const enhance: HOC<*, *> = compose(
       appContext: appContextIn,
       showSnackbar,
       showSnackbarError,
-    }) => event => {
+    }) => (event) => {
       const appContext = ((appContextIn: $FlowFixMe): AppContext);
       appContext.monitor
         .withLabels({
@@ -74,7 +75,7 @@ const enhance: HOC<*, *> = compose(
         .then(() => {
           showSnackbar({ message: `${name} Copied` });
         })
-        .catch(error => {
+        .catch((error) => {
           showSnackbarError({ error });
         });
       if (onClick) {

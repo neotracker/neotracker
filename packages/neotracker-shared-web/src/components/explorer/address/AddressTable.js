@@ -4,7 +4,7 @@ import * as React from 'react';
 import { type HOC, compose, pure } from 'recompose';
 import { graphql } from 'react-relay';
 
-import { AddressLink } from '../address/lib';
+import { AddressLink } from './lib';
 import { Table } from '../../common/table';
 import { TransactionTimeLink } from '../transaction/lib';
 
@@ -37,7 +37,7 @@ function AddressTable({
   const lastTransactionValues = [];
   const transactionsValues = [];
   const coinValues = [];
-  addresses.forEach(address => {
+  addresses.forEach((address) => {
     addressValues.push(<AddressLink addressHash={getID(address.id)} />);
     createdAtValues.push(
       <TransactionTimeLink

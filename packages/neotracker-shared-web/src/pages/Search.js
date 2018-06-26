@@ -7,6 +7,7 @@ import { Redirect } from 'react-router';
 import { addressToScriptHash } from '@neo-one/client';
 import { compose, getContext, pure } from 'recompose';
 import { graphql } from 'react-relay';
+// $FlowFixMe
 import { tryParseInt } from 'neotracker-shared-utils';
 
 import { Error404 } from '../lib/error';

@@ -6,7 +6,7 @@ import { type HOC, compose, pure } from 'recompose';
 
 import { type Theme } from '../../../styles/createTheme';
 
-import { withStyles } from '../../../lib//base';
+import { withStyles } from '../../../lib/base';
 
 import Column from './Column';
 

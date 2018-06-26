@@ -83,14 +83,14 @@ function Selector({
       )}
       <Select
         value={selectedID == null ? NULL_VALUE : selectedID}
-        renderValue={value => {
-          const selectedOption = options.find(option => option.id === value);
+        renderValue={(value) => {
+          const selectedOption = options.find((option) => option.id === value);
           return selectedOption == null ? selectText : selectedOption.text;
         }}
         onChange={onChange}
         input={<Input id={id} />}
       >
-        {options.map(option => (
+        {options.map((option) => (
           <MenuItem key={option.id} value={option.id}>
             {option.text}
           </MenuItem>
@@ -105,8 +105,8 @@ function Selector({
 
 const enhance: HOC<*, *> = compose(
   withHandlers({
-    onChange: ({ onSelect, options }) => event =>
-      onSelect(options.find(option => option.id === event.target.value)),
+    onChange: ({ onSelect, options }) => (event) =>
+      onSelect(options.find((option) => option.id === event.target.value)),
   }),
   withStyles(styles),
   pure,

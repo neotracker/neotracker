@@ -287,7 +287,7 @@ class ReactRelayQueryRenderer extends React.Component<Props, State> {
   }
 
   _setState(state: Object): void {
-    this.setState(prevState => getState(prevState, state));
+    this.setState((prevState) => getState(prevState, state));
   }
 
   render() {
@@ -427,7 +427,7 @@ export default (query: GraphQLTaggedNode, configIn?: Config): HOC<*, *> => {
               .execute({ operation, cacheConfig: undefined })
               .subscribe({
                 next: () => resolve(),
-                error: error => reject(error),
+                error: (error) => reject(error),
               });
           });
         }

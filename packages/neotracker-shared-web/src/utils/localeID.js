@@ -124,7 +124,7 @@ export function normalizeAcceptLanguage(acceptLanguage) {
   }
 
   const items = acceptLanguage.match(splitAcceptLanguageRegEx) || [];
-  _.forEach(items, acceptLanguageItem => {
+  _.forEach(items, (acceptLanguageItem) => {
     const matches = acceptLanguageItem.match(acceptLanguageItemRegEx) || [];
     const locale = normalize(matches[0]);
     if (locale) {
@@ -138,7 +138,7 @@ export function normalizeAcceptLanguage(acceptLanguage) {
 export function prepareSupported(supported) {
   const lgs = {};
 
-  _.forEach(supported, supportedLocale => {
+  _.forEach(supported, (supportedLocale) => {
     const { language, country } = parse(supportedLocale);
     if (!language) {
       throw new Error(`Locale ${supportedLocale} is not parsable`);

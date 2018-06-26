@@ -60,7 +60,7 @@ function TransactionSearch({
   let hasPreviousPage = false;
   const page = getPage(match);
   if (currentProps != null) {
-    transactions = currentProps.transactions.edges.map(edge => edge.node);
+    transactions = currentProps.transactions.edges.map((edge) => edge.node);
     // eslint-disable-next-line
     hasNextPage = currentProps.transactions.pageInfo.hasNextPage;
     hasPreviousPage = page > 1;
@@ -129,7 +129,7 @@ export default (queryRenderer(
   compose(
     withRouter,
     withHandlers({
-      onUpdatePage: ({ history }) => page =>
+      onUpdatePage: ({ history }) => (page) =>
         history.push(routes.makeTransactionSearch(page)),
     }),
     pure,

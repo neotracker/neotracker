@@ -44,7 +44,7 @@ function TimeAgo({
 }
 
 const enhance: HOC<*, *> = compose(
-  connect(state => ({ state: selectTimerState(state) })),
+  connect((state) => ({ state: selectTimerState(state) })),
   pure,
 );
 

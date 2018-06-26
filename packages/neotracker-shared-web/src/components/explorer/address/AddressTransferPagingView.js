@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import { type HOC, compose, pure, withStateHandlers } from 'recompose';
 import { graphql } from 'react-relay';
+// $FlowFixMe
 import { sanitizeError } from 'neotracker-shared-utils';
 
 import { TransferPagingView } from '../transfer';
@@ -57,7 +58,7 @@ function AddressTransferPagingView({
   let hasPreviousPage = false;
   const currentAddress = currentProps == null ? null : currentProps.address;
   if (currentAddress != null) {
-    transfers = currentAddress.transfers.edges.map(edge => edge.node);
+    transfers = currentAddress.transfers.edges.map((edge) => edge.node);
     // eslint-disable-next-line
     hasNextPage = currentAddress.transfers.pageInfo.hasNextPage;
     hasPreviousPage = page > 1;
@@ -103,7 +104,7 @@ const enhance: HOC<*, *> = compose(
     `,
   }),
   withStateHandlers(() => ({ page: 1 }), {
-    onUpdatePage: prevState => page => ({ ...prevState, page }),
+    onUpdatePage: (prevState) => (page) => ({ ...prevState, page }),
   }),
   queryRenderer(
     graphql`

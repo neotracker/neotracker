@@ -214,7 +214,7 @@ const enhance: HOC<*, *> = compose(
   withHandlers({
     onClickNEO: ({ token, setState }) => () => {
       if (token !== 'NEO') {
-        setState(prevState => ({
+        setState((prevState) => ({
           ...prevState,
           token: 'NEO',
         }));
@@ -222,7 +222,7 @@ const enhance: HOC<*, *> = compose(
     },
     onClickGAS: ({ token, setState }) => () => {
       if (token !== 'GAS') {
-        setState(prevState => ({
+        setState((prevState) => ({
           ...prevState,
           token: 'GAS',
         }));

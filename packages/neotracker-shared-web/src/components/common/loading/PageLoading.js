@@ -5,8 +5,8 @@ import classNames from 'classnames';
 import { type HOC, compose, pure } from 'recompose';
 
 import { type Theme } from '../../../styles/createTheme';
-import { LinearProgress, withStyles } from '../../../lib//base';
-import { Logo } from '../../common/logo';
+import { LinearProgress, withStyles } from '../../../lib/base';
+import { Logo } from '../logo';
 
 const styles = (theme: Theme) => ({
   [theme.breakpoints.down('md')]: {

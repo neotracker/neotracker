@@ -9,7 +9,7 @@ import { AddressLink } from '../../address/lib';
 import {
   TransactionInputPagingTable,
   TransactionOutputPagingTable,
-} from '../../transaction/lib';
+} from '../lib';
 import { Typography, withStyles } from '../../../../lib/base';
 
 import { fragmentContainer, getID } from '../../../../graphql/relay';

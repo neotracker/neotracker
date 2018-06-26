@@ -172,12 +172,12 @@ const enhance: HOC<*, *> = compose(
   withProps(({ state }) => state),
   withHandlers({
     onShowOpCodes: ({ setState }) => () =>
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         showOpCodes: true,
       })),
     onShowByteCodes: ({ setState }) => () =>
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         showOpCodes: false,
       })),

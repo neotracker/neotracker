@@ -55,7 +55,7 @@ function WalletTransfersCard({
   className,
   classes,
 }: Props): React.Element<*> {
-  const wrapContent = element => (
+  const wrapContent = (element) => (
     <div className={classes.padding}>{element}</div>
   );
   let content = wrapContent(

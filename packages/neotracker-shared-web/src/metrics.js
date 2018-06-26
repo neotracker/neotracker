@@ -1,4 +1,5 @@
 /* @flow */
+// $FlowFixMe
 import { labels } from 'neotracker-shared-utils';
 import { metrics } from '@neo-one/monitor';
 

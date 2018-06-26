@@ -107,7 +107,7 @@ const enhance: HOC<*, *> = compose(
         privateKey: privateKey == null ? createPrivateKey() : privateKey,
       },
     }),
-    { setState: prevState => updater => updater(prevState) },
+    { setState: (prevState) => (updater) => updater(prevState) },
   ),
   withRouter,
   withHandlers({
@@ -118,7 +118,7 @@ const enhance: HOC<*, *> = compose(
     }) => (password: string, nep2: string) => {
       const address = privateKeyToAddress(privateKey);
       onCreateKeystore(password);
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         stage: ({
           type: 'save-keystore',
@@ -133,7 +133,7 @@ const enhance: HOC<*, *> = compose(
       }));
     },
     onContinueKeystore: ({ setState, onContinueKeystore }) => () => {
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         stage: ({
           type: 'save-private-key',

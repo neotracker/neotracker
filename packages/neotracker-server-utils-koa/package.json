@@ -10,7 +10,7 @@
   "repository": "https://github.com/neotracker/neotracker",
   "bugs": "https://github.com/neotracker/neotracker/issues",
   "license": "MIT",
-  "main": "./src/index.js",
+  "main": "./src/index.ts",
   "dependencies": {
     "@neo-one/monitor": "^1.0.0-alpha.35",
     "koa": "^2.5.0",
@@ -19,7 +19,6 @@
     "koa-router": "^7.4.0",
     "neotracker-server-utils": "^0.0.1-alpha.0",
     "neotracker-shared-utils": "^0.0.1-alpha.0",
-    "neotracker-shared-web": "^0.0.1-alpha.0",
     "uuid": "^3.2.1"
   }
 }

@@ -16,7 +16,7 @@ if (process.env.BUILD_FLAG_IS_SERVER) {
     }
     return compose(
       getContext({ relay: () => null }),
-      withProps(props => {
+      withProps((props) => {
         const selectors = getSelectorsFromObject(
           props.relay,
           fragmentSpec,
@@ -25,7 +25,7 @@ if (process.env.BUILD_FLAG_IS_SERVER) {
         return Object.entries(selectors).reduce((res, [key, selector]) => {
           if (Array.isArray(selector)) {
             res[key] = selector.map(
-              sel => props.relay.environment.lookup(sel).data,
+              (sel) => props.relay.environment.lookup(sel).data,
             );
           } else if (selector == null) {
             if (Array.isArray(props[key])) {

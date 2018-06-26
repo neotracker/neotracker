@@ -1,5 +1,4 @@
 /* @flow */
-import type { CacheConfig } from 'neotracker-shared-graphql';
 import type { Environment, GraphQLTaggedNode } from 'relay-runtime';
 import type { Monitor } from '@neo-one/monitor';
 import { Observable } from 'rxjs';
@@ -19,13 +18,13 @@ export default ({
   environment: Environment,
   taggedNode: GraphQLTaggedNode,
   variables?: Object,
-  cacheConfig?: ?CacheConfig,
+  cacheConfig?: $FlowFixMe,
 |}): Observable<Object> => {
   const { createOperationSelector, getRequest } = environment.unstable_internal;
   const query = getRequest(taggedNode);
   const operation = createOperationSelector(query, variables || {});
 
-  return Observable.create(observer =>
+  return Observable.create((observer) =>
     executeOperation({
       environment,
       monitor,

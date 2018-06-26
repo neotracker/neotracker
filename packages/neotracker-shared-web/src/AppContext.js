@@ -1,5 +1,4 @@
 /* @flow */
-import type { AppOptions, UserAgent } from 'neotracker-shared-utils';
 import type { Environment } from 'relay-runtime';
 import type {
   NetworkType,
@@ -12,8 +11,7 @@ import type {
 import type { Monitor } from '@neo-one/monitor';
 import type { Observable } from 'rxjs';
 
-// eslint-disable-next-line
-export type { AppOptions };
+export type AppOptions = $FlowFixMe;
 
 export type AppContext = {|
   environment: Environment,
@@ -27,7 +25,7 @@ export type AppContext = {|
   }>,
   readClient: ReadClient<any>,
   network: NetworkType,
-  userAgent: UserAgent,
+  userAgent: $FlowFixMe,
   fileSaver: {|
     saveAs: (blob: Blob, filename: string) => void,
   |},

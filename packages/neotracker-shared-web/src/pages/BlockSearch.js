@@ -58,7 +58,7 @@ function BlockSearch({
   let hasNextPage = false;
   let hasPreviousPage = false;
   if (currentProps != null) {
-    blocks = currentProps.blocks.edges.map(edge => edge.node);
+    blocks = currentProps.blocks.edges.map((edge) => edge.node);
     // eslint-disable-next-line
     hasNextPage = currentProps.blocks.pageInfo.hasNextPage;
     hasPreviousPage = page > 1;
@@ -119,7 +119,7 @@ export default (queryRenderer(
   compose(
     withRouter,
     withHandlers({
-      onUpdatePage: ({ history }) => page =>
+      onUpdatePage: ({ history }) => (page) =>
         history.push(routes.makeBlockSearch(page)),
     }),
     pure,

@@ -182,34 +182,34 @@ const enhance: HOC<*, *> = compose(
       open: false,
       openChangeName: false,
     }),
-    { setState: prevState => updater => updater(prevState) },
+    { setState: (prevState) => (updater) => updater(prevState) },
   ): $FlowFixMe),
   withHandlers({
-    onClickMenu: ({ setState }) => event => {
+    onClickMenu: ({ setState }) => (event) => {
       const anchorEl = event.currentTarget;
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         open: true,
         anchorEl,
       }));
     },
     onCloseMenu: ({ setState }) => () =>
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         open: false,
       })),
     onClickChangeName: ({ setState }) => () =>
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         open: false,
         openChangeName: true,
       })),
     onCloseChangeNameDialog: ({ setState }) => () =>
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         openChangeName: false,
       })),
-    onClickDeleteWallet: options => () => {
+    onClickDeleteWallet: (options) => () => {
       const {
         account,
         setState,
@@ -224,10 +224,10 @@ const enhance: HOC<*, *> = compose(
 
       appContext.monitor
         .captureSpan(
-          span =>
+          (span) =>
             walletAPI
               .deleteAccount({ appContext, id: account.id })
-              .catch(error => {
+              .catch((error) => {
                 span.logError({
                   name: 'neotracker_wallet_delete',
                   message: `Failed to delete wallet ${account.id.address}`,
@@ -238,12 +238,12 @@ const enhance: HOC<*, *> = compose(
           { name: 'neotracker_wallet_delete' },
         )
         .then(() => {
-          setState(prevState => ({
+          setState((prevState) => ({
             ...prevState,
             open: false,
           }));
         })
-        .catch(error => {
+        .catch((error) => {
           showSnackbarError(error);
         });
     },

@@ -1,4 +1,5 @@
 /* @flow */
+// $FlowFixMe
 import { NEO_ASSET_HASH, sanitizeError } from 'neotracker-shared-utils';
 import * as React from 'react';
 import { type UserAccount, addressToScriptHash } from '@neo-one/client';
@@ -115,7 +116,7 @@ function SendTransaction({
           id="select-asset"
           label={null}
           helperText="Select Asset"
-          options={coins.map(coin => coin.asset).map(asset => ({
+          options={coins.map((coin) => coin.asset).map((asset) => ({
             id: getID(asset.id),
             text: getName(asset.symbol, getID(asset.id)),
             asset,
@@ -161,7 +162,7 @@ const enhance: HOC<*, *> = compose(
   }),
   withPropsOnChange(['address'], ({ address }) => ({
     coins: getSortedCoins(
-      address == null ? [] : address.coins.edges.map(edge => edge.node),
+      address == null ? [] : address.coins.edges.map((edge) => edge.node),
     ),
   })),
   withStateHandlers(
@@ -172,14 +173,14 @@ const enhance: HOC<*, *> = compose(
       amountValidation: null,
       selectedAssetHash: NEO_ASSET_HASH,
     }),
-    { setState: prevState => updater => updater(prevState) },
+    { setState: (prevState) => (updater) => updater(prevState) },
   ),
   connect(
     null,
-    dispatch => ({ dispatch }),
+    (dispatch) => ({ dispatch }),
   ),
   withHandlers({
-    onChangeAddress: ({ setState }) => event => {
+    onChangeAddress: ({ setState }) => (event) => {
       const toAddress = event.target.value;
       let toAddressValidation;
       try {
@@ -187,31 +188,31 @@ const enhance: HOC<*, *> = compose(
       } catch (error) {
         toAddressValidation = sanitizeError(error).clientMessage;
       }
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         toAddress,
         toAddressValidation,
       }));
     },
-    onChangeAmount: ({ setState, coins, selectedAssetHash }) => event => {
+    onChangeAmount: ({ setState, coins, selectedAssetHash }) => (event) => {
       const amount = event.target.value;
       const amountValidation = walletAPI.validateAmount(
         amount,
-        coins.find(coin => getID(coin.asset.id) === selectedAssetHash),
+        coins.find((coin) => getID(coin.asset.id) === selectedAssetHash),
       );
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         amount,
         amountValidation,
       }));
     },
-    onSelect: ({ setState, amount, coins }) => option => {
+    onSelect: ({ setState, amount, coins }) => (option) => {
       const selectedAssetHash = option == null ? NEO_ASSET_HASH : option.id;
       const amountValidation = walletAPI.validateAmount(
         amount,
-        coins.find(coin => getID(coin.asset.id) === selectedAssetHash),
+        coins.find((coin) => getID(coin.asset.id) === selectedAssetHash),
       );
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         selectedAssetHash,
         amountValidation,
@@ -225,7 +226,7 @@ const enhance: HOC<*, *> = compose(
       coins,
       dispatch,
     }) => () => {
-      const coin = coins.find(c => getID(c.asset.id) === selectedAssetHash);
+      const coin = coins.find((c) => getID(c.asset.id) === selectedAssetHash);
       if (coin != null) {
         dispatch(
           confirmTransaction({

@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { type HOC, compose, pure } from 'recompose';
 
 import { type Theme } from '../../../../styles/createTheme';
-import { DownArrow } from '../../transaction/lib';
+import { DownArrow } from '../lib';
 
 import { withStyles } from '../../../../lib/base';
 

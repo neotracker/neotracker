@@ -4,6 +4,7 @@ import {
   ClientError,
   labels,
   numbers,
+  // $FlowFixMe
 } from 'neotracker-shared-utils';
 import BigNumber from 'bignumber.js';
 import {
@@ -422,7 +423,7 @@ export const claimAllGAS = ({
       [labels.NEO_ADDRESS]: accountID.address,
     })
     .captureSpanLog(
-      async span => {
+      async (span) => {
         const callOnProgress = (progress: ClaimAllGASProgress) => {
           if (onProgress) {
             onProgress(progress);
@@ -486,12 +487,12 @@ export const claimAllGAS = ({
 
 export const mapCurrentLocalWallet = compose(
   getContext({ appContext: () => null }),
-  mapPropsStream(props$ =>
+  mapPropsStream((props$) =>
     props$.pipe(
-      switchMap(props => {
+      switchMap((props) => {
         const { client } = (props.appContext: AppContext);
         return client.currentAccount$.pipe(
-          switchMap(account => {
+          switchMap((account) => {
             let wallet$ = _of(null);
             if (account != null) {
               if (account.type === 'memory') {
@@ -522,12 +523,12 @@ export const mapCurrentLocalWallet = compose(
 
 export const mapAccounts = compose(
   getContext({ appContext: () => null }),
-  mapPropsStream(props$ =>
+  mapPropsStream((props$) =>
     props$.pipe(
-      switchMap(props => {
+      switchMap((props) => {
         const { client } = (props.appContext: AppContext);
         return client.accounts$.pipe(
-          map(accounts => ({
+          map((accounts) => ({
             ...props,
             accounts,
           })),

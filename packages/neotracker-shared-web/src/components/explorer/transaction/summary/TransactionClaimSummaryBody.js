@@ -7,7 +7,7 @@ import { graphql } from 'react-relay';
 import {
   TransactionClaimPagingTable,
   TransactionOutputPagingTable,
-} from '../../transaction/lib';
+} from '../lib';
 
 import { fragmentContainer } from '../../../../graphql/relay';
 

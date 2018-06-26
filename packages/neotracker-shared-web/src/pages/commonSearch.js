@@ -1,4 +1,5 @@
 /* @flow */
+// $FlowFixMe
 import { tryParseInt } from 'neotracker-shared-utils';
 
 export const PAGE_SIZE = 20;

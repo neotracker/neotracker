@@ -38,7 +38,7 @@ type Props = {|
 function Tabs({ tabs, className, classes }: Props): React.Element<*> {
   return (
     <div className={classNames(className, classes.root)}>
-      {tabs.map(tab => (
+      {tabs.map((tab) => (
         <Link key={tab.id} className={classes.link} to={tab.href}>
           <Button
             className={tab.className}

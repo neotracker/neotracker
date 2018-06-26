@@ -18,6 +18,7 @@ import Button from '../../../lib/base/Button';
 import Typography from '../../../lib/base/Typography';
 import PasswordField from '../common/PasswordField';
 import OpenWalletPassword from './OpenWalletPassword';
+// eslint-disable-next-line
 import OpenWalletPrivateKey from './OpenWalletPrivateKey';
 import { withStyles } from '../../../lib/base';
 import { type Theme } from '../../../styles/createTheme';
@@ -131,10 +132,10 @@ const enhance: HOC<*, *> = compose(
         wallet: { type: 'nep2', wallet: initialNEP2Key },
       };
     },
-    { setState: prevState => updater => updater(prevState) },
+    { setState: (prevState) => (updater) => updater(prevState) },
   ),
   withHandlers({
-    onChangeNEP2: ({ setState }) => event => {
+    onChangeNEP2: ({ setState }) => (event) => {
       const nep2Key = event.target.value;
       let privateKeyCheck;
       try {
@@ -150,13 +151,13 @@ const enhance: HOC<*, *> = compose(
         }
       }
       if (privateKeyCheck != null) {
-        setState(prevState => ({
+        setState((prevState) => ({
           ...prevState,
           privateKey: nep2Key,
           error: undefined,
         }));
       } else {
-        setState(prevState => ({
+        setState((prevState) => ({
           ...prevState,
           nep2Key,
           wallet: undefined,
@@ -166,14 +167,14 @@ const enhance: HOC<*, *> = compose(
     },
     onSubmit: ({ setState, nep2Key }) => () => {
       if (walletAPI.isNEP2(nep2Key)) {
-        setState(prevState => ({
+        setState((prevState) => ({
           ...prevState,
           nep2Key,
           wallet: { type: 'nep2', wallet: nep2Key },
           error: undefined,
         }));
       } else {
-        setState(prevState => ({
+        setState((prevState) => ({
           ...prevState,
           nep2Key,
           wallet: undefined,
@@ -191,7 +192,7 @@ const enhance: HOC<*, *> = compose(
         error: {},
       });
     },
-    onOpenError: ({ appContext: appContextIn }) => error => {
+    onOpenError: ({ appContext: appContextIn }) => (error) => {
       const appContext = ((appContextIn: $FlowFixMe): AppContext);
       appContext.monitor.log({
         name: 'neotracker_wallet_open_encrypted_key',

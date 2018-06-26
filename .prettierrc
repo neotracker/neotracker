@@ -1,6 +1,16 @@
 {
-  "parser": "flow",
-  "printWidth": 80,
+  "arrowParens": "always",
+  "parser": "typescript",
+  "printWidth": 120,
   "singleQuote": true,
-  "trailingComma": "all"
+  "trailingComma": "all",
+  "overrides": [
+    {
+      "files": "*.js",
+      "options": {
+        "parser": "flow",
+        "printWidth": 80
+      }
+    }
+  ]
 }

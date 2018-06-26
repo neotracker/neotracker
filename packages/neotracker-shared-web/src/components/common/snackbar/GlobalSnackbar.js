@@ -92,12 +92,12 @@ const enhance: HOC<*, *> = compose(
     timer: null,
   }),
   withProps(({ state }) => state),
-  connect(state => ({
+  connect((state) => ({
     snackbarProps: selectSnackbarProps(state),
   })),
   withHandlers({
     handleClose: ({ setState }) => () => {
-      setState(prevState => {
+      setState((prevState) => {
         if (prevState.timer) {
           clearTimeout(prevState.timer);
         }
@@ -110,7 +110,7 @@ const enhance: HOC<*, *> = compose(
   }),
   withHandlers({
     handleExited: ({ setState, handleClose }) => () => {
-      setState(prevState => {
+      setState((prevState) => {
         if (prevState.snackbarPropsQueue.length > 0) {
           const [
             currentSnackbarProps,
@@ -146,7 +146,7 @@ const enhance: HOC<*, *> = compose(
           nextProps.snackbarPropsQueue.length === 0 &&
           nextProps.currentSnackbarProps == null
         ) {
-          nextProps.setState(prevState => ({
+          nextProps.setState((prevState) => ({
             ...prevState,
             open: true,
             currentSnackbarProps: nextProps.snackbarProps,
@@ -156,7 +156,7 @@ const enhance: HOC<*, *> = compose(
             ),
           }));
         } else {
-          nextProps.setState(prevState => ({
+          nextProps.setState((prevState) => ({
             ...prevState,
             snackbarPropsQueue: [
               ...prevState.snackbarPropsQueue,

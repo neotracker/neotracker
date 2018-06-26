@@ -107,7 +107,7 @@ function Column({
 }: Props): React.Element<any> {
   // eslint-disable-next-line
   const getRowHeight = getRowHeightIn || ((idx: number) => null);
-  const wrapValue = value =>
+  const wrapValue = (value) =>
     typeof value === 'string' ? (
       <Typography
         className={classNames(classes.textRowBase, classes.row)}

@@ -4,7 +4,7 @@ import * as React from 'react';
 import { type HOC, compose, pure } from 'recompose';
 import { graphql } from 'react-relay';
 
-import { ContractLink } from '../contract/lib';
+import { ContractLink } from './lib';
 import { Table } from '../../common/table';
 import { TransactionTimeLink } from '../transaction/lib';
 
@@ -53,7 +53,7 @@ function ContractTable({
   const nameValues = [];
   const authorValues = [];
   const registeredAt = [];
-  contracts.forEach(contract => {
+  contracts.forEach((contract) => {
     contractValues.push(<ContractLink contractHash={getID(contract.id)} />);
     nameValues.push(contract.name);
     authorValues.push(contract.author);

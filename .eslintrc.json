@@ -28,6 +28,7 @@
     "jsx-a11y/anchor-is-valid": 0,
     "eslint-comments/no-unlimited-disable": 0,
     "eslint-comments/disable-enable-pair": 0,
-    "react/destructuring-assignment": 0
+    "react/destructuring-assignment": 0,
+    "lines-between-class-members": 0
   }
 }

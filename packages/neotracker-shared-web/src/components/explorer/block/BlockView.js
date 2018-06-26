@@ -5,7 +5,7 @@ import { type HOC, compose, pure } from 'recompose';
 import { graphql } from 'react-relay';
 
 import { AddressLink } from '../address/lib';
-import { BlockHashLink, BlockTime, getBlockSize } from '../block/lib';
+import { BlockHashLink, BlockTime, getBlockSize } from './lib';
 import { PageView } from '../../common/view';
 
 import { formatNumber } from '../../../utils';

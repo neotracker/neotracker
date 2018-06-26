@@ -11,7 +11,7 @@ import {
   // TransactionActionPagingTable,
   TransactionInputPagingTable,
   TransactionOutputPagingTable,
-} from '../../transaction/lib';
+} from '../lib';
 
 import { fragmentContainer, getID } from '../../../../graphql/relay';
 import { withStyles } from '../../../../lib/base';

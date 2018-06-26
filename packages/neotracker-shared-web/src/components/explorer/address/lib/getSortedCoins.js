@@ -8,6 +8,7 @@ import {
   GAS_ASSET_HASH,
   NEO_COIN_ASSET,
   GAS_COIN_ASSET,
+  // $FlowFixMe
 } from 'neotracker-shared-utils';
 
 import { getID } from '../../../../graphql/relay';
@@ -22,7 +23,7 @@ export default (
 ) => {
   let result = _.partition(
     coins,
-    coin => getID(coin.asset.id) === NEO_ASSET_HASH,
+    (coin) => getID(coin.asset.id) === NEO_ASSET_HASH,
   );
   let neoCoin = null;
   if (result[0].length > 0) {
@@ -37,7 +38,7 @@ export default (
 
   result = _.partition(
     result[1],
-    coin => getID(coin.asset.id) === GAS_ASSET_HASH,
+    (coin) => getID(coin.asset.id) === GAS_ASSET_HASH,
   );
   let gasCoin = null;
   if (result[0].length > 0) {
@@ -55,7 +56,9 @@ export default (
     const yNumber = new BigNumber(y.value);
     if (xNumber.lt(yNumber)) {
       return -1;
-    } else if (xNumber.gt(yNumber)) {
+    }
+
+    if (xNumber.gt(yNumber)) {
       return 1;
     }
 

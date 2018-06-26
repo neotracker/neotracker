@@ -11,6 +11,7 @@ import * as React from 'react';
 import type { LockedLocalWallet } from '@neo-one/client';
 
 import classNames from 'classnames';
+// $FlowFixMe
 import { sanitizeError } from 'neotracker-shared-utils';
 import { withRouter } from 'react-router-dom';
 
@@ -141,7 +142,7 @@ const enhance: HOC<*, *> = compose(
       error: (null: ?string),
     }),
     {
-      onChange: prevState => event => {
+      onChange: (prevState) => (event) => {
         const password = event.target.value;
         return {
           ...prevState,
@@ -149,9 +150,9 @@ const enhance: HOC<*, *> = compose(
           error: null,
         };
       },
-      onLoading: prevState => () => ({ ...prevState, loading: true }),
-      onDone: prevState => () => ({ ...prevState, loading: false }),
-      onError: prevState => error => ({
+      onLoading: (prevState) => () => ({ ...prevState, loading: true }),
+      onDone: (prevState) => () => ({ ...prevState, loading: false }),
+      onError: (prevState) => (error) => ({
         ...prevState,
         loading: false,
         error: `Unlock failed: ${sanitizeError(error).clientMessage}`,
@@ -191,7 +192,7 @@ const enhance: HOC<*, *> = compose(
             history.push(routes.WALLET_HOME);
           }
         })
-        .catch(error => {
+        .catch((error) => {
           onError(error);
         });
     },

@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import { type HOC, compose, pure, withStateHandlers } from 'recompose';
 import { graphql } from 'react-relay';
+// $FlowFixMe
 import { sanitizeError } from 'neotracker-shared-utils';
 
 import TransactionInputTable from './TransactionInputTable';
@@ -56,7 +57,7 @@ function TransactionClaimPagingTable({
   let hasPreviousPage = false;
   const transaction = currentProps == null ? null : currentProps.transaction;
   if (transaction != null) {
-    claims = transaction.claims.edges.map(edge => edge.node);
+    claims = transaction.claims.edges.map((edge) => edge.node);
     // eslint-disable-next-line
     hasNextPage = transaction.claims.pageInfo.hasNextPage;
     hasPreviousPage = page > 1;
@@ -100,7 +101,7 @@ const enhance: HOC<*, *> = compose(
     `,
   }),
   withStateHandlers(() => ({ page: 1 }), {
-    onUpdatePage: prevState => page => ({ ...prevState, page }),
+    onUpdatePage: (prevState) => (page) => ({ ...prevState, page }),
   }),
   queryRenderer(
     graphql`

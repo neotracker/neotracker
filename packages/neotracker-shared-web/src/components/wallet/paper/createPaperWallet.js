@@ -1,4 +1,5 @@
 /* @flow */
+// $FlowFixMe
 import { ClientError } from 'neotracker-shared-utils';
 import { JssProvider, SheetsRegistry } from 'react-jss';
 import * as React from 'react';
@@ -51,7 +52,7 @@ const createPaperWallet = ({
   const html = `
     <html>
       <head>
-        ${appContext.css.map(sheet => stylesheetTag(sheet)).join('')}
+        ${appContext.css.map((sheet) => stylesheetTag(sheet)).join('')}
       </head>
       <body style="background-color: white;">
         <div id="app">${reactAppString}</div>

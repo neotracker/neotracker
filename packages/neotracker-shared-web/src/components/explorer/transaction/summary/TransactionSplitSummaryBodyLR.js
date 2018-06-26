@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { type HOC, compose, pure } from 'recompose';
 
 import { type Theme } from '../../../../styles/createTheme';
-import { RightArrow } from '../../transaction/lib';
+import { RightArrow } from '../lib';
 
 import { withStyles } from '../../../../lib/base';
 

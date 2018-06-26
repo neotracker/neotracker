@@ -5,7 +5,7 @@ import { type HOC, compose, pure } from 'recompose';
 import { graphql } from 'react-relay';
 
 import { type Theme } from '../../../styles/createTheme';
-import { COIN_TABLE_ROW_HEIGHT } from '../address/lib/CoinTable';
+import { COIN_TABLE_ROW_HEIGHT } from './lib/CoinTable';
 import { ZERO_GAS_COIN, Coin, CoinTable, getSortedCoins } from './lib';
 import { PageView } from '../../common/view';
 import { TransactionTimeLink } from '../transaction/lib';
@@ -55,7 +55,7 @@ function AddressView({
   classes,
 }: Props): React.Element<*> {
   const coins =
-    address == null ? [] : address.coins.edges.map(edge => edge.node);
+    address == null ? [] : address.coins.edges.map((edge) => edge.node);
   const sortedCoins = getSortedCoins(coins);
   const unclaimed =
     address == null ? ZERO_GAS_COIN : address.claim_value_available_coin;
