@@ -13,8 +13,9 @@ import {
   isHealthyDB,
   RootLoaderOptions,
 } from 'neotracker-server-db';
+import { mergeScanLatest } from 'neotracker-shared-utils';
 import { combineLatest, concat, Observable, of as _of, timer } from 'rxjs';
-import { concatMap, distinctUntilChanged, map, publishReplay, refCount, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, map, publishReplay, refCount, switchMap } from 'rxjs/operators';
 import { MigrationHandler } from './MigrationHandler';
 import { migrations } from './migrations';
 import { run$ } from './run$';
@@ -252,7 +253,7 @@ export const createScraper$ = ({
         };
       },
     ),
-    concatMap(async (context: Context) => {
+    mergeScanLatest(async (_acc, context: Context) => {
       // tslint:disable-next-line no-loop-statement
       for (const [name, migration] of migrations) {
         const execute = await context.migrationHandler.shouldExecute(name);
