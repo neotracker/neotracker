@@ -1212,7 +1212,7 @@ async function saveClaim(
             ...duplicateClaimDB,
             id: TransactionInputOutputModel.makeID({
               // tslint:disable-next-line no-any
-              outputTransactionHash: (duplicateClaimDB as any).output_transaction_id,
+              outputTransactionHash: (duplicateClaimDB as any).output_transaction_hash,
               // tslint:disable-next-line no-any
               outputTransactionIndex: (duplicateClaimDB as any).output_transaction_index,
               type: duplicateClaimDB.type,
@@ -1449,6 +1449,7 @@ async function saveInput(
         .context(context.makeQueryContext(span))
         .patch({
           input_transaction_id: transactionModel.id,
+          input_transaction_hash: transactionModel.hash,
           claim_value: claimValue,
         })
         .returning('*');
