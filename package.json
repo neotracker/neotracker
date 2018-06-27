@@ -146,7 +146,7 @@
     "develop:scrape": "yarn run ts-node ./packages/neotracker-build-scrape/src/entry/scrape.ts",
     "develop:web": "yarn run ts-node ./packages/neotracker-build-web/src/develop.ts",
     "e2e": "jest --config e2e.json",
-    "e2e-ci": "jest --config e2e.json -w 1",
+    "e2e-ci": "jest --config e2e.json -w 1 --passWithNoTests",
     "flow": "flow",
     "lint": "yarn run lint:ts && yarn run lint:js:all",
     "lint-staged": "lint-staged",
@@ -162,7 +162,7 @@
     "prettier:source:js": "prettier --write \"packages/*/src/**/*.js\"",
     "prettier:source:ts": "prettier --write \"packages/*/src/**/*.ts\"",
     "test": "jest",
-    "test-ci": "jest -w 1",
+    "test-ci": "jest -w 1  --passWithNoTests",
     "test-coverage": "yarn run test --coverage",
     "ts-node": "ts-node --project tsconfig.cli.json --transpileOnly",
     "tsc": "tsc"
