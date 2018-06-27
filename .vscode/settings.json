@@ -11,5 +11,8 @@
   "editor.formatOnPaste": false,
   "editor.formatOnSave": true,
   "cSpell.language": "en",
-  "deepscan.enable": true
+  "deepscan.enable": true,
+  "javascript.validate.enable": false,
+  "flow.useNPMPackagedFlow": true,
+  "tslint.jsEnable": false
 }
