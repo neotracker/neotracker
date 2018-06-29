@@ -3,7 +3,7 @@ import AssetsWebpackPlugin from 'assets-webpack-plugin';
 import { TsConfigPathsPlugin } from 'awesome-typescript-loader';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import { utils } from 'neotracker-shared-utils';
-import path from 'path';
+import * as path from 'path';
 import * as webpack from 'webpack';
 import { createDefinePlugin } from './createDefinePlugin';
 import { createWebpackCompiler } from './createWebpackCompiler';
