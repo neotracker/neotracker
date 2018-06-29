@@ -6,6 +6,7 @@ export const createConnectionString = ({
   database,
   readWrite,
 }: {
+  readonly type?: string;
   readonly host?: string;
   readonly port?: number;
   readonly user?: string;

@@ -1,7 +1,7 @@
 // tslint:disable variable-name
 import Knex from 'knex';
 import { Model } from 'objection';
-import { EdgeSchema, FieldSchema, IndexSchema } from '../lib';
+import { EdgeSchema, FieldSchema, IndexSchema, QueryContext } from '../lib';
 import { BlockchainModel } from './BlockchainModel';
 import { ADDRESS_VALIDATOR, ASSET_HASH_VALIDATOR } from './common';
 
@@ -110,26 +110,6 @@ export class Coin extends BlockchainModel<string> {
     },
   };
 
-  public static chainCustomAfter(schema: Knex.SchemaBuilder): Knex.SchemaBuilder {
-    return schema.raw(`
-      CREATE OR REPLACE FUNCTION coin_update_tables() RETURNS trigger AS $coin_update_tables$
-        BEGIN
-          UPDATE asset
-          SET address_count=address_count + 1
-          WHERE asset.id = NEW.asset_id;
-          RETURN NULL;
-        END;
-      $coin_update_tables$ LANGUAGE plpgsql;
-    `).raw(`
-      DROP TRIGGER IF EXISTS coin_update_tables
-      ON coin;
-
-      CREATE TRIGGER coin_update_tables AFTER INSERT
-      ON coin FOR EACH ROW EXECUTE PROCEDURE
-      coin_update_tables()
-    `);
-  }
-
   public static makeID({
     addressHash,
     assetHash,
@@ -138,6 +118,21 @@ export class Coin extends BlockchainModel<string> {
     readonly assetHash: string;
   }): string {
     return [addressHash, assetHash].join('$');
+  }
+
+  public static async insertAndReturn(db: Knex, queryContext: QueryContext, block: Partial<Coin>): Promise<Coin> {
+    if (db.client.driverName === 'pg') {
+      return Coin.query(db)
+        .context(queryContext)
+        .insert(block)
+        .returning('*')
+        .first()
+        .throwIfNotFound();
+    }
+
+    return Coin.query(db)
+      .context(queryContext)
+      .insertAndFetch(block);
   }
 
   public readonly address_id!: string;

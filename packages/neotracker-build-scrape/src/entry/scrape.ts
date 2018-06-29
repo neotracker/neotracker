@@ -103,7 +103,6 @@ const run = async () => {
       host: 'localhost',
       port: 5432,
     },
-
     dbOptions,
   );
 
@@ -116,8 +115,11 @@ const run = async () => {
         host: 'localhost',
         port: 5432,
       },
-
       network,
+      pubSub: {
+        host: 'localhost',
+        port: 5432,
+      },
     },
     options$: new BehaviorSubject({
       db: dbOptions,
@@ -125,12 +127,12 @@ const run = async () => {
         cacheEnabled: true,
         cacheSize: 100,
       },
-
       rpcURL,
       migrationEnabled: true,
       blacklistNEP5Hashes,
       repairNEP5BlockFrequency: 10,
       repairNEP5LatencySeconds: 15,
+      pubSub: { db: dbOptions },
     }),
     monitor,
   });

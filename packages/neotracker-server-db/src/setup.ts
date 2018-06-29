@@ -1,6 +1,6 @@
 import { Monitor } from '@neo-one/monitor';
 import Knex from 'knex';
-import { createTable, ModelSchema, setupForCreate } from './lib';
+import { createTable, ModelSchema } from './lib';
 import { models } from './models';
 
 export const modelSchemas = models.reduce<{ readonly [key: string]: ModelSchema }>(
@@ -12,7 +12,6 @@ export const modelSchemas = models.reduce<{ readonly [key: string]: ModelSchema 
 );
 
 export const createTables = async (db: Knex, monitor: Monitor) => {
-  await setupForCreate(db, monitor);
   // tslint:disable-next-line no-loop-statement
   for (const model of models) {
     await createTable(db, monitor, model.modelSchema, modelSchemas);

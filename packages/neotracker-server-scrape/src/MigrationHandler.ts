@@ -7,7 +7,6 @@ import {
   models,
   ModelSchema,
   QueryContext,
-  setupForCreate,
 } from 'neotracker-server-db';
 import { migrations } from './migrations';
 
@@ -55,7 +54,6 @@ export class MigrationHandler {
           }),
           {},
         );
-        await setupForCreate(this.db, this.monitor);
         await createTable(this.db, this.monitor, Migration.modelSchema, modelSchemas);
       }
 

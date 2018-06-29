@@ -1,5 +1,4 @@
 // tslint:disable variable-name
-import Knex from 'knex';
 import { Model } from 'objection';
 import { EdgeSchema, FieldSchema, IndexSchema } from '../lib';
 import { BlockchainModel } from './BlockchainModel';
@@ -311,34 +310,6 @@ export class TransactionInputOutput extends BlockchainModel<string> {
       required: true,
     },
   };
-
-  public static chainCustomAfter(schema: Knex.SchemaBuilder): Knex.SchemaBuilder {
-    return schema.raw(`
-      CREATE OR REPLACE FUNCTION txio_update_tables() RETURNS trigger AS $txio_update_tables$
-        BEGIN
-          UPDATE asset
-          SET issued=issued + NEW.value
-          WHERE asset.id = NEW.asset_id;
-          RETURN NULL;
-        END;
-      $txio_update_tables$ LANGUAGE plpgsql;
-    `).raw(`
-      DROP TRIGGER IF EXISTS txio_update_tables
-      ON transaction_input_output;
-
-      CREATE TRIGGER txio_update_tables AFTER INSERT
-      ON transaction_input_output FOR EACH ROW
-      WHEN (
-        NEW.type = '${TYPE_INPUT}' AND
-        NEW.input_transaction_id IS NULL AND (
-          NEW.subtype = '${SUBTYPE_ISSUE}' OR
-          NEW.subtype = '${SUBTYPE_CLAIM}' OR
-          NEW.subtype = '${SUBTYPE_REWARD}'
-        )
-      )
-      EXECUTE PROCEDURE txio_update_tables()
-    `);
-  }
 
   public static makeID({
     outputTransactionHash,

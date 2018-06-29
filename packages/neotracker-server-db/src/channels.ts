@@ -1,61 +1,49 @@
 import { Monitor } from '@neo-one/monitor';
-import { pubsub } from 'neotracker-server-utils';
-// @ts-ignore
-import PGPubsub from 'pg-pubsub';
-import { Observable } from 'rxjs';
-import { createConnectionString } from './createConnectionString';
+import { pubsub as globalPubSub } from 'neotracker-server-utils';
+import { Observable, Observer } from 'rxjs';
+import { share } from 'rxjs/operators';
+import { createPubSub, Environment as PubSubEnvironment, Options as PubSubOptions, PubSub } from './createPubSub';
 
 export const PROCESSED_NEXT_INDEX = 'processed_next_index';
-export interface Options {
-  readonly intervalMS: number;
-  readonly db: {
-    readonly connection: {
-      readonly user?: string;
-      readonly database?: string;
-      readonly password?: string;
-    };
-  };
-}
-export interface Environment {
-  readonly host?: string;
-  readonly port?: number;
-}
+
+export const createProcessedNextIndexPubSub = ({
+  options,
+  environment,
+  monitor,
+}: {
+  readonly monitor: Monitor;
+  readonly options: PubSubOptions;
+  readonly environment: PubSubEnvironment;
+}): PubSub<{ readonly index: number }> =>
+  createPubSub<{ readonly index: number }>({
+    options,
+    environment,
+    monitor: monitor.at('subscribe_processed_next_index'),
+    channel: PROCESSED_NEXT_INDEX,
+  });
 
 export const subscribeProcessedNextIndex = ({
   options,
   environment,
-  monitor: monitorIn,
+  monitor,
 }: {
   readonly monitor: Monitor;
-  readonly options: Options;
-  readonly environment: Environment;
-}): Observable<void> =>
-  Observable.create(() => {
-    const monitor = monitorIn.at('subscribe_processed_next_index');
-    const pgpubsub = new PGPubsub(
-      createConnectionString({
-        ...environment,
-        ...options.db.connection,
-        readWrite: true,
-      }),
-
-      {
-        // tslint:disable-next-line no-any
-        log: (...args: any[]) => {
-          if (args[0] != undefined && args[0] instanceof Error) {
-            monitor.logError({ name: 'pg_pubsub_error', error: args[0] });
-          } else {
-            monitor.log({ name: 'pg_pubsub', level: 'verbose' });
-          }
-        },
+  readonly options: PubSubOptions;
+  readonly environment: PubSubEnvironment;
+}): Observable<{ readonly index: number }> =>
+  Observable.create((observer: Observer<{ readonly index: number }>) => {
+    const pubSub = createProcessedNextIndexPubSub({ options, environment, monitor });
+    const subscription = pubSub.value$.subscribe({
+      next: (payload) => {
+        globalPubSub.publish(PROCESSED_NEXT_INDEX, payload);
+        observer.next(payload);
       },
-    );
-
-    pgpubsub.addChannel(PROCESSED_NEXT_INDEX, () => {
-      pubsub.publish(PROCESSED_NEXT_INDEX, {});
+      complete: observer.complete,
+      error: observer.error,
     });
 
     return () => {
-      pgpubsub.close();
+      subscription.unsubscribe();
+      pubSub.close();
     };
-  });
+  }).pipe(share());

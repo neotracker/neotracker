@@ -207,7 +207,7 @@ const normalizeInvocationData = (data: RawInvocationData): RawInvocationData => 
     normalizeHash(hash1),
   ]),
   voteUpdates: data.voteUpdates,
-  actions: data.actions,
+  actions: data.actions.map(normalizeAction),
 });
 
 const normalizeTransaction = (transaction: ConfirmedTransaction): ConfirmedTransaction => {

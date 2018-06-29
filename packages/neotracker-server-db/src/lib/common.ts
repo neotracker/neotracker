@@ -345,20 +345,6 @@ const addColumn = (
   }
 };
 
-export const setupForCreate = async (db: Knex, monitor: Monitor) =>
-  db
-    .raw(
-      `
-  CREATE OR REPLACE FUNCTION update_updated_at() RETURNS TRIGGER AS $update_updated_at$
-  BEGIN
-    NEW.updated_at = extract(epoch FROM now());
-    RETURN NEW;
-  END;
-  $update_updated_at$ language 'plpgsql';
-`,
-    )
-    .queryContext(makeAllPowerfulQueryContext(monitor));
-
 const getCreateIndex = (index: IndexSchema, tableName: string) => {
   if (index.type === 'order') {
     const orderCols = index.columns.map((col) => `${col.name} ${col.order}`).join(', ');
@@ -430,26 +416,13 @@ export const createTable = async (
       return currentSchema;
     };
   }
-  let addUpdatedAtTrigger = (currentSchema: Knex.SchemaBuilder) => currentSchema;
-  // tslint:disable-next-line strict-type-predicates
-  if (modelSchema.fields.updated_at !== undefined) {
-    addUpdatedAtTrigger = (currentSchema) =>
-      currentSchema
-        .raw(
-          `
-      CREATE TRIGGER update_${modelSchema.tableName}_updated_at BEFORE UPDATE
-      ON "${modelSchema.tableName}" FOR EACH ROW
-      EXECUTE PROCEDURE update_updated_at()
-    `,
-        )
-        .queryContext(makeAllPowerfulQueryContext(monitor));
-  }
+
   const exists = await schema.queryContext(makeAllPowerfulQueryContext(monitor)).hasTable(modelSchema.tableName);
   if (!exists) {
     if (bare) {
-      await addUpdatedAtTrigger(executeSchema(schema));
+      await executeSchema(schema);
     } else {
-      await addUpdatedAtTrigger(modelSchema.chainCustomAfter(executeSchema(modelSchema.chainCustomBefore(schema))));
+      await modelSchema.chainCustomAfter(executeSchema(modelSchema.chainCustomBefore(schema)));
     }
   }
 };
@@ -472,6 +445,9 @@ export const dropTable = async (db: Knex, monitor: Monitor, modelSchema: ModelSc
 const EMPTY_DROP_INDICES = 'query string argument of EXECUTE is null';
 
 export const dropIndices = async (db: Knex, monitor: Monitor, tableName: string) => {
+  if (db.client.driverName !== 'pg') {
+    throw new Error('Not implemented');
+  }
   try {
     await db
       .raw(

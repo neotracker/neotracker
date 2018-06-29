@@ -1,5 +1,4 @@
 // tslint:disable variable-name
-import Knex from 'knex';
 import { pubsub } from 'neotracker-server-utils';
 import { Observable } from 'rxjs';
 import { PROCESSED_NEXT_INDEX } from '../channels';
@@ -33,24 +32,6 @@ export class ProcessedIndex extends BaseVisibleModel<number> {
       required: true,
     },
   };
-
-  public static chainCustomAfter(schema: Knex.SchemaBuilder): Knex.SchemaBuilder {
-    return schema.raw(`
-      CREATE OR REPLACE FUNCTION processed_index_notify() RETURNS trigger AS $processed_index_notify$
-        BEGIN
-          NOTIFY ${PROCESSED_NEXT_INDEX};
-          RETURN NULL;
-        END;
-      $processed_index_notify$ LANGUAGE plpgsql;
-    `).raw(`
-      DROP TRIGGER IF EXISTS processed_index_notify
-      ON processed_index;
-
-      CREATE TRIGGER processed_index_notify AFTER INSERT
-      ON processed_index FOR EACH ROW EXECUTE PROCEDURE
-      processed_index_notify()
-    `);
-  }
 
   // tslint:disable no-any
   public static observable$(_obj: any, _args: any, _context: GraphQLContext, _info: any): Observable<any> {

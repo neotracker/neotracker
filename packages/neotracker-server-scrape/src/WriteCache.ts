@@ -1,36 +1,56 @@
 import { Monitor } from '@neo-one/monitor';
+import Knex from 'knex';
 import LRU from 'lru-cache';
 import { utils } from 'neotracker-shared-utils';
-import { CONFLICT_ERROR_CODE } from './constants';
+import { Transaction } from 'objection';
+import { isUniqueError } from './db';
 
 type Fetch<Key, Value> = ((key: Key, monitor: Monitor) => Promise<Value | undefined>);
 type Create<Save, Value> = ((save: Save, monitor: Monitor) => Promise<Value>);
 type GetKey<Key> = ((key: Key) => string);
-type GetKeyFromSave<Key, Save> = ((save: Save) => Key);
-export interface WriteCacheOptions<Key, Value, Save> {
+type GetKeyFrom<Key, Save> = ((save: Save) => Key);
+type Revert<RevertOptions> = (options: RevertOptions, monitor: Monitor, db?: Knex | Transaction) => Promise<void>;
+export interface WriteCacheOptions<Key, Value, Save, RevertOptions> {
+  readonly driverName: string;
   readonly fetch: Fetch<Key, Value>;
   readonly create: Create<Save, Value>;
+  readonly revert: Revert<RevertOptions>;
   readonly getKey: GetKey<Key>;
-  readonly getKeyFromSave: GetKeyFromSave<Key, Save>;
+  readonly getKeyFromSave: GetKeyFrom<Key, Save>;
+  readonly getKeyFromRevert: GetKeyFrom<Key, RevertOptions>;
   readonly size?: number;
 }
 
-export class WriteCache<Key, Value, Save> {
+export class WriteCache<Key, Value, Save, RevertOptions> {
   private readonly cache: LRU.Cache<string, Promise<Value | undefined>>;
   private readonly mutableSaveCache: { [K in string]?: Promise<Value> };
+  private readonly driverName: string;
   private readonly fetch: Fetch<Key, Value>;
   private readonly create: Create<Save, Value>;
+  private readonly revertInternal: Revert<RevertOptions>;
   private readonly getKey: GetKey<Key>;
-  private readonly getKeyFromSave: GetKeyFromSave<Key, Save>;
+  private readonly getKeyFromSave: GetKeyFrom<Key, Save>;
+  private readonly getKeyFromRevert: GetKeyFrom<Key, RevertOptions>;
 
-  public constructor({ fetch, create, getKey, getKeyFromSave, size }: WriteCacheOptions<Key, Value, Save>) {
+  public constructor({
+    driverName,
+    fetch,
+    create,
+    getKey,
+    getKeyFromSave,
+    getKeyFromRevert,
+    revert,
+    size,
+  }: WriteCacheOptions<Key, Value, Save, RevertOptions>) {
     this.cache = LRU(size === undefined ? 10000 : size);
     this.mutableSaveCache = {};
-
+    this.driverName = driverName;
     this.fetch = fetch;
     this.create = create;
+    this.revertInternal = revert;
     this.getKey = getKey;
     this.getKeyFromSave = getKeyFromSave;
+    this.getKeyFromRevert = getKeyFromRevert;
   }
 
   public async get(keyIn: Key, monitor: Monitor): Promise<Value | undefined> {
@@ -71,7 +91,7 @@ export class WriteCache<Key, Value, Save> {
             .catch(async (error: NodeJS.ErrnoException) => {
               // tslint:disable-next-line no-dynamic-delete
               delete this.mutableSaveCache[key];
-              if (error.code === CONFLICT_ERROR_CODE) {
+              if (isUniqueError(this.driverName, error)) {
                 return this.getThrows(keyIn, monitor);
               }
 
@@ -85,6 +105,11 @@ export class WriteCache<Key, Value, Save> {
 
       return result;
     });
+  }
+
+  public async revert(options: RevertOptions, monitor: Monitor, db?: Knex | Transaction): Promise<void> {
+    this.cache.del(this.getKey(this.getKeyFromRevert(options)));
+    await this.revertInternal(options, monitor, db);
   }
 
   public refresh(key: Key, monitor: Monitor): void {

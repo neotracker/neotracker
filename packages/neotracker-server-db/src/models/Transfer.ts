@@ -1,5 +1,4 @@
 // tslint:disable variable-name
-import Knex from 'knex';
 import { Model } from 'objection';
 import { EdgeSchema, FieldSchema, IndexSchema } from '../lib';
 import { BlockchainModel } from './BlockchainModel';
@@ -240,43 +239,13 @@ export class Transfer extends BlockchainModel<string> {
     },
   };
 
-  public static chainCustomAfter(schema: Knex.SchemaBuilder): Knex.SchemaBuilder {
-    return schema.raw(`
-      CREATE OR REPLACE FUNCTION transfer_update_tables() RETURNS trigger AS $transfer_update_tables$
-        BEGIN
-          IF (TG_OP = 'INSERT' AND NEW.from_address_id IS NULL) THEN
-            UPDATE asset
-            SET issued=issued + NEW.value, transfer_count=transfer_count + 1
-            WHERE asset.id = NEW.asset_id;
-          ELSIF (TG_OP = 'INSERT' AND NEW.to_address_id IS NULL) THEN
-            UPDATE asset
-            SET issued=issued - NEW.value, transfer_count=transfer_count + 1
-            WHERE asset.id = NEW.asset_id;
-          ELSIF (TG_OP = 'INSERT') THEN
-            UPDATE asset
-            SET transfer_count=transfer_count + 1
-            WHERE asset.id = NEW.asset_id;
-          END IF;
-          RETURN NULL;
-        END;
-      $transfer_update_tables$ LANGUAGE plpgsql;
-    `).raw(`
-      DROP TRIGGER IF EXISTS transfer_update_tables
-      ON transfer;
-
-      CREATE TRIGGER transfer_update_tables AFTER INSERT OR UPDATE OR DELETE
-      ON transfer FOR EACH ROW EXECUTE PROCEDURE
-      transfer_update_tables()
-    `);
-  }
-
   public readonly transaction_id!: string;
   public readonly transaction_hash!: string;
   public readonly asset_id!: string;
   public readonly contract_id!: string;
   public readonly value!: string;
-  public readonly from_address_id!: string;
-  public readonly to_address_id!: string;
+  public readonly from_address_id!: string | undefined;
+  public readonly to_address_id!: string | undefined;
   public readonly block_id!: number;
   public readonly transaction_index!: number;
   public readonly action_index!: number;

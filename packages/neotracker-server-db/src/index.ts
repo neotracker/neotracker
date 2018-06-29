@@ -1,6 +1,7 @@
 export { isHealthyDB } from './isHealthyDB';
 
-export { PROCESSED_NEXT_INDEX, subscribeProcessedNextIndex } from './channels';
+export { PROCESSED_NEXT_INDEX, subscribeProcessedNextIndex, createProcessedNextIndexPubSub } from './channels';
+export { createPubSub, PubSub, Options as PubSubOptions, Environment as PubSubEnvironment } from './createPubSub';
 export { create, create$, createFromEnvironment, createFromEnvironment$, transaction } from './db';
 export * from './lib';
 export { RootLoader, createRootLoader$, createRootLoader } from './loader';
@@ -36,8 +37,8 @@ export {
 export * from './setup';
 export { calculateClaimValueBase } from './utils';
 export {
-  Options as SubscribeProcessedNextIndexOptions,
   Environment as SubscribeProcessedNextIndexEnvironment,
-} from './channels';
+  Options as SubscribeProcessedNextIndexOptions,
+} from './createPubSub';
 export { Environment as DBEnvironment, Options as DBOptions, AllOptions as DBAllOptions } from './db';
 export { RootLoaderOptions } from './loader';

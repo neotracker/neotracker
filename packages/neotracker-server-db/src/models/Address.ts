@@ -198,8 +198,8 @@ export class Address extends BlockchainModel<string> {
     },
   };
 
-  public readonly transaction_id!: string;
-  public readonly transaction_hash!: string;
+  public readonly transaction_id!: string | undefined;
+  public readonly transaction_hash!: string | undefined;
   public readonly block_id!: number;
   public readonly block_time!: number;
   public readonly transaction_count!: string;

@@ -1,6 +1,7 @@
 // tslint:disable variable-name
+import Knex from 'knex';
 import { Model } from 'objection';
-import { EdgeSchema, FieldSchema, IndexSchema } from '../lib';
+import { EdgeSchema, FieldSchema, IndexSchema, QueryContext } from '../lib';
 import { BlockchainModel } from './BlockchainModel';
 import {
   ADDRESS_VALIDATOR,
@@ -235,6 +236,22 @@ export class Block extends BlockchainModel<number> {
       },
     },
   };
+
+  public static async insertAndReturn(db: Knex, queryContext: QueryContext, block: Partial<Block>): Promise<Block> {
+    if (db.client.driverName === 'pg') {
+      return Block.query(db)
+        .context(queryContext)
+        .insert(block)
+        .returning('*')
+        .first()
+        .throwIfNotFound();
+    }
+
+    return Block.query(db)
+      .context(queryContext)
+      .insertAndFetch(block);
+  }
+
   public readonly hash!: string;
   public readonly size!: number;
   public readonly version!: number;

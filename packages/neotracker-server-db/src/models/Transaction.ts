@@ -1,6 +1,4 @@
 // tslint:disable variable-name
-import Knex from 'knex';
-import { GAS_ASSET_HASH } from 'neotracker-shared-utils';
 import { Model } from 'objection';
 import { EdgeSchema, FieldSchema, IndexSchema } from '../lib';
 import { BlockchainModel } from './BlockchainModel';
@@ -358,27 +356,6 @@ export class Transaction extends BlockchainModel<string> {
       exposeGraphQL: true,
     },
   };
-
-  public static chainCustomAfter(schema: Knex.SchemaBuilder): Knex.SchemaBuilder {
-    return schema.raw(`
-      CREATE OR REPLACE FUNCTION tx_update_tables() RETURNS trigger AS $tx_update_tables$
-        BEGIN
-          UPDATE asset
-          SET issued=issued - (NEW.system_fee + NEW.network_fee)
-          WHERE asset.id = '${GAS_ASSET_HASH}';
-          RETURN NULL;
-        END;
-      $tx_update_tables$ LANGUAGE plpgsql;
-    `).raw(`
-      DROP TRIGGER IF EXISTS tx_update_tables
-      ON transaction;
-
-      CREATE TRIGGER tx_update_tables AFTER INSERT
-      ON transaction FOR EACH ROW
-      WHEN (NEW.system_fee > 0 OR NEW.network_fee > 0)
-      EXECUTE PROCEDURE tx_update_tables()
-    `);
-  }
 
   public readonly hash!: string;
   public readonly type!: string;

@@ -1,4 +1,4 @@
-import * as parser from 'ua-parser-js';
+import exported from 'ua-parser-js';
 
 export const getUA = (uaIn: string | ReadonlyArray<string> | undefined) => {
   const nonNullUA = uaIn === undefined ? '' : uaIn;
@@ -31,7 +31,7 @@ export const getUA = (uaIn: string | ReadonlyArray<string> | undefined) => {
 
   let error;
   try {
-    userAgent = new parser(ua).getResult();
+    userAgent = new exported(ua).getResult();
   } catch (err) {
     error = err;
   }

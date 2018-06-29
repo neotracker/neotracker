@@ -62,20 +62,6 @@ export class BaseModel<TID extends ID = ID> extends Base {
       pluralName: this.pluralName,
       id: 'id',
       fields: {
-        created_at: {
-          type: { type: 'integer', minimum: 0 },
-          required: true,
-          auto: true,
-          exposeGraphQL: true,
-        },
-
-        updated_at: {
-          type: { type: 'integer', minimum: 0 },
-          required: true,
-          auto: true,
-          exposeGraphQL: true,
-        },
-
         ...this.fieldSchema,
       },
 
@@ -105,8 +91,6 @@ export class BaseModel<TID extends ID = ID> extends Base {
   }
 
   public readonly id!: TID;
-  public readonly created_at!: number;
-  public readonly updated_at!: number;
 
   public async afterGet(context: QueryContext): Promise<void> {
     this.getLoader(context).prime({ id: this.id, monitor: context.monitor }, this);

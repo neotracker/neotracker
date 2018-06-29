@@ -25,7 +25,6 @@ export const common = ({
       cacheSize: 100,
     },
     subscribeProcessedNextIndex: {
-      intervalMS: 500,
       db: db({ database }),
     },
     rateLimit: {

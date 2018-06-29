@@ -3,7 +3,6 @@ import { metrics, Monitor } from '@neo-one/monitor';
 import { Asset as AssetModel, Coin as CoinModel } from 'neotracker-server-db';
 import { labels } from 'neotracker-shared-utils';
 import { Context } from './types';
-import { add0x } from './utils';
 
 const NEOTRACKER_NEGATIVE_COIN_TOTAL = metrics.createCounter({
   name: 'neotracker_scrape_negative_coin_total',
@@ -49,7 +48,7 @@ const repairAssetSupply = async (
 };
 
 const updateCoins = async (context: Context, monitor: Monitor, assetHash: string, coins: ReadonlyArray<CoinModel>) => {
-  const contract = context.nep5Contracts[add0x(assetHash)];
+  const contract = context.nep5Contracts[assetHash];
   if (contract !== undefined) {
     monitor
       .withData({
