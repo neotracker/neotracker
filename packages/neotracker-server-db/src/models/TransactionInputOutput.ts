@@ -365,5 +365,5 @@ export class TransactionInputOutput extends BlockchainModel<string> {
   public readonly asset_id!: string;
   public readonly value!: string;
   public readonly address_id!: string;
-  public readonly claim_value!: string | undefined;
+  public readonly claim_value!: string | null | undefined;
 }

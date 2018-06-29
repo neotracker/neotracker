@@ -27,7 +27,7 @@ export const calculateAddressClaimValue = async (
   const nullClaimValue = await calculateClaimValue({
     rootLoader: context.rootLoader,
     monitor: context.getMonitor(info),
-    coins: unclaimed.filter((tio) => tio.claim_value === undefined).map((tio) => ({
+    coins: unclaimed.filter((tio) => tio.claim_value == undefined).map((tio) => ({
       value: new BigNumber(tio.value),
       startHeight: tio.output_block_id,
       endHeight: currentHeight,
