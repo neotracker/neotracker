@@ -37,7 +37,7 @@ const deleteNEP5 = async (
             .delete()
             .from(db.raw('address_to_transfer USING transfer'))
             .where(db.raw('address_to_transfer.id2 = transfer.id'))
-            .where('transfer.id', asset.id),
+            .where('transfer.asset_id', asset.id),
           CoinModel.query(db)
             .context(makeQueryContext(span))
             .delete()
