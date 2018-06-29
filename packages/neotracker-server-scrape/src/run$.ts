@@ -1864,44 +1864,60 @@ export async function initializeNEP5Contract(
     .captureSpanLog(
       async (span) => {
         if (contractModel.type === NEP5_CONTRACT_TYPE) {
-          const contractABI = await abi.NEP5({
-            client: context.client,
-            hash: add0x(contractModel.id),
-          });
+          try {
+            const contractABI = await abi.NEP5({
+              client: context.client,
+              hash: add0x(contractModel.id),
+            });
 
-          const contract = context.client.smartContract({
-            hash: add0x(contractModel.id),
-            abi: contractABI,
-          });
+            const contract = context.client.smartContract({
+              hash: add0x(contractModel.id),
+              abi: contractABI,
+            });
 
-          const [name, symbol, decimals, totalSupply, transactionModel] = await Promise.all([
-            contract.name(span),
-            contract.symbol(span),
-            contract.decimals(span),
-            contract.totalSupply(span).catch(() => new BigNumber(0)),
-            TransactionModel.query(context.db)
-              .context(context.makeQueryContext(span))
-              .where('id', contractModel.transaction_id)
-              .first()
-              .throwIfNotFound(),
-          ]);
+            const [name, symbol, decimals, totalSupply, transactionModel] = await Promise.all([
+              contract.name(span),
+              contract.symbol(span),
+              contract.decimals(span),
+              contract.totalSupply(span).catch(() => new BigNumber(0)),
+              TransactionModel.query(context.db)
+                .context(context.makeQueryContext(span))
+                .where('id', contractModel.transaction_id)
+                .first()
+                .throwIfNotFound(),
+            ]);
 
-          await context.asset.save(
-            {
-              transactionModel,
-              asset: {
-                type: 'NEP5',
-                name,
-                symbol,
-                amount: totalSupply.toString(),
-                precision: decimals.toNumber(),
+            await context.asset.save(
+              {
+                transactionModel,
+                asset: {
+                  type: 'NEP5',
+                  name,
+                  symbol,
+                  amount: totalSupply.toString(),
+                  precision: decimals.toNumber(),
+                },
+                hash: contractModel.id,
               },
-              hash: contractModel.id,
-            },
-            span,
-          );
+              span,
+            );
 
-          return contract;
+            return contract;
+          } catch (error) {
+            if (
+              error.kind !== 'INVOCATION_CALL' ||
+              !error.message.includes('Key contract') ||
+              !error.message.includes('not found in database')
+            ) {
+              throw error;
+            }
+            getMonitor(monitor)
+              .withData({ [labels.CONTRACT_HASH]: contractModel.id })
+              .logError({
+                name: 'neotracker_scrape_run_initialize_nep5_contract_error',
+                error,
+              });
+          }
         }
 
         return undefined;

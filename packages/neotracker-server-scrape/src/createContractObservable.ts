@@ -171,7 +171,16 @@ class ContractPoller {
       .orWhere('type', UNKNOWN_CONTRACT_TYPE);
 
     if (this.mutableRunning) {
-      this.observer.next(contractModels.filter((contractModel) => contractModel.type === NEP5_CONTRACT_TYPE));
+      const nep5Contracts = await Promise.all(
+        contractModels
+          .filter((contractModel) => contractModel.type === NEP5_CONTRACT_TYPE)
+          .map(async (contractModel) => {
+            const blacklisted = await this.isBlacklisted(contractModel);
+
+            return blacklisted ? undefined : contractModel;
+          }),
+      );
+      this.observer.next(nep5Contracts.filter(utils.notNull));
 
       await Promise.all(
         contractModels
@@ -192,9 +201,8 @@ class ContractPoller {
   }
 
   private async isNEP5(contractModel: ContractModel): Promise<boolean> {
-    const blacklistHashes = await this.blacklistHashes$.pipe(take(1)).toPromise();
-    const hashesSet = new Set(blacklistHashes);
-    if (hashesSet.has(contractModel.id)) {
+    const blacklisted = await this.isBlacklisted(contractModel);
+    if (blacklisted) {
       return false;
     }
 
@@ -205,6 +213,13 @@ class ContractPoller {
 
       return contractModel.script.includes(hex);
     });
+  }
+
+  private async isBlacklisted(contractModel: ContractModel): Promise<boolean> {
+    const blacklistHashes = await this.blacklistHashes$.pipe(take(1)).toPromise();
+    const hashesSet = new Set(blacklistHashes);
+
+    return hashesSet.has(contractModel.id);
   }
 }
 
