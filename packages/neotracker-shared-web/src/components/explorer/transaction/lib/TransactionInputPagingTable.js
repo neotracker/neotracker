@@ -53,8 +53,8 @@ function TransactionInputPagingTable({
   }
 
   let inputs = [];
-  let hasNextPage = false;
   let hasPreviousPage = false;
+  let hasNextPage = false;
   const transaction = currentProps == null ? null : currentProps.transaction;
   if (transaction != null) {
     inputs = transaction.inputs.edges.map((edge) => edge.node);
