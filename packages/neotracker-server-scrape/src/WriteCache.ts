@@ -11,7 +11,7 @@ type GetKey<Key> = ((key: Key) => string);
 type GetKeyFrom<Key, Save> = ((save: Save) => Key);
 type Revert<RevertOptions> = (options: RevertOptions, monitor: Monitor, db?: Knex | Transaction) => Promise<void>;
 export interface WriteCacheOptions<Key, Value, Save, RevertOptions> {
-  readonly driverName: string;
+  readonly db: Knex;
   readonly fetch: Fetch<Key, Value>;
   readonly create: Create<Save, Value>;
   readonly revert: Revert<RevertOptions>;
@@ -21,10 +21,18 @@ export interface WriteCacheOptions<Key, Value, Save, RevertOptions> {
   readonly size?: number;
 }
 
-export class WriteCache<Key, Value, Save, RevertOptions> {
+export interface IWriteCache<Key, Value, Save, RevertOptions> {
+  readonly get: (key: Key, monitor: Monitor) => Promise<Value | undefined>;
+  readonly getThrows: (key: Key, monitor: Monitor) => Promise<Value>;
+  readonly save: (save: Save, monitor: Monitor) => Promise<Value>;
+  readonly revert: (options: RevertOptions, monitor: Monitor, db?: Knex | Transaction) => Promise<void>;
+  readonly refresh: (key: Key, monitor: Monitor) => void;
+}
+
+export class WriteCache<Key, Value, Save, RevertOptions> implements IWriteCache<Key, Value, Save, RevertOptions> {
   private readonly cache: LRU.Cache<string, Promise<Value | undefined>>;
   private readonly mutableSaveCache: { [K in string]?: Promise<Value> };
-  private readonly driverName: string;
+  private readonly db: Knex;
   private readonly fetch: Fetch<Key, Value>;
   private readonly create: Create<Save, Value>;
   private readonly revertInternal: Revert<RevertOptions>;
@@ -33,7 +41,7 @@ export class WriteCache<Key, Value, Save, RevertOptions> {
   private readonly getKeyFromRevert: GetKeyFrom<Key, RevertOptions>;
 
   public constructor({
-    driverName,
+    db,
     fetch,
     create,
     getKey,
@@ -44,7 +52,7 @@ export class WriteCache<Key, Value, Save, RevertOptions> {
   }: WriteCacheOptions<Key, Value, Save, RevertOptions>) {
     this.cache = LRU(size === undefined ? 10000 : size);
     this.mutableSaveCache = {};
-    this.driverName = driverName;
+    this.db = db;
     this.fetch = fetch;
     this.create = create;
     this.revertInternal = revert;
@@ -91,7 +99,7 @@ export class WriteCache<Key, Value, Save, RevertOptions> {
             .catch(async (error: NodeJS.ErrnoException) => {
               // tslint:disable-next-line no-dynamic-delete
               delete this.mutableSaveCache[key];
-              if (isUniqueError(this.driverName, error)) {
+              if (isUniqueError(this.db, error)) {
                 return this.getThrows(keyIn, monitor);
               }
 

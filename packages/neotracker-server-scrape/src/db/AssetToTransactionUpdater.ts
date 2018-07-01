@@ -3,7 +3,6 @@ import * as _ from 'lodash';
 import { Asset as AssetModel, AssetToTransaction as AssetToTransactionModel, transaction } from 'neotracker-server-db';
 import { raw } from 'objection';
 import { DBUpdater } from './DBUpdater';
-import { isUniqueError } from './utils';
 
 export interface AssetToTransactionSaveSingle {
   readonly assetIDs: ReadonlyArray<string>;
@@ -55,7 +54,7 @@ export class AssetToTransactionUpdater extends DBUpdater<AssetToTransactionSave,
                 ]);
               });
             } catch (error) {
-              if (!isUniqueError(this.context.db.client.driverName, error)) {
+              if (!this.isUniqueError(error)) {
                 throw error;
               }
             }

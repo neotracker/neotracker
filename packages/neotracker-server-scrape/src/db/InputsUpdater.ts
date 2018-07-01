@@ -1,7 +1,7 @@
 import { Monitor } from '@neo-one/monitor';
 import * as _ from 'lodash';
 import { TransactionInputOutput as TransactionInputOutputModel } from 'neotracker-server-db';
-import { Context } from '../types';
+import { DBContext } from '../types';
 import { DBUpdater } from './DBUpdater';
 import { InputUpdater } from './InputUpdater';
 
@@ -25,7 +25,7 @@ export class InputsUpdater extends DBUpdater<InputsSave, InputsRevert> {
   private readonly updaters: InputsUpdaters;
 
   public constructor(
-    context: Context,
+    context: DBContext,
     updaters: InputsUpdaters = {
       input: new InputUpdater(context),
     },

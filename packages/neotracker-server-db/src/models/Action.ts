@@ -1,6 +1,8 @@
 // tslint:disable variable-name no-useless-cast
+import Knex from 'knex';
 import { Model } from 'objection';
-import { EdgeSchema, FieldSchema, IndexSchema } from '../lib';
+import { isPostgres } from '../knexUtils';
+import { EdgeSchema, FieldSchema, IndexSchema, QueryContext } from '../lib';
 import { BlockchainModel } from './BlockchainModel';
 import { BIG_INT_ID, CONTRACT_VALIDATOR, HASH_VALIDATOR, INTEGER_INDEX_VALIDATOR } from './common';
 
@@ -113,6 +115,26 @@ export class Action extends BlockchainModel<string> {
       exposeGraphQL: true,
     },
   };
+
+  public static async insertAll(
+    db: Knex,
+    context: QueryContext,
+    values: ReadonlyArray<Partial<Action>>,
+  ): Promise<void> {
+    if (isPostgres(db)) {
+      await Action.query(db)
+        .context(context)
+        .insert([...values]);
+    } else {
+      await Promise.all(
+        values.map(async (value) =>
+          Action.query(db)
+            .context(context)
+            .insert(value),
+        ),
+      );
+    }
+  }
 
   public readonly type!: string;
   public readonly block_id!: number;

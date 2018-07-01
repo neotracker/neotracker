@@ -3,6 +3,7 @@ import { GraphQLFieldResolver } from 'graphql';
 import Knex from 'knex';
 import * as _ from 'lodash';
 import { JsonSchema, RelationMapping, RelationMappings } from 'objection';
+import { isPostgres, isSqlite } from '../knexUtils';
 import { IFace } from './IFace';
 import { makeAllPowerfulQueryContext } from './QueryContext';
 
@@ -400,12 +401,19 @@ export const createTable = async (
               } else {
                 table.index([...index.columnNames], index.name);
               }
+            } else if (index.type === 'order' && isSqlite(db)) {
+              const columns = index.columns.map((col) => col.name);
+              if (index.unique) {
+                table.unique(columns, index.name);
+              } else {
+                table.index(columns, index.name);
+              }
             }
           });
         }
       });
 
-      if (!bare) {
+      if (!bare && isPostgres(db)) {
         modelSchema.indices.forEach((index) => {
           if (index.type === 'order') {
             currentSchema.raw(getCreateIndex(index, modelSchema.tableName));

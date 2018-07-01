@@ -13,7 +13,7 @@ import {
 } from 'neotracker-server-db';
 import { raw } from 'objection';
 import { DBUpdater } from './DBUpdater';
-import { getSubtype, isUniqueError } from './utils';
+import { getSubtype } from './utils';
 
 export interface OutputsSaveSingle {
   readonly inputs: ReadonlyArray<TransactionInputOutputModel>;
@@ -81,7 +81,7 @@ export class OutputsUpdater extends DBUpdater<OutputsSave, OutputsRevert> {
                 ]);
               });
             } catch (error) {
-              if (!isUniqueError(this.context.db.client.driverName, error)) {
+              if (!this.isUniqueError(error)) {
                 throw error;
               }
             }

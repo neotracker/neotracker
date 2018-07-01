@@ -2,7 +2,7 @@ import { ConfirmedTransaction, Input } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
 import * as _ from 'lodash';
 import { TransactionInputOutput as TransactionInputOutputModel, TYPE_INPUT } from 'neotracker-server-db';
-import { Context, TransactionData } from '../types';
+import { DBContext, TransactionData } from '../types';
 import { getActionDataForClient } from './getActionDataForClient';
 import { getInputOutputResultForClient } from './getInputOutputResultForClient';
 
@@ -13,7 +13,7 @@ function calculateTransactionData({
   claims,
   inputs,
 }: {
-  readonly context: Context;
+  readonly context: DBContext;
   readonly transaction: ConfirmedTransaction;
   readonly transactionIndex: number;
   readonly claims: ReadonlyArray<TransactionInputOutputModel>;
@@ -83,7 +83,7 @@ export async function getTransactionDataForClient({
   transactions,
 }: {
   readonly monitor: Monitor;
-  readonly context: Context;
+  readonly context: DBContext;
   readonly transactions: ReadonlyArray<{
     readonly transactionIndex: number;
     readonly transaction: ConfirmedTransaction;

@@ -1,12 +1,12 @@
 import { Monitor } from '@neo-one/monitor';
 import BigNumber from 'bignumber.js';
 import { calculateClaimValueBase } from 'neotracker-server-db';
-import { Context } from '../types';
+import { DBContext } from '../types';
 
 const ZERO = new BigNumber('0');
 
 export async function calculateClaimAmount(
-  context: Context,
+  context: DBContext,
   monitor: Monitor,
   value: BigNumber,
   startHeight: number,

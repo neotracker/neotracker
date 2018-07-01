@@ -1,8 +1,8 @@
 import { Monitor } from '@neo-one/monitor';
 import { ProcessedIndex } from 'neotracker-server-db';
-import { Context } from '../../types';
+import { DBContext } from '../../types';
 
-async function getCurrentHeightWorker(context: Context, monitor: Monitor): Promise<number> {
+async function getCurrentHeightWorker(context: DBContext, monitor: Monitor): Promise<number> {
   return monitor.captureSpan(
     async (span) =>
       ProcessedIndex.query(context.db)
@@ -16,7 +16,7 @@ async function getCurrentHeightWorker(context: Context, monitor: Monitor): Promi
   );
 }
 
-export async function getCurrentHeight(context: Context, monitor: Monitor): Promise<number> {
+export async function getCurrentHeight(context: DBContext, monitor: Monitor): Promise<number> {
   if (context.currentHeight !== undefined) {
     return Promise.resolve(context.currentHeight);
   }

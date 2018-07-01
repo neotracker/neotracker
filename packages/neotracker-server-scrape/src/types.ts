@@ -24,7 +24,7 @@ import {
 import { Observable } from 'rxjs';
 import { ProcessedIndexUpdater } from './db';
 import { MigrationHandler } from './MigrationHandler';
-import { WriteCache } from './WriteCache';
+import { IWriteCache } from './WriteCache';
 
 export interface AddressRevert {
   readonly hash: string;
@@ -62,27 +62,30 @@ export interface SystemFeeSave {
   readonly index: number;
   readonly value: string;
 }
-export interface Context {
+export interface DBContext {
   readonly db: Knex;
   readonly makeQueryContext: ((monitor: Monitor) => QueryContext);
-  readonly client: ReadClient<NEOONEDataProvider>;
+  readonly getBlock: ReadClient['getBlock'];
   // tslint:disable-next-line readonly-keyword
   prevBlock: BlockModel | undefined;
   // tslint:disable-next-line readonly-keyword
   currentHeight: number | undefined;
-  readonly address: WriteCache<string, AddressModel, AddressSave, AddressRevert>;
-  readonly asset: WriteCache<string, AssetModel, AssetSave, string>;
-  readonly contract: WriteCache<string, ContractModel, ContractSave, string>;
-  readonly systemFee: WriteCache<number, BigNumber, SystemFeeSave, number>;
-  // tslint:disable-next-line readonly-array readonly-keyword
-  contractModelsToProcess: Array<[ContractModel, ReadSmartContract]>;
+  readonly address: IWriteCache<string, AddressModel, AddressSave, AddressRevert>;
+  readonly asset: IWriteCache<string, AssetModel, AssetSave, string>;
+  readonly contract: IWriteCache<string, ContractModel, ContractSave, string>;
+  readonly systemFee: IWriteCache<number, BigNumber, SystemFeeSave, number>;
   readonly nep5Contracts: { [K in string]?: ReadSmartContract };
+  readonly chunkSize: number;
+  readonly processedIndexPubSub: PubSub<{ readonly index: number }>;
+}
+export interface Context extends DBContext {
+  readonly client: ReadClient<NEOONEDataProvider>;
+  // tslint:disable-next-line readonly-keyword readonly-array
+  contractModelsToProcess: Array<[ContractModel, ReadSmartContract]>;
   readonly migrationHandler: MigrationHandler;
   readonly blacklistNEP5Hashes$: Observable<ReadonlyArray<string>>;
   readonly repairNEP5BlockFrequency: number;
   readonly repairNEP5LatencySeconds: number;
-  readonly chunkSize: number;
-  readonly processedIndexPubSub: PubSub<{ readonly index: number }>;
 }
 
 export interface Updaters {

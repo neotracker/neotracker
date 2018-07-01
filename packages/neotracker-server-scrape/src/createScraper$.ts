@@ -64,12 +64,10 @@ export const createScraper$ = ({
         distinctUntilChanged(),
       ),
     }),
-
     options$: options$.pipe(
       map((options) => options.rootLoader),
       distinctUntilChanged(),
     ),
-
     monitor: rootMonitor,
   }).pipe(
     publishReplay(1),
@@ -88,7 +86,6 @@ export const createScraper$ = ({
           }),
         ),
     ),
-
     publishReplay(1),
     refCount(),
   );
@@ -143,9 +140,10 @@ export const createScraper$ = ({
         [chunkSize = 1000, processedIndexPubSub],
       ]): Context => {
         const makeQueryContext = rootLoader.makeAllPowerfulQueryContext;
-        const driverName = rootLoader.db.client.driverName;
+        const { db } = rootLoader;
+
         const address = new WriteCache({
-          driverName,
+          db,
           fetch: async (key: string, monitor) =>
             AddressModel.query(rootLoader.db)
               .context(makeQueryContext(monitor))
@@ -218,17 +216,16 @@ export const createScraper$ = ({
           };
         };
 
-        const { db } = rootLoader;
-
         return {
           db,
           makeQueryContext,
           client,
+          getBlock: async (hashOrIndex) => client.getBlock(hashOrIndex),
           prevBlock: undefined,
           currentHeight: undefined,
           address,
           asset: new WriteCache({
-            driverName,
+            db,
             fetch: async (key: string, monitor) =>
               AssetModel.query(rootLoader.db)
                 .context(makeQueryContext(monitor))
@@ -257,7 +254,7 @@ export const createScraper$ = ({
             getKeyFromRevert: (key: string) => key,
           }),
           contract: new WriteCache({
-            driverName,
+            db,
             fetch: async (key: string, monitor) =>
               ContractModel.query(rootLoader.db)
                 .context(makeQueryContext(monitor))
@@ -300,7 +297,7 @@ export const createScraper$ = ({
             getKeyFromRevert: (key: string) => key,
           }),
           systemFee: new WriteCache({
-            driverName,
+            db,
             fetch: async (index: number, monitor) =>
               BlockModel.query(rootLoader.db)
                 .context(makeQueryContext(monitor))

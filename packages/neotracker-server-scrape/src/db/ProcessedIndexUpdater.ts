@@ -1,7 +1,6 @@
 import { Monitor } from '@neo-one/monitor';
 import { ProcessedIndex } from 'neotracker-server-db';
 import { DBUpdater } from './DBUpdater';
-import { isUniqueError } from './utils';
 
 export class ProcessedIndexUpdater extends DBUpdater<number, number> {
   public async save(monitor: Monitor, index: number): Promise<void> {
@@ -14,7 +13,7 @@ export class ProcessedIndexUpdater extends DBUpdater<number, number> {
 
           await this.context.processedIndexPubSub.next({ index });
         } catch (error) {
-          if (!isUniqueError(this.context.db.client.driverName, error)) {
+          if (!this.isUniqueError(error)) {
             throw error;
           }
         }

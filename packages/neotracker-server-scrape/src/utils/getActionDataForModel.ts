@@ -2,14 +2,14 @@ import { Monitor } from '@neo-one/monitor';
 import BigNumber from 'bignumber.js';
 import { Action as ActionModel, Transfer as TransferModel } from 'neotracker-server-db';
 import { utils } from 'neotracker-shared-utils';
-import { ActionData, Context } from '../types';
+import { ActionData, DBContext } from '../types';
 
 export async function getActionDataForModel({
   context,
   monitor,
   actionModel,
 }: {
-  readonly context: Context;
+  readonly context: DBContext;
   readonly monitor: Monitor;
   readonly actionModel: ActionModel;
 }): Promise<ActionData<ActionModel>> {

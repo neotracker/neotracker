@@ -6,7 +6,6 @@ import { Asset as AssetModel, Transfer as TransferModel } from 'neotracker-serve
 import { raw, transaction, Transaction } from 'objection';
 import { TransferData } from '../types';
 import { DBUpdater } from './DBUpdater';
-import { isUniqueError } from './utils';
 
 const ZERO = new BigNumber('0');
 
@@ -67,7 +66,7 @@ export class TransfersUpdater extends DBUpdater<TransfersSave, TransfersRevert> 
             }),
           );
         } catch (error) {
-          if (!isUniqueError(this.context.db.client.driverName, error)) {
+          if (!this.isUniqueError(error)) {
             throw error;
           }
         }

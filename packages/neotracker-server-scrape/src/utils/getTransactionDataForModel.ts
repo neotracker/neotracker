@@ -6,7 +6,7 @@ import {
   Transaction as TransactionModel,
   TransactionInputOutput as TransactionInputOutputModel,
 } from 'neotracker-server-db';
-import { Context, TransactionModelData } from '../types';
+import { DBContext, TransactionModelData } from '../types';
 import { getActionDataForModel } from './getActionDataForModel';
 import { getInputOutputResultForModel } from './getInputOutputResultForModel';
 
@@ -16,7 +16,7 @@ export async function getTransactionDataForModel({
   blockModel,
 }: {
   readonly monitor: Monitor;
-  readonly context: Context;
+  readonly context: DBContext;
   readonly blockModel: BlockModel;
 }): Promise<ReadonlyArray<TransactionModelData>> {
   const transactions = await blockModel

@@ -35,7 +35,8 @@ export {
   models,
 } from './models';
 export * from './setup';
-export { calculateClaimValueBase } from './utils';
+export * from './utils';
+export * from './knexUtils';
 export {
   Environment as SubscribeProcessedNextIndexEnvironment,
   Options as SubscribeProcessedNextIndexOptions,

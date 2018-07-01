@@ -1,11 +1,11 @@
 import { Monitor } from '@neo-one/monitor';
 import BigNumber from 'bignumber.js';
 import { KnownContract as KnownContractModel } from 'neotracker-server-db';
-import { Context } from '../../types';
+import { DBContext } from '../../types';
 import { isUniqueError } from './isUniqueError';
 
 export async function getKnownContractModel(
-  context: Context,
+  context: DBContext,
   monitor: Monitor,
   hash: string,
 ): Promise<KnownContractModel> {
@@ -28,7 +28,7 @@ export async function getKnownContractModel(
               .first()
               .throwIfNotFound()
               .catch(async (error: NodeJS.ErrnoException) => {
-                if (isUniqueError(context.db.client.driverName, error)) {
+                if (isUniqueError(context.db, error)) {
                   return getKnownContractModel(context, span, hash);
                 }
                 throw error;

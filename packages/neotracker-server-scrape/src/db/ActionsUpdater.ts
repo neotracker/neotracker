@@ -22,30 +22,29 @@ export class ActionsUpdater extends DBUpdater<ActionsSave, ActionsRevert> {
       async (span) => {
         await Promise.all(
           _.chunk(actions, this.context.chunkSize).map(async (chunk) =>
-            ActionModel.query(this.context.db)
-              .context(this.context.makeQueryContext(span))
-              .insert(
-                chunk.map(({ action, transactionID, transactionHash }) => ({
-                  id: action.globalIndex.toString(),
-                  type: action.type,
-                  block_id: action.blockIndex,
-                  transaction_id: transactionID,
-                  transaction_hash: transactionHash,
-                  transaction_index: action.transactionIndex,
-                  index: action.index,
-                  script_hash: action.scriptHash,
-                  message:
-                    // tslint:disable-next-line no-any
-                    (action as any).message === undefined ? undefined : encodeURIComponent((action as any).message),
+            ActionModel.insertAll(
+              this.context.db,
+              this.context.makeQueryContext(span),
+              chunk.map(({ action, transactionID, transactionHash }) => ({
+                id: action.globalIndex.toString(),
+                type: action.type,
+                block_id: action.blockIndex,
+                transaction_id: transactionID,
+                transaction_hash: transactionHash,
+                transaction_index: action.transactionIndex,
+                index: action.index,
+                script_hash: action.scriptHash,
+                message:
                   // tslint:disable-next-line no-any
-                  args_raw: (action as any).args === undefined ? undefined : JSON.stringify((action as any).args),
-                })),
-              )
-              .catch((error) => {
-                if (!this.isUniqueError(error)) {
-                  throw error;
-                }
-              }),
+                  (action as any).message === undefined ? undefined : encodeURIComponent((action as any).message),
+                // tslint:disable-next-line no-any
+                args_raw: (action as any).args === undefined ? undefined : JSON.stringify((action as any).args),
+              })),
+            ).catch((error) => {
+              if (!this.isUniqueError(error)) {
+                throw error;
+              }
+            }),
           ),
         );
       },

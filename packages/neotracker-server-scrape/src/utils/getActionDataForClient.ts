@@ -1,7 +1,7 @@
 import { ActionRaw, ReadSmartContract, scriptHashToAddress } from '@neo-one/client';
 import BigNumber from 'bignumber.js';
 import { utils } from 'neotracker-shared-utils';
-import { ActionData, Context } from '../types';
+import { ActionData, DBContext } from '../types';
 
 export function getActionDataForClient({
   context,
@@ -11,7 +11,7 @@ export function getActionDataForClient({
   transactionHash,
   transactionIndex,
 }: {
-  readonly context: Context;
+  readonly context: DBContext;
   readonly action: ActionRaw;
   readonly nep5Contract?: ReadSmartContract;
   readonly transactionID: string;

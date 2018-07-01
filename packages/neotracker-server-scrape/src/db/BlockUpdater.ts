@@ -2,14 +2,14 @@ import { Block } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
 import BigNumber from 'bignumber.js';
 import { Block as BlockModel } from 'neotracker-server-db';
-import { Context } from '../types';
+import { DBContext } from '../types';
 import { DBUpdater } from './DBUpdater';
 import { KnownContractsUpdater } from './KnownContractsUpdater';
 import { KnownContractUpdater } from './KnownContractUpdater';
 import { PrevBlockUpdater } from './PrevBlockUpdater';
 import { ProcessedIndexUpdater } from './ProcessedIndexUpdater';
 import { TransactionsUpdater } from './TransactionsUpdater';
-import { getCurrentHeight, getPreviousBlockModel, isUniqueError } from './utils';
+import { getCurrentHeight, getPreviousBlockModel } from './utils';
 
 const ZERO = new BigNumber(0);
 
@@ -31,7 +31,7 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
   private readonly updaters: BlockUpdaters;
 
   public constructor(
-    context: Context,
+    context: DBContext,
     updaters: BlockUpdaters = {
       knownContract: new KnownContractUpdater(context),
       knownContracts: new KnownContractsUpdater(context),
@@ -93,7 +93,7 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
                   .toFixed(8),
                 aggregated_system_fee: aggregatedSystemFee.toFixed(8),
               }).catch((error) => {
-                if (isUniqueError(this.context.db.client.driverName, error)) {
+                if (this.isUniqueError(error)) {
                   return BlockModel.query(this.context.db)
                     .context(this.context.makeQueryContext(span))
                     .where('id', block.index)
@@ -130,10 +130,7 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
             this.context.currentHeight = blockModel.id;
             // tslint:enable no-object-mutation
           } else {
-            const [prevBlock] = await Promise.all([
-              this.context.client.getBlock(height),
-              this.revert(span, prevBlockModel),
-            ]);
+            const [prevBlock] = await Promise.all([this.context.getBlock(height), this.revert(span, prevBlockModel)]);
             await this.save(span, prevBlock);
           }
         } else if (block.index === height) {

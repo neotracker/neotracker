@@ -10,7 +10,7 @@ import {
 } from 'neotracker-server-db';
 import { GAS_ASSET_ID, utils } from 'neotracker-shared-utils';
 import { raw } from 'objection';
-import { CoinChanges, Context, TransactionData, TransactionModelData } from '../types';
+import { CoinChanges, DBContext, TransactionData, TransactionModelData } from '../types';
 import { getTransactionDataForClient, getTransactionDataForModel, reduceCoinChanges } from '../utils';
 import { ActionsUpdater } from './ActionsUpdater';
 import { AddressLastTransactionUpdater } from './AddressLastTransactionUpdater';
@@ -49,7 +49,7 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
   private readonly updaters: TransactionsUpdaters;
 
   public constructor(
-    context: Context,
+    context: DBContext,
     updaters: TransactionsUpdaters = {
       actions: new ActionsUpdater(context),
       addressLastTransaction: new AddressLastTransactionUpdater(context),

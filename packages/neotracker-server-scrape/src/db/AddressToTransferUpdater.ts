@@ -7,7 +7,6 @@ import {
 } from 'neotracker-server-db';
 import { raw } from 'objection';
 import { DBUpdater } from './DBUpdater';
-import { isUniqueError } from './utils';
 
 export interface AddressToTransferSaveSingle {
   readonly addressIDs: ReadonlyArray<string>;
@@ -59,7 +58,7 @@ export class AddressToTransferUpdater extends DBUpdater<AddressToTransferSave, A
                 ]);
               });
             } catch (error) {
-              if (!isUniqueError(this.context.db.client.driverName, error)) {
+              if (!this.isUniqueError(error)) {
                 throw error;
               }
             }

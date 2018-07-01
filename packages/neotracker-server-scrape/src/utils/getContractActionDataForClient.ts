@@ -1,7 +1,7 @@
 import { ActionRaw, ReadSmartContract } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
 import { Block as BlockModel, Transaction as TransactionModel } from 'neotracker-server-db';
-import { Context, ContractActionData } from '../types';
+import { ContractActionData, DBContext } from '../types';
 import { getActionDataForClient } from './getActionDataForClient';
 import { getActionDataInputOutputResult } from './getActionDataInputOutputResult';
 
@@ -12,7 +12,7 @@ export async function getContractActionDataForClient({
   nep5Contract,
 }: {
   readonly monitor: Monitor;
-  readonly context: Context;
+  readonly context: DBContext;
   readonly action: ActionRaw;
   readonly nep5Contract: ReadSmartContract;
 }): Promise<ContractActionData> {

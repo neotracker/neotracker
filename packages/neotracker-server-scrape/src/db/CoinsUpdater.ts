@@ -1,7 +1,7 @@
 import { Monitor } from '@neo-one/monitor';
 import BigNumber from 'bignumber.js';
 import * as _ from 'lodash';
-import { CoinChange, CoinChanges, Context } from '../types';
+import { CoinChange, CoinChanges, DBContext } from '../types';
 import { CoinUpdater } from './CoinUpdater';
 import { DBUpdater } from './DBUpdater';
 
@@ -24,7 +24,7 @@ export class CoinsUpdater extends DBUpdater<CoinsSave, CoinsRevert> {
   private readonly updaters: CoinsUpdaters;
 
   public constructor(
-    context: Context,
+    context: DBContext,
     updaters: CoinsUpdaters = {
       coin: new CoinUpdater(context),
     },
