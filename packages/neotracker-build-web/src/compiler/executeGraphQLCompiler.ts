@@ -1,8 +1,8 @@
-import appRootDir from 'app-root-dir';
+import * as appRootDir from 'app-root-dir';
 import execa from 'execa';
 import { logError } from 'neotracker-build-utils';
-import path from 'path';
-import * as webpack from 'webpack';
+import * as path from 'path';
+import webpack from 'webpack';
 
 const title = 'build-graphql';
 

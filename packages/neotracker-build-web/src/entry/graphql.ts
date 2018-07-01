@@ -1,12 +1,12 @@
 // tslint:disable-next-line no-import-side-effect
 import '@babel/polyfill';
-import fs from 'fs-extra';
+import * as fs from 'fs-extra';
 import { ExecutionResult, graphql, introspectionQuery } from 'graphql';
 // tslint:disable-next-line no-submodule-imports
 import { buildClientSchema, IntrospectionQuery, printSchema } from 'graphql/utilities';
 import { log, logError } from 'neotracker-build-utils';
 import { schema } from 'neotracker-server-graphql';
-import path from 'path';
+import * as path from 'path';
 
 const title = 'build-graphql';
 

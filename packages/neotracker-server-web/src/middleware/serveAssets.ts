@@ -1,4 +1,4 @@
-import appRootDir from 'app-root-dir';
+import * as appRootDir from 'app-root-dir';
 import { resolve as pathResolve } from 'path';
 import { serve } from './serve';
 

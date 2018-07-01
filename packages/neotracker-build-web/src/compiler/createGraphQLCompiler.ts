@@ -1,7 +1,7 @@
-import appRootDir from 'app-root-dir';
+import * as appRootDir from 'app-root-dir';
 import { createNodeCompiler } from 'neotracker-build-utils';
-import path from 'path';
-import * as webpack from 'webpack';
+import * as path from 'path';
+import webpack from 'webpack';
 import { setupGraphQLCompiler } from './setupGraphQLCompiler';
 
 export const createGraphQLCompiler = ({

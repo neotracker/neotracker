@@ -1,5 +1,5 @@
 import { metrics, Monitor } from '@neo-one/monitor';
-import _ from 'lodash';
+import * as _ from 'lodash';
 import { labels } from 'neotracker-shared-utils';
 import stringify from 'safe-stable-stringify';
 import { ExecutionResult } from './constants';

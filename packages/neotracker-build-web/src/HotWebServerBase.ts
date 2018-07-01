@@ -1,5 +1,5 @@
 import { HotCompilerServer, runCompiler } from 'neotracker-build-utils';
-import * as webpack from 'webpack';
+import webpack from 'webpack';
 import { configuration } from './common';
 import { createGraphQLCompiler, createRelayCodegenRunner, executeGraphQLCompiler } from './compiler';
 

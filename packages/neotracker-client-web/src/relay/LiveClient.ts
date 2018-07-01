@@ -1,6 +1,6 @@
 import { Carrier, metrics, Monitor, Span } from '@neo-one/monitor';
 import Backoff from 'backo2';
-import _ from 'lodash';
+import * as _ from 'lodash';
 import { ClientMessage, ExecutionResult, GRAPHQL_WS, parseAndValidateServerMessage } from 'neotracker-shared-graphql';
 import { labels, sanitizeError, utils } from 'neotracker-shared-utils';
 import { Observable, Observer } from 'rxjs';

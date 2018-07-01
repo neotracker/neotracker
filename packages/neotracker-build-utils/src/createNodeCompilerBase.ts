@@ -1,5 +1,5 @@
 import { TsConfigPathsPlugin } from 'awesome-typescript-loader';
-import * as webpack from 'webpack';
+import webpack from 'webpack';
 import webpackNodeExternals from 'webpack-node-externals';
 import { createDefinePlugin } from './createDefinePlugin';
 import { createWebpackCompiler } from './createWebpackCompiler';

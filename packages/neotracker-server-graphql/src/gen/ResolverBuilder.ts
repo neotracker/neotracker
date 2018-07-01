@@ -3,7 +3,7 @@ import { metrics } from '@neo-one/monitor';
 import { camelCase } from 'change-case';
 import DataLoader from 'dataloader';
 import { GraphQLFieldResolver, GraphQLResolveInfo } from 'graphql';
-import _ from 'lodash';
+import * as _ from 'lodash';
 import { Base, BaseModel } from 'neotracker-server-db';
 import { CodedError } from 'neotracker-server-utils';
 import { Connection, fromGlobalID, toGlobalID } from 'neotracker-shared-graphql';

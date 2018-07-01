@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js';
 import { Block as BlockModel } from 'neotracker-server-db';
 import { Context } from '../types';
 import { DBUpdater } from './DBUpdater';
+import { KnownContractsUpdater } from './KnownContractsUpdater';
 import { KnownContractUpdater } from './KnownContractUpdater';
 import { PrevBlockUpdater } from './PrevBlockUpdater';
 import { ProcessedIndexUpdater } from './ProcessedIndexUpdater';
@@ -11,7 +12,6 @@ import { TransactionsUpdater } from './TransactionsUpdater';
 import { getCurrentHeight, getPreviousBlockModel, isUniqueError } from './utils';
 
 const ZERO = new BigNumber(0);
-const NEGATIVE_ONE = new BigNumber(-1);
 
 export interface BlockUpdate {
   readonly id: string;
@@ -21,6 +21,7 @@ export interface BlockUpdate {
 
 export interface BlockUpdaters {
   readonly knownContract: KnownContractUpdater;
+  readonly knownContracts: KnownContractsUpdater;
   readonly processedIndex: ProcessedIndexUpdater;
   readonly prevBlock: PrevBlockUpdater;
   readonly transactions: TransactionsUpdater;
@@ -33,6 +34,7 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
     context: Context,
     updaters: BlockUpdaters = {
       knownContract: new KnownContractUpdater(context),
+      knownContracts: new KnownContractsUpdater(context),
       processedIndex: new ProcessedIndexUpdater(context),
       prevBlock: new PrevBlockUpdater(context),
       transactions: new TransactionsUpdater(context),
@@ -115,16 +117,13 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
               this.updaters.transactions.save(span, { block }),
             ]);
 
-            await Promise.all(
-              Object.keys(this.context.nep5Contracts).map(async (id) =>
-                this.updaters.knownContract.save(span, {
-                  id,
-                  blockIndex: block.index + 1,
-                  globalActionIndex: NEGATIVE_ONE,
-                }),
-              ),
-            );
-            await this.updaters.processedIndex.save(span, block.index);
+            await Promise.all([
+              this.updaters.knownContracts.save(span, {
+                contractIDs: Object.keys(this.context.nep5Contracts),
+                blockIndex: block.index,
+              }),
+              this.updaters.processedIndex.save(span, block.index),
+            ]);
 
             // tslint:disable no-object-mutation
             this.context.prevBlock = blockModel;
@@ -160,15 +159,10 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
           this.context.address.revert({ hash: blockModel.next_validator_address_id, blockIndex: blockModel.id }, span),
           this.updaters.transactions.revert(span, { blockModel }),
           this.context.systemFee.revert(blockModel.id, span),
-          Promise.all(
-            Object.keys(this.context.nep5Contracts).map(async (id) =>
-              this.updaters.knownContract.revert(span, {
-                id,
-                blockIndex: blockModel.id + 1,
-                globalActionIndex: NEGATIVE_ONE,
-              }),
-            ),
-          ),
+          this.updaters.knownContracts.revert(span, {
+            contractIDs: Object.keys(this.context.nep5Contracts),
+            blockIndex: blockModel.id,
+          }),
           this.updaters.prevBlock.revert(span, prevBlockModel),
         ]);
 

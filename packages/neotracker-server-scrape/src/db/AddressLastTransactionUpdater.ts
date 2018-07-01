@@ -1,10 +1,12 @@
 import { Monitor } from '@neo-one/monitor';
+import * as _ from 'lodash';
 import { DBUpdater } from './DBUpdater';
 
 export interface AddressLastTransactionSaveSingle {
   readonly addressIDs: ReadonlyArray<string>;
   readonly transactionID: string;
   readonly transactionHash: string;
+  readonly transactionIndex: number;
 }
 export interface AddressLastTransactionSave {
   readonly transactions: ReadonlyArray<AddressLastTransactionSaveSingle>;
@@ -19,8 +21,19 @@ export class AddressLastTransactionUpdater extends DBUpdater<AddressLastTransact
   public async save(monitor: Monitor, { transactions, blockTime }: AddressLastTransactionSave): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
+        const seen = new Set<string>();
+        const data = _.sortBy(transactions, ({ transactionIndex }) => -transactionIndex).map(
+          ({ addressIDs, transactionID, transactionHash }) => {
+            const filtered = addressIDs.filter((addressID) => !seen.has(addressID));
+            filtered.forEach((addressID) => {
+              seen.add(addressID);
+            });
+
+            return { addressIDs: filtered, transactionID, transactionHash };
+          },
+        );
         await Promise.all(
-          transactions.map(async ({ addressIDs, transactionID, transactionHash }) => {
+          data.map(async ({ addressIDs, transactionID, transactionHash }) => {
             const addressIDsSet = [...new Set(addressIDs)];
             if (addressIDsSet.length > 0) {
               await this.context.db

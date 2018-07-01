@@ -88,37 +88,39 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
               actionDatas.map(({ action }) => ({ action, transactionID, transactionHash })),
             ),
           }),
-          this.updaters.addressLastTransaction.save(span, {
-            transactions: transactions.map(({ result: { addressIDs }, transactionID, transactionHash }) => ({
-              addressIDs: Object.keys(addressIDs),
-              transactionID,
-              transactionHash,
-            })),
-            blockTime: block.time,
-          }),
-          this.updaters.addressToTransaction.save(span, {
-            transactions: transactions.map(({ result: { addressIDs }, transactionID }) => ({
-              addressIDs: Object.keys(addressIDs),
-              transactionID,
-            })),
-          }),
-          this.updaters.addressToTransfer.save(span, {
-            transfers: _.flatMap(transactions, ({ actionDatas }) =>
-              actionDatas
-                .map(({ transfer }) => transfer)
-                .filter(utils.notNull)
-                .map(({ result: { fromAddressID, toAddressID, transferID } }) => ({
-                  addressIDs: [fromAddressID, toAddressID].filter(utils.notNull),
-                  transferID,
+          this.updaters.addressLastTransaction
+            .save(span, {
+              transactions: transactions.map(
+                ({ result: { addressIDs }, transactionID, transactionHash, transactionIndex }) => ({
+                  addressIDs: Object.keys(addressIDs),
+                  transactionID,
+                  transactionHash,
+                  transactionIndex,
+                }),
+              ),
+              blockTime: block.time,
+            })
+            .then(async () =>
+              this.updaters.addressToTransaction.save(span, {
+                transactions: transactions.map(({ result: { addressIDs }, transactionID }) => ({
+                  addressIDs: Object.keys(addressIDs),
+                  transactionID,
                 })),
+              }),
+            )
+            .then(async () =>
+              this.updaters.addressToTransfer.save(span, {
+                transfers: _.flatMap(transactions, ({ actionDatas }) =>
+                  actionDatas
+                    .map(({ transfer }) => transfer)
+                    .filter(utils.notNull)
+                    .map(({ result: { fromAddressID, toAddressID, transferID } }) => ({
+                      addressIDs: [fromAddressID, toAddressID].filter(utils.notNull),
+                      transferID,
+                    })),
+                ),
+              }),
             ),
-          }),
-          this.updaters.assetToTransaction.save(span, {
-            transactions: transactions.map(({ result: { assetIDs }, transactionID }) => ({
-              assetIDs,
-              transactionID,
-            })),
-          }),
           this.updaters.claims.save(span, {
             transactions: transactions.map(({ claims, transactionID, transactionHash }) => ({
               claims,
@@ -149,26 +151,37 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
             })),
             blockIndex: block.index,
           }),
-          this.updaters.transfers.save(span, {
-            transactions: _.flatMap(transactions, ({ actionDatas, transactionID, transactionHash, transactionIndex }) =>
-              actionDatas
-                .map(
-                  ({ action, transfer }) =>
-                    transfer === undefined
-                      ? undefined
-                      : {
-                          action,
-                          transferData: transfer,
-                          transactionID,
-                          transactionHash,
-                          transactionIndex,
-                        },
-                )
-                .filter(utils.notNull),
+          this.updaters.transfers
+            .save(span, {
+              transactions: _.flatMap(
+                transactions,
+                ({ actionDatas, transactionID, transactionHash, transactionIndex }) =>
+                  actionDatas
+                    .map(
+                      ({ action, transfer }) =>
+                        transfer === undefined
+                          ? undefined
+                          : {
+                              action,
+                              transferData: transfer,
+                              transactionID,
+                              transactionHash,
+                              transactionIndex,
+                            },
+                    )
+                    .filter(utils.notNull),
+              ),
+              blockIndex: block.index,
+              blockTime: block.time,
+            })
+            .then(async () =>
+              this.updaters.assetToTransaction.save(span, {
+                transactions: transactions.map(({ result: { assetIDs }, transactionID }) => ({
+                  assetIDs,
+                  transactionID,
+                })),
+              }),
             ),
-            blockIndex: block.index,
-            blockTime: block.time,
-          }),
         ]);
       },
       { name: 'neotracker_scrape_save_transactions' },
@@ -189,27 +202,32 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
           this.updaters.actions.revert(span, {
             transactionIDs,
           }),
-          this.updaters.addressLastTransaction.revert(span, {
-            addressIDs: _.flatMap(transactions, ({ result: { addressIDs } }) => Object.keys(addressIDs)),
-            transactionIDs,
-          }),
-          this.updaters.addressToTransaction.revert(span, {
-            transactions: transactions.map(({ result: { addressIDs }, transactionID }) => ({
-              addressIDs: Object.keys(addressIDs),
-              transactionID,
-            })),
-          }),
-          this.updaters.addressToTransfer.revert(span, {
-            transfers: _.flatMap(transactions, ({ actionDatas }) =>
-              actionDatas
-                .map(({ transfer }) => transfer)
-                .filter(utils.notNull)
-                .map(({ result: { fromAddressID, toAddressID, transferID } }) => ({
-                  addressIDs: [fromAddressID, toAddressID].filter(utils.notNull),
-                  transferID,
+          this.updaters.addressLastTransaction
+            .revert(span, {
+              addressIDs: _.flatMap(transactions, ({ result: { addressIDs } }) => Object.keys(addressIDs)),
+              transactionIDs,
+            })
+            .then(async () =>
+              this.updaters.addressToTransaction.revert(span, {
+                transactions: transactions.map(({ result: { addressIDs }, transactionID }) => ({
+                  addressIDs: Object.keys(addressIDs),
+                  transactionID,
                 })),
+              }),
+            )
+            .then(async () =>
+              this.updaters.addressToTransfer.revert(span, {
+                transfers: _.flatMap(transactions, ({ actionDatas }) =>
+                  actionDatas
+                    .map(({ transfer }) => transfer)
+                    .filter(utils.notNull)
+                    .map(({ result: { fromAddressID, toAddressID, transferID } }) => ({
+                      addressIDs: [fromAddressID, toAddressID].filter(utils.notNull),
+                      transferID,
+                    })),
+                ),
+              }),
             ),
-          }),
           this.updaters.assetToTransaction.revert(span, {
             transactions: transactions.map(({ result: { assetIDs }, transactionID }) => ({
               assetIDs,
@@ -232,6 +250,22 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
           this.updaters.outputs.revert(span, {
             outputs: _.flatMap(transactions.map(({ outputs }) => outputs)),
           }),
+          this.updaters.transfers
+            .revert(span, {
+              transferIDs: _.flatMap(transactions, ({ actionDatas }) =>
+                actionDatas
+                  .map(({ action, transfer }) => (transfer === undefined ? undefined : action.id))
+                  .filter(utils.notNull),
+              ),
+            })
+            .then(async () =>
+              this.updaters.assetToTransaction.save(span, {
+                transactions: transactions.map(({ result: { assetIDs }, transactionID }) => ({
+                  assetIDs,
+                  transactionID,
+                })),
+              }),
+            ),
         ]);
 
         await this.revertPreconditions(span, transactions, blockModel.id);

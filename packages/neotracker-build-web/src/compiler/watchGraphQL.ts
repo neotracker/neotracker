@@ -1,4 +1,4 @@
-import * as webpack from 'webpack';
+import webpack from 'webpack';
 import { createGraphQLCompiler } from './createGraphQLCompiler';
 
 export const watchGraphQL = async ({

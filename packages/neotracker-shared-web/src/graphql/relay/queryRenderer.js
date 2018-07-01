@@ -12,7 +12,7 @@ import {
 import type { Monitor } from '@neo-one/monitor';
 import * as React from 'react';
 
-import _ from 'lodash';
+import * as _ from 'lodash';
 import { type HOC, getContext } from 'recompose';
 import { polyfill } from 'react-lifecycles-compat';
 

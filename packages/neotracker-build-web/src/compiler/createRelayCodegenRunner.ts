@@ -1,9 +1,9 @@
 // tslint:disable
-import AppRootDir from 'app-root-dir';
-import fs from 'fs-extra';
+import * as appRootDir from 'app-root-dir';
+import * as fs from 'fs-extra';
 import { buildASTSchema, GraphQLSchema, parse, print } from 'graphql';
 import { Map as ImmutableMap } from 'immutable';
-import path from 'path';
+import * as path from 'path';
 // @ts-ignore
 import { ConsoleReporter, FileIRParser, FileWriter, IRTransforms, Runner } from 'relay-compiler';
 // tslint:disable no-submodule-imports
@@ -21,7 +21,7 @@ const WATCH_EXPRESSION: ReadonlyArray<any> = [
   ['not', ['match', '**/__generated__/**', 'wholename']],
 ];
 
-const OUTPUT_PATH = path.resolve(AppRootDir.get(), 'packages/neotracker-server-graphql/src/__generated__/queries.json');
+const OUTPUT_PATH = path.resolve(appRootDir.get(), 'packages/neotracker-server-graphql/src/__generated__/queries.json');
 
 interface ReverseMap {
   [key: string]: number;
@@ -193,13 +193,13 @@ export const createRelayCodegenRunner = ({
   readonly schemaPath: string;
 }): CodegenRunner => {
   const createParserConfig = (dir: string) => ({
-    baseDir: path.resolve(AppRootDir.get(), dir),
+    baseDir: path.resolve(appRootDir.get(), dir),
     getFileFilter: (baseDir: string) => (file: any) => {
       const text = fs.readFileSync(path.join(baseDir, file.relPath), 'utf8');
       return text.indexOf('graphql`') >= 0;
     },
     getParser: FileIRParser.getParser,
-    getSchema: () => getSchema(path.resolve(AppRootDir.get(), schemaPath)),
+    getSchema: () => getSchema(path.resolve(appRootDir.get(), schemaPath)),
     watchmanExpression: WATCH_EXPRESSION,
   });
 

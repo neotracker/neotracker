@@ -2,7 +2,7 @@
 import { type HOC, compose, getContext, pure, withHandlers } from 'recompose';
 import * as React from 'react';
 
-import _ from 'lodash';
+import * as _ from 'lodash';
 
 import type { AppContext } from '../../../AppContext';
 import { api as walletAPI } from '../../../wallet';

@@ -78,63 +78,72 @@ export class ContractActionUpdater extends DBUpdater<ContractActionSave, never> 
 
         await Promise.all([
           this.updaters.actions.save(span, { actions: [{ action, transactionID, transactionHash }] }),
-          this.updaters.addressLastTransaction.save(span, {
-            transactions: [
-              {
-                addressIDs: Object.keys(result.addressIDs),
-                transactionID,
-                transactionHash,
-              },
-            ],
-            blockTime,
-          }),
-          this.updaters.addressToTransaction.save(span, {
-            transactions: [
-              {
-                addressIDs: Object.keys(result.addressIDs),
-                transactionID,
-              },
-            ],
-          }),
-          this.updaters.addressToTransfer.save(span, {
-            transfers: [actionData]
-              .map(({ transfer }) => transfer)
-              .filter(utils.notNull)
-              .map(({ result: { fromAddressID, toAddressID, transferID } }) => ({
-                addressIDs: [fromAddressID, toAddressID].filter(utils.notNull),
-                transferID,
-              })),
-          }),
-          this.updaters.assetToTransaction.save(span, {
-            transactions: [
-              {
-                assetIDs: result.assetIDs,
-                transactionID,
-              },
-            ],
-          }),
+          this.updaters.addressLastTransaction
+            .save(span, {
+              transactions: [
+                {
+                  addressIDs: Object.keys(result.addressIDs),
+                  transactionID,
+                  transactionHash,
+                  transactionIndex,
+                },
+              ],
+              blockTime,
+            })
+            .then(async () =>
+              this.updaters.addressToTransaction.save(span, {
+                transactions: [
+                  {
+                    addressIDs: Object.keys(result.addressIDs),
+                    transactionID,
+                  },
+                ],
+              }),
+            )
+            .then(async () =>
+              this.updaters.addressToTransfer.save(span, {
+                transfers: [actionData]
+                  .map(({ transfer }) => transfer)
+                  .filter(utils.notNull)
+                  .map(({ result: { fromAddressID, toAddressID, transferID } }) => ({
+                    addressIDs: [fromAddressID, toAddressID].filter(utils.notNull),
+                    transferID,
+                  })),
+              }),
+            ),
           this.updaters.coins.save(span, {
             coinChanges: result.coinChanges,
             blockIndex,
           }),
-          this.updaters.transfers.save(span, {
-            transactions: [actionData]
-              .map(
-                ({ action: actionIn, transfer }) =>
-                  transfer === undefined
-                    ? undefined
-                    : {
-                        action: actionIn,
-                        transferData: transfer,
-                        transactionID,
-                        transactionHash,
-                        transactionIndex,
-                      },
-              )
-              .filter(utils.notNull),
-            blockIndex,
-            blockTime,
-          }),
+          this.updaters.transfers
+            .save(span, {
+              transactions: [actionData]
+                .map(
+                  ({ action: actionIn, transfer }) =>
+                    transfer === undefined
+                      ? undefined
+                      : {
+                          action: actionIn,
+                          transferData: transfer,
+                          transactionID,
+                          transactionHash,
+                          transactionIndex,
+                        },
+                )
+                .filter(utils.notNull),
+              blockIndex,
+              blockTime,
+            })
+            .then(async () =>
+              this.updaters.assetToTransaction.save(span, {
+                transactions: [
+                  {
+                    assetIDs: result.assetIDs,
+                    transactionID,
+                  },
+                ],
+              }),
+            ),
         ]);
 
         await this.updaters.knownContract.save(span, {

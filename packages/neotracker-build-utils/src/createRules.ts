@@ -11,7 +11,7 @@ const getPresets = ({ type }: { readonly type: Type }) =>
       {
         targets: type === 'client-web' ? { browsers: pkg.browserslist } : { node: true },
         modules: false,
-        useBuiltIns: type === 'client-web' ? 'entry' : false,
+        useBuiltIns: 'entry',
         ignoreBrowserslistConfig: true,
       },
     ],

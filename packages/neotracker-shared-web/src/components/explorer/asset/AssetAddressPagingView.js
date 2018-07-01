@@ -6,7 +6,7 @@ import { graphql } from 'react-relay';
 // $FlowFixMe
 import { sanitizeError } from 'neotracker-shared-utils';
 
-import _ from 'lodash';
+import * as _ from 'lodash';
 
 import { AddressPagingView } from '../address';
 import { Coin } from '../address/lib';

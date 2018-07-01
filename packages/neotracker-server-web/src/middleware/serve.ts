@@ -1,17 +1,9 @@
 // tslint:disable
 // Taken from koa-static with the addition of the immutable header
-import assert from 'assert';
-// @ts-ignore
-import makeDebug from 'debug';
-// @ts-ignore
 import createError from 'http-errors';
-// @ts-ignore
-import fs from 'mz/fs';
+import * as fs from 'fs-extra';
 import { basename, extname, normalize, parse, resolve, sep } from 'path';
-// @ts-ignore
 import resolvePath from 'resolve-path';
-
-const debug = makeDebug('serve');
 
 const BR = '.br';
 const GZ = '.gz';
@@ -32,11 +24,7 @@ const GZ = '.gz';
  */
 
 async function send(ctx: any, path: any, opts: any = {}) {
-  assert(ctx, 'koa context required');
-  assert(path, 'pathname required');
-
   // options
-  debug('send "%s" %j', path, opts);
   const root = opts.root ? normalize(resolve(opts.root)) : '';
   const trailingSlash = path[path.length - 1] === '/';
   path = path.substr(parse(path).root.length);
@@ -76,12 +64,16 @@ async function send(ctx: any, path: any, opts: any = {}) {
 
   // serve brotli file when possible otherwise gzipped file when possible
   let encodingExt = '';
-  if (ctx.acceptsEncodings('br', 'deflate', 'identity') === 'br' && brotli && (await fs.exists(path + BR))) {
+  if (ctx.acceptsEncodings('br', 'deflate', 'identity') === 'br' && brotli && (await fs.pathExists(path + BR))) {
     path = path + BR;
     ctx.set('Content-Encoding', 'br');
     ctx.res.removeHeader('Content-Length');
     encodingExt = BR;
-  } else if (ctx.acceptsEncodings('gzip', 'deflate', 'identity') === 'gzip' && gzip && (await fs.exists(path + GZ))) {
+  } else if (
+    ctx.acceptsEncodings('gzip', 'deflate', 'identity') === 'gzip' &&
+    gzip &&
+    (await fs.pathExists(path + GZ))
+  ) {
     path = path + GZ;
     ctx.set('Content-Encoding', 'gzip');
     ctx.res.removeHeader('Content-Length');
@@ -98,7 +90,7 @@ async function send(ctx: any, path: any, opts: any = {}) {
       if (!/^\./.exec(ext)) {
         ext = '.' + ext;
       }
-      if (await fs.exists(path + ext)) {
+      if (await fs.pathExists(path + ext)) {
         path = path + ext;
         break;
       }
@@ -201,10 +193,7 @@ function decode(path: any) {
 export function serve(root: any, opts: any) {
   opts = opts || {};
 
-  assert(root, 'root directory is required to serve files');
-
   // options
-  debug('static "%s" %j', root, opts);
   opts.root = resolve(root);
   if (opts.index !== false) {
     opts.index = opts.index || 'index.html';

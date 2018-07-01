@@ -1,6 +1,6 @@
 import { Monitor } from '@neo-one/monitor';
 import Knex from 'knex';
-import _ from 'lodash';
+import * as _ from 'lodash';
 import {
   AddressToTransfer as AddressToTransferModel,
   Asset as AssetModel,

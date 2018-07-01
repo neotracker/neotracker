@@ -1,5 +1,5 @@
 // tslint:disable no-any no-array-mutation no-object-mutation readonly-keyword
-import _ from 'lodash';
+import * as _ from 'lodash';
 import { Base, BaseModel, Field } from 'neotracker-server-db';
 import { Model } from 'objection';
 import { Input, Mutation, RootCall, Type } from '../lib';

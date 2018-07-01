@@ -1,6 +1,6 @@
 import * as appRootDir from 'app-root-dir';
-import path from 'path';
-import * as webpack from 'webpack';
+import * as path from 'path';
+import webpack from 'webpack';
 import { createNodeCompilerBase } from './createNodeCompilerBase';
 import { createRules, Type } from './createRules';
 

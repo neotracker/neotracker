@@ -20,9 +20,6 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "neotracker-*": [
-        "./neotracker-*/src"
-      ],
       "*": [
         "../@types/*"
       ]

@@ -1,6 +1,6 @@
-import appRootDir from 'app-root-dir';
+import * as appRootDir from 'app-root-dir';
 import { createNodeCompiler } from 'neotracker-build-utils';
-import path from 'path';
+import * as path from 'path';
 
 export const createServerCompiler = ({ buildVersion }: { readonly buildVersion: string }) =>
   createNodeCompiler({

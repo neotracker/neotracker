@@ -1,7 +1,7 @@
 import { utils } from '@neo-one/client-core';
 import { main } from '@neo-one/node-neo-settings';
 import BigNumber from 'bignumber.js';
-import BN from 'bn.js';
+import { BN } from 'bn.js';
 import { numbers } from 'neotracker-shared-utils';
 
 const bigNumberToBN = (value: BigNumber): BN => new BN(value.times(numbers.D).toString(10), 10);

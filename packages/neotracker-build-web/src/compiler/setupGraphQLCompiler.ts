@@ -1,4 +1,4 @@
-import * as webpack from 'webpack';
+import webpack from 'webpack';
 import { executeGraphQLCompiler } from './executeGraphQLCompiler';
 
 export const setupGraphQLCompiler = ({

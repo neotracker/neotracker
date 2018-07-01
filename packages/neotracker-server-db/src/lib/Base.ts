@@ -16,7 +16,11 @@ export class Base extends Model {
   }
 
   public static get tableName(): string {
-    return snakeCase(this.modelName);
+    if (this.mutableTableName === undefined) {
+      this.mutableTableName = snakeCase(this.modelName);
+    }
+
+    return this.mutableTableName;
   }
 
   public static get idColumn(): IDSchema {
@@ -38,6 +42,8 @@ export class Base extends Model {
   public static chainCustomAfter(schema: Knex.SchemaBuilder): Knex.SchemaBuilder {
     return schema;
   }
+
+  private static mutableTableName: string | undefined;
 
   public async $afterGet(context: ObjectionQueryContext): Promise<void> {
     this.checkContext(context);

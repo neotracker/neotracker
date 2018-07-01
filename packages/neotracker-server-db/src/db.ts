@@ -50,7 +50,6 @@ const addProfiler = (db: Knex, labels: Labels) => {
       queryContext = value.queryContext;
     }
     const { monitor: monitorIn } = queryContext;
-
     const monitor = (monitorIn as Monitor).at(NAMESPACE).withLabels(labels);
     const mutableSpans: { [key: string]: Span } = {};
     // tslint:disable-next-line no-any
@@ -69,7 +68,7 @@ const addProfiler = (db: Knex, labels: Labels) => {
           [monitor.labels.DB_STATEMENT]: query.sql,
         })
         .startSpan({
-          name: 'Knex_query',
+          name: 'knex_query',
         });
     });
     // tslint:disable-next-line no-any

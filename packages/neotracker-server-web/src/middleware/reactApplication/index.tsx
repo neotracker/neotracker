@@ -10,7 +10,7 @@ import {
   ReadClient,
 } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
-import appRootDir from 'app-root-dir';
+import * as appRootDir from 'app-root-dir';
 import fs from 'fs';
 import { create } from 'jss';
 // @ts-ignore
@@ -32,7 +32,7 @@ import {
   ThemeProvider,
   // @ts-ignore
 } from 'neotracker-shared-web';
-import path from 'path';
+import * as path from 'path';
 import * as React from 'react';
 import { renderToString } from 'react-dom/server';
 import Helmet from 'react-helmet';

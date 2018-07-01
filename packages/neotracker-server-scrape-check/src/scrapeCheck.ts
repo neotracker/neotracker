@@ -2,7 +2,7 @@ import { abi, NEOONEDataProvider, NetworkType, ReadClient, ReadSmartContract } f
 import { Monitor } from '@neo-one/monitor';
 import BigNumber from 'bignumber.js';
 import Knex from 'knex';
-import _ from 'lodash';
+import * as _ from 'lodash';
 import {
   Coin as CoinModel,
   createFromEnvironment,

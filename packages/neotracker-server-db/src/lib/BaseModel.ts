@@ -56,39 +56,45 @@ export class BaseModel<TID extends ID = ID> extends Base {
   // tslint:enable no-any
 
   public static get modelSchema(): ModelSchema {
-    return {
-      tableName: this.tableName,
-      name: this.modelName,
-      pluralName: this.pluralName,
-      id: 'id',
-      fields: {
-        ...this.fieldSchema,
-      },
-
-      edges: this.edgeSchema,
-      exposeGraphQL: this.exposeGraphQL,
-      exposeGraphQLType: this.exposeGraphQLType,
-      interfaces: this.interfaces.concat([Node]),
-      isEdge: false,
-      indices: this.indices.concat([
-        {
-          type: 'order',
-          columns: [
-            {
-              name: 'id',
-              order: this.idDesc ? 'desc' : 'asc',
-            },
-          ],
-
-          unique: true,
-          name: `${this.tableName}_id`,
+    if (this.mutableModelSchema === undefined) {
+      this.mutableModelSchema = {
+        tableName: this.tableName,
+        name: this.modelName,
+        pluralName: this.pluralName,
+        id: 'id',
+        fields: {
+          ...this.fieldSchema,
         },
-      ]),
 
-      chainCustomBefore: this.chainCustomBefore,
-      chainCustomAfter: this.chainCustomAfter,
-    };
+        edges: this.edgeSchema,
+        exposeGraphQL: this.exposeGraphQL,
+        exposeGraphQLType: this.exposeGraphQLType,
+        interfaces: this.interfaces.concat([Node]),
+        isEdge: false,
+        indices: this.indices.concat([
+          {
+            type: 'order',
+            columns: [
+              {
+                name: 'id',
+                order: this.idDesc ? 'desc' : 'asc',
+              },
+            ],
+
+            unique: true,
+            name: `${this.tableName}_id`,
+          },
+        ]),
+
+        chainCustomBefore: this.chainCustomBefore,
+        chainCustomAfter: this.chainCustomAfter,
+      };
+    }
+
+    return this.mutableModelSchema;
   }
+
+  private static mutableModelSchema: ModelSchema | undefined;
 
   public readonly id!: TID;
 

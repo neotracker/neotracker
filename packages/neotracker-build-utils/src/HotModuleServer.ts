@@ -1,4 +1,4 @@
-import chokidar from 'chokidar';
+import * as chokidar from 'chokidar';
 import { HotServer } from './HotServer';
 import { log } from './log';
 

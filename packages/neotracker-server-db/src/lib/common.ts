@@ -1,7 +1,7 @@
 import { Monitor } from '@neo-one/monitor';
 import { GraphQLFieldResolver } from 'graphql';
 import Knex from 'knex';
-import _ from 'lodash';
+import * as _ from 'lodash';
 import { JsonSchema, RelationMapping, RelationMappings } from 'objection';
 import { IFace } from './IFace';
 import { makeAllPowerfulQueryContext } from './QueryContext';

@@ -1,7 +1,7 @@
 import * as appRootDir from 'app-root-dir';
 import { ChildProcess } from 'child_process';
 import execa from 'execa';
-import path from 'path';
+import * as path from 'path';
 import webpack from 'webpack';
 import { HotServer } from './HotServer';
 import { log } from './log';
