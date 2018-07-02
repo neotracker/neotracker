@@ -30,20 +30,20 @@ function Leaderboard({ classes, className }: Props): React.Element<*> {
   return (
     <>
       <Hidden mdUp initialWidth={initialWidth}>
-        <AdUnit
-          className={classNames(classes.root, className)}
-          getZoneID={({ adclerks }) =>
-            ((adclerks || {}).zones || {}).mobileLeaderboard
-          }
-        />
+        <AdUnit className={classNames(classes.root, className)}>
+          <div
+            id="bsap_1308191"
+            className="bsarocks bsap_7f3941492a1eed66c7191226643c3c86"
+          />
+        </AdUnit>
       </Hidden>
       <Hidden mdDown initialWidth={initialWidth}>
-        <AdUnit
-          className={classNames(classes.root, className)}
-          getZoneID={({ adclerks }) =>
-            ((adclerks || {}).zones || {}).leaderboard
-          }
-        />
+        <AdUnit className={classNames(classes.root, className)}>
+          <div
+            id="bsap_1308190"
+            className="bsarocks bsap_7f3941492a1eed66c7191226643c3c86"
+          />
+        </AdUnit>
       </Hidden>
     </>
   );

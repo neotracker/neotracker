@@ -17,12 +17,6 @@ export interface AppOptions {
   readonly maintenance: boolean;
   readonly disableWalletModify: boolean;
   readonly confirmLimitMS: number;
-  readonly adclerks?: {
-    readonly id?: number;
-    readonly zones?: {
-      readonly leaderboard?: number;
-      readonly mobileLeaderboard?: number;
-    };
-  };
+  readonly bsaEnabled?: boolean;
 }
 export type NetworkType = 'main' | 'test' | 'priv';

@@ -215,9 +215,9 @@ export interface Options {
     readonly enabled: boolean;
     readonly userAgents: string;
   };
-
   readonly rpcURL: string;
   readonly adsenseID?: string;
+  readonly bsaEnabled?: boolean;
 }
 
 // tslint:disable-next-line export-name
@@ -298,6 +298,7 @@ export const reactApplication = ({
           addHeadElements,
           addBodyElements,
           adsenseID: options.adsenseID,
+          bsaEnabled: options.bsaEnabled,
         });
 
         ctx.type = 'html';

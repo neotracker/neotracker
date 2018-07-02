@@ -16,6 +16,7 @@ import { mapAppOptions } from './utils';
 import { withStyles } from './lib/base';
 
 import * as routes from './routes';
+import { Leaderboard } from './components/common/advertising';
 
 const styles = (theme: Theme) => ({
   '@global': {
@@ -124,6 +125,7 @@ function App({
           [classes.contentNormal]: true,
         })}
       >
+        <Leaderboard />
         <div className={classes.contentInner}>{children}</div>
         <AppFooter />
       </div>

@@ -33,6 +33,7 @@ interface Props {
   readonly addHeadElements: AddHeadElements;
   readonly addBodyElements: AddBodyElements;
   readonly adsenseID?: string;
+  readonly bsaEnabled?: boolean;
 }
 
 export const makeServerHTML = ({
@@ -51,6 +52,7 @@ export const makeServerHTML = ({
   addHeadElements,
   addBodyElements,
   adsenseID,
+  bsaEnabled,
 }: Props) => {
   // Creates an inline script definition that is protected by the nonce.
   const inlineScript = (body: string) => (
@@ -90,7 +92,6 @@ export const makeServerHTML = ({
       : scriptTag('//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', {
           async: true,
         }),
-
     adsenseID === undefined
       ? undefined
       : inlineScript(`
@@ -120,11 +121,25 @@ export const makeServerHTML = ({
     return inlineScript(script);
   };
 
+  let bsaElement;
+  if (bsaEnabled) {
+    bsaElement = inlineScript(`
+    (function(){
+      var bsa = document.createElement('script');
+        bsa.type = 'text/javascript';
+        bsa.async = true;
+        bsa.src = '//s3.buysellads.com/ac/bsa.js';
+      (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
+    })();
+    `);
+  }
+
   // tslint:disable no-unnecessary-callback-wrapper
   return renderToStaticMarkup(
     <html lang="en">
       <head>{headerElements}</head>
       <body>
+        {bsaElement}
         <div id="app" dangerouslySetInnerHTML={{ __html: reactAppString }} />
         {styles === undefined ? undefined : <style id="jss-server-side">${styles}</style>}
         {constructScript()}

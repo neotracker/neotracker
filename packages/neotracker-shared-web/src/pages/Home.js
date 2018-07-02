@@ -13,7 +13,6 @@ import { PageError } from '../components/common/error';
 import { PageLoading } from '../components/common/loading';
 import { Button, Card, Typography, withStyles } from '../lib/base';
 import { BlockTable } from '../components/explorer/block';
-import { Leaderboard } from '../components/common/advertising';
 import { SearchCard } from '../components/explorer/search';
 import { TransactionTable } from '../components/explorer/transaction';
 
@@ -31,11 +30,6 @@ const styles = (theme: Theme) => ({
     marketCard: {
       marginBottom: theme.spacing.unit,
     },
-    leaderboard: {
-      '& > ins': {
-        marginBottom: theme.spacing.unit,
-      },
-    },
     blocks: {
       marginBottom: theme.spacing.unit,
     },
@@ -50,11 +44,6 @@ const styles = (theme: Theme) => ({
     },
     marketCard: {
       marginBottom: theme.spacing.unit * 2,
-    },
-    leaderboard: {
-      '& > ins': {
-        marginBottom: theme.spacing.unit * 2,
-      },
     },
     cardHeader: {
       paddingLeft: theme.spacing.unit * 2,
@@ -208,7 +197,6 @@ function Home({
     <div className={classNames(className, classes.root)}>
       <SearchCard className={classes.marketCard} />
       <MainSelectCard className={classes.marketCard} />
-      <Leaderboard className={classes.leaderboard} />
       <MarketCard
         className={classes.marketCard}
         neo_usd_data_points={props.neo_usd_data_points}

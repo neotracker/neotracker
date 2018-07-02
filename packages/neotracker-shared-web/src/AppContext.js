@@ -11,7 +11,27 @@ import type {
 import type { Monitor } from '@neo-one/monitor';
 import type { Observable } from 'rxjs';
 
-export type AppOptions = $FlowFixMe;
+export type AppOptions = {|
+  meta: {|
+    title: string,
+    name: string,
+    description: string,
+    walletDescription: string,
+    social: {|
+      twitter: string,
+      fb: string,
+    |},
+    donateAddress: string,
+  |},
+  url: string,
+  rpcURL: string,
+  reportURL?: string,
+  reportTimer?: number,
+  maintenance: boolean,
+  disableWalletModify: boolean,
+  confirmLimitMS: number,
+  bsaEnabled?: boolean,
+|};
 
 export type AppContext = {|
   environment: Environment,

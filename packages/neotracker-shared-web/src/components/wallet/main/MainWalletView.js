@@ -6,7 +6,6 @@ import type { LocalWallet, UserAccount } from '@neo-one/client';
 import { graphql } from 'react-relay';
 
 import { InfoCard } from '../info';
-import { Leaderboard } from '../../common/advertising';
 import { TransferCard } from '../account';
 import { SelectCard } from '../select';
 import { type Theme } from '../../../styles/createTheme';
@@ -22,21 +21,11 @@ import { type MainWalletViewQueryResponse } from './__generated__/MainWalletView
 
 const styles = (theme: Theme) => ({
   [theme.breakpoints.down('sm')]: {
-    leaderboard: {
-      '& > ins': {
-        marginTop: theme.spacing.unit,
-      },
-    },
     marginTop: {
       marginTop: theme.spacing.unit,
     },
   },
   [theme.breakpoints.up('sm')]: {
-    leaderboard: {
-      '& > ins': {
-        marginTop: theme.spacing.unit * 2,
-      },
-    },
     marginTop: {
       marginTop: theme.spacing.unit * 2,
     },
@@ -101,7 +90,6 @@ function MainWalletView({
         error={error}
         retry={retry}
       />
-      <Leaderboard className={classes.leaderboard} />
       <WalletTransactionsCard
         className={classes.marginTop}
         account={account}
