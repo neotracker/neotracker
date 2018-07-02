@@ -17,15 +17,12 @@ type Props = {|
   ...ExternalProps,
   ...InternalProps,
 |};
-class AdUnit extends React.Component<Props, void> {
-  render(): ?React.Element<*> {
-    const { appOptions, children, className } = this.props;
-    if (appOptions.bsaEnabled) {
-      return <div className={className}>{children}</div>;
-    }
-
-    return undefined;
+function AdUnit({ appOptions, children, className }: Props): ?React.Element<*> {
+  if (appOptions.bsaEnabled) {
+    return <div className={className}>{children}</div>;
   }
+
+  return null;
 }
 
 const enhance: HOC<*, *> = compose(

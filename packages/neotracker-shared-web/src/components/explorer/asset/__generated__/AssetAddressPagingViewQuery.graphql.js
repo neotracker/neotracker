@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 1cc2f3ab192ae0b0d3c22587b70ba2cc
+ * @relayHash 761fe20c39db29fab99189ab0844a4d7
  */
 
 /* eslint-disable */
@@ -49,7 +49,7 @@ query AssetAddressPagingViewQuery(
 ) {
   asset(hash: $hash) {
     id
-    coins(first: $first, after: $after) {
+    coins(first: $first, after: $after, orderBy: [{name: "coin.value", direction: "desc"}, {name: "coin.id", direction: "desc"}]) {
       edges {
         node {
           ...Coin_coin
@@ -139,6 +139,21 @@ v3 = [
     "name": "first",
     "variableName": "first",
     "type": "Int"
+  },
+  {
+    "kind": "Literal",
+    "name": "orderBy",
+    "value": [
+      {
+        "direction": "desc",
+        "name": "coin.value"
+      },
+      {
+        "direction": "desc",
+        "name": "coin.id"
+      }
+    ],
+    "type": "[OrderByInput!]"
   }
 ],
 v4 = {
@@ -177,7 +192,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "AssetAddressPagingViewQuery",
-  "id": "15",
+  "id": "36",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -383,5 +398,5 @@ return {
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = 'fc8c4ecb2570ec88e33ed49bfd27679c';
+(node/*: any*/).hash = 'b2a4ce85cf41d3041da37a0910bb16e7';
 module.exports = node;

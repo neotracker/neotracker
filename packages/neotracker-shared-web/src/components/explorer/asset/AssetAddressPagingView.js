@@ -6,8 +6,6 @@ import { graphql } from 'react-relay';
 // $FlowFixMe
 import { sanitizeError } from 'neotracker-shared-utils';
 
-import * as _ from 'lodash';
-
 import { AddressPagingView } from '../address';
 import { Coin } from '../address/lib';
 
@@ -61,10 +59,7 @@ function AssetAddressPagingView({
   let hasPreviousPage = false;
   const asset = currentProps == null ? null : currentProps.asset;
   if (asset != null) {
-    coins = _.sortBy(asset.coins.edges.map((edge) => edge.node), [
-      'value',
-      'id',
-    ]);
+    coins = asset.coins.edges.map((edge) => edge.node);
     addresses = coins.map((coin) => coin.address);
     // eslint-disable-next-line
     hasNextPage = asset.coins.pageInfo.hasNextPage;
@@ -124,7 +119,14 @@ const enhance: HOC<*, *> = compose(
       ) {
         asset(hash: $hash) {
           id
-          coins(first: $first, after: $after) {
+          coins(
+            first: $first
+            after: $after
+            orderBy: [
+              { name: "coin.value", direction: "desc" }
+              { name: "coin.id", direction: "desc" }
+            ]
+          ) {
             edges {
               node {
                 ...Coin_coin

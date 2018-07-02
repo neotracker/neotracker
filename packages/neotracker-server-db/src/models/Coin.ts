@@ -16,9 +16,17 @@ export class Coin extends BlockchainModel<string> {
           name: 'asset_id',
           order: 'asc',
         },
+        {
+          name: 'value',
+          order: 'desc',
+        },
+        {
+          name: 'id',
+          order: 'desc',
+        },
       ],
 
-      name: 'coin_asset_id',
+      name: 'coin_asset_id_value_id',
     },
 
     // AddressView, SendTransaction, AccountViewBase
