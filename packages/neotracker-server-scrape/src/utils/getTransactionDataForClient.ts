@@ -22,7 +22,7 @@ function calculateTransactionData({
   const transactionID = transaction.data.globalIndex.toString();
   const transactionHash = transaction.txid;
   const actionDatas =
-    transaction.type === 'InvocationTransaction'
+    transaction.type === 'InvocationTransaction' && transaction.invocationData.result.state === 'HALT'
       ? transaction.invocationData.actions.map((action) =>
           getActionDataForClient({
             context,

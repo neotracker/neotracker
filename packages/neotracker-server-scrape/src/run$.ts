@@ -1,7 +1,9 @@
-import { abi, ReadSmartContract } from '@neo-one/client';
+import { abi, ActionRaw, ConfirmedTransaction, ReadSmartContract } from '@neo-one/client';
 import { metrics, Monitor } from '@neo-one/monitor';
 import BigNumber from 'bignumber.js';
 import { AsyncIterableX } from 'ix/asynciterable/asynciterablex';
+import { flatMap } from 'ix/asynciterable/pipe/flatmap';
+import * as _ from 'lodash';
 import { Contract as ContractModel, NEP5_CONTRACT_TYPE, Transaction as TransactionModel } from 'neotracker-server-db';
 import { labels } from 'neotracker-shared-utils';
 import { concat, merge, Observable, Observer, of as _of } from 'rxjs';
@@ -62,28 +64,37 @@ async function processContractActions(
     async (span) => {
       const knownContractModel = await getKnownContractModel(context, span, contractModel.id);
 
-      const actions = context.client
-        .smartContract({
-          hash: add0x(contractModel.id),
-          abi: { functions: [] },
-        })
-        .iterActionsRaw({
-          indexStart:
-            knownContractModel.processed_block_index === -1
-              ? contractModel.block_id
-              : knownContractModel.processed_block_index,
-          indexStop: blockIndexStop,
-          monitor: span,
-        });
+      const blocks = context.client.iterBlocks({
+        indexStart:
+          knownContractModel.processed_block_index === -1
+            ? contractModel.block_id
+            : knownContractModel.processed_block_index,
+        indexStop: blockIndexStop,
+        monitor: span,
+      });
 
       try {
-        await AsyncIterableX.from(actions).forEach(async (action) => {
-          if (!signal.running) {
-            throw new ExitError();
-          }
+        await AsyncIterableX.from(blocks)
+          .pipe(
+            flatMap((block) =>
+              AsyncIterableX.from(
+                _.flatMap(
+                  block.transactions,
+                  (transaction: ConfirmedTransaction): ActionRaw[] =>
+                    transaction.type === 'InvocationTransaction' && transaction.invocationData.result.state === 'HALT'
+                      ? [...transaction.invocationData.actions]
+                      : [],
+                ),
+              ),
+            ),
+          )
+          .forEach(async (action) => {
+            if (!signal.running) {
+              throw new ExitError();
+            }
 
-          await contractActionUpdater.save(span, { action: normalizeAction(action), nep5Contract });
-        });
+            await contractActionUpdater.save(span, { action: normalizeAction(action), nep5Contract });
+          });
 
         await knownContractUpdater.save(span, {
           id: contractModel.id,
