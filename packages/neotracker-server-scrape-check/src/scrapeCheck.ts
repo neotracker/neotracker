@@ -1,14 +1,23 @@
-import { abi, NEOONEDataProvider, NetworkType, ReadClient, ReadSmartContract } from '@neo-one/client';
+import {
+  abi,
+  addressToScriptHash,
+  NEOONEDataProvider,
+  NetworkType,
+  ReadClient,
+  ReadSmartContract,
+} from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
 import BigNumber from 'bignumber.js';
 import Knex from 'knex';
 import * as _ from 'lodash';
 import {
+  Asset as AssetModel,
   Coin as CoinModel,
   createFromEnvironment,
   DBEnvironment,
   DBOptions,
   makeAllPowerfulQueryContext,
+  NEP5_CONTRACT_TYPE,
   ProcessedIndex,
 } from 'neotracker-server-db';
 import { utils } from 'neotracker-shared-utils';
@@ -20,7 +29,6 @@ export interface Environment {
 export interface Options {
   readonly db: DBOptions;
   readonly rpcURL: string;
-  readonly nep5Hashes: ReadonlyArray<string>;
   readonly maxBlockOffset: number;
   readonly coinMismatchBatchSize: number;
 }
@@ -40,12 +48,18 @@ const getSmartContract = async ({
 };
 
 const getSmartContracts = async ({
+  monitor,
+  db,
   client,
-  nep5Hashes,
 }: {
+  readonly monitor: Monitor;
+  readonly db: Knex;
   readonly client: ReadClient<NEOONEDataProvider>;
-  readonly nep5Hashes: ReadonlyArray<string>;
 }): Promise<{ readonly [asset: string]: ReadSmartContract }> => {
+  const nep5Assets = await AssetModel.query(db)
+    .context(makeAllPowerfulQueryContext(monitor))
+    .where('type', NEP5_CONTRACT_TYPE);
+  const nep5Hashes = nep5Assets.map((asset) => asset.id);
   const smartContractArray = await Promise.all(
     nep5Hashes.map(async (nep5Hash) => getSmartContract({ asset: nep5Hash, client })),
   );
@@ -83,7 +97,7 @@ const getNEP5CoinBalance = async ({
   readonly smartContracts: { readonly [asset: string]: ReadSmartContract };
   readonly address: string;
   readonly asset: string;
-}): Promise<BigNumber | undefined> => smartContracts[asset].balanceOf(address);
+}): Promise<BigNumber | undefined> => smartContracts[asset].balanceOf(addressToScriptHash(address));
 
 const getCoinBalance = async ({
   coinModel,
@@ -161,7 +175,6 @@ const getCurrentHeight = async (db: Knex, monitor: Monitor) =>
 const logCoinMismatch = async ({
   coinModel,
   client,
-  nep5Hashes,
   smartContracts,
   db,
   secondTry,
@@ -169,13 +182,12 @@ const logCoinMismatch = async ({
 }: {
   readonly coinModel: CoinModel;
   readonly client: ReadClient<NEOONEDataProvider>;
-  readonly nep5Hashes: ReadonlyArray<string>;
   readonly smartContracts: { readonly [asset: string]: ReadSmartContract };
   readonly db: Knex;
   readonly secondTry: boolean;
   readonly monitor: Monitor;
 }): Promise<void> => {
-  const [dbValue, nodeValue, dbHeight, nodeHeight] = await Promise.all([
+  const [dbValue, nodeValue, dbHeight, nodeCount] = await Promise.all([
     CoinModel.query(db)
       .context(makeAllPowerfulQueryContext(monitor))
       .where('id', coinModel.id)
@@ -190,6 +202,8 @@ const logCoinMismatch = async ({
     getCurrentHeight(db, monitor),
     client.getBlockCount(),
   ]);
+
+  const nodeHeight = nodeCount - 1;
 
   if (dbHeight === nodeHeight && dbValue !== undefined && nodeValue !== undefined && !dbValue.isEqualTo(nodeValue)) {
     monitor
@@ -208,7 +222,6 @@ const logCoinMismatch = async ({
     await logCoinMismatch({
       coinModel,
       client,
-      nep5Hashes,
       smartContracts,
       db,
       secondTry: true,
@@ -233,7 +246,58 @@ const checkBlockHeightMismatch = async ({
     getCurrentHeight(db, monitor),
   ]);
 
-  return Math.abs(nodeBlockHeight - dbBlockHeight) > maxBlockOffset;
+  return Math.abs(nodeBlockHeight - 1 - dbBlockHeight) > maxBlockOffset;
+};
+
+const COINS_TO_PROCESS = 1000;
+
+const checkCoins = async ({
+  db,
+  monitor,
+  client,
+  options,
+  smartContracts,
+  offset = 0,
+}: {
+  readonly db: Knex;
+  readonly monitor: Monitor;
+  readonly client: ReadClient<NEOONEDataProvider>;
+  readonly offset?: number;
+  readonly options: Options;
+  readonly smartContracts: { readonly [asset: string]: ReadSmartContract };
+}): Promise<number | undefined> => {
+  const coins = await CoinModel.query(db)
+    .context(makeAllPowerfulQueryContext(monitor))
+    .orderBy('id')
+    .offset(offset)
+    .limit(COINS_TO_PROCESS);
+
+  const nodeBalances = await getNodeBalances({
+    coins,
+    client,
+    smartContracts,
+    monitor,
+  });
+
+  const coinMismatches = getMismatchedCoins(nodeBalances);
+
+  // tslint:disable-next-line no-loop-statement
+  for (const batch of _.chunk(coinMismatches, options.coinMismatchBatchSize)) {
+    await Promise.all(
+      batch.map(async ({ coinModel }) =>
+        logCoinMismatch({
+          coinModel,
+          client,
+          smartContracts,
+          db,
+          secondTry: false,
+          monitor,
+        }),
+      ),
+    );
+  }
+
+  return coins.length === COINS_TO_PROCESS ? offset + COINS_TO_PROCESS : undefined;
 };
 
 export const scrapeCheck = async ({
@@ -254,50 +318,30 @@ export const scrapeCheck = async ({
 
   const db = createFromEnvironment(monitor, environment.db, options.db);
 
-  const blockHeightMismatch = await checkBlockHeightMismatch({
-    client,
-    maxBlockOffset: options.maxBlockOffset,
-    db,
-    monitor,
-  });
+  const [blockHeightMismatch, smartContracts] = await Promise.all([
+    checkBlockHeightMismatch({
+      client,
+      maxBlockOffset: options.maxBlockOffset,
+      db,
+      monitor,
+    }),
+    getSmartContracts({ monitor, db, client }),
+  ]);
 
   if (blockHeightMismatch) {
     return;
   }
 
-  const [coins, smartContracts] = await Promise.all([
-    CoinModel.query(db)
-      .context(makeAllPowerfulQueryContext(monitor))
-      .execute(),
-    getSmartContracts({
-      client,
-      nep5Hashes: options.nep5Hashes,
-    }),
-  ]);
-
-  const nodeBalances = await getNodeBalances({
-    coins,
-    client,
-    smartContracts,
-    monitor,
-  });
-
-  const coinMismatches = getMismatchedCoins(nodeBalances);
-
+  let offset: number | undefined = 0;
   // tslint:disable-next-line no-loop-statement
-  for (const batch of _.chunk(coinMismatches, options.coinMismatchBatchSize)) {
-    await Promise.all(
-      batch.map(async ({ coinModel }) =>
-        logCoinMismatch({
-          coinModel,
-          client,
-          nep5Hashes: options.nep5Hashes,
-          smartContracts,
-          db,
-          secondTry: false,
-          monitor,
-        }),
-      ),
-    );
+  while (offset !== undefined) {
+    offset = await checkCoins({
+      monitor,
+      db,
+      client,
+      smartContracts,
+      offset,
+      options,
+    });
   }
 };
