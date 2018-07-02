@@ -19,7 +19,7 @@
     "@babel/preset-env": "7.0.0-beta.51",
     "@babel/preset-react": "7.0.0-beta.51",
     "@babel/register": "7.0.0-beta.51",
-    "@neo-one/cli": "1.0.0-alpha.88",
+    "@neo-one/cli": "1.0.0-alpha.89",
     "@types/app-root-dir": "^0.1.0",
     "@types/assets-webpack-plugin": "^3.5.1",
     "@types/babel__code-frame": "^7.0.0",
@@ -96,7 +96,7 @@
     "lerna": "2.11.0",
     "lint-staged": "7.2.0",
     "prettier": "1.13.7",
-    "rxjs-tslint-rules": "^4.5.0",
+    "rxjs-tslint-rules": "^4.5.1",
     "ts-jest": "^23.0.0",
     "ts-node": "^7.0.0",
     "tslint": "^5.10.0",
@@ -115,6 +115,51 @@
     "hooks": {
       "pre-commit": "lint-staged && echo \"Executing tsc...\" && tsc && flow"
     }
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "packages/*/src/**/*.(js|ts)",
+      "!**/bin/**",
+      "!**/__mocks__/**",
+      "!**/__tests__/**",
+      "!**/__data__/**",
+      "!**/__e2e__/**"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "coverageReporters": [
+      "json",
+      "lcov"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsConfigFile": "tsconfig.cli.json",
+        "useBabelrc": true
+      }
+    },
+    "moduleFileExtensions": [
+      "js",
+      "jsx",
+      "json",
+      "node",
+      "ts",
+      "tsx"
+    ],
+    "setupTestFrameworkScriptFile": "./packages/neotracker-server-test/src/jest/setup.js",
+    "testEnvironment": "./packages/neotracker-server-test/src/jest/Environment.js",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "<rootDir>/packages/.*/__e2e__/.*",
+      "<rootDir>/packages/.*/test.ts"
+    ],
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "transformIgnorePatterns": [
+      "<rootDir>/node_modules/"
+    ]
   },
   "license": "MIT",
   "lint-staged": {
@@ -177,6 +222,7 @@
     "packages/neotracker-server-graphql",
     "packages/neotracker-server-scrape",
     "packages/neotracker-server-scrape-check",
+    "packages/neotracker-server-test",
     "packages/neotracker-server-utils",
     "packages/neotracker-server-utils-koa",
     "packages/neotracker-server-web",

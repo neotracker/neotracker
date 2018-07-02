@@ -13,7 +13,7 @@
   "main": "./src/index.ts",
   "dependencies": {
     "@babel/polyfill": "7.0.0-beta.51",
-    "@neo-one/monitor": "^1.0.0-alpha.36",
+    "@neo-one/monitor": "^1.0.0-alpha.37",
     "app-root-dir": "^1.0.2",
     "css.escape": "^1.5.1",
     "execa": "^0.10.0",

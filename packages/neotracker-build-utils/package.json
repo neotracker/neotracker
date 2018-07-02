@@ -20,7 +20,7 @@
     "@babel/plugin-transform-flow-strip-types": "7.0.0-beta.51",
     "@babel/preset-env": "7.0.0-beta.51",
     "@babel/preset-react": "7.0.0-beta.51",
-    "@neo-one/monitor": "^1.0.0-alpha.36",
+    "@neo-one/monitor": "^1.0.0-alpha.37",
     "app-root-dir": "^1.0.2",
     "assets-webpack-plugin": "^3.8.4",
     "awesome-typescript-loader": "^5.2.0",

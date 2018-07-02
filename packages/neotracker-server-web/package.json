@@ -13,8 +13,8 @@
   "main": "./src/index.ts",
   "dependencies": {
     "@material-ui/core": "^1.3.0",
-    "@neo-one/client": "^1.0.0-alpha.66",
-    "@neo-one/monitor": "^1.0.0-alpha.36",
+    "@neo-one/client": "^1.0.0-alpha.67",
+    "@neo-one/monitor": "^1.0.0-alpha.37",
     "app-root-dir": "^1.0.2",
     "cross-fetch": "^2.2.2",
     "debug": "^3.1.0",
