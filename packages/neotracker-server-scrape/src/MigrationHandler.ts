@@ -1,13 +1,6 @@
 import { Monitor } from '@neo-one/monitor';
 import Knex from 'knex';
-import {
-  createTable,
-  makeAllPowerfulQueryContext,
-  Migration,
-  models,
-  ModelSchema,
-  QueryContext,
-} from 'neotracker-server-db';
+import { createTables, makeAllPowerfulQueryContext, Migration, QueryContext } from 'neotracker-server-db';
 import { migrations } from './migrations';
 
 export class MigrationHandler {
@@ -47,14 +40,7 @@ export class MigrationHandler {
         .queryContext(makeAllPowerfulQueryContext(this.monitor))
         .hasTable(modelSchema.tableName);
       if (!exists) {
-        const modelSchemas = models.reduce<{ readonly [name: string]: ModelSchema }>(
-          (acc, model) => ({
-            ...acc,
-            [model.modelSchema.name]: model.modelSchema,
-          }),
-          {},
-        );
-        await createTable(this.db, this.monitor, Migration.modelSchema, modelSchemas);
+        await createTables(this.db, this.monitor);
       }
 
       const initMigration = await this.getMigration('initialization');

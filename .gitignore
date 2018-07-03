@@ -38,6 +38,7 @@ build
 data
 keys
 .awcache
+db.sqlite
 
 __pycache__
 

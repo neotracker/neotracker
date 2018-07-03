@@ -8,17 +8,16 @@ import { filter, map, scan } from 'rxjs/operators';
 import sqlSummary from 'sql-summary';
 
 export interface Environment {
-  readonly host: string;
-  readonly port: number;
+  readonly host?: string;
+  readonly port?: number;
 }
 export interface Options {
-  readonly client: 'pg';
+  readonly client: 'pg' | 'sqlite3';
   readonly connection?: {
     readonly database?: string;
     readonly user?: string;
     readonly password?: string;
   };
-
   readonly pool?: {
     readonly min?: number;
     readonly max?: number;
@@ -28,7 +27,6 @@ export interface Options {
     readonly log?: boolean;
     readonly returnToHead?: boolean;
   };
-
   readonly acquireConnectionTimeout?: number;
 }
 export interface AllOptions extends Options {
