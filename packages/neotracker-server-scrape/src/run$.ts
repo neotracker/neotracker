@@ -116,12 +116,10 @@ const cleanBlacklist = async ({
 };
 
 function doRun$({
-  catchup,
-  context,
+  context: contextIn,
   monitor,
   blockUpdater,
 }: {
-  readonly catchup: boolean;
   readonly context: Context;
   readonly monitor: Monitor;
   readonly blockUpdater: BlockUpdater;
@@ -131,20 +129,11 @@ function doRun$({
       running: true,
     };
 
+    let context = contextIn;
     async function _run() {
-      const [height, targetHeight] = await Promise.all([
-        getCurrentHeight(context, monitor),
-        catchup ? context.client.getBlockCount(monitor) : Promise.resolve(undefined),
-      ]);
-
-      const indexStart = height + 1;
-      if (targetHeight !== undefined && indexStart > targetHeight) {
-        return;
-      }
-
+      const height = await getCurrentHeight(context, monitor);
       const blocks = context.client.iterBlocks({
-        indexStart,
-        indexStop: targetHeight,
+        indexStart: height + 1,
         monitor,
       });
 
@@ -155,7 +144,7 @@ function doRun$({
         const block = normalizeBlock(blockJSON);
 
         NEOTRACKER_SCRAPE_PERSISTING_BLOCK_INDEX_GAUGE.set(block.index);
-        await monitor.captureSpanLog(async (span) => blockUpdater.save(span, block), {
+        context = await monitor.captureSpanLog(async (span) => blockUpdater.save(context, span, block), {
           name: 'neotracker_persist_block',
           metric: {
             total: NEOTRACKER_PERSIST_BLOCK_DURATION_SECONDS,
@@ -170,11 +159,7 @@ function doRun$({
         const latency = monitor.nowSeconds() - block.time;
         NEOTRACKER_PERSIST_BLOCK_LATENCY_SECONDS.observe(latency);
 
-        if (
-          !catchup &&
-          block.index % context.repairNEP5BlockFrequency === 0 &&
-          latency <= context.repairNEP5LatencySeconds
-        ) {
+        if (block.index % context.repairNEP5BlockFrequency === 0 && latency <= context.repairNEP5LatencySeconds) {
           await repairNEP5(context, monitor);
         }
       });
@@ -201,9 +186,5 @@ function doRun$({
 export const run$ = (context: Context, monitorIn: Monitor, blockUpdater: BlockUpdater) => {
   const monitor = getMonitor(monitorIn);
 
-  return concat(
-    defer(async () => cleanBlacklist({ context, monitor })),
-    doRun$({ context, catchup: true, monitor, blockUpdater }),
-    doRun$({ context, catchup: false, monitor, blockUpdater }),
-  );
+  return concat(defer(async () => cleanBlacklist({ context, monitor })), doRun$({ context, monitor, blockUpdater }));
 };

@@ -2,8 +2,8 @@ import { ActionRaw } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
 import * as _ from 'lodash';
 import { Transfer as TransferModel } from 'neotracker-server-db';
-import { TransferData } from '../types';
-import { DBUpdater } from './DBUpdater';
+import { Context, TransferData } from '../types';
+import { SameContextDBUpdater } from './SameContextDBUpdater';
 
 export interface TransfersSaveSingle {
   readonly action: ActionRaw;
@@ -21,15 +21,19 @@ export interface TransfersRevert {
   readonly transferIDs: ReadonlyArray<string>;
 }
 
-export class TransfersUpdater extends DBUpdater<TransfersSave, TransfersRevert> {
-  public async save(monitor: Monitor, { transactions, blockIndex, blockTime }: TransfersSave): Promise<void> {
+export class TransfersUpdater extends SameContextDBUpdater<TransfersSave, TransfersRevert> {
+  public async save(
+    context: Context,
+    monitor: Monitor,
+    { transactions, blockIndex, blockTime }: TransfersSave,
+  ): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         await Promise.all(
-          _.chunk(transactions, this.context.chunkSize).map(async (chunk) => {
+          _.chunk(transactions, context.chunkSize).map(async (chunk) => {
             await TransferModel.insertAll(
-              this.context.db,
-              this.context.makeQueryContext(span),
+              context.db,
+              context.makeQueryContext(span),
               chunk.map(
                 ({ transferData: { result, value }, transactionID, transactionHash, transactionIndex, action }) => ({
                   id: result.transferID,
@@ -54,13 +58,13 @@ export class TransfersUpdater extends DBUpdater<TransfersSave, TransfersRevert> 
     );
   }
 
-  public async revert(monitor: Monitor, { transferIDs }: TransfersRevert): Promise<void> {
+  public async revert(context: Context, monitor: Monitor, { transferIDs }: TransfersRevert): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         await Promise.all(
-          _.chunk(transferIDs, this.context.chunkSize).map(async (chunk) => {
-            await TransferModel.query(this.context.db)
-              .context(this.context.makeQueryContext(span))
+          _.chunk(transferIDs, context.chunkSize).map(async (chunk) => {
+            await TransferModel.query(context.db)
+              .context(context.makeQueryContext(span))
               .whereIn('id', chunk)
               .delete();
           }),

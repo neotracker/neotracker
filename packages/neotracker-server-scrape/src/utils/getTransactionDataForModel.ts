@@ -2,6 +2,7 @@ import { Monitor } from '@neo-one/monitor';
 import {
   Action as ActionModel,
   Block as BlockModel,
+  Contract as ContractModel,
   Transaction as TransactionModel,
   TransactionInputOutput as TransactionInputOutputModel,
 } from 'neotracker-server-db';
@@ -24,7 +25,7 @@ export async function getTransactionDataForModel({
 
   return Promise.all(
     transactions.map(async (transactionModel) => {
-      const [inputs, outputs, claims, actions] = await Promise.all([
+      const [inputs, outputs, claims, actions, contracts] = await Promise.all([
         transactionModel
           .$relatedQuery<TransactionInputOutputModel>('inputs', context.db)
           .context(context.makeQueryContext(monitor)),
@@ -35,6 +36,9 @@ export async function getTransactionDataForModel({
           .$relatedQuery<TransactionInputOutputModel>('claims', context.db)
           .context(context.makeQueryContext(monitor)),
         transactionModel.$relatedQuery<ActionModel>('actions', context.db).context(context.makeQueryContext(monitor)),
+        transactionModel
+          .$relatedQuery<ContractModel>('contracts', context.db)
+          .context(context.makeQueryContext(monitor)),
       ]);
 
       const actionDatas = await Promise.all(
@@ -61,6 +65,7 @@ export async function getTransactionDataForModel({
         transactionHash: transactionModel.hash,
         transactionIndex: transactionModel.index,
         actionDatas,
+        contracts,
       };
     }),
   );

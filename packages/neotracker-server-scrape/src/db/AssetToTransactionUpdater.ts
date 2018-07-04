@@ -1,7 +1,8 @@
 import { Monitor } from '@neo-one/monitor';
 import * as _ from 'lodash';
 import { AssetToTransaction as AssetToTransactionModel } from 'neotracker-server-db';
-import { DBUpdater } from './DBUpdater';
+import { Context } from '../types';
+import { SameContextDBUpdater } from './SameContextDBUpdater';
 
 export interface AssetToTransactionSaveSingle {
   readonly assetIDs: ReadonlyArray<string>;
@@ -14,8 +15,8 @@ export interface AssetToTransactionRevert {
   readonly transactionIDs: ReadonlyArray<string>;
 }
 
-export class AssetToTransactionUpdater extends DBUpdater<AssetToTransactionSave, AssetToTransactionRevert> {
-  public async save(monitor: Monitor, { transactions }: AssetToTransactionSave): Promise<void> {
+export class AssetToTransactionUpdater extends SameContextDBUpdater<AssetToTransactionSave, AssetToTransactionRevert> {
+  public async save(context: Context, monitor: Monitor, { transactions }: AssetToTransactionSave): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         const data = _.flatMap(transactions, ({ assetIDs, transactionID }) =>
@@ -25,8 +26,8 @@ export class AssetToTransactionUpdater extends DBUpdater<AssetToTransactionSave,
           })),
         );
         await Promise.all(
-          _.chunk(data, this.context.chunkSize).map(async (chunk) => {
-            await AssetToTransactionModel.insertAll(this.context.db, this.context.makeQueryContext(span), chunk);
+          _.chunk(data, context.chunkSize).map(async (chunk) => {
+            await AssetToTransactionModel.insertAll(context.db, context.makeQueryContext(span), chunk);
           }),
         );
       },
@@ -34,13 +35,13 @@ export class AssetToTransactionUpdater extends DBUpdater<AssetToTransactionSave,
     );
   }
 
-  public async revert(monitor: Monitor, { transactionIDs }: AssetToTransactionRevert): Promise<void> {
+  public async revert(context: Context, monitor: Monitor, { transactionIDs }: AssetToTransactionRevert): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         await Promise.all(
-          _.chunk(transactionIDs, this.context.chunkSize).map(async (chunk) => {
-            await AssetToTransactionModel.query(this.context.db)
-              .context(this.context.makeQueryContext(span))
+          _.chunk(transactionIDs, context.chunkSize).map(async (chunk) => {
+            await AssetToTransactionModel.query(context.db)
+              .context(context.makeQueryContext(span))
               .delete()
               .whereIn('id2', chunk);
           }),

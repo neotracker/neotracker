@@ -2,8 +2,8 @@ import { Monitor } from '@neo-one/monitor';
 import * as _ from 'lodash';
 import { TransactionInputOutput as TransactionInputOutputModel } from 'neotracker-server-db';
 import { Context } from '../types';
-import { DBUpdater } from './DBUpdater';
 import { InputUpdater } from './InputUpdater';
+import { SameContextDBUpdater } from './SameContextDBUpdater';
 
 export interface InputsSaveSingle {
   readonly inputs: ReadonlyArray<TransactionInputOutputModel>;
@@ -21,26 +21,25 @@ export interface InputsUpdaters {
   readonly input: InputUpdater;
 }
 
-export class InputsUpdater extends DBUpdater<InputsSave, InputsRevert> {
+export class InputsUpdater extends SameContextDBUpdater<InputsSave, InputsRevert> {
   private readonly updaters: InputsUpdaters;
 
   public constructor(
-    context: Context,
     updaters: InputsUpdaters = {
-      input: new InputUpdater(context),
+      input: new InputUpdater(),
     },
   ) {
-    super(context);
+    super();
     this.updaters = updaters;
   }
 
-  public async save(monitor: Monitor, { transactions, blockIndex }: InputsSave): Promise<void> {
+  public async save(context: Context, monitor: Monitor, { transactions, blockIndex }: InputsSave): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         await Promise.all(
           _.flatMap(transactions, ({ inputs, transactionID, transactionHash }) =>
             inputs.map(async (reference) =>
-              this.updaters.input.save(span, { reference, transactionID, transactionHash, blockIndex }),
+              this.updaters.input.save(context, span, { reference, transactionID, transactionHash, blockIndex }),
             ),
           ),
         );
@@ -49,10 +48,12 @@ export class InputsUpdater extends DBUpdater<InputsSave, InputsRevert> {
     );
   }
 
-  public async revert(monitor: Monitor, { references }: InputsRevert): Promise<void> {
+  public async revert(context: Context, monitor: Monitor, { references }: InputsRevert): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
-        await Promise.all(references.map(async (reference) => this.updaters.input.revert(span, { reference })));
+        await Promise.all(
+          references.map(async (reference) => this.updaters.input.revert(context, span, { reference })),
+        );
       },
       { name: 'neotracker_scrape_revert_inputs' },
     );

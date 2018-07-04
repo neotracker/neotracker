@@ -1,7 +1,8 @@
 import { Monitor } from '@neo-one/monitor';
 import * as _ from 'lodash';
 import { AddressToTransfer as AddressToTransferModel } from 'neotracker-server-db';
-import { DBUpdater } from './DBUpdater';
+import { Context } from '../types';
+import { SameContextDBUpdater } from './SameContextDBUpdater';
 
 export interface AddressToTransferSaveSingle {
   readonly addressIDs: ReadonlyArray<string>;
@@ -14,8 +15,8 @@ export interface AddressToTransferRevert {
   readonly transferIDs: ReadonlyArray<string>;
 }
 
-export class AddressToTransferUpdater extends DBUpdater<AddressToTransferSave, AddressToTransferRevert> {
-  public async save(monitor: Monitor, { transfers }: AddressToTransferSave): Promise<void> {
+export class AddressToTransferUpdater extends SameContextDBUpdater<AddressToTransferSave, AddressToTransferRevert> {
+  public async save(context: Context, monitor: Monitor, { transfers }: AddressToTransferSave): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         const data = _.flatMap(transfers, ({ addressIDs, transferID }) =>
@@ -25,8 +26,8 @@ export class AddressToTransferUpdater extends DBUpdater<AddressToTransferSave, A
           })),
         );
         await Promise.all(
-          _.chunk(data, this.context.chunkSize).map(async (chunk) => {
-            await AddressToTransferModel.insertAll(this.context.db, this.context.makeQueryContext(span), chunk);
+          _.chunk(data, context.chunkSize).map(async (chunk) => {
+            await AddressToTransferModel.insertAll(context.db, context.makeQueryContext(span), chunk);
           }),
         );
       },
@@ -34,13 +35,13 @@ export class AddressToTransferUpdater extends DBUpdater<AddressToTransferSave, A
     );
   }
 
-  public async revert(monitor: Monitor, { transferIDs }: AddressToTransferRevert): Promise<void> {
+  public async revert(context: Context, monitor: Monitor, { transferIDs }: AddressToTransferRevert): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         await Promise.all(
-          _.chunk(transferIDs, this.context.chunkSize).map(async (chunk) => {
-            await AddressToTransferModel.query(this.context.db)
-              .context(this.context.makeQueryContext(span))
+          _.chunk(transferIDs, context.chunkSize).map(async (chunk) => {
+            await AddressToTransferModel.query(context.db)
+              .context(context.makeQueryContext(span))
               .delete()
               .whereIn('id2', chunk);
           }),

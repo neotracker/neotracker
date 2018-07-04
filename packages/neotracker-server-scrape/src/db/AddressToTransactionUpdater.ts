@@ -1,7 +1,8 @@
 import { Monitor } from '@neo-one/monitor';
 import * as _ from 'lodash';
 import { AddressToTransaction as AddressToTransactionModel } from 'neotracker-server-db';
-import { DBUpdater } from './DBUpdater';
+import { Context } from '../types';
+import { SameContextDBUpdater } from './SameContextDBUpdater';
 
 export interface AddressToTransactionSaveSingle {
   readonly addressIDs: ReadonlyArray<string>;
@@ -14,8 +15,11 @@ export interface AddressToTransactionRevert {
   readonly transactionIDs: ReadonlyArray<string>;
 }
 
-export class AddressToTransactionUpdater extends DBUpdater<AddressToTransactionSave, AddressToTransactionRevert> {
-  public async save(monitor: Monitor, { transactions }: AddressToTransactionSave): Promise<void> {
+export class AddressToTransactionUpdater extends SameContextDBUpdater<
+  AddressToTransactionSave,
+  AddressToTransactionRevert
+> {
+  public async save(context: Context, monitor: Monitor, { transactions }: AddressToTransactionSave): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         const data = _.flatMap(transactions, ({ addressIDs, transactionID }) =>
@@ -25,8 +29,8 @@ export class AddressToTransactionUpdater extends DBUpdater<AddressToTransactionS
           })),
         );
         await Promise.all(
-          _.chunk(data, this.context.chunkSize).map(async (chunk) => {
-            await AddressToTransactionModel.insertAll(this.context.db, this.context.makeQueryContext(span), chunk);
+          _.chunk(data, context.chunkSize).map(async (chunk) => {
+            await AddressToTransactionModel.insertAll(context.db, context.makeQueryContext(span), chunk);
           }),
         );
       },
@@ -34,13 +38,17 @@ export class AddressToTransactionUpdater extends DBUpdater<AddressToTransactionS
     );
   }
 
-  public async revert(monitor: Monitor, { transactionIDs }: AddressToTransactionRevert): Promise<void> {
+  public async revert(
+    context: Context,
+    monitor: Monitor,
+    { transactionIDs }: AddressToTransactionRevert,
+  ): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         await Promise.all(
-          _.chunk(transactionIDs, this.context.chunkSize).map((chunk) =>
-            AddressToTransactionModel.query(this.context.db)
-              .context(this.context.makeQueryContext(span))
+          _.chunk(transactionIDs, context.chunkSize).map((chunk) =>
+            AddressToTransactionModel.query(context.db)
+              .context(context.makeQueryContext(span))
               .delete()
               .whereIn('id2', chunk),
           ),

@@ -1,8 +1,8 @@
 import { Monitor } from '@neo-one/monitor';
 import { Address as AddressModel } from 'neotracker-server-db';
 import { raw } from 'objection';
-import { Addresses } from '../types';
-import { DBUpdater } from './DBUpdater';
+import { Addresses, Context } from '../types';
+import { SameContextDBUpdater } from './SameContextDBUpdater';
 
 export interface AddressesDataSave {
   readonly addresses: Addresses;
@@ -15,15 +15,19 @@ export interface AddressesDataRevert {
   readonly blockIndex: number;
 }
 
-export class AddressesDataUpdater extends DBUpdater<AddressesDataSave, AddressesDataRevert> {
-  public async save(monitor: Monitor, { addresses, blockIndex, blockTime }: AddressesDataSave): Promise<void> {
+export class AddressesDataUpdater extends SameContextDBUpdater<AddressesDataSave, AddressesDataRevert> {
+  public async save(
+    context: Context,
+    monitor: Monitor,
+    { addresses, blockIndex, blockTime }: AddressesDataSave,
+  ): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         await Promise.all(
           Object.entries(addresses).map(
             async ([address, { transactionCount, transferCount, transactionID, transactionHash }]) => {
-              await AddressModel.query(this.context.db)
-                .context(this.context.makeQueryContext(span))
+              await AddressModel.query(context.db)
+                .context(context.makeQueryContext(span))
                 .where('id', address)
                 .where('aggregate_block_id', '<', blockIndex)
                 .patch({
@@ -44,13 +48,17 @@ export class AddressesDataUpdater extends DBUpdater<AddressesDataSave, Addresses
     );
   }
 
-  public async revert(monitor: Monitor, { addresses, transactionIDs, blockIndex }: AddressesDataRevert): Promise<void> {
+  public async revert(
+    context: Context,
+    monitor: Monitor,
+    { addresses, transactionIDs, blockIndex }: AddressesDataRevert,
+  ): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         await Promise.all(
           Object.entries(addresses).map(async ([address, { transactionCount, transferCount }]) => {
-            await AddressModel.query(this.context.db)
-              .context(this.context.makeQueryContext(span))
+            await AddressModel.query(context.db)
+              .context(context.makeQueryContext(span))
               .where('id', address)
               .where('aggregate_block_id', '>=', blockIndex)
               .patch({
@@ -65,7 +73,7 @@ export class AddressesDataUpdater extends DBUpdater<AddressesDataSave, Addresses
 
         const addressIDsSet = Object.keys(addresses);
         if (addressIDsSet.length > 0) {
-          await this.context.db
+          await context.db
             .raw(
               `
                 UPDATE address SET
@@ -88,7 +96,7 @@ export class AddressesDataUpdater extends DBUpdater<AddressesDataSave, Addresses
                   address.id = a.address_id
               `,
             )
-            .queryContext(this.context.makeQueryContext(span));
+            .queryContext(context.makeQueryContext(span));
         }
       },
       { name: 'neotracker_scrape_revert_addresses_data' },

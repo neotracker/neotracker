@@ -14,6 +14,7 @@ import {
   Action as ActionModel,
   Block as BlockModel,
   Coin as CoinModel,
+  Contract as ContractModel,
   PubSub,
   QueryContext,
   Transaction as TransactionModel,
@@ -61,13 +62,10 @@ export interface SystemFeeSave {
 export interface Context {
   readonly db: Knex;
   readonly makeQueryContext: ((monitor: Monitor) => QueryContext);
-  // tslint:disable-next-line readonly-keyword
-  prevBlock: BlockModel | undefined;
-  // tslint:disable-next-line readonly-keyword
-  currentHeight: number | undefined;
+  readonly prevBlock: BlockModel | undefined;
+  readonly currentHeight: number | undefined;
   readonly systemFee: IWriteCache<number, BigNumber, SystemFeeSave, number>;
-  // tslint:disable-next-line readonly-keyword
-  nep5Contracts: { [K in string]?: ReadSmartContract };
+  readonly nep5Contracts: { readonly [K in string]?: ReadSmartContract };
   readonly chunkSize: number;
   readonly processedIndexPubSub: PubSub<{ readonly index: number }>;
   readonly client: ReadClient<NEOONEDataProvider>;
@@ -151,6 +149,7 @@ export interface TransactionModelData extends InputOutputResult {
   readonly transactionHash: string;
   readonly transactionID: string;
   readonly transactionIndex: number;
+  readonly contracts: ReadonlyArray<ContractModel>;
 }
 
 export interface ContractActionData extends InputOutputResult {

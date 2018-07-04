@@ -206,10 +206,10 @@ export const createScraper$ = ({
           }),
       );
 
-      // tslint:disable-next-line no-object-mutation
-      context.nep5Contracts = _.fromPairs(nep5ContractPairs);
-
-      return context;
+      return {
+        ...context,
+        nep5Contracts: _.fromPairs(nep5ContractPairs),
+      };
     }),
     mergeScanLatest(async (_acc, context: Context) => {
       // tslint:disable-next-line no-loop-statement
@@ -223,7 +223,7 @@ export const createScraper$ = ({
 
       return context;
     }),
-    switchMap((context: Context) => run$(context, rootMonitor, new BlockUpdater(context))),
+    switchMap((context: Context) => run$(context, rootMonitor, new BlockUpdater())),
   );
 
   return combineLatest(rootLoader$, concat(_of(undefined), scrape$)).pipe(

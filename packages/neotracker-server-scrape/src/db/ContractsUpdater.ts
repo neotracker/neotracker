@@ -1,22 +1,23 @@
 import { Monitor } from '@neo-one/monitor';
 import * as _ from 'lodash';
 import { Contract as ContractModel } from 'neotracker-server-db';
-import { DBUpdater } from './DBUpdater';
+import { Context } from '../types';
+import { SameContextDBUpdater } from './SameContextDBUpdater';
 
 export interface ContractsSave {
   readonly contracts: ReadonlyArray<Partial<ContractModel>>;
 }
 export interface ContractsRevert {
-  readonly transactionIDs: ReadonlyArray<string>;
+  readonly contractIDs: ReadonlyArray<string>;
 }
 
-export class ContractsUpdater extends DBUpdater<ContractsSave, ContractsRevert> {
-  public async save(monitor: Monitor, { contracts }: ContractsSave): Promise<void> {
+export class ContractsUpdater extends SameContextDBUpdater<ContractsSave, ContractsRevert> {
+  public async save(context: Context, monitor: Monitor, { contracts }: ContractsSave): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         await Promise.all(
-          _.chunk(contracts, this.context.chunkSize).map(async (chunk) =>
-            ContractModel.insertAll(this.context.db, this.context.makeQueryContext(span), chunk),
+          _.chunk(contracts, context.chunkSize).map(async (chunk) =>
+            ContractModel.insertAll(context.db, context.makeQueryContext(span), chunk),
           ),
         );
       },
@@ -24,14 +25,14 @@ export class ContractsUpdater extends DBUpdater<ContractsSave, ContractsRevert> 
     );
   }
 
-  public async revert(monitor: Monitor, { transactionIDs }: ContractsRevert): Promise<void> {
+  public async revert(context: Context, monitor: Monitor, { contractIDs }: ContractsRevert): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         await Promise.all(
-          _.chunk(transactionIDs, this.context.chunkSize).map(async (chunk) =>
-            ContractModel.query(this.context.db)
-              .context(this.context.makeQueryContext(span))
-              .whereIn('transaction_id', chunk)
+          _.chunk(contractIDs, context.chunkSize).map(async (chunk) =>
+            ContractModel.query(context.db)
+              .context(context.makeQueryContext(span))
+              .whereIn('id', chunk)
               .delete(),
           ),
         );

@@ -2,8 +2,9 @@ import { Monitor } from '@neo-one/monitor';
 import BigNumber from 'bignumber.js';
 import { TransactionInputOutput as TransactionInputOutputModel } from 'neotracker-server-db';
 import { NEO_ASSET_ID } from 'neotracker-shared-utils';
+import { Context } from '../types';
 import { calculateClaimAmount } from '../utils';
-import { DBUpdater } from './DBUpdater';
+import { SameContextDBUpdater } from './SameContextDBUpdater';
 
 export interface InputSave {
   readonly reference: TransactionInputOutputModel;
@@ -15,8 +16,9 @@ export interface InputRevert {
   readonly reference: TransactionInputOutputModel;
 }
 
-export class InputUpdater extends DBUpdater<InputSave, InputRevert> {
+export class InputUpdater extends SameContextDBUpdater<InputSave, InputRevert> {
   public async save(
+    context: Context,
     monitor: Monitor,
     { transactionID, transactionHash, reference, blockIndex }: InputSave,
   ): Promise<void> {
@@ -25,7 +27,7 @@ export class InputUpdater extends DBUpdater<InputSave, InputRevert> {
         let claimValue = '0';
         if (reference.asset_id === `${NEO_ASSET_ID}`) {
           claimValue = await calculateClaimAmount(
-            this.context,
+            context,
             span,
             new BigNumber(reference.value),
             reference.output_block_id,
@@ -33,8 +35,8 @@ export class InputUpdater extends DBUpdater<InputSave, InputRevert> {
           );
         }
         await reference
-          .$query(this.context.db)
-          .context(this.context.makeQueryContext(span))
+          .$query(context.db)
+          .context(context.makeQueryContext(span))
           .patch({
             input_transaction_id: transactionID,
             input_transaction_hash: transactionHash,
@@ -45,12 +47,12 @@ export class InputUpdater extends DBUpdater<InputSave, InputRevert> {
     );
   }
 
-  public async revert(monitor: Monitor, { reference }: InputRevert): Promise<void> {
+  public async revert(context: Context, monitor: Monitor, { reference }: InputRevert): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         await reference
-          .$query(this.context.db)
-          .context(this.context.makeQueryContext(span))
+          .$query(context.db)
+          .context(context.makeQueryContext(span))
           .patch({
             // tslint:disable no-null-keyword
             input_transaction_id: null,

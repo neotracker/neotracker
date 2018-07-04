@@ -56,46 +56,44 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
   private readonly updaters: TransactionsUpdaters;
 
   public constructor(
-    context: Context,
     updaters: TransactionsUpdaters = {
-      actions: new ActionsUpdater(context),
-      addresses: new AddressesUpdater(context),
-      addressesData: new AddressesDataUpdater(context),
-      addressToTransaction: new AddressToTransactionUpdater(context),
-      addressToTransfer: new AddressToTransferUpdater(context),
-      assets: new AssetsUpdater(context),
-      assetsData: new AssetsDataUpdater(context),
-      assetToTransaction: new AssetToTransactionUpdater(context),
-      claims: new ClaimsUpdater(context),
-      coins: new CoinsUpdater(context),
-      contracts: new ContractsUpdater(context),
-      inputs: new InputsUpdater(context),
-      outputs: new OutputsUpdater(context),
-      transfers: new TransfersUpdater(context),
+      actions: new ActionsUpdater(),
+      addresses: new AddressesUpdater(),
+      addressesData: new AddressesDataUpdater(),
+      addressToTransaction: new AddressToTransactionUpdater(),
+      addressToTransfer: new AddressToTransferUpdater(),
+      assets: new AssetsUpdater(),
+      assetsData: new AssetsDataUpdater(),
+      assetToTransaction: new AssetToTransactionUpdater(),
+      claims: new ClaimsUpdater(),
+      coins: new CoinsUpdater(),
+      contracts: new ContractsUpdater(),
+      inputs: new InputsUpdater(),
+      outputs: new OutputsUpdater(),
+      transfers: new TransfersUpdater(),
     },
   ) {
-    super(context);
+    super();
     this.updaters = updaters;
   }
 
-  public async save(monitor: Monitor, { block }: TransactionsSave): Promise<void> {
+  public async save(contextIn: Context, monitor: Monitor, { block }: TransactionsSave): Promise<Context> {
     return monitor.captureSpan(
       async (span) => {
         const transactionsIn = [...block.transactions.entries()].map(([transactionIndex, transaction]) => ({
           transactionIndex,
           transaction,
         }));
-        // This potentially modified nep5Contracts, so it must come first on its own
-        const { assets, contracts } = await getAssetsAndContractsForClient({
+        const { assets, contracts, context } = await getAssetsAndContractsForClient({
           monitor: span,
-          context: this.context,
+          context: contextIn,
           transactions: transactionsIn,
           blockIndex: block.index,
           blockTime: block.time,
         });
         const transactions = await getTransactionDataForClient({
           monitor: span,
-          context: this.context,
+          context,
           blockIndex: block.index,
           transactions: transactionsIn,
         });
@@ -103,34 +101,34 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
         const addressesData = getAddressesData(transactions);
 
         const [{ assets: assetsData, coinModelChanges }] = await Promise.all([
-          getAssetsDataForClient({ monitor: span, context: this.context, transactions, blockIndex: block.index }),
-          this.updaters.addresses.save(span, {
+          getAssetsDataForClient({ monitor: span, context, transactions, blockIndex: block.index }),
+          this.updaters.addresses.save(context, span, {
             addresses,
           }),
-          this.updaters.assets.save(span, {
+          this.updaters.assets.save(context, span, {
             assets,
           }),
         ]);
 
         await Promise.all([
-          this.insertTransactions(span, block.index, block.time, transactions),
-          this.updaters.actions.save(span, {
+          this.insertTransactions(context, span, block.index, block.time, transactions),
+          this.updaters.actions.save(context, span, {
             actions: _.flatMap(transactions, ({ actionDatas, transactionID, transactionHash }) =>
               actionDatas.map(({ action }) => ({ action, transactionID, transactionHash })),
             ),
           }),
-          this.updaters.addressesData.save(span, {
+          this.updaters.addressesData.save(context, span, {
             addresses: addressesData,
             blockTime: block.time,
             blockIndex: block.index,
           }),
-          this.updaters.addressToTransaction.save(span, {
+          this.updaters.addressToTransaction.save(context, span, {
             transactions: transactions.map(({ addressIDs, transactionID }) => ({
               addressIDs: Object.keys(addressIDs),
               transactionID,
             })),
           }),
-          this.updaters.addressToTransfer.save(span, {
+          this.updaters.addressToTransfer.save(context, span, {
             transfers: _.flatMap(transactions, ({ actionDatas }) =>
               actionDatas
                 .map(({ transfer }) => transfer)
@@ -141,30 +139,30 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
                 })),
             ),
           }),
-          this.updaters.assetsData.save(span, {
+          this.updaters.assetsData.save(context, span, {
             assets: assetsData,
             blockIndex: block.index,
           }),
-          this.updaters.assetToTransaction.save(span, {
+          this.updaters.assetToTransaction.save(context, span, {
             transactions,
           }),
-          this.updaters.claims.save(span, {
+          this.updaters.claims.save(context, span, {
             transactions,
           }),
-          this.updaters.coins.save(span, {
+          this.updaters.coins.save(context, span, {
             coinModelChanges,
           }),
-          this.updaters.contracts.save(span, {
+          this.updaters.contracts.save(context, span, {
             contracts,
           }),
-          this.updaters.inputs.save(span, {
+          this.updaters.inputs.save(context, span, {
             transactions,
             blockIndex: block.index,
           }),
-          this.updaters.outputs.save(span, {
+          this.updaters.outputs.save(context, span, {
             transactions,
           }),
-          this.updaters.transfers.save(span, {
+          this.updaters.transfers.save(context, span, {
             transactions: _.flatMap(transactions, ({ actionDatas, transactionID, transactionHash, transactionIndex }) =>
               actionDatas
                 .map(
@@ -185,42 +183,45 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
             blockTime: block.time,
           }),
         ]);
+
+        return context;
       },
       { name: 'neotracker_scrape_save_transactions' },
     );
   }
 
-  public async revert(monitor: Monitor, { blockModel }: TransactionsRevert): Promise<void> {
+  public async revert(context: Context, monitor: Monitor, { blockModel }: TransactionsRevert): Promise<Context> {
     return monitor.captureSpan(
       async (span) => {
         const transactions = await getTransactionDataForModel({
           monitor: span,
-          context: this.context,
+          context,
           blockModel,
         });
         const addressesData = getAddressesData(transactions);
 
         const { assets: assetsData, coinModelChanges } = await getAssetsDataForModel({
           monitor: span,
-          context: this.context,
+          context,
           transactions,
           blockIndex: blockModel.id,
         });
 
         const transactionIDs = transactions.map(({ transactionModel }) => transactionModel.id);
+        const contractIDs = _.flatMap(transactions, ({ contracts }) => contracts.map(({ id }) => id));
         await Promise.all([
-          this.updaters.actions.revert(span, {
+          this.updaters.actions.revert(context, span, {
             transactionIDs,
           }),
-          this.updaters.addressesData.revert(span, {
+          this.updaters.addressesData.revert(context, span, {
             addresses: addressesData,
             transactionIDs,
             blockIndex: blockModel.id,
           }),
-          this.updaters.addressToTransaction.revert(span, {
-            transactionIDs: transactions.map(({ transactionID }) => transactionID),
+          this.updaters.addressToTransaction.revert(context, span, {
+            transactionIDs,
           }),
-          this.updaters.addressToTransfer.revert(span, {
+          this.updaters.addressToTransfer.revert(context, span, {
             transferIDs: _.flatMap(transactions, ({ actionDatas }) =>
               actionDatas
                 .map(({ transfer }) => transfer)
@@ -228,30 +229,30 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
                 .map(({ result: { transferID } }) => transferID),
             ),
           }),
-          this.updaters.assetsData.revert(span, {
+          this.updaters.assetsData.revert(context, span, {
             assets: assetsData,
             blockIndex: blockModel.id,
           }),
-          this.updaters.assetToTransaction.revert(span, {
-            transactionIDs: transactions.map(({ transactionID }) => transactionID),
-          }),
-          this.updaters.claims.revert(span, {
-            claims: _.flatMap(transactions.map(({ claims }) => claims)),
-          }),
-          this.updaters.coins.revert(span, {
-            coinModelChanges,
-          }),
-          this.updaters.contracts.revert(span, {
+          this.updaters.assetToTransaction.revert(context, span, {
             transactionIDs,
           }),
-          this.updaters.inputs.revert(span, {
+          this.updaters.claims.revert(context, span, {
+            claims: _.flatMap(transactions.map(({ claims }) => claims)),
+          }),
+          this.updaters.coins.revert(context, span, {
+            coinModelChanges,
+          }),
+          this.updaters.contracts.revert(context, span, {
+            contractIDs,
+          }),
+          this.updaters.inputs.revert(context, span, {
             references: _.flatMap(transactions.map(({ inputs }) => inputs)),
           }),
-          this.updaters.outputs.revert(span, {
+          this.updaters.outputs.revert(context, span, {
             outputs: _.flatMap(transactions.map(({ outputs }) => outputs)),
           }),
           this.updaters.transfers
-            .revert(span, {
+            .revert(context, span, {
               transferIDs: _.flatMap(transactions, ({ actionDatas }) =>
                 actionDatas
                   .map(({ action, transfer }) => (transfer === undefined ? undefined : action.id))
@@ -259,7 +260,7 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
               ),
             })
             .then(async () =>
-              this.updaters.assetToTransaction.save(span, {
+              this.updaters.assetToTransaction.save(context, span, {
                 transactions: transactions.map(({ assetIDs, transactionID }) => ({
                   assetIDs,
                   transactionID,
@@ -269,7 +270,7 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
         ]);
 
         await Promise.all([
-          this.updaters.addresses.revert(span, {
+          this.updaters.addresses.revert(context, span, {
             addresses: _.flatMap(transactions, ({ addressIDs }) =>
               Object.entries(addressIDs).map(([addressID, { startTransactionID }]) => ({
                 id: addressID,
@@ -278,35 +279,52 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
             ),
             blockIndex: blockModel.id,
           }),
-          this.updaters.assets.revert(span, {
+          this.updaters.assets.revert(context, span, {
             transactionIDs,
           }),
         ]);
 
         await Promise.all(
-          _.chunk(transactions, this.context.chunkSize).map((chunk) =>
-            TransactionModel.query(this.context.db)
-              .context(this.context.makeQueryContext(span))
+          _.chunk(transactions, context.chunkSize).map((chunk) =>
+            TransactionModel.query(context.db)
+              .context(context.makeQueryContext(span))
               .whereIn('id', chunk.map(({ transactionModel }) => transactionModel.id))
               .delete(),
           ),
         );
+
+        const contractIDsSet = new Set(contractIDs);
+
+        return {
+          ...context,
+          nep5Contracts: Object.entries(context.nep5Contracts).reduce<typeof context.nep5Contracts>(
+            (acc, [contractID, nep5Contract]) =>
+              contractIDsSet.has(contractID)
+                ? acc
+                : {
+                    ...acc,
+                    [contractID]: nep5Contract,
+                  },
+            {},
+          ),
+        };
       },
       { name: 'neotracker_scrape_revert_transactions' },
     );
   }
 
   private async insertTransactions(
+    context: Context,
     monitor: Monitor,
     blockIndex: number,
     blockTime: number,
     transactions: ReadonlyArray<TransactionData>,
   ): Promise<void> {
     await Promise.all(
-      _.chunk(transactions, this.context.chunkSize).map(async (chunk) => {
+      _.chunk(transactions, context.chunkSize).map(async (chunk) => {
         await TransactionModel.insertAll(
-          this.context.db,
-          this.context.makeQueryContext(monitor),
+          context.db,
+          context.makeQueryContext(monitor),
           chunk.map(({ transaction, transactionIndex }) => ({
             id: transaction.data.globalIndex.toString(),
             hash: transaction.txid,

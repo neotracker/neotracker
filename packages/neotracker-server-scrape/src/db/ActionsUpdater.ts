@@ -2,7 +2,8 @@ import { ActionRaw } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
 import * as _ from 'lodash';
 import { Action as ActionModel } from 'neotracker-server-db';
-import { DBUpdater } from './DBUpdater';
+import { Context } from '../types';
+import { SameContextDBUpdater } from './SameContextDBUpdater';
 
 export interface ActionsSaveSingle {
   readonly action: ActionRaw;
@@ -16,15 +17,15 @@ export interface ActionsRevert {
   readonly transactionIDs: ReadonlyArray<string>;
 }
 
-export class ActionsUpdater extends DBUpdater<ActionsSave, ActionsRevert> {
-  public async save(monitor: Monitor, { actions }: ActionsSave): Promise<void> {
+export class ActionsUpdater extends SameContextDBUpdater<ActionsSave, ActionsRevert> {
+  public async save(context: Context, monitor: Monitor, { actions }: ActionsSave): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         await Promise.all(
-          _.chunk(actions, this.context.chunkSize).map(async (chunk) =>
+          _.chunk(actions, context.chunkSize).map(async (chunk) =>
             ActionModel.insertAll(
-              this.context.db,
-              this.context.makeQueryContext(span),
+              context.db,
+              context.makeQueryContext(span),
               chunk.map(({ action, transactionID, transactionHash }) => ({
                 id: action.globalIndex.toString(),
                 type: action.type,
@@ -47,13 +48,13 @@ export class ActionsUpdater extends DBUpdater<ActionsSave, ActionsRevert> {
     );
   }
 
-  public async revert(monitor: Monitor, { transactionIDs }: ActionsRevert): Promise<void> {
+  public async revert(context: Context, monitor: Monitor, { transactionIDs }: ActionsRevert): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         await Promise.all(
-          _.chunk(transactionIDs, this.context.chunkSize).map(async (chunk) =>
-            ActionModel.query(this.context.db)
-              .context(this.context.makeQueryContext(span))
+          _.chunk(transactionIDs, context.chunkSize).map(async (chunk) =>
+            ActionModel.query(context.db)
+              .context(context.makeQueryContext(span))
               .whereIn('transaction_id', chunk)
               .delete(),
           ),

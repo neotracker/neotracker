@@ -1,7 +1,7 @@
 import { Block } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
 import BigNumber from 'bignumber.js';
-import { Block as BlockModel } from 'neotracker-server-db';
+import { Block as BlockModel, isUniqueError } from 'neotracker-server-db';
 import { Context } from '../types';
 import { AddressesUpdater } from './AddressesUpdater';
 import { DBUpdater } from './DBUpdater';
@@ -29,24 +29,23 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
   private readonly updaters: BlockUpdaters;
 
   public constructor(
-    context: Context,
     updaters: BlockUpdaters = {
-      address: new AddressesUpdater(context),
-      processedIndex: new ProcessedIndexUpdater(context),
-      prevBlock: new PrevBlockUpdater(context),
-      transactions: new TransactionsUpdater(context),
+      address: new AddressesUpdater(),
+      processedIndex: new ProcessedIndexUpdater(),
+      prevBlock: new PrevBlockUpdater(),
+      transactions: new TransactionsUpdater(),
     },
   ) {
-    super(context);
+    super();
     this.updaters = updaters;
   }
 
-  public async save(monitor: Monitor, block: Block): Promise<void> {
+  public async save(context: Context, monitor: Monitor, block: Block): Promise<Context> {
     return monitor.captureSpan(
       async (span) => {
         const [height, prevBlockModel] = await Promise.all([
-          getCurrentHeight(this.context, span),
-          getPreviousBlockModel(this.context, span, block.index),
+          getCurrentHeight(context, span),
+          getPreviousBlockModel(context, span, block.index),
         ]);
         if (block.index === height + 1) {
           if (prevBlockModel === undefined || block.previousBlockHash === prevBlockModel.hash) {
@@ -67,8 +66,8 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
               };
             }
 
-            const [blockModel] = await Promise.all([
-              BlockModel.insertAndReturn(this.context.db, this.context.makeQueryContext(span), {
+            const [blockModel, innerNextContext] = await Promise.all([
+              BlockModel.insertAndReturn(context.db, context.makeQueryContext(span), {
                 ...prevBlockData,
                 id: block.index,
                 hash: block.hash,
@@ -90,16 +89,17 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
                   .toFixed(8),
                 aggregated_system_fee: aggregatedSystemFee.toFixed(8),
               }).catch((error) => {
-                if (this.isUniqueError(error)) {
-                  return BlockModel.query(this.context.db)
-                    .context(this.context.makeQueryContext(span))
+                if (isUniqueError(context.db, error)) {
+                  return BlockModel.query(context.db)
+                    .context(context.makeQueryContext(span))
                     .where('id', block.index)
                     .first()
                     .throwIfNotFound();
                 }
                 throw error;
               }),
-              this.updaters.address.save(span, {
+              this.updaters.transactions.save(context, span, { block }),
+              this.updaters.address.save(context, span, {
                 addresses: [
                   {
                     id: block.nextConsensus,
@@ -115,51 +115,57 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
                   },
                 ],
               }),
-              this.context.systemFee.save(
+              context.systemFee.save(
                 {
                   index: block.index,
                   value: aggregatedSystemFee.toFixed(8),
                 },
                 span,
               ),
-              this.updaters.prevBlock.save(span, { block, prevBlockModel }),
-              this.updaters.transactions.save(span, { block }),
+              this.updaters.prevBlock.save(context, span, { block, prevBlockModel }),
             ]);
 
-            await this.updaters.processedIndex.save(span, block.index);
+            await this.updaters.processedIndex.save(innerNextContext, span, block.index);
 
-            // tslint:disable no-object-mutation
-            this.context.prevBlock = blockModel;
-            this.context.currentHeight = blockModel.id;
-            // tslint:enable no-object-mutation
-          } else {
-            const [prevBlock] = await Promise.all([
-              this.context.client.getBlock(height),
-              this.revert(span, prevBlockModel),
-            ]);
-            await this.save(span, prevBlock);
+            return {
+              ...innerNextContext,
+              prevBlock: blockModel,
+              currentHeight: blockModel.id,
+            };
           }
-        } else if (block.index === height) {
-          const blockModel = await BlockModel.query(this.context.db)
-            .context(this.context.makeQueryContext(span))
+
+          const [prevBlock, nextContext] = await Promise.all([
+            context.client.getBlock(height),
+            this.revert(context, span, prevBlockModel),
+          ]);
+
+          return this.save(nextContext, span, prevBlock);
+        }
+
+        if (block.index === height) {
+          const blockModel = await BlockModel.query(context.db)
+            .context(context.makeQueryContext(span))
             .findById(block.index)
             .throwIfNotFound();
           if (block.hash !== blockModel.hash) {
-            await this.revert(span, blockModel);
-            await this.save(span, block);
+            const nextContext = await this.revert(context, span, blockModel);
+
+            return this.save(nextContext, span, block);
           }
         }
+
+        return context;
       },
       { name: 'neotracker_scrape_save_block' },
     );
   }
 
-  public async revert(monitor: Monitor, blockModel: BlockModel): Promise<void> {
+  public async revert(context: Context, monitor: Monitor, blockModel: BlockModel): Promise<Context> {
     return monitor.captureSpan(
       async (span) => {
-        const prevBlockModel = await getPreviousBlockModel(this.context, span, blockModel.id);
+        const prevBlockModel = await getPreviousBlockModel(context, span, blockModel.id);
         await Promise.all([
-          this.updaters.address.revert(span, {
+          this.updaters.address.revert(context, span, {
             addresses: [
               {
                 id: blockModel.next_validator_address_id,
@@ -167,22 +173,24 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
             ],
             blockIndex: blockModel.id,
           }),
-          this.updaters.transactions.revert(span, { blockModel }),
-          this.context.systemFee.revert(blockModel.id, span),
-          this.updaters.prevBlock.revert(span, prevBlockModel),
+          this.updaters.transactions.revert(context, span, { blockModel }),
+          context.systemFee.revert(blockModel.id, span),
+          this.updaters.prevBlock.revert(context, span, prevBlockModel),
         ]);
 
         await blockModel
-          .$query(this.context.db)
-          .context(this.context.makeQueryContext(span))
+          .$query(context.db)
+          .context(context.makeQueryContext(span))
           .delete();
-        await this.updaters.processedIndex.revert(span, blockModel.id);
+        await this.updaters.processedIndex.revert(context, span, blockModel.id);
 
-        const prevPrevBlockModel = await getPreviousBlockModel(this.context, monitor, blockModel.id - 1);
-        // tslint:disable no-object-mutation
-        this.context.prevBlock = prevPrevBlockModel;
-        this.context.currentHeight = prevPrevBlockModel === undefined ? -1 : prevPrevBlockModel.id;
-        // tslint:enable no-object-mutation
+        const prevPrevBlockModel = await getPreviousBlockModel(context, monitor, blockModel.id - 1);
+
+        return {
+          ...context,
+          prevBlock: prevPrevBlockModel,
+          currentHeight: prevPrevBlockModel === undefined ? -1 : prevPrevBlockModel.id,
+        };
       },
       { name: 'neotracker_scrape_revert_block' },
     );

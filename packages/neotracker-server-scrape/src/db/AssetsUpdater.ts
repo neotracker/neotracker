@@ -1,7 +1,8 @@
 import { Monitor } from '@neo-one/monitor';
 import * as _ from 'lodash';
 import { Asset as AssetModel } from 'neotracker-server-db';
-import { DBUpdater } from './DBUpdater';
+import { Context } from '../types';
+import { SameContextDBUpdater } from './SameContextDBUpdater';
 
 export interface AssetsSave {
   readonly assets: ReadonlyArray<Partial<AssetModel>>;
@@ -10,13 +11,13 @@ export interface AssetsRevert {
   readonly transactionIDs: ReadonlyArray<string>;
 }
 
-export class AssetsUpdater extends DBUpdater<AssetsSave, AssetsRevert> {
-  public async save(monitor: Monitor, { assets }: AssetsSave): Promise<void> {
+export class AssetsUpdater extends SameContextDBUpdater<AssetsSave, AssetsRevert> {
+  public async save(context: Context, monitor: Monitor, { assets }: AssetsSave): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         await Promise.all(
-          _.chunk(assets, this.context.chunkSize).map(async (chunk) =>
-            AssetModel.insertAll(this.context.db, this.context.makeQueryContext(span), chunk),
+          _.chunk(assets, context.chunkSize).map(async (chunk) =>
+            AssetModel.insertAll(context.db, context.makeQueryContext(span), chunk),
           ),
         );
       },
@@ -24,13 +25,13 @@ export class AssetsUpdater extends DBUpdater<AssetsSave, AssetsRevert> {
     );
   }
 
-  public async revert(monitor: Monitor, { transactionIDs }: AssetsRevert): Promise<void> {
+  public async revert(context: Context, monitor: Monitor, { transactionIDs }: AssetsRevert): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         await Promise.all(
-          _.chunk(transactionIDs, this.context.chunkSize).map(async (chunk) =>
-            AssetModel.query(this.context.db)
-              .context(this.context.makeQueryContext(span))
+          _.chunk(transactionIDs, context.chunkSize).map(async (chunk) =>
+            AssetModel.query(context.db)
+              .context(context.makeQueryContext(span))
               .whereIn('transaction_id', chunk)
               .delete(),
           ),

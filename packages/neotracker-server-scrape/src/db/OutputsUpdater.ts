@@ -1,7 +1,8 @@
 import { Monitor } from '@neo-one/monitor';
 import * as _ from 'lodash';
 import { TransactionInputOutput as TransactionInputOutputModel } from 'neotracker-server-db';
-import { DBUpdater } from './DBUpdater';
+import { Context } from '../types';
+import { SameContextDBUpdater } from './SameContextDBUpdater';
 
 export interface OutputsSaveSingle {
   readonly outputs: ReadonlyArray<Partial<TransactionInputOutputModel>>;
@@ -13,15 +14,15 @@ export interface OutputsRevert {
   readonly outputs: ReadonlyArray<TransactionInputOutputModel>;
 }
 
-export class OutputsUpdater extends DBUpdater<OutputsSave, OutputsRevert> {
-  public async save(monitor: Monitor, { transactions }: OutputsSave): Promise<void> {
+export class OutputsUpdater extends SameContextDBUpdater<OutputsSave, OutputsRevert> {
+  public async save(context: Context, monitor: Monitor, { transactions }: OutputsSave): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         const allOutputs = _.flatMap(transactions.map(({ outputs }) => outputs));
 
         await Promise.all(
-          _.chunk(allOutputs, this.context.chunkSize).map(async (chunk) => {
-            await TransactionInputOutputModel.insertAll(this.context.db, this.context.makeQueryContext(span), chunk);
+          _.chunk(allOutputs, context.chunkSize).map(async (chunk) => {
+            await TransactionInputOutputModel.insertAll(context.db, context.makeQueryContext(span), chunk);
           }),
         );
       },
@@ -29,13 +30,13 @@ export class OutputsUpdater extends DBUpdater<OutputsSave, OutputsRevert> {
     );
   }
 
-  public async revert(monitor: Monitor, { outputs }: OutputsRevert): Promise<void> {
+  public async revert(context: Context, monitor: Monitor, { outputs }: OutputsRevert): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         await Promise.all(
-          _.chunk(outputs, this.context.chunkSize).map(async (chunk) => {
-            await TransactionInputOutputModel.query(this.context.db)
-              .context(this.context.makeQueryContext(span))
+          _.chunk(outputs, context.chunkSize).map(async (chunk) => {
+            await TransactionInputOutputModel.query(context.db)
+              .context(context.makeQueryContext(span))
               .whereIn('id', chunk.map((output) => output.id))
               .delete();
           }),

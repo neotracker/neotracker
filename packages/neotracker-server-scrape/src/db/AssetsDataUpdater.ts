@@ -1,8 +1,8 @@
 import { Monitor } from '@neo-one/monitor';
 import { Asset as AssetModel } from 'neotracker-server-db';
 import { raw } from 'objection';
-import { Assets } from '../types';
-import { DBUpdater } from './DBUpdater';
+import { Assets, Context } from '../types';
+import { SameContextDBUpdater } from './SameContextDBUpdater';
 
 export interface AssetsDataSave {
   readonly assets: Assets;
@@ -13,14 +13,14 @@ export interface AssetsDataRevert {
   readonly blockIndex: number;
 }
 
-export class AssetsDataUpdater extends DBUpdater<AssetsDataSave, AssetsDataRevert> {
-  public async save(monitor: Monitor, { assets, blockIndex }: AssetsDataSave): Promise<void> {
+export class AssetsDataUpdater extends SameContextDBUpdater<AssetsDataSave, AssetsDataRevert> {
+  public async save(context: Context, monitor: Monitor, { assets, blockIndex }: AssetsDataSave): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         await Promise.all(
           Object.entries(assets).map(async ([asset, { issued, transactionCount, addressCount, transferCount }]) => {
-            await AssetModel.query(this.context.db)
-              .context(this.context.makeQueryContext(span))
+            await AssetModel.query(context.db)
+              .context(context.makeQueryContext(span))
               .where('id', asset)
               .where('aggregate_block_id', '<', blockIndex)
               .patch({
@@ -39,13 +39,13 @@ export class AssetsDataUpdater extends DBUpdater<AssetsDataSave, AssetsDataRever
     );
   }
 
-  public async revert(monitor: Monitor, { assets, blockIndex }: AssetsDataRevert): Promise<void> {
+  public async revert(context: Context, monitor: Monitor, { assets, blockIndex }: AssetsDataRevert): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         await Promise.all(
           Object.entries(assets).map(async ([asset, { issued, transactionCount, addressCount, transferCount }]) => {
-            await AssetModel.query(this.context.db)
-              .context(this.context.makeQueryContext(span))
+            await AssetModel.query(context.db)
+              .context(context.makeQueryContext(span))
               .where('id', asset)
               .where('aggregate_block_id', '>=', blockIndex)
               .patch({

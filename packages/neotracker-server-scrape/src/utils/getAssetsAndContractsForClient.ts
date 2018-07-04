@@ -1,4 +1,4 @@
-import { abi, ConfirmedTransaction, Contract, RegisterTransaction } from '@neo-one/client';
+import { abi, ConfirmedTransaction, Contract, ReadSmartContract, RegisterTransaction } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
 import BigNumber from 'bignumber.js';
 import * as _ from 'lodash';
@@ -73,7 +73,11 @@ const getContractAndAsset = async ({
   readonly contract: Contract;
   readonly blockIndex: number;
   readonly blockTime: number;
-}): Promise<{ readonly asset: Partial<AssetModel> | undefined; readonly contract: Partial<ContractModel> }> => {
+}): Promise<{
+  readonly asset: Partial<AssetModel> | undefined;
+  readonly contract: Partial<ContractModel> & { readonly id: string };
+  readonly nep5Contract: ReadSmartContract | undefined;
+}> => {
   const isNEP5 = await checkIsNEP5(context, contract);
 
   const contractModel = {
@@ -94,22 +98,23 @@ const getContractAndAsset = async ({
     type: isNEP5 ? NEP5_CONTRACT_TYPE : UNKNOWN_CONTRACT_TYPE,
   };
   let asset: Partial<AssetModel> | undefined;
+  let nep5Contract: ReadSmartContract | undefined;
   if (isNEP5) {
     const contractABI = await abi.NEP5({
       client: context.client,
       hash: add0x(contractModel.id),
     });
 
-    const smartContract = context.client.smartContract({
+    nep5Contract = context.client.smartContract({
       hash: add0x(contractModel.id),
       abi: contractABI,
     });
 
     const [name, symbol, decimals, totalSupply] = await Promise.all([
-      smartContract.name(monitor),
-      smartContract.symbol(monitor),
-      smartContract.decimals(monitor),
-      smartContract.totalSupply(monitor).catch(() => new BigNumber(0)),
+      nep5Contract.name(monitor),
+      nep5Contract.symbol(monitor),
+      nep5Contract.decimals(monitor),
+      nep5Contract.totalSupply(monitor).catch(() => new BigNumber(0)),
     ]);
 
     asset = {
@@ -132,12 +137,9 @@ const getContractAndAsset = async ({
       transaction_count: '0',
       aggregate_block_id: -1,
     };
-
-    // tslint:disable-next-line no-object-mutation
-    context.nep5Contracts[contractModel.id] = smartContract;
   }
 
-  return { asset, contract: contractModel };
+  return { asset, contract: contractModel, nep5Contract };
 };
 
 const getContracts = async ({
@@ -155,6 +157,7 @@ const getContracts = async ({
 }): Promise<{
   readonly assets: ReadonlyArray<Partial<AssetModel>>;
   readonly contracts: ReadonlyArray<Partial<ContractModel>>;
+  readonly nep5Contracts: ReadonlyArray<{ readonly contractID: string; readonly nep5Contract: ReadSmartContract }>;
 }> => {
   let contracts: ReadonlyArray<Contract> = [];
   if (transaction.type === 'InvocationTransaction') {
@@ -174,6 +177,12 @@ const getContracts = async ({
   return {
     assets: results.map(({ asset }) => asset).filter(utils.notNull),
     contracts: results.map(({ contract }) => contract),
+    nep5Contracts: results
+      .map(
+        ({ contract, nep5Contract }) =>
+          nep5Contract === undefined ? undefined : { contractID: contract.id, nep5Contract },
+      )
+      .filter(utils.notNull),
   };
 };
 
@@ -195,6 +204,7 @@ export const getAssetsAndContractsForClient = async ({
 }): Promise<{
   readonly assets: ReadonlyArray<Partial<AssetModel>>;
   readonly contracts: ReadonlyArray<Partial<ContractModel>>;
+  readonly context: Context;
 }> => {
   const assets = transactions.map(({ transaction }) => getAsset(transaction, blockTime)).filter(utils.notNull);
   const results = await Promise.all(
@@ -204,5 +214,15 @@ export const getAssetsAndContractsForClient = async ({
   return {
     assets: assets.concat(_.flatMap(results.map(({ assets: contractAssets }) => contractAssets))),
     contracts: _.flatMap(results.map(({ contracts }) => contracts)),
+    context: {
+      ...context,
+      nep5Contracts: _.flatMap(results.map(({ nep5Contracts }) => nep5Contracts)).reduce(
+        (acc, { contractID, nep5Contract }) => ({
+          ...acc,
+          [contractID]: nep5Contract,
+        }),
+        context.nep5Contracts,
+      ),
+    },
   };
 };

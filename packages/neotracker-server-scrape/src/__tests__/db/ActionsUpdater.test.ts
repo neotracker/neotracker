@@ -24,9 +24,10 @@ describe('ActionsUpdater', () => {
 
   test('inserts actions', async () => {
     const db = await startDB();
-    const updater = new ActionsUpdater(makeContext({ db }));
+    const context = makeContext({ db });
+    const updater = new ActionsUpdater();
 
-    await updater.save(monitor, {
+    await updater.save(context, monitor, {
       actions: [
         createAction(data.createLogRaw({ index: 0, globalIndex: new BigNumber(0) }), '0'),
         createAction(data.createNotificationRaw({ index: 1, globalIndex: new BigNumber(1) }), '0'),
@@ -39,17 +40,18 @@ describe('ActionsUpdater', () => {
 
   test('handles duplicate inserts', async () => {
     const db = await startDB();
-    const updater = new ActionsUpdater(makeContext({ db }));
+    const context = makeContext({ db });
+    const updater = new ActionsUpdater();
     const actions = [
       createAction(data.createLogRaw({ index: 0, globalIndex: new BigNumber(0) }), '0'),
       createAction(data.createNotificationRaw({ index: 1, globalIndex: new BigNumber(1) }), '0'),
     ];
 
-    await updater.save(monitor, { actions });
+    await updater.save(context, monitor, { actions });
 
     const dbData = await getDBData(db);
 
-    await updater.save(monitor, { actions });
+    await updater.save(context, monitor, { actions });
 
     const finalDBData = await getDBData(db);
     expect(dbData).toEqual(finalDBData);
@@ -57,9 +59,10 @@ describe('ActionsUpdater', () => {
 
   test('reverts actions', async () => {
     const db = await startDB();
-    const updater = new ActionsUpdater(makeContext({ db }));
+    const context = makeContext({ db });
+    const updater = new ActionsUpdater();
 
-    await updater.save(monitor, {
+    await updater.save(context, monitor, {
       actions: [
         createAction(data.createLogRaw({ index: 0, globalIndex: new BigNumber(0) }), '0'),
         createAction(data.createNotificationRaw({ index: 1, globalIndex: new BigNumber(1) }), '0'),
@@ -69,7 +72,7 @@ describe('ActionsUpdater', () => {
     data.nextBlock();
     const dbData = await getDBData(db);
 
-    await updater.save(monitor, {
+    await updater.save(context, monitor, {
       actions: [
         createAction(data.createLogRaw({ index: 0, globalIndex: new BigNumber(2) }), '1'),
         createAction(data.createNotificationRaw({ index: 1, globalIndex: new BigNumber(3) }), '1'),
@@ -79,7 +82,7 @@ describe('ActionsUpdater', () => {
     const nextDBData = await getDBData(db);
     expect(nextDBData).toMatchSnapshot();
 
-    await updater.revert(monitor, { transactionIDs: ['1'] });
+    await updater.revert(context, monitor, { transactionIDs: ['1'] });
 
     const finalDBData = await getDBData(db);
     expect(dbData).toEqual(finalDBData);
