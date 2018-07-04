@@ -1,27 +1,33 @@
+import { Monitor } from '@neo-one/monitor';
 import BigNumber from 'bignumber.js';
 import * as _ from 'lodash';
 import {
+  Asset as AssetModel,
   Transaction as TransactionModel,
   TransactionInputOutput as TransactionInputOutputModel,
 } from 'neotracker-server-db';
-import { ActionData, InputOutputResult } from '../types';
+import { ActionData, Context, InputOutputResult } from '../types';
 import { getActionDataInputOutputResult } from './getActionDataInputOutputResult';
-import { reduceInputOutputResults } from './reduceInputOutputResults';
+import { EMPTY_INPUT_OUTPUT_RESULT, reduceInputOutputResults } from './reduceInputOutputResults';
 
-export function getInputOutputResultForModel({
+export async function getInputOutputResultForModel({
+  context,
+  monitor,
   transactionModel,
   inputs,
   outputs,
   claims,
   actionDatas,
 }: {
+  readonly context: Context;
+  readonly monitor: Monitor;
   readonly transactionModel: TransactionModel;
   readonly inputs: ReadonlyArray<TransactionInputOutputModel>;
   readonly outputs: ReadonlyArray<TransactionInputOutputModel>;
   readonly claims: ReadonlyArray<TransactionInputOutputModel>;
   // tslint:disable-next-line no-any
   readonly actionDatas: ReadonlyArray<ActionData<any>>;
-}): InputOutputResult {
+}): Promise<InputOutputResult> {
   const transactionIndex = transactionModel.index;
   const transactionID = transactionModel.id;
   const transactionHash = transactionModel.hash;
@@ -73,5 +79,19 @@ export function getInputOutputResultForModel({
     transactionIndex: transactionModel.index,
   });
 
-  return reduceInputOutputResults([inputsResult, outputsResult, claimsResult, invocationResult]);
+  let assetsResult = EMPTY_INPUT_OUTPUT_RESULT;
+  if (transactionModel.type === 'RegisterTransaction' || transactionModel.type === 'InvocationTransaction') {
+    const asset = await transactionModel
+      .$relatedQuery<AssetModel>('asset', context.db)
+      .context(context.makeQueryContext(monitor))
+      .first();
+    if (asset !== undefined) {
+      assetsResult = {
+        addressIDs: _.fromPairs([[asset.admin_address_id, addressData]]),
+        assetIDs: [transactionModel.hash],
+      };
+    }
+  }
+
+  return reduceInputOutputResults([inputsResult, outputsResult, claimsResult, invocationResult, assetsResult]);
 }

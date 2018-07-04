@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 import { TransactionInputOutput as TransactionInputOutputModel } from 'neotracker-server-db';
 import { ActionData, InputOutputResult } from '../types';
 import { getActionDataInputOutputResult } from './getActionDataInputOutputResult';
-import { reduceInputOutputResults } from './reduceInputOutputResults';
+import { EMPTY_INPUT_OUTPUT_RESULT, reduceInputOutputResults } from './reduceInputOutputResults';
 
 export function getInputOutputResultForClient({
   transaction,
@@ -70,5 +70,15 @@ export function getInputOutputResultForClient({
     transactionIndex,
   });
 
-  return reduceInputOutputResults([inputsResult, outputsResult, claimsResult, invocationResult]);
+  let assetsResult = EMPTY_INPUT_OUTPUT_RESULT;
+  if (transaction.type === 'RegisterTransaction') {
+    assetsResult = { addressIDs: _.fromPairs([[transaction.asset.admin, addressData]]), assetIDs: [transaction.txid] };
+  } else if (transaction.type === 'InvocationTransaction' && transaction.invocationData.asset !== undefined) {
+    assetsResult = {
+      addressIDs: _.fromPairs([[transaction.invocationData.asset.admin, addressData]]),
+      assetIDs: [transaction.txid],
+    };
+  }
+
+  return reduceInputOutputResults([inputsResult, outputsResult, claimsResult, invocationResult, assetsResult]);
 }

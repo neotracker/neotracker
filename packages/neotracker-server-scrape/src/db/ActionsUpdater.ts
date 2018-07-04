@@ -34,17 +34,12 @@ export class ActionsUpdater extends DBUpdater<ActionsSave, ActionsRevert> {
                 transaction_index: action.transactionIndex,
                 index: action.index,
                 script_hash: action.scriptHash,
-                message:
-                  // tslint:disable-next-line no-any
-                  (action as any).message === undefined ? undefined : encodeURIComponent((action as any).message),
-                // tslint:disable-next-line no-any
-                args_raw: (action as any).args === undefined ? undefined : JSON.stringify((action as any).args),
+                // tslint:disable no-any no-null-keyword
+                message: (action as any).message === undefined ? null : encodeURIComponent((action as any).message),
+                args_raw: (action as any).args === undefined ? null : JSON.stringify((action as any).args),
+                // tslint:disable-enable no-any no-null-keyword
               })),
-            ).catch((error) => {
-              if (!this.isUniqueError(error)) {
-                throw error;
-              }
-            }),
+            ),
           ),
         );
       },
@@ -55,10 +50,14 @@ export class ActionsUpdater extends DBUpdater<ActionsSave, ActionsRevert> {
   public async revert(monitor: Monitor, { transactionIDs }: ActionsRevert): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
-        await ActionModel.query(this.context.db)
-          .context(this.context.makeQueryContext(span))
-          .whereIn('transaction_id', [...transactionIDs])
-          .delete();
+        await Promise.all(
+          _.chunk(transactionIDs, this.context.chunkSize).map(async (chunk) =>
+            ActionModel.query(this.context.db)
+              .context(this.context.makeQueryContext(span))
+              .whereIn('transaction_id', chunk)
+              .delete(),
+          ),
+        );
       },
       { name: 'neotracker_scrape_revert_actions' },
     );

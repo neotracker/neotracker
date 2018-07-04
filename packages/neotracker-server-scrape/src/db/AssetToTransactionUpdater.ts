@@ -1,7 +1,6 @@
 import { Monitor } from '@neo-one/monitor';
 import * as _ from 'lodash';
-import { Asset as AssetModel, AssetToTransaction as AssetToTransactionModel, transaction } from 'neotracker-server-db';
-import { raw } from 'objection';
+import { AssetToTransaction as AssetToTransactionModel } from 'neotracker-server-db';
 import { DBUpdater } from './DBUpdater';
 
 export interface AssetToTransactionSaveSingle {
@@ -11,53 +10,23 @@ export interface AssetToTransactionSaveSingle {
 export interface AssetToTransactionSave {
   readonly transactions: ReadonlyArray<AssetToTransactionSaveSingle>;
 }
+export interface AssetToTransactionRevert {
+  readonly transactionIDs: ReadonlyArray<string>;
+}
 
-export class AssetToTransactionUpdater extends DBUpdater<AssetToTransactionSave, AssetToTransactionSave> {
+export class AssetToTransactionUpdater extends DBUpdater<AssetToTransactionSave, AssetToTransactionRevert> {
   public async save(monitor: Monitor, { transactions }: AssetToTransactionSave): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
+        const data = _.flatMap(transactions, ({ assetIDs, transactionID }) =>
+          [...new Set(assetIDs)].map((assetID) => ({
+            id1: assetID,
+            id2: transactionID,
+          })),
+        );
         await Promise.all(
-          _.chunk(transactions, this.context.chunkSize).map(async (chunk) => {
-            const data = _.flatMap(chunk, ({ assetIDs, transactionID }) =>
-              [...new Set(assetIDs)].map((assetID) => ({
-                id1: assetID,
-                id2: transactionID,
-              })),
-            );
-            const countAndAssetIDs = Object.entries(
-              _.groupBy(
-                Object.entries(_.groupBy(data, ({ id1 }) => id1)),
-                // tslint:disable-next-line no-unused
-                ([_assetID, datas]) => `${datas.length}`,
-              ),
-            ).map<[number, ReadonlyArray<string>]>(([count, values]) => [
-              parseInt(count, 10),
-              values.map(([assetID]) => assetID),
-            ]);
-            try {
-              await transaction(this.context.db, async (trx) => {
-                await Promise.all([
-                  AssetToTransactionModel.query(trx)
-                    .context(this.context.makeQueryContext(span))
-                    .insert(data),
-                  Promise.all(
-                    countAndAssetIDs.map(([count, assetIDs]) =>
-                      AssetModel.query(trx)
-                        .context(this.context.makeQueryContext(span))
-                        .whereIn('id', [...new Set(assetIDs)])
-                        .patch({
-                          // tslint:disable-next-line no-any
-                          transaction_count: raw(`transaction_count + ${count}`) as any,
-                        }),
-                    ),
-                  ),
-                ]);
-              });
-            } catch (error) {
-              if (!this.isUniqueError(error)) {
-                throw error;
-              }
-            }
+          _.chunk(data, this.context.chunkSize).map(async (chunk) => {
+            await AssetToTransactionModel.insertAll(this.context.db, this.context.makeQueryContext(span), chunk);
           }),
         );
       },
@@ -65,27 +34,15 @@ export class AssetToTransactionUpdater extends DBUpdater<AssetToTransactionSave,
     );
   }
 
-  public async revert(monitor: Monitor, { transactions }: AssetToTransactionSave): Promise<void> {
+  public async revert(monitor: Monitor, { transactionIDs }: AssetToTransactionRevert): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         await Promise.all(
-          transactions.map(async ({ assetIDs: assetIDsIn, transactionID }) => {
-            const assetIDs = [...new Set(assetIDsIn)];
-            await transaction(this.context.db, async (trx) => {
-              const deleted = await AssetToTransactionModel.query(trx)
-                .context(this.context.makeQueryContext(span))
-                .delete()
-                .where('id2', transactionID);
-              if (deleted > 0) {
-                await AssetModel.query(trx)
-                  .context(this.context.makeQueryContext(span))
-                  .whereIn('id', assetIDs)
-                  .patch({
-                    // tslint:disable-next-line no-any
-                    transaction_count: raw('transaction_count - 1') as any,
-                  });
-              }
-            });
+          _.chunk(transactionIDs, this.context.chunkSize).map(async (chunk) => {
+            await AssetToTransactionModel.query(this.context.db)
+              .context(this.context.makeQueryContext(span))
+              .delete()
+              .whereIn('id2', chunk);
           }),
         );
       },

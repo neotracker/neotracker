@@ -1,9 +1,9 @@
 import { Monitor } from '@neo-one/monitor';
 import Knex from 'knex';
 import LRU from 'lru-cache';
+import { isUniqueError } from 'neotracker-server-db';
 import { utils } from 'neotracker-shared-utils';
 import { Transaction } from 'objection';
-import { isUniqueError } from './db';
 
 type Fetch<Key, Value> = ((key: Key, monitor: Monitor) => Promise<Value | undefined>);
 type Create<Save, Value> = ((save: Save, monitor: Monitor) => Promise<Value>);

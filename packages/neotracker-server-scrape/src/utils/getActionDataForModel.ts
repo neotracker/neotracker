@@ -2,14 +2,14 @@ import { Monitor } from '@neo-one/monitor';
 import BigNumber from 'bignumber.js';
 import { Action as ActionModel, Transfer as TransferModel } from 'neotracker-server-db';
 import { utils } from 'neotracker-shared-utils';
-import { ActionData, DBContext } from '../types';
+import { ActionData, Context } from '../types';
 
 export async function getActionDataForModel({
   context,
   monitor,
   actionModel,
 }: {
-  readonly context: DBContext;
+  readonly context: Context;
   readonly monitor: Monitor;
   readonly actionModel: ActionModel;
 }): Promise<ActionData<ActionModel>> {
@@ -23,8 +23,8 @@ export async function getActionDataForModel({
 
   const value = new BigNumber(transferModel.value);
   const result = {
-    fromAddressID: transferModel.from_address_id,
-    toAddressID: transferModel.to_address_id,
+    fromAddressID: transferModel.from_address_id == undefined ? undefined : transferModel.from_address_id,
+    toAddressID: transferModel.to_address_id == undefined ? undefined : transferModel.to_address_id,
     assetID: transferModel.asset_id,
     transferID: transferModel.id,
     coinChanges: {
@@ -33,14 +33,14 @@ export async function getActionDataForModel({
       transactionID: transferModel.transaction_id,
       transactionHash: transferModel.transaction_hash,
       changes: [
-        transferModel.from_address_id === undefined
+        transferModel.from_address_id == undefined
           ? undefined
           : {
               address: transferModel.from_address_id,
               asset: transferModel.asset_id,
               value: value.negated(),
             },
-        transferModel.to_address_id === undefined
+        transferModel.to_address_id == undefined
           ? undefined
           : {
               address: transferModel.to_address_id,

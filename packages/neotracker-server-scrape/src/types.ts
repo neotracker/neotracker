@@ -12,17 +12,13 @@ import BigNumber from 'bignumber.js';
 import Knex from 'knex';
 import {
   Action as ActionModel,
-  Address as AddressModel,
-  Asset as AssetModel,
   Block as BlockModel,
-  Contract as ContractModel,
+  Coin as CoinModel,
   PubSub,
   QueryContext,
   Transaction as TransactionModel,
   TransactionInputOutput as TransactionInputOutputModel,
 } from 'neotracker-server-db';
-import { Observable } from 'rxjs';
-import { ProcessedIndexUpdater } from './db';
 import { MigrationHandler } from './MigrationHandler';
 import { IWriteCache } from './WriteCache';
 
@@ -62,34 +58,23 @@ export interface SystemFeeSave {
   readonly index: number;
   readonly value: string;
 }
-export interface DBContext {
+export interface Context {
   readonly db: Knex;
   readonly makeQueryContext: ((monitor: Monitor) => QueryContext);
-  readonly getBlock: ReadClient['getBlock'];
   // tslint:disable-next-line readonly-keyword
   prevBlock: BlockModel | undefined;
   // tslint:disable-next-line readonly-keyword
   currentHeight: number | undefined;
-  readonly address: IWriteCache<string, AddressModel, AddressSave, AddressRevert>;
-  readonly asset: IWriteCache<string, AssetModel, AssetSave, string>;
-  readonly contract: IWriteCache<string, ContractModel, ContractSave, string>;
   readonly systemFee: IWriteCache<number, BigNumber, SystemFeeSave, number>;
-  readonly nep5Contracts: { [K in string]?: ReadSmartContract };
+  // tslint:disable-next-line readonly-keyword
+  nep5Contracts: { [K in string]?: ReadSmartContract };
   readonly chunkSize: number;
   readonly processedIndexPubSub: PubSub<{ readonly index: number }>;
-}
-export interface Context extends DBContext {
   readonly client: ReadClient<NEOONEDataProvider>;
-  // tslint:disable-next-line readonly-keyword readonly-array
-  contractModelsToProcess: Array<[ContractModel, ReadSmartContract]>;
   readonly migrationHandler: MigrationHandler;
-  readonly blacklistNEP5Hashes$: Observable<ReadonlyArray<string>>;
+  readonly blacklistNEP5Hashes: Set<string>;
   readonly repairNEP5BlockFrequency: number;
   readonly repairNEP5LatencySeconds: number;
-}
-
-export interface Updaters {
-  readonly processedIndex: ProcessedIndexUpdater;
 }
 
 export interface CoinChange {
@@ -136,34 +121,98 @@ export interface ActionData<TAction> {
   readonly transfer?: TransferData;
 }
 
-export interface TransactionData {
-  readonly inputs: ReadonlyArray<TransactionInputOutputModel>;
+export interface TransactionData extends InputOutputResult {
   readonly claims: ReadonlyArray<TransactionInputOutputModel>;
+  readonly inputs: ReadonlyArray<TransactionInputOutputModel>;
+  readonly outputs: ReadonlyArray<{
+    readonly type: string;
+    readonly subtype: string;
+    readonly output_transaction_id: string;
+    readonly output_transaction_hash: string;
+    readonly output_transaction_index: number;
+    readonly output_block_id: number;
+    readonly asset_id: string;
+    readonly value: string;
+    readonly address_id: string;
+  }>;
   readonly actionDatas: ReadonlyArray<ActionData<ActionRaw>>;
-  readonly result: InputOutputResult;
   readonly transaction: ConfirmedTransaction;
   readonly transactionHash: string;
   readonly transactionID: string;
   readonly transactionIndex: number;
 }
 
-export interface TransactionModelData {
+export interface TransactionModelData extends InputOutputResult {
   readonly claims: ReadonlyArray<TransactionInputOutputModel>;
   readonly inputs: ReadonlyArray<TransactionInputOutputModel>;
   readonly outputs: ReadonlyArray<TransactionInputOutputModel>;
-  readonly transactionModel: TransactionModel;
-  readonly transactionID: string;
   readonly actionDatas: ReadonlyArray<ActionData<ActionModel>>;
-  readonly result: InputOutputResult;
-  readonly contractModels: ReadonlyArray<ContractModel>;
-}
-
-export interface ContractActionData {
-  readonly actionData: ActionData<ActionRaw>;
-  readonly result: InputOutputResult;
+  readonly transactionModel: TransactionModel;
   readonly transactionHash: string;
   readonly transactionID: string;
   readonly transactionIndex: number;
-  readonly blockIndex: number;
-  readonly blockTime: number;
 }
+
+export interface ContractActionData extends InputOutputResult {
+  readonly actionData: ActionData<ActionRaw>;
+  readonly transactionHash: string;
+  readonly transactionID: string;
+  readonly transactionIndex: number;
+}
+
+export interface AssetData {
+  readonly issued: BigNumber;
+  readonly addressCount: number;
+  readonly transactionCount: number;
+  readonly transferCount: number;
+}
+
+export interface Assets {
+  readonly [asset: string]: AssetData;
+}
+
+export interface AddressData {
+  readonly transactionCount: number;
+  readonly transferCount: number;
+  readonly transactionID: string;
+  readonly transactionHash: string;
+}
+export interface Addresses {
+  readonly [address: string]: AddressData;
+}
+
+export interface CoinModelCreate {
+  readonly type: 'create';
+  readonly assetHash: string;
+  readonly value: Partial<CoinModel>;
+}
+
+export function isCoinModelCreate(change: CoinModelChange): change is CoinModelCreate {
+  return change.type === 'create';
+}
+
+export interface CoinModelDelete {
+  readonly type: 'delete';
+  readonly assetHash: string;
+  readonly id: string;
+}
+
+export function isCoinModelDelete(change: CoinModelChange): change is CoinModelDelete {
+  return change.type === 'delete';
+}
+
+export function isCoinModelCreateOrDelete(change: CoinModelChange): change is CoinModelCreate | CoinModelDelete {
+  return isCoinModelCreate(change) || isCoinModelDelete(change);
+}
+
+export interface CoinModelPatch {
+  readonly type: 'patch';
+  readonly value: CoinModel;
+  readonly patch: Partial<CoinModel>;
+}
+
+export function isCoinModelPatch(change: CoinModelChange): change is CoinModelPatch {
+  return change.type === 'delete';
+}
+
+export type CoinModelChange = CoinModelCreate | CoinModelDelete | CoinModelPatch;

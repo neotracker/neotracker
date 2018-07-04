@@ -1,9 +1,9 @@
 import { Monitor } from '@neo-one/monitor';
-import { DBContext } from '../types';
-import { isUniqueError } from './utils';
+import { isUniqueError } from 'neotracker-server-db';
+import { Context } from '../types';
 
 export abstract class DBUpdater<TSave, TRevert, TSaveValue = void, TRevertValue = void> {
-  public constructor(protected readonly context: DBContext) {}
+  public constructor(protected readonly context: Context) {}
 
   public abstract save(monitor: Monitor, save: TSave): Promise<TSaveValue>;
   public abstract revert(monitor: Monitor, save: TRevert): Promise<TRevertValue>;

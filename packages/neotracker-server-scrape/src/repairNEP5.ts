@@ -43,8 +43,6 @@ const repairAssetSupply = async (
     .context(context.makeQueryContext(monitor))
     .patch({ issued: issued.toString() })
     .where('id', assetHash);
-
-  context.asset.refresh(assetHash, monitor);
 };
 
 const updateCoins = async (context: Context, monitor: Monitor, assetHash: string, coins: ReadonlyArray<CoinModel>) => {

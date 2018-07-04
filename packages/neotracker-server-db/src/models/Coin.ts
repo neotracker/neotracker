@@ -3,7 +3,7 @@ import Knex from 'knex';
 import { Model } from 'objection';
 import { EdgeSchema, FieldSchema, IndexSchema, QueryContext } from '../lib';
 import { BlockchainModel } from './BlockchainModel';
-import { ADDRESS_VALIDATOR, ASSET_HASH_VALIDATOR } from './common';
+import { ADDRESS_VALIDATOR, ASSET_HASH_VALIDATOR, BLOCK_ID_VALIDATOR } from './common';
 
 export class Coin extends BlockchainModel<string> {
   public static readonly modelName = 'Coin';
@@ -48,37 +48,23 @@ export class Coin extends BlockchainModel<string> {
       required: true,
       exposeGraphQL: true,
     },
-
     address_id: {
       type: ADDRESS_VALIDATOR,
       required: true,
       exposeGraphQL: true,
     },
-
     asset_id: {
       type: ASSET_HASH_VALIDATOR,
       required: true,
       exposeGraphQL: true,
     },
-
     value: {
       type: { type: 'decimal' },
       required: true,
       exposeGraphQL: true,
     },
-
     block_id: {
-      type: { type: 'integer', minimum: -1 },
-      required: true,
-    },
-
-    transaction_index: {
-      type: { type: 'integer', minimum: -1 },
-      required: true,
-    },
-
-    action_index: {
-      type: { type: 'integer', minimum: -1 },
+      type: BLOCK_ID_VALIDATOR,
       required: true,
     },
   };
@@ -128,6 +114,10 @@ export class Coin extends BlockchainModel<string> {
     return [addressHash, assetHash].join('$');
   }
 
+  public static async insertAll(db: Knex, context: QueryContext, values: ReadonlyArray<Partial<Coin>>): Promise<void> {
+    return this.insertAllBase(db, context, values, Coin);
+  }
+
   public static async insertAndReturn(db: Knex, queryContext: QueryContext, block: Partial<Coin>): Promise<Coin> {
     if (db.client.driverName === 'pg') {
       return Coin.query(db)
@@ -147,6 +137,4 @@ export class Coin extends BlockchainModel<string> {
   public readonly asset_id!: string;
   public readonly value!: string;
   public readonly block_id!: number;
-  public readonly transaction_index!: number;
-  public readonly action_index!: number;
 }

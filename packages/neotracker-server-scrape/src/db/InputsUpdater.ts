@@ -1,12 +1,12 @@
 import { Monitor } from '@neo-one/monitor';
 import * as _ from 'lodash';
 import { TransactionInputOutput as TransactionInputOutputModel } from 'neotracker-server-db';
-import { DBContext } from '../types';
+import { Context } from '../types';
 import { DBUpdater } from './DBUpdater';
 import { InputUpdater } from './InputUpdater';
 
 export interface InputsSaveSingle {
-  readonly references: ReadonlyArray<TransactionInputOutputModel>;
+  readonly inputs: ReadonlyArray<TransactionInputOutputModel>;
   readonly transactionID: string;
   readonly transactionHash: string;
 }
@@ -25,7 +25,7 @@ export class InputsUpdater extends DBUpdater<InputsSave, InputsRevert> {
   private readonly updaters: InputsUpdaters;
 
   public constructor(
-    context: DBContext,
+    context: Context,
     updaters: InputsUpdaters = {
       input: new InputUpdater(context),
     },
@@ -38,8 +38,8 @@ export class InputsUpdater extends DBUpdater<InputsSave, InputsRevert> {
     return monitor.captureSpan(
       async (span) => {
         await Promise.all(
-          _.flatMap(transactions, ({ references, transactionID, transactionHash }) =>
-            references.map(async (reference) =>
+          _.flatMap(transactions, ({ inputs, transactionID, transactionHash }) =>
+            inputs.map(async (reference) =>
               this.updaters.input.save(span, { reference, transactionID, transactionHash, blockIndex }),
             ),
           ),

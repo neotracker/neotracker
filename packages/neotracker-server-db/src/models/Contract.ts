@@ -1,6 +1,7 @@
 // tslint:disable variable-name
+import Knex from 'knex';
 import { Model } from 'objection';
-import { EdgeSchema, FieldSchema, IndexSchema } from '../lib';
+import { EdgeSchema, FieldSchema, IndexSchema, QueryContext } from '../lib';
 import { BlockchainModel } from './BlockchainModel';
 import {
   BIG_INT_ID,
@@ -118,8 +119,6 @@ export class Contract extends BlockchainModel<string> {
       type: {
         type: 'string',
         enum: [NEP5_CONTRACT_TYPE, NEP5_BLACKLIST_CONTRACT_TYPE, UNKNOWN_CONTRACT_TYPE],
-
-        default: UNKNOWN_CONTRACT_TYPE,
       },
 
       required: true,
@@ -160,6 +159,14 @@ export class Contract extends BlockchainModel<string> {
       exposeGraphQL: true,
     },
   };
+
+  public static async insertAll(
+    db: Knex,
+    context: QueryContext,
+    data: ReadonlyArray<Partial<Contract>>,
+  ): Promise<void> {
+    return this.insertAllBase(db, context, data, Contract);
+  }
 
   public readonly script!: string;
   public readonly parameters_raw!: string;

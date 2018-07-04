@@ -13,7 +13,6 @@ import {
   createRootLoader,
   createTables,
   DataPoint,
-  KnownContract,
   makeQueryContext as makeQueryContextInternal,
   Migration,
   ProcessedIndex,
@@ -46,7 +45,6 @@ export interface DBData {
   readonly coin: ReadonlyArray<Coin>;
   readonly contract: ReadonlyArray<Contract>;
   readonly dataPoint: ReadonlyArray<DataPoint>;
-  readonly knownContract: ReadonlyArray<KnownContract>;
   readonly migration: ReadonlyArray<Migration>;
   readonly processedIndex: ReadonlyArray<ProcessedIndex>;
   readonly transaction: ReadonlyArray<Transaction>;
@@ -73,7 +71,6 @@ export const getDBData = async (db: Knex): Promise<DBData> => {
     coin,
     contract,
     dataPoint,
-    knownContract,
     migration,
     processedIndex,
     transaction,
@@ -110,9 +107,6 @@ export const getDBData = async (db: Knex): Promise<DBData> => {
     DataPoint.query(db)
       .context(makeQueryContext(db))
       .then((result) => result.map((value) => value.toJSON())),
-    KnownContract.query(db)
-      .context(makeQueryContext(db))
-      .then((result) => result.map((value) => value.toJSON())),
     Migration.query(db)
       .context(makeQueryContext(db))
       .then((result) => result.map((value) => value.toJSON())),
@@ -141,7 +135,6 @@ export const getDBData = async (db: Knex): Promise<DBData> => {
     coin,
     contract,
     dataPoint,
-    knownContract,
     migration,
     processedIndex,
     transaction,

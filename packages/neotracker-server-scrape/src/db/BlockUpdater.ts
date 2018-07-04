@@ -2,10 +2,9 @@ import { Block } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
 import BigNumber from 'bignumber.js';
 import { Block as BlockModel } from 'neotracker-server-db';
-import { DBContext } from '../types';
+import { Context } from '../types';
+import { AddressesUpdater } from './AddressesUpdater';
 import { DBUpdater } from './DBUpdater';
-import { KnownContractsUpdater } from './KnownContractsUpdater';
-import { KnownContractUpdater } from './KnownContractUpdater';
 import { PrevBlockUpdater } from './PrevBlockUpdater';
 import { ProcessedIndexUpdater } from './ProcessedIndexUpdater';
 import { TransactionsUpdater } from './TransactionsUpdater';
@@ -20,8 +19,7 @@ export interface BlockUpdate {
 }
 
 export interface BlockUpdaters {
-  readonly knownContract: KnownContractUpdater;
-  readonly knownContracts: KnownContractsUpdater;
+  readonly address: AddressesUpdater;
   readonly processedIndex: ProcessedIndexUpdater;
   readonly prevBlock: PrevBlockUpdater;
   readonly transactions: TransactionsUpdater;
@@ -31,10 +29,9 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
   private readonly updaters: BlockUpdaters;
 
   public constructor(
-    context: DBContext,
+    context: Context,
     updaters: BlockUpdaters = {
-      knownContract: new KnownContractUpdater(context),
-      knownContracts: new KnownContractsUpdater(context),
+      address: new AddressesUpdater(context),
       processedIndex: new ProcessedIndexUpdater(context),
       prevBlock: new PrevBlockUpdater(context),
       transactions: new TransactionsUpdater(context),
@@ -102,10 +99,22 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
                 }
                 throw error;
               }),
-              this.context.address.save(
-                { hash: block.nextConsensus, blockIndex: block.index, blockTime: block.time },
-                span,
-              ),
+              this.updaters.address.save(span, {
+                addresses: [
+                  {
+                    id: block.nextConsensus,
+                    // tslint:disable no-null-keyword
+                    transaction_id: null,
+                    transaction_hash: null,
+                    // tslint:enable no-null-keyword
+                    block_id: block.index,
+                    block_time: block.time,
+                    transaction_count: '0',
+                    transfer_count: '0',
+                    aggregate_block_id: -1,
+                  },
+                ],
+              }),
               this.context.systemFee.save(
                 {
                   index: block.index,
@@ -117,20 +126,17 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
               this.updaters.transactions.save(span, { block }),
             ]);
 
-            await Promise.all([
-              this.updaters.knownContracts.save(span, {
-                contractIDs: Object.keys(this.context.nep5Contracts),
-                blockIndex: block.index,
-              }),
-              this.updaters.processedIndex.save(span, block.index),
-            ]);
+            await this.updaters.processedIndex.save(span, block.index);
 
             // tslint:disable no-object-mutation
             this.context.prevBlock = blockModel;
             this.context.currentHeight = blockModel.id;
             // tslint:enable no-object-mutation
           } else {
-            const [prevBlock] = await Promise.all([this.context.getBlock(height), this.revert(span, prevBlockModel)]);
+            const [prevBlock] = await Promise.all([
+              this.context.client.getBlock(height),
+              this.revert(span, prevBlockModel),
+            ]);
             await this.save(span, prevBlock);
           }
         } else if (block.index === height) {
@@ -153,13 +159,16 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
       async (span) => {
         const prevBlockModel = await getPreviousBlockModel(this.context, span, blockModel.id);
         await Promise.all([
-          this.context.address.revert({ hash: blockModel.next_validator_address_id, blockIndex: blockModel.id }, span),
-          this.updaters.transactions.revert(span, { blockModel }),
-          this.context.systemFee.revert(blockModel.id, span),
-          this.updaters.knownContracts.revert(span, {
-            contractIDs: Object.keys(this.context.nep5Contracts),
+          this.updaters.address.revert(span, {
+            addresses: [
+              {
+                id: blockModel.next_validator_address_id,
+              },
+            ],
             blockIndex: blockModel.id,
           }),
+          this.updaters.transactions.revert(span, { blockModel }),
+          this.context.systemFee.revert(blockModel.id, span),
           this.updaters.prevBlock.revert(span, prevBlockModel),
         ]);
 

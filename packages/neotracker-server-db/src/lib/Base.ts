@@ -1,8 +1,10 @@
 import { snakeCase } from 'change-case';
 import * as Knex from 'knex';
 import { CodedError, ValidationError } from 'neotracker-server-utils';
-import { Model, ModelOptions, QueryContext as ObjectionQueryContext } from 'objection';
+import { Model, ModelClass, ModelOptions, QueryContext as ObjectionQueryContext } from 'objection';
+import { isPostgres, isUniqueError } from '../knexUtils';
 import { IDSchema, makeJSONSchema, makeRelationMappings, ModelSchema } from './common';
+import { QueryContext as LibQueryContext } from './QueryContext';
 
 export class Base extends Model {
   public static readonly pickJsonSchemaProperties: boolean = true;
@@ -41,6 +43,42 @@ export class Base extends Model {
 
   public static chainCustomAfter(schema: Knex.SchemaBuilder): Knex.SchemaBuilder {
     return schema;
+  }
+
+  public static async insertAllBase<T extends Base>(
+    db: Knex,
+    context: LibQueryContext,
+    values: ReadonlyArray<Partial<T>>,
+    model: ModelClass<T>,
+    forceSingle = false,
+  ): Promise<void> {
+    if (forceSingle || !isPostgres(db)) {
+      await Promise.all(
+        values.map(async (value) =>
+          model
+            .query(db)
+            .context(context)
+            .insert(value)
+            .catch((error) => {
+              if (!isUniqueError(db, error)) {
+                throw error;
+              }
+            }),
+        ),
+      );
+    } else {
+      await model
+        .query(db)
+        .context(context)
+        .insert([...values])
+        .catch(async (error) => {
+          if (isUniqueError(db, error)) {
+            return this.insertAllBase(db, context, values, model, true);
+          }
+
+          throw error;
+        });
+    }
   }
 
   private static mutableTableName: string | undefined;

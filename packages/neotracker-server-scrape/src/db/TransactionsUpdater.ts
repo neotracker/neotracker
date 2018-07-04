@@ -1,24 +1,29 @@
 import { Block } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
-import BigNumber from 'bignumber.js';
 import * as _ from 'lodash';
+import { Block as BlockModel, Transaction as TransactionModel } from 'neotracker-server-db';
+import { utils } from 'neotracker-shared-utils';
+import { Context, TransactionData } from '../types';
 import {
-  Asset as AssetModel,
-  Block as BlockModel,
-  transaction as dbTransaction,
-  Transaction as TransactionModel,
-} from 'neotracker-server-db';
-import { GAS_ASSET_ID, utils } from 'neotracker-shared-utils';
-import { raw } from 'objection';
-import { CoinChanges, DBContext, TransactionData, TransactionModelData } from '../types';
-import { getTransactionDataForClient, getTransactionDataForModel, reduceCoinChanges } from '../utils';
+  getAddressesData,
+  getAddressesForClient,
+  getAssetsAndContractsForClient,
+  getAssetsDataForClient,
+  getAssetsDataForModel,
+  getTransactionDataForClient,
+  getTransactionDataForModel,
+} from '../utils';
 import { ActionsUpdater } from './ActionsUpdater';
-import { AddressLastTransactionUpdater } from './AddressLastTransactionUpdater';
+import { AddressesDataUpdater } from './AddressesDataUpdater';
+import { AddressesUpdater } from './AddressesUpdater';
 import { AddressToTransactionUpdater } from './AddressToTransactionUpdater';
 import { AddressToTransferUpdater } from './AddressToTransferUpdater';
+import { AssetsDataUpdater } from './AssetsDataUpdater';
+import { AssetsUpdater } from './AssetsUpdater';
 import { AssetToTransactionUpdater } from './AssetToTransactionUpdater';
 import { ClaimsUpdater } from './ClaimsUpdater';
 import { CoinsUpdater } from './CoinsUpdater';
+import { ContractsUpdater } from './ContractsUpdater';
 import { DBUpdater } from './DBUpdater';
 import { InputsUpdater } from './InputsUpdater';
 import { OutputsUpdater } from './OutputsUpdater';
@@ -32,32 +37,38 @@ export interface TransactionsRevert {
 }
 export interface TransactionsUpdaters {
   readonly actions: ActionsUpdater;
-  readonly addressLastTransaction: AddressLastTransactionUpdater;
+  readonly addresses: AddressesUpdater;
+  readonly addressesData: AddressesDataUpdater;
   readonly addressToTransaction: AddressToTransactionUpdater;
   readonly addressToTransfer: AddressToTransferUpdater;
+  readonly assets: AssetsUpdater;
+  readonly assetsData: AssetsDataUpdater;
   readonly assetToTransaction: AssetToTransactionUpdater;
   readonly claims: ClaimsUpdater;
   readonly coins: CoinsUpdater;
+  readonly contracts: ContractsUpdater;
   readonly inputs: InputsUpdater;
   readonly outputs: OutputsUpdater;
   readonly transfers: TransfersUpdater;
 }
 
-const ZERO = new BigNumber('0');
-
 export class TransactionsUpdater extends DBUpdater<TransactionsSave, TransactionsRevert> {
   private readonly updaters: TransactionsUpdaters;
 
   public constructor(
-    context: DBContext,
+    context: Context,
     updaters: TransactionsUpdaters = {
       actions: new ActionsUpdater(context),
-      addressLastTransaction: new AddressLastTransactionUpdater(context),
+      addresses: new AddressesUpdater(context),
+      addressesData: new AddressesDataUpdater(context),
       addressToTransaction: new AddressToTransactionUpdater(context),
       addressToTransfer: new AddressToTransferUpdater(context),
+      assets: new AssetsUpdater(context),
+      assetsData: new AssetsDataUpdater(context),
       assetToTransaction: new AssetToTransactionUpdater(context),
       claims: new ClaimsUpdater(context),
       coins: new CoinsUpdater(context),
+      contracts: new ContractsUpdater(context),
       inputs: new InputsUpdater(context),
       outputs: new OutputsUpdater(context),
       transfers: new TransfersUpdater(context),
@@ -70,16 +81,36 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
   public async save(monitor: Monitor, { block }: TransactionsSave): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
+        const transactionsIn = [...block.transactions.entries()].map(([transactionIndex, transaction]) => ({
+          transactionIndex,
+          transaction,
+        }));
+        // This potentially modified nep5Contracts, so it must come first on its own
+        const { assets, contracts } = await getAssetsAndContractsForClient({
+          monitor: span,
+          context: this.context,
+          transactions: transactionsIn,
+          blockIndex: block.index,
+          blockTime: block.time,
+        });
         const transactions = await getTransactionDataForClient({
           monitor: span,
           context: this.context,
-          transactions: [...block.transactions.entries()].map(([transactionIndex, transaction]) => ({
-            transactionIndex,
-            transaction,
-          })),
+          blockIndex: block.index,
+          transactions: transactionsIn,
         });
+        const addresses = getAddressesForClient({ transactions, blockIndex: block.index, blockTime: block.time });
+        const addressesData = getAddressesData(transactions);
 
-        await this.insertPreconditions(span, transactions, block.index, block.time);
+        const [{ assets: assetsData, coinModelChanges }] = await Promise.all([
+          getAssetsDataForClient({ monitor: span, context: this.context, transactions, blockIndex: block.index }),
+          this.updaters.addresses.save(span, {
+            addresses,
+          }),
+          this.updaters.assets.save(span, {
+            assets,
+          }),
+        ]);
 
         await Promise.all([
           this.insertTransactions(span, block.index, block.time, transactions),
@@ -88,100 +119,71 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
               actionDatas.map(({ action }) => ({ action, transactionID, transactionHash })),
             ),
           }),
-          this.updaters.addressLastTransaction
-            .save(span, {
-              transactions: transactions.map(
-                ({ result: { addressIDs }, transactionID, transactionHash, transactionIndex }) => ({
-                  addressIDs: Object.keys(addressIDs),
-                  transactionID,
-                  transactionHash,
-                  transactionIndex,
-                }),
-              ),
-              blockTime: block.time,
-            })
-            .then(async () =>
-              this.updaters.addressToTransaction.save(span, {
-                transactions: transactions.map(({ result: { addressIDs }, transactionID }) => ({
-                  addressIDs: Object.keys(addressIDs),
-                  transactionID,
-                })),
-              }),
-            )
-            .then(async () =>
-              this.updaters.addressToTransfer.save(span, {
-                transfers: _.flatMap(transactions, ({ actionDatas }) =>
-                  actionDatas
-                    .map(({ transfer }) => transfer)
-                    .filter(utils.notNull)
-                    .map(({ result: { fromAddressID, toAddressID, transferID } }) => ({
-                      addressIDs: [fromAddressID, toAddressID].filter(utils.notNull),
-                      transferID,
-                    })),
-                ),
-              }),
-            ),
-          this.updaters.claims.save(span, {
-            transactions: transactions.map(({ claims, transactionID, transactionHash }) => ({
-              claims,
-              transactionID,
-              transactionHash,
-            })),
-          }),
-          this.updaters.coins.save(span, {
-            coinChanges: transactions.reduce<CoinChanges | undefined>(
-              (acc, { result: { coinChanges } }) => reduceCoinChanges(acc, coinChanges),
-              undefined,
-            ),
+          this.updaters.addressesData.save(span, {
+            addresses: addressesData,
+            blockTime: block.time,
             blockIndex: block.index,
           }),
-          this.updaters.inputs.save(span, {
-            transactions: transactions.map(({ inputs, transactionID, transactionHash }) => ({
-              references: inputs,
+          this.updaters.addressToTransaction.save(span, {
+            transactions: transactions.map(({ addressIDs, transactionID }) => ({
+              addressIDs: Object.keys(addressIDs),
               transactionID,
-              transactionHash,
             })),
+          }),
+          this.updaters.addressToTransfer.save(span, {
+            transfers: _.flatMap(transactions, ({ actionDatas }) =>
+              actionDatas
+                .map(({ transfer }) => transfer)
+                .filter(utils.notNull)
+                .map(({ result: { fromAddressID, toAddressID, transferID } }) => ({
+                  addressIDs: [fromAddressID, toAddressID].filter(utils.notNull),
+                  transferID,
+                })),
+            ),
+          }),
+          this.updaters.assetsData.save(span, {
+            assets: assetsData,
+            blockIndex: block.index,
+          }),
+          this.updaters.assetToTransaction.save(span, {
+            transactions,
+          }),
+          this.updaters.claims.save(span, {
+            transactions,
+          }),
+          this.updaters.coins.save(span, {
+            coinModelChanges,
+          }),
+          this.updaters.contracts.save(span, {
+            contracts,
+          }),
+          this.updaters.inputs.save(span, {
+            transactions,
             blockIndex: block.index,
           }),
           this.updaters.outputs.save(span, {
-            transactions: transactions.map(({ inputs, transaction, transactionID }) => ({
-              inputs,
-              transaction,
-              transactionID,
-            })),
-            blockIndex: block.index,
+            transactions,
           }),
-          this.updaters.transfers
-            .save(span, {
-              transactions: _.flatMap(
-                transactions,
-                ({ actionDatas, transactionID, transactionHash, transactionIndex }) =>
-                  actionDatas
-                    .map(
-                      ({ action, transfer }) =>
-                        transfer === undefined
-                          ? undefined
-                          : {
-                              action,
-                              transferData: transfer,
-                              transactionID,
-                              transactionHash,
-                              transactionIndex,
-                            },
-                    )
-                    .filter(utils.notNull),
-              ),
-              blockIndex: block.index,
-              blockTime: block.time,
-            })
-            .then(async () =>
-              this.updaters.assetToTransaction.save(span, {
-                transactions: transactions.map(({ result: { assetIDs }, transactionID }) => ({
-                  assetIDs,
-                  transactionID,
-                })),
-              }),
+          this.updaters.transfers.save(span, {
+            transactions: _.flatMap(transactions, ({ actionDatas, transactionID, transactionHash, transactionIndex }) =>
+              actionDatas
+                .map(
+                  ({ action, transfer }) =>
+                    transfer === undefined
+                      ? undefined
+                      : {
+                          action,
+                          transferData: transfer,
+                          transactionID,
+                          transactionHash,
+                          transactionIndex,
+                        },
+                )
+                .filter(utils.notNull),
             ),
+            blockIndex: block.index,
+            blockTime: block.time,
+          }),
         ]);
       },
       { name: 'neotracker_scrape_save_transactions' },
@@ -196,53 +198,51 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
           context: this.context,
           blockModel,
         });
+        const addressesData = getAddressesData(transactions);
+
+        const { assets: assetsData, coinModelChanges } = await getAssetsDataForModel({
+          monitor: span,
+          context: this.context,
+          transactions,
+          blockIndex: blockModel.id,
+        });
 
         const transactionIDs = transactions.map(({ transactionModel }) => transactionModel.id);
         await Promise.all([
           this.updaters.actions.revert(span, {
             transactionIDs,
           }),
-          this.updaters.addressLastTransaction
-            .revert(span, {
-              addressIDs: _.flatMap(transactions, ({ result: { addressIDs } }) => Object.keys(addressIDs)),
-              transactionIDs,
-            })
-            .then(async () =>
-              this.updaters.addressToTransaction.revert(span, {
-                transactions: transactions.map(({ result: { addressIDs }, transactionID }) => ({
-                  addressIDs: Object.keys(addressIDs),
-                  transactionID,
-                })),
-              }),
-            )
-            .then(async () =>
-              this.updaters.addressToTransfer.revert(span, {
-                transfers: _.flatMap(transactions, ({ actionDatas }) =>
-                  actionDatas
-                    .map(({ transfer }) => transfer)
-                    .filter(utils.notNull)
-                    .map(({ result: { fromAddressID, toAddressID, transferID } }) => ({
-                      addressIDs: [fromAddressID, toAddressID].filter(utils.notNull),
-                      transferID,
-                    })),
-                ),
-              }),
+          this.updaters.addressesData.revert(span, {
+            addresses: addressesData,
+            transactionIDs,
+            blockIndex: blockModel.id,
+          }),
+          this.updaters.addressToTransaction.revert(span, {
+            transactionIDs: transactions.map(({ transactionID }) => transactionID),
+          }),
+          this.updaters.addressToTransfer.revert(span, {
+            transferIDs: _.flatMap(transactions, ({ actionDatas }) =>
+              actionDatas
+                .map(({ transfer }) => transfer)
+                .filter(utils.notNull)
+                .map(({ result: { transferID } }) => transferID),
             ),
+          }),
+          this.updaters.assetsData.revert(span, {
+            assets: assetsData,
+            blockIndex: blockModel.id,
+          }),
           this.updaters.assetToTransaction.revert(span, {
-            transactions: transactions.map(({ result: { assetIDs }, transactionID }) => ({
-              assetIDs,
-              transactionID,
-            })),
+            transactionIDs: transactions.map(({ transactionID }) => transactionID),
           }),
           this.updaters.claims.revert(span, {
             claims: _.flatMap(transactions.map(({ claims }) => claims)),
           }),
           this.updaters.coins.revert(span, {
-            coinChanges: transactions.reduce<CoinChanges | undefined>(
-              (acc, { result: { coinChanges } }) => reduceCoinChanges(acc, coinChanges),
-              undefined,
-            ),
-            blockIndex: blockModel.id,
+            coinModelChanges,
+          }),
+          this.updaters.contracts.revert(span, {
+            transactionIDs,
           }),
           this.updaters.inputs.revert(span, {
             references: _.flatMap(transactions.map(({ inputs }) => inputs)),
@@ -260,7 +260,7 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
             })
             .then(async () =>
               this.updaters.assetToTransaction.save(span, {
-                transactions: transactions.map(({ result: { assetIDs }, transactionID }) => ({
+                transactions: transactions.map(({ assetIDs, transactionID }) => ({
                   assetIDs,
                   transactionID,
                 })),
@@ -268,152 +268,32 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
             ),
         ]);
 
-        await this.revertPreconditions(span, transactions, blockModel.id);
+        await Promise.all([
+          this.updaters.addresses.revert(span, {
+            addresses: _.flatMap(transactions, ({ addressIDs }) =>
+              Object.entries(addressIDs).map(([addressID, { startTransactionID }]) => ({
+                id: addressID,
+                transactionID: startTransactionID,
+              })),
+            ),
+            blockIndex: blockModel.id,
+          }),
+          this.updaters.assets.revert(span, {
+            transactionIDs,
+          }),
+        ]);
 
         await Promise.all(
-          transactions.map(({ transactionModel }) =>
-            transactionModel
-              .$query(this.context.db)
+          _.chunk(transactions, this.context.chunkSize).map((chunk) =>
+            TransactionModel.query(this.context.db)
               .context(this.context.makeQueryContext(span))
+              .whereIn('id', chunk.map(({ transactionModel }) => transactionModel.id))
               .delete(),
           ),
         );
       },
-      { name: 'neotracker_scrape_save_transactions' },
+      { name: 'neotracker_scrape_revert_transactions' },
     );
-  }
-
-  private async insertPreconditions(
-    monitor: Monitor,
-    transactions: ReadonlyArray<TransactionData>,
-    blockIndex: number,
-    blockTime: number,
-  ): Promise<void> {
-    await Promise.all([
-      Promise.all(
-        _.flatMap(transactions, ({ result: { addressIDs } }) =>
-          Object.entries(addressIDs).map(async ([hash, { startTransactionID, startTransactionHash }]) =>
-            this.context.address.save(
-              { hash, transactionID: startTransactionID, transactionHash: startTransactionHash, blockIndex, blockTime },
-              monitor,
-            ),
-          ),
-        ),
-      ),
-      Promise.all(
-        transactions.map(async ({ transaction, transactionID, transactionHash }) => {
-          switch (transaction.type) {
-            case 'InvocationTransaction':
-              // tslint:disable-next-line no-any
-              await Promise.all<any, any>([
-                transaction.invocationData.asset === undefined
-                  ? Promise.resolve()
-                  : this.context.asset.save(
-                      {
-                        asset: {
-                          type: transaction.invocationData.asset.type,
-                          name: transaction.invocationData.asset.name,
-                          precision: transaction.invocationData.asset.precision,
-                          owner: transaction.invocationData.asset.owner,
-                          admin: transaction.invocationData.asset.admin,
-                          amount: transaction.invocationData.asset.amount.toString(10),
-                        },
-                        transactionID,
-                        transactionHash,
-                        blockIndex,
-                        blockTime,
-                      },
-                      monitor,
-                    ),
-                Promise.all(
-                  transaction.invocationData.contracts.map(async (contract) =>
-                    this.context.contract.save(
-                      {
-                        contract,
-                        transactionID,
-                        transactionHash,
-                        blockIndex,
-                        blockTime,
-                      },
-                      monitor,
-                    ),
-                  ),
-                ),
-              ]);
-              break;
-            case 'RegisterTransaction':
-              await this.context.asset.save(
-                {
-                  transactionID,
-                  transactionHash,
-                  blockIndex,
-                  blockTime,
-                  asset: {
-                    type: transaction.asset.type,
-                    name: transaction.asset.name,
-                    precision: transaction.asset.precision,
-                    owner: transaction.asset.owner,
-                    admin: transaction.asset.admin,
-                    amount: transaction.asset.amount.toString(10),
-                  },
-                },
-                monitor,
-              );
-              break;
-            case 'PublishTransaction':
-              await this.context.contract.save(
-                {
-                  contract: transaction.contract,
-                  transactionID,
-                  transactionHash,
-                  blockIndex,
-                  blockTime,
-                },
-                monitor,
-              );
-              break;
-            default:
-          }
-        }),
-      ),
-    ]);
-  }
-
-  private async revertPreconditions(
-    monitor: Monitor,
-    transactions: ReadonlyArray<TransactionModelData>,
-    blockIndex: number,
-  ): Promise<void> {
-    await Promise.all([
-      Promise.all(
-        _.flatMap(transactions, ({ result: { addressIDs } }) =>
-          Object.entries(addressIDs).map(async ([hash, { startTransactionID }]) =>
-            this.context.address.revert({ hash, transactionID: startTransactionID, blockIndex }, monitor),
-          ),
-        ),
-      ),
-      Promise.all(
-        transactions.map(async ({ contractModels }) =>
-          Promise.all(
-            contractModels.map(async (contractModel) => this.context.contract.revert(contractModel.id, monitor)),
-          ),
-        ),
-      ),
-      Promise.all(
-        transactions.map(async ({ transactionModel }) => {
-          switch (transactionModel.type) {
-            case 'InvocationTransaction':
-              // tslint:disable-next-line no-any
-              await this.context.asset.revert(transactionModel.hash, monitor);
-              break;
-            case 'RegisterTransaction':
-              await this.context.asset.revert(transactionModel.hash, monitor);
-              break;
-            default:
-          }
-        }),
-      ),
-    ]);
   }
 
   private async insertTransactions(
@@ -422,74 +302,48 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
     blockTime: number,
     transactions: ReadonlyArray<TransactionData>,
   ): Promise<void> {
-    const transactionsWithIssued = transactions.map(({ transaction, transactionIndex }) => {
-      const issued = transaction.systemFee.plus(transaction.networkFee);
-
-      return { transaction, transactionIndex, issued };
-    });
-    await Promise.all([
-      _.flatMap(_.chunk(transactionsWithIssued, this.context.chunkSize), async (chunk) => {
-        try {
-          await dbTransaction(this.context.db, async (trx) => {
-            const reducedIssued = chunk.reduce((acc, { issued }) => acc.plus(issued), ZERO);
+    await Promise.all(
+      _.chunk(transactions, this.context.chunkSize).map(async (chunk) => {
+        await TransactionModel.insertAll(
+          this.context.db,
+          this.context.makeQueryContext(monitor),
+          chunk.map(({ transaction, transactionIndex }) => ({
+            id: transaction.data.globalIndex.toString(),
+            hash: transaction.txid,
+            type: transaction.type,
+            size: transaction.size,
+            version: transaction.version,
+            attributes_raw: JSON.stringify(transaction.attributes),
+            system_fee: transaction.systemFee.toFixed(8),
+            network_fee: transaction.networkFee.toFixed(8),
             // tslint:disable-next-line no-any
-            await Promise.all<any, any>([
-              TransactionModel.query(trx)
-                .context(this.context.makeQueryContext(monitor))
-                .insert(
-                  chunk.map(({ transaction, transactionIndex }) => ({
-                    id: transaction.data.globalIndex.toString(),
-                    hash: transaction.txid,
-                    type: transaction.type,
-                    size: transaction.size,
-                    version: transaction.version,
-                    attributes_raw: JSON.stringify(transaction.attributes),
-                    system_fee: transaction.systemFee.toFixed(8),
-                    network_fee: transaction.networkFee.toFixed(8),
-                    // tslint:disable-next-line no-any
-                    nonce: (transaction as any).nonce === undefined ? undefined : `${(transaction as any).nonce}`,
-                    // tslint:disable-next-line no-any
-                    pubkey: (transaction as any).publicKey === undefined ? undefined : (transaction as any).publicKey,
-                    block_id: blockIndex,
-                    block_time: blockTime,
-                    index: transactionIndex,
-                    scripts_raw: JSON.stringify(
-                      transaction.scripts.map((script) => ({
-                        invocation_script: script.invocation,
-                        verification_script: script.verification,
-                      })),
-                    ),
-                    // tslint:disable-next-line no-any
-                    script: (transaction as any).script === undefined ? undefined : (transaction as any).script,
-                    // tslint:disable-next-line no-any
-                    gas: (transaction as any).gas === undefined ? undefined : (transaction as any).gas.toFixed(8),
-                    result_raw:
-                      // tslint:disable-next-line no-any
-                      (transaction as any).invocationData === undefined ||
-                      // tslint:disable-next-line no-any
-                      (transaction as any).invocationData.result === undefined
-                        ? undefined
-                        : // tslint:disable-next-line no-any
-                          JSON.stringify((transaction as any).invocationData.result),
-                  })),
-                ),
-              reducedIssued.lte(0)
-                ? Promise.resolve()
-                : AssetModel.query(trx)
-                    .context(this.context.makeQueryContext(monitor))
-                    .where('id', GAS_ASSET_ID)
-                    .patch({
-                      // tslint:disable-next-line no-any
-                      issued: raw('issued - ?', [reducedIssued.toString()]) as any,
-                    }),
-            ]);
-          });
-        } catch (error) {
-          if (!this.isUniqueError(error)) {
-            throw error;
-          }
-        }
+            nonce: (transaction as any).nonce === undefined ? undefined : `${(transaction as any).nonce}`,
+            // tslint:disable-next-line no-any
+            pubkey: (transaction as any).publicKey === undefined ? undefined : (transaction as any).publicKey,
+            block_id: blockIndex,
+            block_time: blockTime,
+            index: transactionIndex,
+            scripts_raw: JSON.stringify(
+              transaction.scripts.map((script) => ({
+                invocation_script: script.invocation,
+                verification_script: script.verification,
+              })),
+            ),
+            // tslint:disable-next-line no-any
+            script: (transaction as any).script === undefined ? undefined : (transaction as any).script,
+            // tslint:disable-next-line no-any
+            gas: (transaction as any).gas === undefined ? undefined : (transaction as any).gas.toFixed(8),
+            result_raw:
+              // tslint:disable-next-line no-any
+              (transaction as any).invocationData === undefined ||
+              // tslint:disable-next-line no-any
+              (transaction as any).invocationData.result === undefined
+                ? undefined
+                : // tslint:disable-next-line no-any
+                  JSON.stringify((transaction as any).invocationData.result),
+          })),
+        );
       }),
-    ]);
+    );
   }
 }

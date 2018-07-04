@@ -34,8 +34,10 @@ export class PrevBlockUpdater extends DBUpdater<PrevBlockUpdate, BlockModel | un
             .$query(this.context.db)
             .context(this.context.makeQueryContext(span))
             .patch({
-              next_block_id: undefined,
-              next_block_hash: undefined,
+              // tslint:disable no-null-keyword
+              next_block_id: null,
+              next_block_hash: null,
+              // tslint:enable no-null-keyword
             });
         }
       },

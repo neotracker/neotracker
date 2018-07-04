@@ -1,103 +1,47 @@
 import { Monitor } from '@neo-one/monitor';
-import BigNumber from 'bignumber.js';
 import * as _ from 'lodash';
-import { CoinChange, CoinChanges, DBContext } from '../types';
-import { CoinUpdater } from './CoinUpdater';
+import { Coin as CoinModel } from 'neotracker-server-db';
+import { CoinModelChange, isCoinModelCreate, isCoinModelDelete, isCoinModelPatch } from '../types';
 import { DBUpdater } from './DBUpdater';
 
 export interface CoinsSave {
-  readonly blockIndex: number;
-  readonly coinChanges?: CoinChanges;
-}
-export interface CoinsRevert {
-  readonly blockIndex: number;
-  readonly coinChanges?: CoinChanges;
+  readonly coinModelChanges: ReadonlyArray<CoinModelChange>;
 }
 
-export interface CoinsUpdaters {
-  readonly coin: CoinUpdater;
-}
-
-const ZERO = new BigNumber('0');
-
-export class CoinsUpdater extends DBUpdater<CoinsSave, CoinsRevert> {
-  private readonly updaters: CoinsUpdaters;
-
-  public constructor(
-    context: DBContext,
-    updaters: CoinsUpdaters = {
-      coin: new CoinUpdater(context),
-    },
-  ) {
-    super(context);
-    this.updaters = updaters;
-  }
-
-  public async save(monitor: Monitor, { coinChanges, blockIndex }: CoinsSave): Promise<void> {
+export class CoinsUpdater extends DBUpdater<CoinsSave, CoinsSave> {
+  public async save(monitor: Monitor, { coinModelChanges }: CoinsSave): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
-        if (coinChanges === undefined) {
-          return;
-        }
-
-        const { transactionIndex, actionIndex, changes } = coinChanges;
-        const coins = this.getCoins(changes);
-        await Promise.all(
-          coins.map(async ({ addressHash, assetHash, value }) => {
-            await this.updaters.coin.save(span, {
-              addressHash,
-              assetHash,
-              value,
-              blockIndex,
-              transactionIndex,
-              actionIndex,
-            });
-          }),
-        );
+        await Promise.all([
+          _.chunk(coinModelChanges.filter(isCoinModelCreate), this.context.chunkSize).map(async (chunk) =>
+            CoinModel.insertAll(this.context.db, this.context.makeQueryContext(span), chunk.map(({ value }) => value)),
+          ),
+          _.chunk(coinModelChanges.filter(isCoinModelDelete), this.context.chunkSize).map(async (chunk) =>
+            CoinModel.query(this.context.db)
+              .context(this.context.makeQueryContext(span))
+              .whereIn('id', chunk.map(({ id }) => id))
+              .delete(),
+          ),
+          Promise.all(
+            coinModelChanges.filter(isCoinModelPatch).map(async ({ value, patch }) =>
+              value
+                .$query(this.context.db)
+                .context(this.context.makeQueryContext(span))
+                .patch(patch),
+            ),
+          ),
+        ]);
       },
       { name: 'neotracker_scrape_save_coins' },
     );
   }
 
-  public async revert(monitor: Monitor, { coinChanges, blockIndex }: CoinsRevert): Promise<void> {
+  public async revert(monitor: Monitor, options: CoinsSave): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
-        if (coinChanges === undefined) {
-          return;
-        }
-
-        const { transactionIndex, actionIndex, changes } = coinChanges;
-        const coins = this.getCoins(changes);
-        await Promise.all(
-          coins.map(async ({ addressHash, assetHash, value }) => {
-            await this.updaters.coin.revert(span, {
-              addressHash,
-              assetHash,
-              value,
-              blockIndex,
-              transactionIndex,
-              actionIndex,
-            });
-          }),
-        );
+        await this.save(span, options);
       },
-      { name: 'neotracker_scrape_save_coins' },
+      { name: 'neotracker_scrape_revert_coins' },
     );
-  }
-
-  private getCoins(
-    changes: ReadonlyArray<CoinChange>,
-  ): ReadonlyArray<{ readonly addressHash: string; readonly assetHash: string; readonly value: BigNumber }> {
-    const groupedValues = Object.entries(_.groupBy(changes, ({ address }) => address));
-
-    return _.flatMap(groupedValues, ([addressHash, values]) => {
-      const reducedValues = _.mapValues(_.groupBy(values, ({ asset }) => asset), (assetValues) =>
-        assetValues.reduce((acc, { value }) => acc.plus(value), ZERO),
-      );
-
-      return Object.entries(reducedValues)
-        .map(([assetHash, value]) => ({ addressHash, assetHash, value }))
-        .filter(({ value }) => !value.isEqualTo(ZERO));
-    });
   }
 }

@@ -1,9 +1,9 @@
 import { Monitor } from '@neo-one/monitor';
 import { Block as BlockModel } from 'neotracker-server-db';
-import { DBContext } from '../../types';
+import { Context } from '../../types';
 
 export async function getPreviousBlockModel(
-  context: DBContext,
+  context: Context,
   monitor: Monitor,
   index: number,
 ): Promise<BlockModel | undefined> {

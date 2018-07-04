@@ -1,10 +1,18 @@
 // tslint:disable variable-name no-useless-cast
+import Knex from 'knex';
 import { GAS_ASSET_ID } from 'neotracker-shared-utils';
 import { Model } from 'objection';
-import { EdgeSchema, FieldSchema, IndexSchema } from '../lib';
+import { EdgeSchema, FieldSchema, IndexSchema, QueryContext } from '../lib';
 import { calculateAddressClaimValue } from '../utils';
 import { BlockchainModel } from './BlockchainModel';
-import { ADDRESS_VALIDATOR, BIG_INT_ID, BLOCK_TIME_COLUMN, HASH_VALIDATOR, INTEGER_INDEX_VALIDATOR } from './common';
+import {
+  ADDRESS_VALIDATOR,
+  BIG_INT_ID,
+  BLOCK_ID_VALIDATOR,
+  BLOCK_TIME_COLUMN,
+  HASH_VALIDATOR,
+  INTEGER_INDEX_VALIDATOR,
+} from './common';
 
 export class Address extends BlockchainModel<string> {
   public static readonly modelName = 'Address';
@@ -37,50 +45,45 @@ export class Address extends BlockchainModel<string> {
       exposeGraphQL: true,
       required: true,
     },
-
     transaction_id: {
       type: BIG_INT_ID,
       exposeGraphQL: true,
     },
-
     transaction_hash: {
       type: HASH_VALIDATOR,
       exposeGraphQL: true,
     },
-
     block_id: {
       type: INTEGER_INDEX_VALIDATOR,
       exposeGraphQL: true,
     },
-
     block_time: BLOCK_TIME_COLUMN,
     transaction_count: {
-      type: { type: 'bigInteger' as 'bigInteger', minimum: 0, default: '0' },
+      type: { type: 'bigInteger' as 'bigInteger', minimum: 0 },
       required: true,
       exposeGraphQL: true,
     },
-
     transfer_count: {
-      type: { type: 'bigInteger' as 'bigInteger', minimum: 0, default: '0' },
+      type: { type: 'bigInteger' as 'bigInteger', minimum: 0 },
       required: true,
       exposeGraphQL: true,
     },
-
+    aggregate_block_id: {
+      type: BLOCK_ID_VALIDATOR,
+      required: true,
+    },
     last_transaction_id: {
       type: BIG_INT_ID,
       exposeGraphQL: true,
     },
-
     last_transaction_hash: {
       type: HASH_VALIDATOR,
       exposeGraphQL: true,
     },
-
     last_transaction_time: {
       type: { type: 'integer' as 'integer', minimum: 0 },
       exposeGraphQL: true,
     },
-
     claim_value_available_coin: {
       type: { type: 'model' as 'model', modelType: 'Coin' },
       graphqlResolver: async (obj, _args, context, info) => {
@@ -163,7 +166,7 @@ export class Address extends BlockchainModel<string> {
           through: {
             get modelClass() {
               // tslint:disable-next-line no-require-imports
-              return require('./AddressToTransaction').default;
+              return require('./AddressToTransaction').AddressToTransaction;
             },
             from: 'address_to_transaction.id1',
             to: 'address_to_transaction.id2',
@@ -197,13 +200,18 @@ export class Address extends BlockchainModel<string> {
       exposeGraphQL: true,
     },
   };
+  public static async insertAll(db: Knex, context: QueryContext, data: ReadonlyArray<Partial<Address>>): Promise<void> {
+    return this.insertAllBase(db, context, data, Address);
+  }
 
-  public readonly transaction_id!: string | undefined;
-  public readonly transaction_hash!: string | undefined;
+  public readonly transaction_id!: string | null | undefined;
+  public readonly transaction_hash!: string | null | undefined;
   public readonly block_id!: number;
   public readonly block_time!: number;
   public readonly transaction_count!: string;
   public readonly transfer_count!: string;
-  public readonly last_transaction_id!: string;
-  public readonly last_transaction_time!: number;
+  public readonly aggregate_block_id!: number;
+  public readonly last_transaction_id!: string | null | undefined;
+  public readonly last_transaction_time!: number | null | undefined;
+  public readonly last_transaction_hash!: string | null | undefined;
 }

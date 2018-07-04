@@ -1,6 +1,7 @@
 // tslint:disable variable-name
+import Knex from 'knex';
 import { Model } from 'objection';
-import { EdgeSchema, FieldSchema, IndexSchema } from '../lib';
+import { EdgeSchema, FieldSchema, IndexSchema, QueryContext } from '../lib';
 import { BlockchainModel } from './BlockchainModel';
 import {
   ADDRESS_VALIDATOR,
@@ -239,13 +240,21 @@ export class Transfer extends BlockchainModel<string> {
     },
   };
 
+  public static async insertAll(
+    db: Knex,
+    context: QueryContext,
+    values: ReadonlyArray<Partial<Transfer>>,
+  ): Promise<void> {
+    return this.insertAllBase(db, context, values, Transfer);
+  }
+
   public readonly transaction_id!: string;
   public readonly transaction_hash!: string;
   public readonly asset_id!: string;
   public readonly contract_id!: string;
   public readonly value!: string;
-  public readonly from_address_id!: string | undefined;
-  public readonly to_address_id!: string | undefined;
+  public readonly from_address_id!: string | null | undefined;
+  public readonly to_address_id!: string | null | undefined;
   public readonly block_id!: number;
   public readonly transaction_index!: number;
   public readonly action_index!: number;

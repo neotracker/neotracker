@@ -1,9 +1,8 @@
-import { NEOONEDataProvider, NetworkType, ReadClient } from '@neo-one/client';
+import { abi, NEOONEDataProvider, NetworkType, ReadClient, ReadSmartContract } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
 import BigNumber from 'bignumber.js';
+import * as _ from 'lodash';
 import {
-  Address as AddressModel,
-  Asset as AssetModel,
   Block as BlockModel,
   Contract as ContractModel,
   createFromEnvironment$,
@@ -12,6 +11,7 @@ import {
   DBEnvironment,
   DBOptions,
   isHealthyDB,
+  NEP5_CONTRACT_TYPE,
   PubSub,
   PubSubEnvironment,
   PubSubOptions,
@@ -20,12 +20,12 @@ import {
 import { mergeScanLatest } from 'neotracker-shared-utils';
 import { combineLatest, concat, Observable, of as _of, timer } from 'rxjs';
 import { distinctUntilChanged, map, publishReplay, refCount, switchMap } from 'rxjs/operators';
-import { BlockUpdater, KnownContractUpdater } from './db';
-import { ContractActionUpdater } from './db/ContractActionUpdater';
+import { BlockUpdater } from './db';
 import { MigrationHandler } from './MigrationHandler';
 import { migrations } from './migrations';
 import { run$ } from './run$';
-import { AddressRevert, AddressSave, AssetSave, Context, ContractSave, SystemFeeSave } from './types';
+import { Context, SystemFeeSave } from './types';
+import { add0x } from './utils';
 import { WriteCache } from './WriteCache';
 
 export interface Environment {
@@ -128,6 +128,10 @@ export const createScraper$ = ({
         distinctUntilChanged(),
       ),
       processedIndexPubSub$,
+      options$.pipe(
+        map((options) => options.blacklistNEP5Hashes),
+        distinctUntilChanged(),
+      ),
     ),
   ).pipe(
     map(
@@ -137,165 +141,17 @@ export const createScraper$ = ({
         migrationEnabled,
         repairNEP5BlockFrequency,
         repairNEP5LatencySeconds,
-        [chunkSize = 1000, processedIndexPubSub],
+        [chunkSize = 1000, processedIndexPubSub, blacklistNEP5Hashes],
       ]): Context => {
         const makeQueryContext = rootLoader.makeAllPowerfulQueryContext;
         const { db } = rootLoader;
-
-        const address = new WriteCache({
-          db,
-          fetch: async (key: string, monitor) =>
-            AddressModel.query(rootLoader.db)
-              .context(makeQueryContext(monitor))
-              .where('id', key)
-              .first()
-              .execute(),
-          create: async ({ hash, transactionID, transactionHash, blockIndex, blockTime }: AddressSave, monitor) =>
-            AddressModel.query(rootLoader.db)
-              .context(makeQueryContext(monitor))
-              .insert({
-                id: hash,
-                transaction_id: transactionID,
-                transaction_hash: transactionHash,
-                block_id: blockIndex,
-                block_time: blockTime,
-              })
-              .first()
-              .returning('*')
-              .throwIfNotFound()
-              .execute(),
-          revert: async ({ hash, blockIndex, transactionID }: AddressRevert, monitor, trx): Promise<void> => {
-            const addressModel = await address.get(hash, monitor);
-            if (
-              addressModel !== undefined &&
-              ((addressModel.transaction_id === undefined && addressModel.block_id === blockIndex) ||
-                addressModel.transaction_id === transactionID)
-            ) {
-              await AddressModel.query(trx === undefined ? rootLoader.db : trx)
-                .context(makeQueryContext(monitor))
-                .where('id', hash)
-                .delete();
-            }
-          },
-          getKey: (key: string) => key,
-          getKeyFromSave: ({ hash }: AddressSave) => hash,
-          getKeyFromRevert: ({ hash }: AddressRevert) => hash,
-        });
-
-        const getAssetID = ({ transactionHash, hash }: AssetSave) => (hash === undefined ? transactionHash : hash);
-
-        const getAssetDB = async (assetSave: AssetSave, monitor: Monitor): Promise<Partial<AssetModel>> => {
-          const { asset, transactionHash, transactionID, blockIndex, blockTime } = assetSave;
-          let adminAddress;
-          if (asset.admin !== undefined) {
-            adminAddress = await address.save(
-              {
-                hash: asset.admin,
-                transactionID,
-                transactionHash,
-                blockIndex,
-                blockTime,
-              },
-
-              monitor,
-            );
-          }
-
-          return {
-            id: getAssetID(assetSave),
-            transaction_id: transactionID,
-            transaction_hash: transactionHash,
-            type: asset.type,
-            name_raw: JSON.stringify(asset.name),
-            symbol: asset.symbol === undefined ? JSON.stringify(asset.name) : asset.symbol,
-            amount: asset.amount,
-            precision: asset.precision,
-            owner: asset.owner,
-            admin_address_id: adminAddress === undefined ? undefined : adminAddress.id,
-            block_time: blockTime,
-          };
-        };
 
         return {
           db,
           makeQueryContext,
           client,
-          getBlock: async (hashOrIndex) => client.getBlock(hashOrIndex),
           prevBlock: undefined,
           currentHeight: undefined,
-          address,
-          asset: new WriteCache({
-            db,
-            fetch: async (key: string, monitor) =>
-              AssetModel.query(rootLoader.db)
-                .context(makeQueryContext(monitor))
-                .where('id', key)
-                .first()
-                .execute(),
-            create: async (save: AssetSave, monitor) => {
-              const assetDB = await getAssetDB(save, monitor);
-
-              return AssetModel.query(rootLoader.db)
-                .context(makeQueryContext(monitor))
-                .insert(assetDB)
-                .returning('*')
-                .first()
-                .throwIfNotFound()
-                .execute();
-            },
-            revert: async (key: string, monitor, trx): Promise<void> => {
-              await AssetModel.query(trx === undefined ? rootLoader.db : trx)
-                .context(makeQueryContext(monitor))
-                .where('id', key)
-                .delete();
-            },
-            getKey: (key: string) => key,
-            getKeyFromSave: getAssetID,
-            getKeyFromRevert: (key: string) => key,
-          }),
-          contract: new WriteCache({
-            db,
-            fetch: async (key: string, monitor) =>
-              ContractModel.query(rootLoader.db)
-                .context(makeQueryContext(monitor))
-                .where('id', key)
-                .first()
-                .execute(),
-            create: async (
-              { contract, transactionID, transactionHash, blockTime, blockIndex }: ContractSave,
-              monitor,
-            ) =>
-              ContractModel.query(rootLoader.db)
-                .context(makeQueryContext(monitor))
-                .insert({
-                  id: contract.hash,
-                  script: contract.script,
-                  parameters_raw: JSON.stringify(contract.parameters),
-                  return_type: contract.returnType,
-                  needs_storage: contract.properties.storage,
-                  name: contract.name,
-                  version: contract.codeVersion,
-                  author: contract.author,
-                  email: contract.email,
-                  description: contract.description,
-                  transaction_id: transactionID,
-                  transaction_hash: transactionHash,
-                  block_time: blockTime,
-                  block_id: blockIndex,
-                })
-                .returning('*')
-                .first()
-                .throwIfNotFound(),
-            revert: async (key: string, monitor, trx): Promise<void> => {
-              await ContractModel.query(trx === undefined ? rootLoader.db : trx)
-                .context(makeQueryContext(monitor))
-                .where('id', key)
-                .delete();
-            },
-            getKey: (key: string) => key,
-            getKeyFromSave: ({ contract }: ContractSave) => contract.hash,
-            getKeyFromRevert: (key: string) => key,
-          }),
           systemFee: new WriteCache({
             db,
             fetch: async (index: number, monitor) =>
@@ -312,7 +168,6 @@ export const createScraper$ = ({
             getKeyFromSave: ({ index }: SystemFeeSave) => index,
             getKeyFromRevert: (index: number) => index,
           }),
-          contractModelsToProcess: [],
           nep5Contracts: {},
           migrationHandler: new MigrationHandler({
             enabled: migrationEnabled,
@@ -320,10 +175,7 @@ export const createScraper$ = ({
             monitor: rootMonitor,
             makeQueryContext,
           }),
-          blacklistNEP5Hashes$: options$.pipe(
-            map((options) => options.blacklistNEP5Hashes),
-            distinctUntilChanged(),
-          ),
+          blacklistNEP5Hashes: new Set(blacklistNEP5Hashes),
           repairNEP5BlockFrequency,
           repairNEP5LatencySeconds,
           chunkSize,
@@ -331,6 +183,34 @@ export const createScraper$ = ({
         };
       },
     ),
+    mergeScanLatest(async (_acc, context: Context) => {
+      const contractModels = await ContractModel.query(context.db)
+        .context(context.makeQueryContext(rootMonitor))
+        .where('type', NEP5_CONTRACT_TYPE);
+
+      const nep5ContractPairs = await Promise.all(
+        contractModels
+          .filter((contractModel) => !context.blacklistNEP5Hashes.has(contractModel.id))
+          .map<Promise<[string, ReadSmartContract]>>(async (contractModel) => {
+            const contractABI = await abi.NEP5({
+              client: context.client,
+              hash: add0x(contractModel.id),
+            });
+
+            const contract = context.client.smartContract({
+              hash: add0x(contractModel.id),
+              abi: contractABI,
+            });
+
+            return [contractModel.id, contract];
+          }),
+      );
+
+      // tslint:disable-next-line no-object-mutation
+      context.nep5Contracts = _.fromPairs(nep5ContractPairs);
+
+      return context;
+    }),
     mergeScanLatest(async (_acc, context: Context) => {
       // tslint:disable-next-line no-loop-statement
       for (const [name, migration] of migrations) {
@@ -343,19 +223,10 @@ export const createScraper$ = ({
 
       return context;
     }),
-    switchMap((context: Context) =>
-      run$(
-        context,
-        rootMonitor,
-        new BlockUpdater(context),
-        new ContractActionUpdater(context),
-        new KnownContractUpdater(context),
-      ),
-    ),
+    switchMap((context: Context) => run$(context, rootMonitor, new BlockUpdater(context))),
   );
 
   return combineLatest(rootLoader$, concat(_of(undefined), scrape$)).pipe(
-    // tslint:disable-next-line no-unused
-    switchMap(([rootLoader, _]) => timer(0, 5000).pipe(switchMap(async () => isHealthyDB(rootLoader.db, rootMonitor)))),
+    switchMap(([rootLoader]) => timer(0, 5000).pipe(switchMap(async () => isHealthyDB(rootLoader.db, rootMonitor)))),
   );
 };

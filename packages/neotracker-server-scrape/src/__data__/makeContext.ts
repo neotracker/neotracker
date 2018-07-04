@@ -2,7 +2,7 @@ import { Monitor } from '@neo-one/monitor';
 import Knex from 'knex';
 import { createRootLoader, makeQueryContext as makeQueryContextInternal, PubSub } from 'neotracker-server-db';
 import { EMPTY } from 'rxjs';
-import { DBContext } from '../types';
+import { Context } from '../types';
 import { IWriteCache } from '../WriteCache';
 
 // tslint:disable-next-line no-any
@@ -30,30 +30,37 @@ const createMakeQueryContext = (db: Knex) => (monitor: Monitor) =>
     isAllPowerful: true,
   });
 
-export const makeDBContext = ({
+export const makeContext = ({
   db,
   makeQueryContext = createMakeQueryContext(db),
-  getBlock = jest.fn(async () => Promise.reject(new Error('Not Implemented'))),
+  client = {
+    getBlock: jest.fn(async () => Promise.reject(new Error('Not Implemented'))),
+    smartContract: jest.fn(async () => Promise.reject(new Error('Not Implemented'))),
+    // tslint:disable-next-line no-any
+  } as any,
+  // tslint:disable-next-line no-any
+  migrationHandler = {} as any,
   prevBlock,
   currentHeight = -1,
-  address = createWriteCacheMock(),
-  asset = createWriteCacheMock(),
-  contract = createWriteCacheMock(),
   systemFee = createWriteCacheMock(),
   nep5Contracts = {},
   chunkSize = 1000,
   processedIndexPubSub = createPubSubMock(),
-}: Partial<DBContext> & { readonly db: DBContext['db'] }): DBContext => ({
+  blacklistNEP5Hashes = new Set<string>(),
+  repairNEP5BlockFrequency = 300,
+  repairNEP5LatencySeconds = 15,
+}: Partial<Context> & { readonly db: Context['db'] }): Context => ({
   db,
   makeQueryContext,
-  getBlock,
+  migrationHandler,
+  client,
   prevBlock,
   currentHeight,
-  address,
-  asset,
-  contract,
   systemFee,
   nep5Contracts,
   chunkSize,
   processedIndexPubSub,
+  blacklistNEP5Hashes,
+  repairNEP5BlockFrequency,
+  repairNEP5LatencySeconds,
 });

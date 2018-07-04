@@ -21,6 +21,7 @@ export const ASSET_HASH_VALIDATOR = {
 };
 
 export const INTEGER_INDEX_VALIDATOR = { type: 'integer' as 'integer', minimum: 0 };
+export const BLOCK_ID_VALIDATOR = { type: 'integer' as 'integer', minimum: -1 };
 
 export const BLOCK_TIME_VALIDATOR = { type: 'integer' as 'integer', minimum: 0 };
 export const BLOCK_TIME_COLUMN = {

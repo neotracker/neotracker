@@ -1,13 +1,15 @@
 // tslint:disable variable-name
+import Knex from 'knex';
 import { GAS_ASSET_HASH } from 'neotracker-shared-utils';
 import { Model } from 'objection';
-import { EdgeSchema, FieldSchema, IndexSchema } from '../lib';
+import { EdgeSchema, FieldSchema, IndexSchema, QueryContext } from '../lib';
 import { calculateAvailableGAS } from '../utils';
 import { BlockchainModel } from './BlockchainModel';
 import {
   ADDRESS_VALIDATOR,
   ASSET_HASH_VALIDATOR,
   BIG_INT_ID,
+  BLOCK_ID_VALIDATOR,
   BLOCK_TIME_COLUMN,
   HASH_VALIDATOR,
   NEP5_CONTRACT_TYPE,
@@ -37,13 +39,11 @@ export class Asset extends BlockchainModel<string> {
           name: 'transaction_count',
           order: 'desc',
         },
-
         {
           name: 'id',
           order: 'asc',
         },
       ],
-
       name: 'asset_transaction_count_id',
     },
   ];
@@ -53,30 +53,25 @@ export class Asset extends BlockchainModel<string> {
       exposeGraphQL: true,
       required: true,
     },
-
     transaction_id: {
       type: BIG_INT_ID,
       exposeGraphQL: true,
       required: true,
     },
-
     transaction_hash: {
       type: HASH_VALIDATOR,
       exposeGraphQL: true,
       required: true,
     },
-
     type: {
       type: { type: 'string', enum: ASSET_TYPES },
       required: true,
       exposeGraphQL: true,
     },
-
     name_raw: {
       type: { type: 'string' },
       required: true,
     },
-
     name: {
       type: {
         type: 'custom',
@@ -121,46 +116,39 @@ export class Asset extends BlockchainModel<string> {
       exposeGraphQL: true,
       computed: true,
     },
-
     symbol: {
       type: { type: 'string' },
       required: true,
       exposeGraphQL: true,
     },
-
     amount: {
       type: { type: 'decimal' },
       required: true,
       exposeGraphQL: true,
     },
-
     precision: {
       type: { type: 'integer', minimum: 0 },
       required: true,
       exposeGraphQL: true,
     },
-
     // Does not necessarily exist for NEP-5 tokens
     owner: {
       type: { type: 'string' },
       exposeGraphQL: true,
     },
-
     // Does not necessarily exist for NEP-5 tokens
     admin_address_id: {
       type: ADDRESS_VALIDATOR,
       exposeGraphQL: true,
     },
-
     block_time: BLOCK_TIME_COLUMN,
     issued: {
-      type: { type: 'decimal', minimum: 0, default: '0' },
+      type: { type: 'decimal', minimum: 0 },
       required: true,
       exposeGraphQL: true,
     },
-
     available: {
-      type: { type: 'decimal', minimum: 0, default: '0' },
+      type: { type: 'decimal', minimum: 0 },
       graphqlResolver: async (obj, _args, context) => {
         if (obj.available != undefined) {
           return obj.available;
@@ -178,23 +166,25 @@ export class Asset extends BlockchainModel<string> {
       exposeGraphQL: true,
       computed: true,
     },
-
     address_count: {
-      type: { type: 'bigInteger', minimum: 0, default: '0' },
+      type: { type: 'bigInteger', minimum: 0 },
       required: true,
       exposeGraphQL: true,
     },
-
     transaction_count: {
-      type: { type: 'bigInteger', minimum: 0, default: '0' },
+      type: { type: 'bigInteger', minimum: 0 },
       required: true,
       exposeGraphQL: true,
     },
-
     transfer_count: {
-      type: { type: 'bigInteger', minimum: 0, default: '0' },
+      type: { type: 'bigInteger', minimum: 0 },
       required: true,
       exposeGraphQL: true,
+    },
+    aggregate_block_id: {
+      type: BLOCK_ID_VALIDATOR,
+      exposeGraphQL: true,
+      required: true,
     },
   };
   public static readonly edgeSchema: EdgeSchema = {
@@ -210,10 +200,8 @@ export class Asset extends BlockchainModel<string> {
           to: 'coin.asset_id',
         },
       },
-
       exposeGraphQL: true,
     },
-
     transaction_input_outputs: {
       relation: {
         relation: Model.HasManyRelation,
@@ -226,10 +214,8 @@ export class Asset extends BlockchainModel<string> {
           to: 'transaction_input_output.asset_id',
         },
       },
-
       exposeGraphQL: true,
     },
-
     admin_address: {
       relation: {
         relation: Model.BelongsToOneRelation,
@@ -242,10 +228,8 @@ export class Asset extends BlockchainModel<string> {
           to: 'address.id',
         },
       },
-
       exposeGraphQL: true,
     },
-
     register_transaction: {
       relation: {
         relation: Model.BelongsToOneRelation,
@@ -258,11 +242,9 @@ export class Asset extends BlockchainModel<string> {
           to: 'transaction.id',
         },
       },
-
       exposeGraphQL: true,
       required: true,
     },
-
     transactions: {
       relation: {
         relation: Model.ManyToManyRelation,
@@ -284,10 +266,8 @@ export class Asset extends BlockchainModel<string> {
           to: 'transaction.id',
         },
       },
-
       exposeGraphQL: true,
     },
-
     transfers: {
       relation: {
         relation: Model.HasManyRelation,
@@ -300,25 +280,26 @@ export class Asset extends BlockchainModel<string> {
           to: 'transfer.asset_id',
         },
       },
-
       exposeGraphQL: true,
     },
   };
+  public static async insertAll(db: Knex, context: QueryContext, data: ReadonlyArray<Partial<Asset>>): Promise<void> {
+    return this.insertAllBase(db, context, data, Asset);
+  }
 
   public readonly transaction_id!: string;
   public readonly transaction_hash!: string;
   public readonly type!: string;
   public readonly name_raw!: string;
-  public readonly name!: string;
   public readonly symbol!: string;
   public readonly amount!: string;
   public readonly precision!: number;
-  public readonly owner!: string;
-  public readonly admin_address_id!: string;
+  public readonly owner!: string | null | undefined;
+  public readonly admin_address_id!: string | null | undefined;
   public readonly block_time!: number;
   public readonly issued!: string;
-  public readonly available!: string;
   public readonly address_count!: string;
   public readonly transaction_count!: string;
   public readonly transfer_count!: string;
+  public readonly aggregate_block_id!: number;
 }

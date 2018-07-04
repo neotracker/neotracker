@@ -1,7 +1,6 @@
 // tslint:disable variable-name no-useless-cast
 import Knex from 'knex';
 import { Model } from 'objection';
-import { isPostgres } from '../knexUtils';
 import { EdgeSchema, FieldSchema, IndexSchema, QueryContext } from '../lib';
 import { BlockchainModel } from './BlockchainModel';
 import { BIG_INT_ID, CONTRACT_VALIDATOR, HASH_VALIDATOR, INTEGER_INDEX_VALIDATOR } from './common';
@@ -95,7 +94,6 @@ export class Action extends BlockchainModel<string> {
           to: 'transaction.id',
         },
       },
-
       required: true,
       exposeGraphQL: true,
     },
@@ -111,7 +109,6 @@ export class Action extends BlockchainModel<string> {
           to: 'transfer.id',
         },
       },
-
       exposeGraphQL: true,
     },
   };
@@ -121,19 +118,7 @@ export class Action extends BlockchainModel<string> {
     context: QueryContext,
     values: ReadonlyArray<Partial<Action>>,
   ): Promise<void> {
-    if (isPostgres(db)) {
-      await Action.query(db)
-        .context(context)
-        .insert([...values]);
-    } else {
-      await Promise.all(
-        values.map(async (value) =>
-          Action.query(db)
-            .context(context)
-            .insert(value),
-        ),
-      );
-    }
+    return this.insertAllBase(db, context, values, Action);
   }
 
   public readonly type!: string;
@@ -143,6 +128,6 @@ export class Action extends BlockchainModel<string> {
   public readonly transaction_index!: number;
   public readonly index!: number;
   public readonly script_hash!: string;
-  public readonly message!: string;
-  public readonly args_raw!: string;
+  public readonly message!: string | undefined | null;
+  public readonly args_raw!: string | undefined | null;
 }

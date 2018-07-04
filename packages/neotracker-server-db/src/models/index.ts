@@ -9,7 +9,6 @@ import { Block } from './Block';
 import { Coin } from './Coin';
 import { Contract } from './Contract';
 import { DataPoint } from './DataPoint';
-import { KnownContract } from './KnownContract';
 import { Migration } from './Migration';
 import { ProcessedIndex } from './ProcessedIndex';
 import { Transaction } from './Transaction';
@@ -26,7 +25,6 @@ export { Block } from './Block';
 export { Coin } from './Coin';
 export { Contract } from './Contract';
 export { DataPoint } from './DataPoint';
-export { KnownContract } from './KnownContract';
 export { Migration } from './Migration';
 export { ProcessedIndex } from './ProcessedIndex';
 export { Transaction } from './Transaction';
@@ -41,7 +39,6 @@ export const loaderModels: ReadonlyArray<typeof BaseModel> = [
   Coin,
   Contract,
   DataPoint,
-  KnownContract,
   Migration,
   ProcessedIndex,
   Transaction,
@@ -61,7 +58,6 @@ export const models: ReadonlyArray<typeof BaseModel> = [
   Coin,
   Contract,
   DataPoint,
-  KnownContract,
   Migration,
   ProcessedIndex,
   Transaction,

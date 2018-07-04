@@ -1,4 +1,4 @@
-import { ConfirmedTransaction, Output } from '@neo-one/client';
+import { ConfirmedTransaction } from '@neo-one/client';
 import BigNumber from 'bignumber.js';
 import * as _ from 'lodash';
 import {
@@ -13,15 +13,14 @@ import { GAS_ASSET_HASH } from 'neotracker-shared-utils';
 
 const ZERO = new BigNumber('0');
 
-function isIssue(
-  output: Output,
+export interface IssuedOutputs {
+  readonly [assetID: string]: BigNumber | undefined;
+}
+
+export const getIssuedOutputs = (
   references: ReadonlyArray<TransactionInputOutputModel>,
   transaction: ConfirmedTransaction,
-): boolean {
-  if (transaction.type !== 'IssueTransaction') {
-    return false;
-  }
-
+): IssuedOutputs => {
   const mutableValues: { [name: string]: BigNumber } = {};
   references.forEach((input) => {
     if ((mutableValues[input.asset_id] as BigNumber | undefined) === undefined) {
@@ -47,22 +46,20 @@ function isIssue(
     mutableValues[otherOutput.asset] = mutableValues[otherOutput.asset].minus(new BigNumber(otherOutput.value));
   });
 
-  const nonZeroValues = _.pickBy(mutableValues, (value) => !value.isEqualTo(ZERO));
-
-  return nonZeroValues[output.asset] !== undefined;
-}
+  return _.pickBy(mutableValues, (value) => !value.isEqualTo(ZERO));
+};
 
 export function getSubtype(
-  output: Output,
-  references: ReadonlyArray<TransactionInputOutputModel>,
+  issuedOutputs: IssuedOutputs,
   transaction: ConfirmedTransaction,
+  assetID: string,
   outputIndex: number,
 ): string {
   if (transaction.type === 'EnrollmentTransaction' && outputIndex === 0) {
     return SUBTYPE_ENROLLMENT;
   }
 
-  if (isIssue(output, references, transaction)) {
+  if (issuedOutputs[assetID] !== undefined) {
     return SUBTYPE_ISSUE;
   }
 

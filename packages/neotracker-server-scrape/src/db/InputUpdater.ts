@@ -52,9 +52,11 @@ export class InputUpdater extends DBUpdater<InputSave, InputRevert> {
           .$query(this.context.db)
           .context(this.context.makeQueryContext(span))
           .patch({
-            input_transaction_id: undefined,
-            input_transaction_hash: undefined,
-            claim_value: undefined,
+            // tslint:disable no-null-keyword
+            input_transaction_id: null,
+            input_transaction_hash: null,
+            claim_value: null,
+            // tslint:enable no-null-keyword
           });
       },
       { name: 'neotracker_scrape_revert_input' },

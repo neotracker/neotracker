@@ -2,20 +2,23 @@ import { ConfirmedTransaction, Input } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
 import * as _ from 'lodash';
 import { TransactionInputOutput as TransactionInputOutputModel, TYPE_INPUT } from 'neotracker-server-db';
-import { DBContext, TransactionData } from '../types';
+import { Context, TransactionData } from '../types';
 import { getActionDataForClient } from './getActionDataForClient';
 import { getInputOutputResultForClient } from './getInputOutputResultForClient';
+import { getIssuedOutputs, getSubtype } from './getSubtype';
 
 function calculateTransactionData({
   context,
   transaction,
   transactionIndex,
+  blockIndex,
   claims,
   inputs,
 }: {
-  readonly context: DBContext;
+  readonly context: Context;
   readonly transaction: ConfirmedTransaction;
   readonly transactionIndex: number;
+  readonly blockIndex: number;
   readonly claims: ReadonlyArray<TransactionInputOutputModel>;
   readonly inputs: ReadonlyArray<TransactionInputOutputModel>;
 }): TransactionData {
@@ -41,15 +44,33 @@ function calculateTransactionData({
     actionDatas,
   });
 
+  const issuedOutputs = getIssuedOutputs(inputs, transaction);
+
   return {
+    ...result,
     transaction,
     transactionID,
     transactionHash,
     transactionIndex,
     claims,
     inputs,
+    outputs: transaction.vout.map((output, idx) => ({
+      id: TransactionInputOutputModel.makeID({
+        outputTransactionHash: transaction.txid,
+        outputTransactionIndex: idx,
+        type: TYPE_INPUT,
+      }),
+      type: TYPE_INPUT,
+      subtype: getSubtype(issuedOutputs, transaction, output.asset, idx),
+      output_transaction_id: transactionID,
+      output_transaction_hash: transaction.txid,
+      output_transaction_index: idx,
+      output_block_id: blockIndex,
+      asset_id: output.asset,
+      value: output.value.toString(),
+      address_id: output.address,
+    })),
     actionDatas,
-    result,
   };
 }
 
@@ -80,10 +101,12 @@ function mapReferences(
 export async function getTransactionDataForClient({
   monitor,
   context,
+  blockIndex,
   transactions,
 }: {
   readonly monitor: Monitor;
-  readonly context: DBContext;
+  readonly context: Context;
+  readonly blockIndex: number;
   readonly transactions: ReadonlyArray<{
     readonly transactionIndex: number;
     readonly transaction: ConfirmedTransaction;
@@ -109,7 +132,7 @@ export async function getTransactionDataForClient({
   ];
   if (ids.length === 0) {
     return transactions.map(({ transactionIndex, transaction }) =>
-      calculateTransactionData({ context, transaction, transactionIndex, claims: [], inputs: [] }),
+      calculateTransactionData({ context, transaction, transactionIndex, blockIndex, claims: [], inputs: [] }),
     );
   }
 
@@ -132,6 +155,6 @@ export async function getTransactionDataForClient({
     const inputs = mapReferences(referencesMap, transaction.vin);
     const claims = mapReferences(referencesMap, transaction.type === 'ClaimTransaction' ? transaction.claims : []);
 
-    return calculateTransactionData({ context, transaction, transactionIndex, claims, inputs });
+    return calculateTransactionData({ context, transaction, transactionIndex, blockIndex, claims, inputs });
   });
 }

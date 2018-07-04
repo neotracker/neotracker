@@ -1,11 +1,6 @@
 import { Monitor } from '@neo-one/monitor';
 import * as _ from 'lodash';
-import {
-  Address as AddressModel,
-  AddressToTransaction as AddressToTransactionModel,
-  transaction,
-} from 'neotracker-server-db';
-import { raw } from 'objection';
+import { AddressToTransaction as AddressToTransactionModel } from 'neotracker-server-db';
 import { DBUpdater } from './DBUpdater';
 
 export interface AddressToTransactionSaveSingle {
@@ -15,53 +10,23 @@ export interface AddressToTransactionSaveSingle {
 export interface AddressToTransactionSave {
   readonly transactions: ReadonlyArray<AddressToTransactionSaveSingle>;
 }
+export interface AddressToTransactionRevert {
+  readonly transactionIDs: ReadonlyArray<string>;
+}
 
-export class AddressToTransactionUpdater extends DBUpdater<AddressToTransactionSave, AddressToTransactionSave> {
+export class AddressToTransactionUpdater extends DBUpdater<AddressToTransactionSave, AddressToTransactionRevert> {
   public async save(monitor: Monitor, { transactions }: AddressToTransactionSave): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
+        const data = _.flatMap(transactions, ({ addressIDs, transactionID }) =>
+          [...new Set(addressIDs)].map((addressID) => ({
+            id1: addressID,
+            id2: transactionID,
+          })),
+        );
         await Promise.all(
-          _.chunk(transactions, this.context.chunkSize).map(async (chunk) => {
-            const data = _.flatMap(chunk, ({ addressIDs, transactionID }) =>
-              [...new Set(addressIDs)].map((addressID) => ({
-                id1: addressID,
-                id2: transactionID,
-              })),
-            );
-            const countAndAddressIDs = Object.entries(
-              _.groupBy(
-                Object.entries(_.groupBy(data, ({ id1 }) => id1)),
-                // tslint:disable-next-line no-unused
-                ([_addressID, datas]) => `${datas.length}`,
-              ),
-            ).map<[number, ReadonlyArray<string>]>(([count, values]) => [
-              parseInt(count, 10),
-              values.map(([addressID]) => addressID),
-            ]);
-            try {
-              await transaction(this.context.db, async (trx) => {
-                await Promise.all([
-                  AddressToTransactionModel.query(trx)
-                    .context(this.context.makeQueryContext(span))
-                    .insert(data),
-                  Promise.all(
-                    countAndAddressIDs.map(([count, addressIDs]) =>
-                      AddressModel.query(trx)
-                        .context(this.context.makeQueryContext(span))
-                        .whereIn('id', [...new Set(addressIDs)])
-                        .patch({
-                          // tslint:disable-next-line no-any
-                          transaction_count: raw(`transaction_count + ${count}`) as any,
-                        }),
-                    ),
-                  ),
-                ]);
-              });
-            } catch (error) {
-              if (!this.isUniqueError(error)) {
-                throw error;
-              }
-            }
+          _.chunk(data, this.context.chunkSize).map(async (chunk) => {
+            await AddressToTransactionModel.insertAll(this.context.db, this.context.makeQueryContext(span), chunk);
           }),
         );
       },
@@ -69,28 +34,16 @@ export class AddressToTransactionUpdater extends DBUpdater<AddressToTransactionS
     );
   }
 
-  public async revert(monitor: Monitor, { transactions }: AddressToTransactionSave): Promise<void> {
+  public async revert(monitor: Monitor, { transactionIDs }: AddressToTransactionRevert): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         await Promise.all(
-          transactions.map(async ({ addressIDs: addressIDsIn, transactionID }) => {
-            const addressIDs = [...new Set(addressIDsIn)];
-            await transaction(this.context.db, async (trx) => {
-              const deleted = await AddressToTransactionModel.query(trx)
-                .context(this.context.makeQueryContext(span))
-                .delete()
-                .where('id2', transactionID);
-              if (deleted > 0) {
-                await AddressModel.query(trx)
-                  .context(this.context.makeQueryContext(span))
-                  .whereIn('id', addressIDs)
-                  .patch({
-                    // tslint:disable-next-line no-any
-                    transaction_count: raw('transaction_count - 1') as any,
-                  });
-              }
-            });
-          }),
+          _.chunk(transactionIDs, this.context.chunkSize).map((chunk) =>
+            AddressToTransactionModel.query(this.context.db)
+              .context(this.context.makeQueryContext(span))
+              .delete()
+              .whereIn('id2', chunk),
+          ),
         );
       },
       { name: 'neotracker_scrape_revert_address_to_transaction' },

@@ -26,7 +26,6 @@ export {
   Coin,
   Contract,
   DataPoint,
-  KnownContract,
   Migration,
   ProcessedIndex,
   Transaction,

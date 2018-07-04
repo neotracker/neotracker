@@ -1,6 +1,7 @@
 // tslint:disable variable-name
+import Knex from 'knex';
 import { Model } from 'objection';
-import { EdgeSchema, FieldSchema, IndexSchema } from '../lib';
+import { EdgeSchema, FieldSchema, IndexSchema, QueryContext } from '../lib';
 import { BlockchainModel } from './BlockchainModel';
 import {
   BIG_INT_ID,
@@ -357,6 +358,14 @@ export class Transaction extends BlockchainModel<string> {
     },
   };
 
+  public static async insertAll(
+    db: Knex,
+    context: QueryContext,
+    values: ReadonlyArray<Partial<Transaction>>,
+  ): Promise<void> {
+    return this.insertAllBase(db, context, values, Transaction);
+  }
+
   public readonly hash!: string;
   public readonly type!: string;
   public readonly size!: number;
@@ -364,13 +373,13 @@ export class Transaction extends BlockchainModel<string> {
   public readonly attributes_raw!: string;
   public readonly system_fee!: string;
   public readonly network_fee!: string;
-  public readonly nonce!: string | undefined;
-  public readonly pubkey!: string | undefined;
+  public readonly nonce!: string | undefined | null;
+  public readonly pubkey!: string | undefined | null;
   public readonly block_id!: number;
   public readonly block_time!: number;
   public readonly index!: number;
   public readonly scripts_raw!: string;
-  public readonly script!: string | undefined;
-  public readonly gas!: string | undefined;
-  public readonly result_raw!: string | undefined;
+  public readonly script!: string | undefined | null;
+  public readonly gas!: string | undefined | null;
+  public readonly result_raw!: string | undefined | null;
 }

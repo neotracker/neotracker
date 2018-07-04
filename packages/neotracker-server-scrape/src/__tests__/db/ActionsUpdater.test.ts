@@ -1,8 +1,8 @@
 import { ActionRaw } from '@neo-one/client';
 import BigNumber from 'bignumber.js';
 import { cleanupTest, getDBData, getMonitor, startDB } from 'neotracker-server-test';
-import { data, makeDBContext } from '../../__data__';
-import { ActionsUpdater } from '../../db';
+import { data, makeContext } from '../../__data__';
+import { ActionsUpdater } from '../../db/ActionsUpdater';
 import { normalizeAction } from '../../normalizeBlock';
 
 const monitor = getMonitor();
@@ -24,7 +24,7 @@ describe('ActionsUpdater', () => {
 
   test('inserts actions', async () => {
     const db = await startDB();
-    const updater = new ActionsUpdater(makeDBContext({ db }));
+    const updater = new ActionsUpdater(makeContext({ db }));
 
     await updater.save(monitor, {
       actions: [
@@ -39,7 +39,7 @@ describe('ActionsUpdater', () => {
 
   test('handles duplicate inserts', async () => {
     const db = await startDB();
-    const updater = new ActionsUpdater(makeDBContext({ db }));
+    const updater = new ActionsUpdater(makeContext({ db }));
     const actions = [
       createAction(data.createLogRaw({ index: 0, globalIndex: new BigNumber(0) }), '0'),
       createAction(data.createNotificationRaw({ index: 1, globalIndex: new BigNumber(1) }), '0'),
@@ -57,7 +57,7 @@ describe('ActionsUpdater', () => {
 
   test('reverts actions', async () => {
     const db = await startDB();
-    const updater = new ActionsUpdater(makeDBContext({ db }));
+    const updater = new ActionsUpdater(makeContext({ db }));
 
     await updater.save(monitor, {
       actions: [
