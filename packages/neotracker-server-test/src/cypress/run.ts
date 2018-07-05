@@ -4,6 +4,7 @@ import tmp from 'tmp';
 import v4 from 'uuid/v4';
 import yargs from 'yargs';
 import { checkReady } from '../checkReady';
+import { runCypress } from './runCypress';
 
 yargs.describe('ci', 'Running as part of continuous integration.').default('ci', false);
 
@@ -97,18 +98,7 @@ const run = async ({ ci }: { readonly ci: boolean }) => {
   // Wait for server to startup and sync
   await new Promise<void>((resolve) => setTimeout(resolve, 5000));
 
-  if (ci) {
-    await execa('yarn', ['cypress', 'run']);
-  } else {
-    await execa('yarn', [
-      'cypress',
-      'run',
-      '--reporter',
-      'mocha-multi-reporters',
-      '--reporter-options',
-      'configFile=mocha.json',
-    ]);
-  }
+  await runCypress({ ci });
 };
 
 run({
