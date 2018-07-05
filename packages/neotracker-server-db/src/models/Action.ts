@@ -1,6 +1,6 @@
 // tslint:disable variable-name no-useless-cast
 import Knex from 'knex';
-import { Model } from 'objection';
+import { Constructor, Model, ModelOptions, Pojo } from 'objection';
 import { EdgeSchema, FieldSchema, IndexSchema, QueryContext } from '../lib';
 import { BlockchainModel } from './BlockchainModel';
 import { BIG_INT_ID, CONTRACT_VALIDATOR, HASH_VALIDATOR, INTEGER_INDEX_VALIDATOR } from './common';
@@ -119,6 +119,18 @@ export class Action extends BlockchainModel<string> {
     values: ReadonlyArray<Partial<Action>>,
   ): Promise<void> {
     return this.insertAllBase(db, context, values, Action);
+  }
+
+  public static fromJson<M>(this: Constructor<M>, json: Pojo, opt?: ModelOptions): M {
+    return super.fromJson(
+      {
+        ...json,
+        id: json.id == undefined ? undefined : String(json.id),
+        transaction_id: json.transaction_id == undefined ? undefined : String(json.transaction_id),
+      },
+      opt,
+      // tslint:disable-next-line no-any
+    ) as any;
   }
 
   public readonly type!: string;

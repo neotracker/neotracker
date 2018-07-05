@@ -1,6 +1,7 @@
 // tslint:disable variable-name
 import Knex from 'knex';
-import { Model } from 'objection';
+import { Constructor, Model, ModelOptions, Pojo } from 'objection';
+import { isPostgres } from '../knexUtils';
 import { EdgeSchema, FieldSchema, IndexSchema, QueryContext } from '../lib';
 import { BlockchainModel } from './BlockchainModel';
 import {
@@ -238,7 +239,7 @@ export class Block extends BlockchainModel<number> {
   };
 
   public static async insertAndReturn(db: Knex, queryContext: QueryContext, block: Partial<Block>): Promise<Block> {
-    if (db.client.driverName === 'pg') {
+    if (isPostgres(db)) {
       return Block.query(db)
         .context(queryContext)
         .insert(block)
@@ -250,6 +251,19 @@ export class Block extends BlockchainModel<number> {
     return Block.query(db)
       .context(queryContext)
       .insertAndFetch(block);
+  }
+
+  public static fromJson<M>(this: Constructor<M>, json: Pojo, opt?: ModelOptions): M {
+    return super.fromJson(
+      {
+        ...json,
+        system_fee: json.system_fee == undefined ? undefined : String(json.system_fee),
+        network_fee: json.network_fee == undefined ? undefined : String(json.network_fee),
+        aggregated_system_fee: json.aggregated_system_fee == undefined ? undefined : String(json.aggregated_system_fee),
+      },
+      opt,
+      // tslint:disable-next-line no-any
+    ) as any;
   }
 
   public readonly hash!: string;

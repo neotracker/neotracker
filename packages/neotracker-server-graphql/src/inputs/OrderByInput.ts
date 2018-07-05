@@ -18,7 +18,7 @@ export class OrderByInput extends Input {
     _model: typeof Base,
     orderBys: ReadonlyArray<OrderByInputType>,
   ): void {
-    orderBys.forEach((orderBy) => query.orderByRaw(`${orderBy.name} ${orderBy.direction}`));
+    orderBys.forEach((orderBy) => query.orderBy(orderBy.name, orderBy.direction));
   }
 
   public static getJoinRelation(

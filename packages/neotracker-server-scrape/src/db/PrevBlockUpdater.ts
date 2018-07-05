@@ -6,41 +6,39 @@ import { SameContextDBUpdater } from './SameContextDBUpdater';
 
 export interface PrevBlockUpdate {
   readonly block: Block;
-  readonly prevBlockModel: BlockModel | undefined;
+}
+export interface PrevBlockRevert {
+  readonly blockIndex: number;
 }
 
-export class PrevBlockUpdater extends SameContextDBUpdater<PrevBlockUpdate, BlockModel | undefined> {
-  public async save(context: Context, monitor: Monitor, { block, prevBlockModel }: PrevBlockUpdate): Promise<void> {
+export class PrevBlockUpdater extends SameContextDBUpdater<PrevBlockUpdate, PrevBlockRevert> {
+  public async save(context: Context, monitor: Monitor, { block }: PrevBlockUpdate): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
-        if (prevBlockModel !== undefined) {
-          await prevBlockModel
-            .$query(context.db)
-            .context(context.makeQueryContext(span))
-            .patch({
-              next_block_id: block.index,
-              next_block_hash: block.hash,
-            });
-        }
+        await BlockModel.query(context.db)
+          .context(context.makeQueryContext(span))
+          .where('id', block.index - 1)
+          .patch({
+            next_block_id: block.index,
+            next_block_hash: block.hash,
+          });
       },
       { name: 'neotracker_scrape_save_prev_block' },
     );
   }
 
-  public async revert(context: Context, monitor: Monitor, prevBlockModel: BlockModel | undefined): Promise<void> {
+  public async revert(context: Context, monitor: Monitor, { blockIndex }: PrevBlockRevert): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
-        if (prevBlockModel !== undefined) {
-          await prevBlockModel
-            .$query(context.db)
-            .context(context.makeQueryContext(span))
-            .patch({
-              // tslint:disable no-null-keyword
-              next_block_id: null,
-              next_block_hash: null,
-              // tslint:enable no-null-keyword
-            });
-        }
+        await BlockModel.query(context.db)
+          .context(context.makeQueryContext(span))
+          .where('id', blockIndex - 1)
+          .patch({
+            // tslint:disable no-null-keyword
+            next_block_id: null,
+            next_block_hash: null,
+            // tslint:enable no-null-keyword
+          });
       },
       { name: 'neotracker_scrape_revert_prev_block' },
     );

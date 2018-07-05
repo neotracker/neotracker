@@ -12,7 +12,10 @@ const db = (database: string) => ({
   client: 'sqlite3' as 'sqlite3',
   connection: {
     database,
-    filename: path.resolve(appRootDir.get(), 'db.sqlite'),
+    filename:
+      process.env.NEOTRACKER_DB_FILE === undefined
+        ? path.resolve(appRootDir.get(), 'db.sqlite')
+        : process.env.NEOTRACKER_DB_FILE,
   },
 });
 

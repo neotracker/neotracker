@@ -1,9 +1,10 @@
 import { Monitor } from '@neo-one/monitor';
+import { createFromEnvironment, createTables } from 'neotracker-server-db';
 import { createScraper$, ScrapeEnvironment, ScrapeOptions } from 'neotracker-server-scrape';
 import { createServer$, ServerEnvironment, ServerOptions } from 'neotracker-server-web';
 import { finalize } from 'neotracker-shared-utils';
-import { merge, Observable, Subscription } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { concat, defer, merge, Observable, Subscription } from 'rxjs';
+import { distinctUntilChanged, map, take } from 'rxjs/operators';
 
 export interface StartEnvironment {
   readonly metricsPort: number;
@@ -80,7 +81,17 @@ export class NEOTracker {
       ),
     });
 
-    this.mutableSubscription = merge(server$, scrape$).subscribe({
+    this.mutableSubscription = concat(
+      defer(async () => {
+        const options = await this.options$.pipe(take(1)).toPromise();
+
+        await createTables(
+          createFromEnvironment(this.monitor, this.environment.scrape.db, options.scrape.db),
+          this.monitor,
+        );
+      }),
+      merge(server$, scrape$),
+    ).subscribe({
       complete: () => {
         this.monitor.log({ name: 'service_unexpected_complete' });
         this.shutdown(1);

@@ -9,8 +9,17 @@ async function getCurrentHeightWorker(context: Context, monitor: Monitor): Promi
         .context(context.makeQueryContext(span))
         .max('index')
         .first()
-        // tslint:disable-next-line no-any
-        .then((result) => (result === undefined || (result as any).max == undefined ? -1 : (result as any).max))
+        .then((result) => {
+          // Handle sqlite return
+          // tslint:disable-next-line no-any
+          if (result !== undefined && (result as any)['max(`index`)'] != undefined) {
+            // tslint:disable-next-line no-any
+            return (result as any)['max(`index`)'];
+          }
+
+          // tslint:disable-next-line no-any
+          return result === undefined || (result as any).max == undefined ? -1 : (result as any).max;
+        })
         .then(Number),
     { name: 'neotracker_scrape_run_get_current_height' },
   );

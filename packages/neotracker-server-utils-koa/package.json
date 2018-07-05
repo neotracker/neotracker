@@ -12,7 +12,7 @@
   "license": "MIT",
   "main": "./src/index.ts",
   "dependencies": {
-    "@neo-one/monitor": "^1.0.0-alpha.37",
+    "@neo-one/monitor": "^1.0.0-alpha.39",
     "koa": "^2.5.0",
     "koa-better-body": "^3.0.4",
     "koa-convert": "^1.2.0",

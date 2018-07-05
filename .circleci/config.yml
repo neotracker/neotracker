@@ -17,7 +17,9 @@ aliases:
 
   - &defaults
     docker:
-      - image: circleci/node:10.4.1
+      - image: neotracker/circleci-test-10.6.0:1
+        environment:
+          TERM: xterm
     working_directory: ~/neotracker
 
   - &test
@@ -45,13 +47,15 @@ aliases:
             JEST_JUNIT_OUTPUT: reports/jest/results.xml
       - run:
           name: E2E
-          command: yarn e2e-ci --testResultsProcessor="jest-junit"
-          environment:
-            JEST_JUNIT_OUTPUT: reports/jest-e2e/results.xml
+          command: yarn e2e-ci
       - store_test_results:
           path: reports
       - store_artifacts:
           path: reports
+      - store_artifacts:
+          path: cypress/videos
+      - store_artifacts:
+          path: cypress/screenshots
 
 version: 2
 jobs:

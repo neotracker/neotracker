@@ -12,7 +12,6 @@ import BigNumber from 'bignumber.js';
 import Knex from 'knex';
 import {
   Action as ActionModel,
-  Block as BlockModel,
   Coin as CoinModel,
   Contract as ContractModel,
   PubSub,
@@ -59,10 +58,16 @@ export interface SystemFeeSave {
   readonly index: number;
   readonly value: string;
 }
+export interface BlockData {
+  readonly previous_block_id: number;
+  readonly previous_block_hash: string;
+  readonly validator_address_id: string;
+  readonly aggregated_system_fee: string;
+}
 export interface Context {
   readonly db: Knex;
   readonly makeQueryContext: ((monitor: Monitor) => QueryContext);
-  readonly prevBlock: BlockModel | undefined;
+  readonly prevBlockData: BlockData | undefined;
   readonly currentHeight: number | undefined;
   readonly systemFee: IWriteCache<number, BigNumber, SystemFeeSave, number>;
   readonly nep5Contracts: { readonly [K in string]?: ReadSmartContract };

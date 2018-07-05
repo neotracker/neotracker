@@ -30,9 +30,15 @@
     "strict": true,
     "strictFunctionTypes": true,
     "strictNullChecks": true,
+    "types": ["jest"],
     "typeRoots": [
-      "./node_modules/@types/",
       "./@types/roots"
     ]
-  }
+  },
+  "include": [
+    "@types/**/*.ts",
+    "packages/**/*.ts",
+    "packages/**/*.tsx",
+    "scripts/**/*.ts"
+  ]
 }

@@ -1,5 +1,6 @@
 // tslint:disable variable-name
 import Knex from 'knex';
+import { Constructor, ModelOptions, Pojo } from 'objection';
 import { BaseEdge, BaseModel, QueryContext } from '../lib';
 
 export class AddressToTransaction extends BaseEdge<string, string> {
@@ -22,5 +23,16 @@ export class AddressToTransaction extends BaseEdge<string, string> {
     values: ReadonlyArray<Partial<AddressToTransaction>>,
   ): Promise<void> {
     return this.insertAllBase(db, context, values, AddressToTransaction);
+  }
+
+  public static fromJson<M>(this: Constructor<M>, json: Pojo, opt?: ModelOptions): M {
+    return super.fromJson(
+      {
+        ...json,
+        id2: json.id2 == undefined ? undefined : String(json.id2),
+      },
+      opt,
+      // tslint:disable-next-line no-any
+    ) as any;
   }
 }

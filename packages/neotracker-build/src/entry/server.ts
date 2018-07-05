@@ -8,7 +8,7 @@ import { getOptions } from '../options';
 
 import { createConsoleLogger } from '../createConsoleLogger';
 
-const port = 1340;
+const port = process.env.NEOTRACKER_PORT === undefined ? 1340 : parseInt(process.env.NEOTRACKER_PORT, 10);
 const { options, network } = getOptions({ port });
 const options$ = new BehaviorSubject(options);
 const monitor = DefaultMonitor.create({

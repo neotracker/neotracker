@@ -1,15 +1,16 @@
 import LRU from 'lru-cache';
-import { Model } from 'objection';
+import { BaseModel } from '../lib';
+
 type Key = string | number;
 
-export interface Cache<TModel extends typeof Model, TValue extends TModel | ReadonlyArray<TModel>> {
+export interface Cache<TModel extends typeof BaseModel, TValue extends TModel | ReadonlyArray<TModel>> {
   readonly get: (key: Key) => Promise<TValue> | undefined;
   readonly set: (k: Key, v: Promise<TValue>) => void;
   readonly delete: (key: Key) => void;
   readonly clear: () => void;
 }
 
-export function makeCache<TModel extends typeof Model, TValue extends TModel | TModel[]>({
+export function makeCache<TModel extends typeof BaseModel, TValue extends TModel | TModel[]>({
   modelClass,
   cacheSize,
 }: {

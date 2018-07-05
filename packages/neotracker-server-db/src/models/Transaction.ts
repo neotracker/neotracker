@@ -1,6 +1,6 @@
 // tslint:disable variable-name
 import Knex from 'knex';
-import { Model } from 'objection';
+import { Constructor, Model, ModelOptions, Pojo } from 'objection';
 import { EdgeSchema, FieldSchema, IndexSchema, QueryContext } from '../lib';
 import { BlockchainModel } from './BlockchainModel';
 import {
@@ -364,6 +364,21 @@ export class Transaction extends BlockchainModel<string> {
     values: ReadonlyArray<Partial<Transaction>>,
   ): Promise<void> {
     return this.insertAllBase(db, context, values, Transaction);
+  }
+
+  public static fromJson<M>(this: Constructor<M>, json: Pojo, opt?: ModelOptions): M {
+    return super.fromJson(
+      {
+        ...json,
+        id: json.id == undefined ? undefined : String(json.id),
+        system_fee: json.system_fee == undefined ? undefined : String(json.system_fee),
+        network_fee: json.network_fee == undefined ? undefined : String(json.network_fee),
+        nonce: json.nonce == undefined ? undefined : String(json.nonce),
+        gas: json.gas == undefined ? undefined : String(json.gas),
+      },
+      opt,
+      // tslint:disable-next-line no-any
+    ) as any;
   }
 
   public readonly hash!: string;

@@ -1,6 +1,7 @@
 // tslint:disable variable-name
 import Knex from 'knex';
-import { Model } from 'objection';
+import { Constructor, Model, ModelOptions, Pojo } from 'objection';
+import { isPostgres } from '../knexUtils';
 import { EdgeSchema, FieldSchema, IndexSchema, QueryContext } from '../lib';
 import { BlockchainModel } from './BlockchainModel';
 import { ADDRESS_VALIDATOR, ASSET_HASH_VALIDATOR, BLOCK_ID_VALIDATOR } from './common';
@@ -119,7 +120,7 @@ export class Coin extends BlockchainModel<string> {
   }
 
   public static async insertAndReturn(db: Knex, queryContext: QueryContext, block: Partial<Coin>): Promise<Coin> {
-    if (db.client.driverName === 'pg') {
+    if (isPostgres(db)) {
       return Coin.query(db)
         .context(queryContext)
         .insert(block)
@@ -131,6 +132,17 @@ export class Coin extends BlockchainModel<string> {
     return Coin.query(db)
       .context(queryContext)
       .insertAndFetch(block);
+  }
+
+  public static fromJson<M>(this: Constructor<M>, json: Pojo, opt?: ModelOptions): M {
+    return super.fromJson(
+      {
+        ...json,
+        value: json.value == undefined ? undefined : String(json.value),
+      },
+      opt,
+      // tslint:disable-next-line no-any
+    ) as any;
   }
 
   public readonly address_id!: string;

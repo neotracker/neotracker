@@ -40,7 +40,7 @@ export const makeContext = ({
   } as any,
   // tslint:disable-next-line no-any
   migrationHandler = {} as any,
-  prevBlock,
+  prevBlockData,
   currentHeight = -1,
   systemFee = createWriteCacheMock(),
   nep5Contracts = {},
@@ -54,7 +54,7 @@ export const makeContext = ({
   makeQueryContext,
   migrationHandler,
   client,
-  prevBlock,
+  prevBlockData,
   currentHeight,
   systemFee,
   nep5Contracts,

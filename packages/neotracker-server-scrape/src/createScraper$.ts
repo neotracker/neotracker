@@ -150,7 +150,7 @@ export const createScraper$ = ({
           db,
           makeQueryContext,
           client,
-          prevBlock: undefined,
+          prevBlockData: undefined,
           currentHeight: undefined,
           systemFee: new WriteCache({
             db,

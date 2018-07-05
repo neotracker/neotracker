@@ -1,2 +1,2 @@
 export * from './getCurrentHeight';
-export * from './getPreviousBlockModel';
+export * from './getPreviousBlockData';

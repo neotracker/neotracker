@@ -1,7 +1,7 @@
 import { defaultFieldResolver, GraphQLResolveInfo } from 'graphql';
+import { ExecutionContext } from 'graphql/execution/execute';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { ExecutionContext } from '../../../../node_modules/@types/graphql/execution/execute';
 import { GraphQLLiveResolver } from '../constants';
 import { convertExecutionResult } from '../createQueryDeduplicator';
 import { GraphQLContext } from '../GraphQLContext';

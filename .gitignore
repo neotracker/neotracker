@@ -45,3 +45,9 @@ __pycache__
 # Hack
 hack/composer.phar
 hack/vendor
+
+
+# Cypress
+cypress/screenshots
+cypress/videos
+reports

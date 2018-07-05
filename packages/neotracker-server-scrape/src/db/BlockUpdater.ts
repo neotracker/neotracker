@@ -8,7 +8,7 @@ import { DBUpdater } from './DBUpdater';
 import { PrevBlockUpdater } from './PrevBlockUpdater';
 import { ProcessedIndexUpdater } from './ProcessedIndexUpdater';
 import { TransactionsUpdater } from './TransactionsUpdater';
-import { getCurrentHeight, getPreviousBlockModel } from './utils';
+import { getCurrentHeight, getPreviousBlockData } from './utils';
 
 const ZERO = new BigNumber(0);
 
@@ -41,30 +41,22 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
   }
 
   public async save(context: Context, monitor: Monitor, block: Block): Promise<Context> {
-    return monitor.captureSpan(
+    return monitor.captureSpanLog(
       async (span) => {
-        const [height, prevBlockModel] = await Promise.all([
+        const [height, prevBlockData] = await Promise.all([
           getCurrentHeight(context, span),
-          getPreviousBlockModel(context, span, block.index),
+          getPreviousBlockData(context, span, block.index),
         ]);
         if (block.index === height + 1) {
-          if (prevBlockModel === undefined || block.previousBlockHash === prevBlockModel.hash) {
+          if (prevBlockData === undefined || block.previousBlockHash === prevBlockData.previous_block_hash) {
             const systemFee = block.transactions.reduce(
               (sysFee, transaction) => sysFee.plus(new BigNumber(transaction.systemFee)),
               ZERO,
             );
             const aggregatedSystemFee =
-              prevBlockModel === undefined
+              prevBlockData === undefined
                 ? systemFee
-                : new BigNumber(prevBlockModel.aggregated_system_fee).plus(systemFee);
-            let prevBlockData = {};
-            if (prevBlockModel !== undefined) {
-              prevBlockData = {
-                previous_block_id: prevBlockModel.id,
-                previous_block_hash: prevBlockModel.hash,
-                validator_address_id: prevBlockModel.next_validator_address_id,
-              };
-            }
+                : new BigNumber(prevBlockData.aggregated_system_fee).plus(systemFee);
 
             const [blockModel, innerNextContext] = await Promise.all([
               BlockModel.insertAndReturn(context.db, context.makeQueryContext(span), {
@@ -122,17 +114,28 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
                 },
                 span,
               ),
-              this.updaters.prevBlock.save(context, span, { block, prevBlockModel }),
+              this.updaters.prevBlock.save(context, span, { block }),
             ]);
 
             await this.updaters.processedIndex.save(innerNextContext, span, block.index);
 
             return {
               ...innerNextContext,
-              prevBlock: blockModel,
-              currentHeight: blockModel.id,
+              prevBlockData: {
+                previous_block_id: block.index,
+                previous_block_hash: blockModel.hash,
+                validator_address_id: blockModel.next_validator_address_id,
+                aggregated_system_fee: aggregatedSystemFee.toFixed(8),
+              },
+              currentHeight: block.index,
             };
           }
+
+          const prevBlockModel = await BlockModel.query(context.db)
+            .context(context.makeQueryContext(span))
+            .where('id', block.index - 1)
+            .first()
+            .throwIfNotFound();
 
           const [prevBlock, nextContext] = await Promise.all([
             context.client.getBlock(height),
@@ -156,14 +159,13 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
 
         return context;
       },
-      { name: 'neotracker_scrape_save_block' },
+      { name: 'neotracker_scrape_save_block', error: {} },
     );
   }
 
   public async revert(context: Context, monitor: Monitor, blockModel: BlockModel): Promise<Context> {
     return monitor.captureSpan(
       async (span) => {
-        const prevBlockModel = await getPreviousBlockModel(context, span, blockModel.id);
         await Promise.all([
           this.updaters.address.revert(context, span, {
             addresses: [
@@ -175,7 +177,7 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
           }),
           this.updaters.transactions.revert(context, span, { blockModel }),
           context.systemFee.revert(blockModel.id, span),
-          this.updaters.prevBlock.revert(context, span, prevBlockModel),
+          this.updaters.prevBlock.revert(context, span, { blockIndex: blockModel.id }),
         ]);
 
         await blockModel
@@ -184,12 +186,12 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
           .delete();
         await this.updaters.processedIndex.revert(context, span, blockModel.id);
 
-        const prevPrevBlockModel = await getPreviousBlockModel(context, monitor, blockModel.id - 1);
+        const prevBlockData = await getPreviousBlockData(context, monitor, blockModel.id - 1);
 
         return {
           ...context,
-          prevBlock: prevPrevBlockModel,
-          currentHeight: prevPrevBlockModel === undefined ? -1 : prevPrevBlockModel.id,
+          prevBlockData,
+          currentHeight: prevBlockData === undefined ? -1 : prevBlockData.previous_block_id,
         };
       },
       { name: 'neotracker_scrape_revert_block' },

@@ -1,7 +1,7 @@
 // tslint:disable variable-name
 import Knex from 'knex';
 import { GAS_ASSET_HASH } from 'neotracker-shared-utils';
-import { Model } from 'objection';
+import { Constructor, Model, ModelOptions, Pojo } from 'objection';
 import { EdgeSchema, FieldSchema, IndexSchema, QueryContext } from '../lib';
 import { calculateAvailableGAS } from '../utils';
 import { BlockchainModel } from './BlockchainModel';
@@ -285,6 +285,22 @@ export class Asset extends BlockchainModel<string> {
   };
   public static async insertAll(db: Knex, context: QueryContext, data: ReadonlyArray<Partial<Asset>>): Promise<void> {
     return this.insertAllBase(db, context, data, Asset);
+  }
+
+  public static fromJson<M>(this: Constructor<M>, json: Pojo, opt?: ModelOptions): M {
+    return super.fromJson(
+      {
+        ...json,
+        transaction_id: json.transaction_id == undefined ? undefined : String(json.transaction_id),
+        amount: json.amount == undefined ? undefined : String(json.amount),
+        issued: json.issued == undefined ? undefined : String(json.issued),
+        address_count: json.address_count == undefined ? undefined : String(json.address_count),
+        transaction_count: json.transaction_count == undefined ? undefined : String(json.transaction_count),
+        transfer_count: json.transfer_count == undefined ? undefined : String(json.transfer_count),
+      },
+      opt,
+      // tslint:disable-next-line no-any
+    ) as any;
   }
 
   public readonly transaction_id!: string;
