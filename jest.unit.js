@@ -21,6 +21,7 @@ module.exports = {
     '/node_modules/',
     '<rootDir>/packages/.*/__e2e__/.*',
     '<rootDir>/packages/.*/test.ts',
+    '<rootDir>/cypress/.*',
   ],
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$',
   transform: {
