@@ -7,6 +7,7 @@ import { BlockchainModel } from './BlockchainModel';
 import {
   ADDRESS_VALIDATOR,
   BLOCK_TIME_VALIDATOR,
+  convertJSON,
   HASH_VALIDATOR,
   INTEGER_INDEX_VALIDATOR,
   NONCE_VALIDATOR,
@@ -257,9 +258,9 @@ export class Block extends BlockchainModel<number> {
     return super.fromJson(
       {
         ...json,
-        system_fee: json.system_fee == undefined ? undefined : String(json.system_fee),
-        network_fee: json.network_fee == undefined ? undefined : String(json.network_fee),
-        aggregated_system_fee: json.aggregated_system_fee == undefined ? undefined : String(json.aggregated_system_fee),
+        system_fee: convertJSON(json.system_fee),
+        network_fee: convertJSON(json.network_fee),
+        aggregated_system_fee: convertJSON(json.aggregated_system_fee),
       },
       opt,
       // tslint:disable-next-line no-any

@@ -7,6 +7,7 @@ import {
   ADDRESS_VALIDATOR,
   ASSET_HASH_VALIDATOR,
   BIG_INT_ID,
+  convertJSON,
   HASH_VALIDATOR,
   INTEGER_INDEX_VALIDATOR,
   SUBTYPE_CLAIM,
@@ -336,11 +337,11 @@ export class TransactionInputOutput extends BlockchainModel<string> {
     return super.fromJson(
       {
         ...json,
-        input_transaction_id: json.input_transaction_id == undefined ? undefined : String(json.input_transaction_id),
-        claim_transaction_id: json.claim_transaction_id == undefined ? undefined : String(json.claim_transaction_id),
-        output_transaction_id: json.output_transaction_id == undefined ? undefined : String(json.output_transaction_id),
-        value: json.value == undefined ? undefined : String(json.value),
-        claim_value: json.claim_value == undefined ? undefined : String(json.claim_value),
+        input_transaction_id: convertJSON(json.input_transaction_id),
+        claim_transaction_id: convertJSON(json.claim_transaction_id),
+        output_transaction_id: convertJSON(json.output_transaction_id),
+        value: convertJSON(json.value),
+        claim_value: convertJSON(json.claim_value),
       },
       opt,
       // tslint:disable-next-line no-any

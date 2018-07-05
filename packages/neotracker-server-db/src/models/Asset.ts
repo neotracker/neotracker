@@ -11,6 +11,7 @@ import {
   BIG_INT_ID,
   BLOCK_ID_VALIDATOR,
   BLOCK_TIME_COLUMN,
+  convertJSON,
   HASH_VALIDATOR,
   NEP5_CONTRACT_TYPE,
 } from './common';
@@ -291,12 +292,12 @@ export class Asset extends BlockchainModel<string> {
     return super.fromJson(
       {
         ...json,
-        transaction_id: json.transaction_id == undefined ? undefined : String(json.transaction_id),
-        amount: json.amount == undefined ? undefined : String(json.amount),
-        issued: json.issued == undefined ? undefined : String(json.issued),
-        address_count: json.address_count == undefined ? undefined : String(json.address_count),
-        transaction_count: json.transaction_count == undefined ? undefined : String(json.transaction_count),
-        transfer_count: json.transfer_count == undefined ? undefined : String(json.transfer_count),
+        transaction_id: convertJSON(json.transaction_id),
+        amount: convertJSON(json.amount),
+        issued: convertJSON(json.issued),
+        address_count: convertJSON(json.address_count),
+        transaction_count: convertJSON(json.transaction_count),
+        transfer_count: convertJSON(json.transfer_count),
       },
       opt,
       // tslint:disable-next-line no-any

@@ -3,7 +3,7 @@ import Knex from 'knex';
 import { Constructor, Model, ModelOptions, Pojo } from 'objection';
 import { EdgeSchema, FieldSchema, IndexSchema, QueryContext } from '../lib';
 import { BlockchainModel } from './BlockchainModel';
-import { BIG_INT_ID, CONTRACT_VALIDATOR, HASH_VALIDATOR, INTEGER_INDEX_VALIDATOR } from './common';
+import { BIG_INT_ID, CONTRACT_VALIDATOR, convertJSON, HASH_VALIDATOR, INTEGER_INDEX_VALIDATOR } from './common';
 
 const ACTION_TYPES: ReadonlyArray<ActionType> = ['Log', 'Notification'];
 export type ActionType = 'Log' | 'Notification';
@@ -125,8 +125,8 @@ export class Action extends BlockchainModel<string> {
     return super.fromJson(
       {
         ...json,
-        id: json.id == undefined ? undefined : String(json.id),
-        transaction_id: json.transaction_id == undefined ? undefined : String(json.transaction_id),
+        id: convertJSON(json.id),
+        transaction_id: convertJSON(json.transaction_id),
       },
       opt,
       // tslint:disable-next-line no-any

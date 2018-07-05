@@ -7,6 +7,7 @@ import {
   BIG_INT_ID,
   BLOCK_TIME_COLUMN,
   CONTRACT_VALIDATOR,
+  convertJSON,
   HASH_VALIDATOR,
   INTEGER_INDEX_VALIDATOR,
   NEP5_BLACKLIST_CONTRACT_TYPE,
@@ -172,7 +173,7 @@ export class Contract extends BlockchainModel<string> {
     return super.fromJson(
       {
         ...json,
-        transaction_id: json.transaction_id == undefined ? undefined : String(json.transaction_id),
+        transaction_id: convertJSON(json.transaction_id),
       },
       opt,
       // tslint:disable-next-line no-any

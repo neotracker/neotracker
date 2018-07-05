@@ -9,6 +9,7 @@ import {
   BIG_INT_ID,
   BLOCK_TIME_COLUMN,
   CONTRACT_VALIDATOR,
+  convertJSON,
   HASH_VALIDATOR,
   INTEGER_INDEX_VALIDATOR,
 } from './common';
@@ -252,8 +253,8 @@ export class Transfer extends BlockchainModel<string> {
     return super.fromJson(
       {
         ...json,
-        transaction_id: json.transaction_id == undefined ? undefined : String(json.transaction_id),
-        value: json.value == undefined ? undefined : String(json.value),
+        transaction_id: convertJSON(json.transaction_id),
+        value: convertJSON(json.value),
       },
       opt,
       // tslint:disable-next-line no-any

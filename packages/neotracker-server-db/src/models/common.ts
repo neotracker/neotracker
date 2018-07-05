@@ -40,3 +40,13 @@ export const SUBTYPE_REWARD = 'REWARD';
 export const NEP5_CONTRACT_TYPE = 'NEP5';
 export const NEP5_BLACKLIST_CONTRACT_TYPE = 'NEP5_BLACKLIST';
 export const UNKNOWN_CONTRACT_TYPE = 'UNKNOWN';
+
+// tslint:disable-next-line no-any
+export const convertJSON = (value: any): any => {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  // tslint:disable-next-line no-null-keyword
+  return value === null ? null : String(value);
+};

@@ -6,6 +6,7 @@ import { BlockchainModel } from './BlockchainModel';
 import {
   BIG_INT_ID,
   BLOCK_TIME_COLUMN,
+  convertJSON,
   HASH_VALIDATOR,
   INTEGER_INDEX_VALIDATOR,
   SUBTYPE_ENROLLMENT,
@@ -370,11 +371,11 @@ export class Transaction extends BlockchainModel<string> {
     return super.fromJson(
       {
         ...json,
-        id: json.id == undefined ? undefined : String(json.id),
-        system_fee: json.system_fee == undefined ? undefined : String(json.system_fee),
-        network_fee: json.network_fee == undefined ? undefined : String(json.network_fee),
-        nonce: json.nonce == undefined ? undefined : String(json.nonce),
-        gas: json.gas == undefined ? undefined : String(json.gas),
+        id: convertJSON(json.id),
+        system_fee: convertJSON(json.system_fee),
+        network_fee: convertJSON(json.network_fee),
+        nonce: convertJSON(json.nonce),
+        gas: convertJSON(json.gas),
       },
       opt,
       // tslint:disable-next-line no-any

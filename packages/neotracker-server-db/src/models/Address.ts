@@ -10,6 +10,7 @@ import {
   BIG_INT_ID,
   BLOCK_ID_VALIDATOR,
   BLOCK_TIME_COLUMN,
+  convertJSON,
   HASH_VALIDATOR,
   INTEGER_INDEX_VALIDATOR,
 } from './common';
@@ -208,10 +209,10 @@ export class Address extends BlockchainModel<string> {
     return super.fromJson(
       {
         ...json,
-        transaction_id: json.transaction_id == undefined ? undefined : String(json.transaction_count),
-        transaction_count: json.transaction_count == undefined ? undefined : String(json.transaction_count),
-        transfer_count: json.transfer_count == undefined ? undefined : String(json.transfer_count),
-        last_transaction_id: json.last_transaction_id == undefined ? undefined : String(json.last_transaction_id),
+        transaction_id: convertJSON(json.transaction_id),
+        transaction_count: convertJSON(json.transaction_count),
+        transfer_count: convertJSON(json.transfer_count),
+        last_transaction_id: convertJSON(json.last_transaction_id),
       },
       opt,
       // tslint:disable-next-line no-any

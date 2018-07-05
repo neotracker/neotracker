@@ -4,7 +4,7 @@ import { Constructor, Model, ModelOptions, Pojo } from 'objection';
 import { isPostgres } from '../knexUtils';
 import { EdgeSchema, FieldSchema, IndexSchema, QueryContext } from '../lib';
 import { BlockchainModel } from './BlockchainModel';
-import { ADDRESS_VALIDATOR, ASSET_HASH_VALIDATOR, BLOCK_ID_VALIDATOR } from './common';
+import { ADDRESS_VALIDATOR, ASSET_HASH_VALIDATOR, BLOCK_ID_VALIDATOR, convertJSON } from './common';
 
 export class Coin extends BlockchainModel<string> {
   public static readonly modelName = 'Coin';
@@ -138,7 +138,7 @@ export class Coin extends BlockchainModel<string> {
     return super.fromJson(
       {
         ...json,
-        value: json.value == undefined ? undefined : String(json.value),
+        value: convertJSON(json.value),
       },
       opt,
       // tslint:disable-next-line no-any

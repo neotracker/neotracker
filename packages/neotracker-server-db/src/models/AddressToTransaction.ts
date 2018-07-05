@@ -2,6 +2,7 @@
 import Knex from 'knex';
 import { Constructor, ModelOptions, Pojo } from 'objection';
 import { BaseEdge, BaseModel, QueryContext } from '../lib';
+import { convertJSON } from './common';
 
 export class AddressToTransaction extends BaseEdge<string, string> {
   public static readonly modelName = 'AddressToTransaction';
@@ -29,7 +30,7 @@ export class AddressToTransaction extends BaseEdge<string, string> {
     return super.fromJson(
       {
         ...json,
-        id2: json.id2 == undefined ? undefined : String(json.id2),
+        id2: convertJSON(json.id2),
       },
       opt,
       // tslint:disable-next-line no-any
