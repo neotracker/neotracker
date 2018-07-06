@@ -11,6 +11,8 @@ yargs.describe('ci', 'Running as part of continuous integration.').default('ci',
 
 // tslint:disable-next-line readonly-array
 const mutableCleanup: Array<() => Promise<void> | void> = [];
+// tslint:disable-next-line no-let
+let neoOneCleanup: (() => Promise<void>) | undefined;
 
 // tslint:disable-next-line no-let
 let shuttingDown = false;
@@ -19,7 +21,10 @@ const shutdown = (exitCode: number) => {
     shuttingDown = true;
     console.log('Shutting down...');
     Promise.all(mutableCleanup.map((callback) => callback()))
-      .then(() => {
+      .then(async () => {
+        if (neoOneCleanup !== undefined) {
+          await neoOneCleanup();
+        }
         process.exit(exitCode);
       })
       .catch((error) => {
@@ -67,14 +72,14 @@ const run = async ({ ci }: { readonly ci: boolean }) => {
   const networkName = `cypress-${v4()}`;
 
   const { proc: neoOneProc } = await startNEOONE();
-  mutableCleanup.push(async () => {
+  neoOneCleanup = async () => {
     neoOneProc.kill();
     try {
       await neoOneProc;
     } catch {
       // do nothing
     }
-  });
+  };
 
   await neoOne(['create', 'network', networkName]);
   mutableCleanup.push(async () => {
