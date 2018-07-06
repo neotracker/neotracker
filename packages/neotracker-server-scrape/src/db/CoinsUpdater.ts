@@ -13,14 +13,18 @@ export class CoinsUpdater extends SameContextDBUpdater<CoinsSave, CoinsSave> {
     return monitor.captureSpan(
       async (span) => {
         await Promise.all([
-          _.chunk(coinModelChanges.filter(isCoinModelCreate), context.chunkSize).map(async (chunk) =>
-            CoinModel.insertAll(context.db, context.makeQueryContext(span), chunk.map(({ value }) => value)),
+          Promise.all(
+            _.chunk(coinModelChanges.filter(isCoinModelCreate), context.chunkSize).map(async (chunk) =>
+              CoinModel.insertAll(context.db, context.makeQueryContext(span), chunk.map(({ value }) => value)),
+            ),
           ),
-          _.chunk(coinModelChanges.filter(isCoinModelDelete), context.chunkSize).map(async (chunk) =>
-            CoinModel.query(context.db)
-              .context(context.makeQueryContext(span))
-              .whereIn('id', chunk.map(({ id }) => id))
-              .delete(),
+          Promise.all(
+            _.chunk(coinModelChanges.filter(isCoinModelDelete), context.chunkSize).map(async (chunk) =>
+              CoinModel.query(context.db)
+                .context(context.makeQueryContext(span))
+                .whereIn('id', chunk.map(({ id }) => id))
+                .delete(),
+            ),
           ),
           Promise.all(
             coinModelChanges.filter(isCoinModelPatch).map(async ({ value, patch }) =>
