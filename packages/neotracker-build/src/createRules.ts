@@ -73,6 +73,7 @@ export const createRules = ({
       },
       babelCore: '@babel/core',
       useCache: true,
+      configFileName: 'tsconfig.compile.json',
     },
   };
 
