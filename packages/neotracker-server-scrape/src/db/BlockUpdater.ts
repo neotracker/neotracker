@@ -41,7 +41,7 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
   }
 
   public async save(context: Context, monitor: Monitor, block: Block): Promise<Context> {
-    return monitor.captureSpanLog(
+    return monitor.captureSpan(
       async (span) => {
         const [height, prevBlockData] = await Promise.all([
           getCurrentHeight(context, span),
@@ -159,7 +159,7 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
 
         return context;
       },
-      { name: 'neotracker_scrape_save_block', error: {} },
+      { name: 'neotracker_scrape_save_block' },
     );
   }
 
