@@ -48,5 +48,10 @@ export const convertJSON = (value: any): any => {
   }
 
   // tslint:disable-next-line no-null-keyword
-  return value === null ? null : String(value);
+  if (value === null) {
+    // tslint:disable-next-line no-null-keyword
+    return null;
+  }
+
+  return typeof value === 'number' ? String(value) : value;
 };
