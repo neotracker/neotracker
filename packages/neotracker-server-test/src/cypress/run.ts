@@ -4,6 +4,7 @@ import tmp from 'tmp';
 import v4 from 'uuid/v4';
 import yargs from 'yargs';
 import { checkReady } from '../checkReady';
+import { createKillProcess } from '../killProcess';
 import { runCypress } from './runCypress';
 import { startNEOONE } from './startNEOONE';
 
@@ -72,14 +73,7 @@ const run = async ({ ci }: { readonly ci: boolean }) => {
   const networkName = `cypress-${v4()}`;
 
   const { proc: neoOneProc } = await startNEOONE();
-  neoOneCleanup = async () => {
-    neoOneProc.kill();
-    try {
-      await neoOneProc;
-    } catch {
-      // do nothing
-    }
-  };
+  neoOneCleanup = createKillProcess(neoOneProc);
 
   await neoOne(['create', 'network', networkName]);
   mutableCleanup.push(async () => {
@@ -100,14 +94,7 @@ const run = async ({ ci }: { readonly ci: boolean }) => {
       NEOTRACKER_DB_FILE: tmp.fileSync().name,
     },
   });
-  mutableCleanup.push(async () => {
-    proc.kill();
-    try {
-      await proc;
-    } catch {
-      // do nothing
-    }
-  });
+  mutableCleanup.push(createKillProcess(proc));
 
   await checkReady('web', proc, port, { path: 'healthcheck', timeoutMS: 120000 });
 

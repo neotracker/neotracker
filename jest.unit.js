@@ -16,7 +16,7 @@ module.exports = {
     },
   },
   moduleFileExtensions: ['js', 'jsx', 'json', 'node', 'ts', 'tsx'],
-  testEnvironment: './packages/neotracker-server-test/src/jest/Environment.js',
+  testEnvironment: './packages/neotracker-server-test/src/jest/Environment.ts',
   testPathIgnorePatterns: [
     '/node_modules/',
     '<rootDir>/packages/.*/__e2e__/.*',
@@ -29,5 +29,5 @@ module.exports = {
   },
   transformIgnorePatterns: ['<rootDir>/node_modules/'],
   setupTestFrameworkScriptFile:
-    './packages/neotracker-server-test/src/jest/setup.js',
+    './packages/neotracker-server-test/src/jest/setup.ts',
 };
