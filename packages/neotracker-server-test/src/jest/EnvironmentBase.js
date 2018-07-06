@@ -11,6 +11,11 @@ class NEOTrackerBase {
 }
 
 class EnvironmentBase extends NodeEnvironment {
+  constructor(config, options) {
+    super(config, options);
+    this.testEnvironmentOptions = config.testEnvironmentOptions || {};
+  }
+
   async setup() {
     await super.setup();
     const neotracker = this._createNEOTracker();
