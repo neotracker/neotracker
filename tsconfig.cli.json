@@ -3,6 +3,7 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "alwaysStrict": true,
+    "allowJs": false,
     "baseUrl": "./packages",
     "target": "es6",
     "module": "commonjs",
