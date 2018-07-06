@@ -20,6 +20,7 @@ aliases:
       - image: neotracker/circleci-test-10.5.0:2
         environment:
           TERM: xterm
+        user: postgres
     working_directory: ~/neotracker
 
   - &test
