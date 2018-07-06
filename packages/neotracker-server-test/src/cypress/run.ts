@@ -5,6 +5,7 @@ import v4 from 'uuid/v4';
 import yargs from 'yargs';
 import { checkReady } from '../checkReady';
 import { runCypress } from './runCypress';
+import { startNEOONE } from './startNEOONE';
 
 yargs.describe('ci', 'Running as part of continuous integration.').default('ci', false);
 
@@ -64,6 +65,16 @@ const neoOne = (
 
 const run = async ({ ci }: { readonly ci: boolean }) => {
   const networkName = `cypress-${v4()}`;
+
+  const { proc: neoOneProc } = await startNEOONE();
+  mutableCleanup.push(async () => {
+    neoOneProc.kill();
+    try {
+      await neoOneProc;
+    } catch {
+      // do nothing
+    }
+  });
 
   await neoOne(['create', 'network', networkName]);
   mutableCleanup.push(async () => {
