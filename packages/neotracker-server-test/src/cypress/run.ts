@@ -96,7 +96,7 @@ const run = async ({ ci }: { readonly ci: boolean }) => {
   });
   mutableCleanup.push(createKillProcess(proc));
 
-  await checkReady('web', proc, port, { path: 'healthcheck', timeoutMS: 120000 });
+  await checkReady('web', proc, port, { path: 'healthcheck', timeoutMS: 300000 });
 
   // Wait for server to startup and sync
   await new Promise<void>((resolve) => setTimeout(resolve, 5000));
