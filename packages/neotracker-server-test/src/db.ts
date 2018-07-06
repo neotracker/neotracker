@@ -13,6 +13,7 @@ import {
   createRootLoader,
   createTables,
   DataPoint,
+  dropTables,
   makeQueryContext as makeQueryContextInternal,
   Migration,
   ProcessedIndex,
@@ -23,15 +24,26 @@ import {
 import { addCleanup } from './cleanupTest';
 import { getMonitor } from './getMonitor';
 
-export const startDB = async (): Promise<Knex> => {
+export interface Database {
+  readonly knex: Knex;
+  readonly reset: () => Promise<void>;
+}
+
+export const startDB = async (): Promise<Database> => {
   const options = await neotracker.startDB();
 
   const db = create({ options, monitor: getMonitor() });
-  addCleanup(async () => db.destroy());
+  addCleanup(async () => {
+    await db.destroy();
+  });
 
-  await createTables(db, getMonitor());
-
-  return db;
+  return {
+    knex: db,
+    reset: async () => {
+      await dropTables(db, getMonitor());
+      await createTables(db, getMonitor());
+    },
+  };
 };
 
 export interface DBData {

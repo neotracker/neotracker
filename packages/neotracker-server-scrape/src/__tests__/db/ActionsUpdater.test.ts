@@ -1,6 +1,7 @@
 import { ActionRaw } from '@neo-one/client';
 import BigNumber from 'bignumber.js';
-import { cleanupTest, getDBData, getMonitor, startDB } from 'neotracker-server-test';
+import Knex from 'knex';
+import { cleanupTest, Database, getDBData, getMonitor, startDB } from 'neotracker-server-test';
 import { data, makeContext } from '../../__data__';
 import { ActionsUpdater } from '../../db/ActionsUpdater';
 import { normalizeAction } from '../../normalizeBlock';
@@ -18,12 +19,23 @@ const createAction = (actionIn: ActionRaw, transactionID: string) => {
 };
 
 describe('ActionsUpdater', () => {
-  afterEach(async () => {
+  let database: Database;
+  let db: Knex;
+
+  beforeAll(async () => {
+    database = await startDB();
+    db = database.knex;
+  });
+
+  beforeEach(async () => {
+    await database.reset();
+  });
+
+  afterAll(async () => {
     await cleanupTest();
   });
 
   test('inserts actions', async () => {
-    const db = await startDB();
     const context = makeContext({ db });
     const updater = new ActionsUpdater();
 
@@ -39,7 +51,6 @@ describe('ActionsUpdater', () => {
   });
 
   test('handles duplicate inserts', async () => {
-    const db = await startDB();
     const context = makeContext({ db });
     const updater = new ActionsUpdater();
     const actions = [
@@ -58,7 +69,6 @@ describe('ActionsUpdater', () => {
   });
 
   test('reverts actions', async () => {
-    const db = await startDB();
     const context = makeContext({ db });
     const updater = new ActionsUpdater();
 
