@@ -216,7 +216,7 @@ export interface CoinModelPatch {
 }
 
 export function isCoinModelPatch(change: CoinModelChange): change is CoinModelPatch {
-  return change.type === 'delete';
+  return change.type === 'patch';
 }
 
 export type CoinModelChange = CoinModelCreate | CoinModelDelete | CoinModelPatch;
