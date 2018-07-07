@@ -12,8 +12,8 @@
   "license": "MIT",
   "main": "./src/index.ts",
   "dependencies": {
-    "@neo-one/client": "^1.0.0-alpha.71",
-    "@neo-one/monitor": "^1.0.0-alpha.41",
+    "@neo-one/client": "^1.0.0-alpha.72",
+    "@neo-one/monitor": "^1.0.0-alpha.42",
     "bignumber.js": "^7.2.0",
     "knex": "^0.15.0",
     "lodash": "^4.17.10",

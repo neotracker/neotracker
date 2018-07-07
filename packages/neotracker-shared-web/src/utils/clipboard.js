@@ -53,7 +53,7 @@ const copy = (data: string, userAgent: UserAgent): Promise<void> => {
   const _data = { 'text/plain': data };
   let _bogusSelection = false;
 
-  const listener = (e) => {
+  const listener: EventListener = (e) => {
     for (const [key, value] of Object.entries(_data)) {
       // $FlowFixMe
       e.clipboardData.setData(key, value);

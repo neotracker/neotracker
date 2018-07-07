@@ -12,9 +12,9 @@
   "license": "MIT",
   "main": "./src/index.ts",
   "dependencies": {
-    "@neo-one/client-core": "^1.0.0-alpha.56",
-    "@neo-one/monitor": "^1.0.0-alpha.41",
-    "@neo-one/node-neo-settings": "^1.0.0-alpha.56",
+    "@neo-one/client-core": "^1.0.0-alpha.57",
+    "@neo-one/monitor": "^1.0.0-alpha.42",
+    "@neo-one/node-neo-settings": "^1.0.0-alpha.57",
     "bignumber.js": "^7.2.0",
     "bn.js": "^4.11.8",
     "change-case": "^3.0.2",
