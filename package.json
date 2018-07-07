@@ -116,7 +116,7 @@
     "typescript": "2.9.1"
   },
   "engines": {
-    "node": "^10.5.0"
+    "node": "^10.6.0"
   },
   "husky": {
     "hooks": {
