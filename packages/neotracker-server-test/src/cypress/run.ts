@@ -48,19 +48,10 @@ process.on('SIGTERM', () => {
   shutdown(0);
 });
 
-const neoOne = (
-  command: ReadonlyArray<string>,
-  { pipe = true }: { readonly pipe?: boolean } = { pipe: true },
-): execa.ExecaChildProcess => {
+const neoOne = (command: ReadonlyArray<string>): execa.ExecaChildProcess => {
   console.log(`$ neo-one ${command.join(' ')}`);
 
-  const proc = execa('node_modules/.bin/neo-one', command);
-  if (pipe) {
-    proc.stdout.pipe(process.stdout);
-    proc.stderr.pipe(process.stderr);
-  }
-
-  return proc;
+  return execa('node_modules/.bin/neo-one', command);
 };
 
 const run = async ({ ci }: { readonly ci: boolean }) => {
@@ -71,7 +62,7 @@ const run = async ({ ci }: { readonly ci: boolean }) => {
     await neoOne(['delete', 'network', networkName, '--force']);
   });
 
-  const { stdout } = await neoOne(['describe', 'network', networkName, '--json'], { pipe: false });
+  const { stdout } = await neoOne(['describe', 'network', networkName, '--json']);
   const networkInfo = JSON.parse(stdout);
   const rpcURL = networkInfo[3][1].table[1][3];
   const port = 1340;
