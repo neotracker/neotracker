@@ -147,6 +147,7 @@
       "yarn run prettier --write",
       "git add",
       "yarn run test --findRelatedTests --passWithNoTests -w 4",
+      "yarn run test-browser --findRelatedTests --passWithNoTests -w 4",
       "yarn run lint:ts"
     ]
   },
