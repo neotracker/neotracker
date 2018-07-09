@@ -40,31 +40,21 @@ export async function getInputOutputResultForModel({
   const inputsResult = {
     addressIDs: _.fromPairs(inputs.map((input) => [input.address_id, addressData])),
     assetIDs: inputs.map((input) => input.asset_id),
-    coinChanges: {
-      transactionIndex,
-      transactionID,
-      transactionHash,
-      changes: inputs.map((input) => ({
-        address: input.address_id,
-        asset: input.asset_id,
-        value: new BigNumber(input.value).negated(),
-      })),
-    },
+    coinChanges: inputs.map((input) => ({
+      address: input.address_id,
+      asset: input.asset_id,
+      value: new BigNumber(input.value).negated(),
+    })),
   };
 
   const outputsResult = {
     addressIDs: _.fromPairs(outputs.map((output) => [output.address_id, addressData])),
     assetIDs: outputs.map((output) => output.asset_id),
-    coinChanges: {
-      transactionIndex,
-      transactionID,
-      transactionHash,
-      changes: outputs.map((output) => ({
-        address: output.address_id,
-        asset: output.asset_id,
-        value: new BigNumber(output.value),
-      })),
-    },
+    coinChanges: outputs.map((output) => ({
+      address: output.address_id,
+      asset: output.asset_id,
+      value: new BigNumber(output.value),
+    })),
   };
 
   const claimsResult = {

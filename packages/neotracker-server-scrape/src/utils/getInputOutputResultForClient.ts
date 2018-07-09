@@ -31,31 +31,21 @@ export function getInputOutputResultForClient({
   const inputsResult = {
     addressIDs: _.fromPairs(inputs.map((input) => [input.address_id, addressData])),
     assetIDs: inputs.map((input) => input.asset_id),
-    coinChanges: {
-      transactionIndex,
-      transactionID,
-      transactionHash,
-      changes: inputs.map((input) => ({
-        address: input.address_id,
-        asset: input.asset_id,
-        value: new BigNumber(input.value).negated(),
-      })),
-    },
+    coinChanges: inputs.map((input) => ({
+      address: input.address_id,
+      asset: input.asset_id,
+      value: new BigNumber(input.value).negated(),
+    })),
   };
 
   const outputsResult = {
     addressIDs: _.fromPairs(transaction.vout.map((output) => [output.address, addressData])),
     assetIDs: transaction.vout.map((output) => output.asset),
-    coinChanges: {
-      transactionIndex,
-      transactionID,
-      transactionHash,
-      changes: transaction.vout.map((output) => ({
-        address: output.address,
-        asset: output.asset,
-        value: new BigNumber(output.value),
-      })),
-    },
+    coinChanges: transaction.vout.map((output) => ({
+      address: output.address,
+      asset: output.asset,
+      value: new BigNumber(output.value),
+    })),
   };
 
   const claimsResult = {
