@@ -13800,6 +13800,12 @@ tslint-microsoft-contrib@^5.0.3:
   dependencies:
     tsutils "^2.12.1"
 
+tslint-react@^3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/tslint-react/-/tslint-react-3.6.0.tgz#7f462c95c4a0afaae82507f06517ff02942196a1"
+  dependencies:
+    tsutils "^2.13.1"
+
 tslint-sonarts@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/tslint-sonarts/-/tslint-sonarts-1.7.0.tgz#1bcaf9f524c86b8d4cf9a2afae736edffd2e0dea"
@@ -13829,7 +13835,7 @@ tsutils@2.7.1:
   dependencies:
     tslib "^1.7.1"
 
-tsutils@^2.12.1, tsutils@^2.24.0, tsutils@^2.27.0:
+tsutils@^2.12.1, tsutils@^2.13.1, tsutils@^2.24.0, tsutils@^2.27.0:
   version "2.27.2"
   resolved "https://registry.yarnpkg.com/tsutils/-/tsutils-2.27.2.tgz#60ba88a23d6f785ec4b89c6e8179cac9b431f1c7"
   dependencies:

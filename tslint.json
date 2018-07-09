@@ -1,6 +1,7 @@
 {
   "extends": [
     "tslint:all",
+    "tslint-react",
     "tslint-config-prettier"
   ],
   "rulesDirectory": [
