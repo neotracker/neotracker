@@ -24,7 +24,7 @@ export class RootLoader {
   public readonly loadersByEdge: LoadersByEdge;
   public readonly blockHashLoader: StringLoader<Block | undefined>;
   public readonly transactionHashLoader: StringLoader<Transaction | undefined>;
-  public readonly maxIndexFetcher: { readonly get: (() => Promise<number>) };
+  public readonly maxIndexFetcher: { readonly get: (() => Promise<number>); readonly reset: (() => void) };
 
   public constructor({
     db,
@@ -45,7 +45,7 @@ export class RootLoader {
     readonly loadersByEdge: LoadersByEdge;
     readonly blockHashLoader: StringLoader<Block | undefined>;
     readonly transactionHashLoader: StringLoader<Transaction | undefined>;
-    readonly maxIndexFetcher: { readonly get: (() => Promise<number>) };
+    readonly maxIndexFetcher: { readonly get: (() => Promise<number>); readonly reset: (() => void) };
   }) {
     this.db = db;
     this.makeQueryContext = makeQueryContext;
@@ -57,4 +57,17 @@ export class RootLoader {
     this.transactionHashLoader = transactionHashLoader;
     this.maxIndexFetcher = maxIndexFetcher;
   }
+
+  public readonly reset = (): void => {
+    Object.values(this.loaders).forEach((loader) => loader.clearAll());
+    Object.values(this.loadersByField).forEach((fieldLoader) =>
+      Object.values(fieldLoader).forEach((loader) => loader.clearAll()),
+    );
+    Object.values(this.loadersByEdge).forEach((edgeLoader) =>
+      Object.values(edgeLoader).forEach((loader) => loader.clearAll()),
+    );
+    this.blockHashLoader.clearAll();
+    this.transactionHashLoader.clearAll();
+    this.maxIndexFetcher.reset();
+  };
 }

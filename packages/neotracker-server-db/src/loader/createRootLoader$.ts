@@ -6,7 +6,7 @@ import Knex from 'knex';
 import { pubsub } from 'neotracker-server-utils';
 import { Model } from 'objection';
 import { combineLatest, Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { distinctUntilChanged, map, scan, startWith } from 'rxjs/operators';
 import { PROCESSED_NEXT_INDEX } from '../channels';
 import { BaseModel, makeQueryContext as makeQueryContextBase, QueryContext } from '../lib';
 import { Block, loaderModels as models, ProcessedIndex, Transaction } from '../models';
@@ -44,6 +44,9 @@ const makeMaxIndexFetcher = (db: Knex, monitor: Monitor, makeQueryContext: ((mon
       }
 
       return maxIndex === undefined ? 0 : maxIndex;
+    },
+    reset(): void {
+      maxIndex = undefined;
     },
   };
 };
@@ -83,7 +86,7 @@ const createLoaders = ({
     Transaction | undefined
   >;
 
-  readonly maxIndexFetcher: { readonly get: (() => Promise<number>) };
+  readonly maxIndexFetcher: { readonly get: (() => Promise<number>); readonly reset: (() => void) };
 } => {
   const mutableLoaders: LoadersMutable = {};
   const mutableLoadersByField: LoadersByFieldMutable = {};
@@ -253,6 +256,16 @@ export const createRootLoader$ = ({
   readonly options$: Observable<Options>;
   readonly monitor: Monitor;
 }): Observable<RootLoader> =>
-  combineLatest(db$, options$, pubsub.observable$(PROCESSED_NEXT_INDEX).pipe(startWith(0))).pipe(
-    map(([db, options]) => createRootLoader(db, options, monitor)),
+  combineLatest(
+    combineLatest(db$, options$).pipe(map(([db, options]) => createRootLoader(db, options, monitor))),
+    pubsub.observable$(PROCESSED_NEXT_INDEX).pipe(startWith(0)),
+  ).pipe(
+    scan((prevRootLoader: RootLoader, [nextRootLoader]: [RootLoader]) => {
+      if (prevRootLoader === nextRootLoader) {
+        nextRootLoader.reset();
+      }
+
+      return nextRootLoader;
+    }, undefined),
+    distinctUntilChanged(),
   );
