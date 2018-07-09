@@ -1,5 +1,6 @@
 // tslint:disable no-any
 import { AsComponentClass } from 'reakit';
+// tslint:disable-next-line match-default-export-name
 import styledComponents, {
   Interpolation,
   StyledComponentClass,

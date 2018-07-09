@@ -143,7 +143,7 @@
       "git add",
       "yarn run lint:js"
     ],
-    "packages/*/src/**/*.ts": [
+    "packages/*/src/**/*.{ts,tsx}": [
       "yarn run prettier --write",
       "git add",
       "yarn run test --findRelatedTests --passWithNoTests -w 4",
@@ -172,7 +172,7 @@
     "lint-staged": "lint-staged",
     "lint:js": "eslint",
     "lint:js:all": "yarn run lint:js \"packages/*/src/**/*.js\"",
-    "lint:ts": "tslint --project .",
+    "lint:ts": "tslint --project . --format codeFrame",
     "nit": "yarn run nit:source",
     "nit:source": "yarn run nit:source:ts && yarn run nit:source:js",
     "nit:source:js": "prettier --list-different \"packages/*/src/**/*.js\"",
