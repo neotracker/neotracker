@@ -2,7 +2,7 @@ import { Monitor } from '@neo-one/monitor';
 import BigNumber from 'bignumber.js';
 import * as _ from 'lodash';
 import { Coin as CoinModel, SUBTYPE_CLAIM, SUBTYPE_ISSUE, SUBTYPE_REWARD } from 'neotracker-server-db';
-import { GAS_ASSET_ID, NEO_ASSET_HASH, utils } from 'neotracker-shared-utils';
+import { GAS_ASSET_ID, utils } from 'neotracker-shared-utils';
 import {
   ActionData,
   AssetData,
@@ -59,15 +59,7 @@ const getCoinData = (
 
     return Object.entries(reducedValues)
       .map(([assetHash, value]) => ({ addressHash, assetHash, value }))
-      .filter(({ value }) => !value.isEqualTo(ZERO))
-      .map((opts) => {
-        const { assetHash, value } = opts;
-        if (assetHash === NEO_ASSET_HASH && value.lte(ZERO)) {
-          throw new Error('Found negative');
-        }
-
-        return opts;
-      });
+      .filter(({ value }) => !value.isEqualTo(ZERO));
   });
 };
 
