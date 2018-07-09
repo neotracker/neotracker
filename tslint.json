@@ -117,6 +117,7 @@
     ],
     "variable-name": [
       true,
+      "allow-pascal-case",
       "ban-keywords",
       "check-format",
       "allow-leading-underscore"
