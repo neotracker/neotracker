@@ -27,28 +27,22 @@ export async function getActionDataForModel({
     toAddressID: transferModel.to_address_id == undefined ? undefined : transferModel.to_address_id,
     assetID: transferModel.asset_id,
     transferID: transferModel.id,
-    coinChanges: {
-      transactionIndex: transferModel.transaction_index,
-      actionIndex: transferModel.action_index,
-      transactionID: transferModel.transaction_id,
-      transactionHash: transferModel.transaction_hash,
-      changes: [
-        transferModel.from_address_id == undefined
-          ? undefined
-          : {
-              address: transferModel.from_address_id,
-              asset: transferModel.asset_id,
-              value: value.negated(),
-            },
-        transferModel.to_address_id == undefined
-          ? undefined
-          : {
-              address: transferModel.to_address_id,
-              asset: transferModel.asset_id,
-              value,
-            },
-      ].filter(utils.notNull),
-    },
+    coinChanges: [
+      transferModel.from_address_id == undefined
+        ? undefined
+        : {
+            address: transferModel.from_address_id,
+            asset: transferModel.asset_id,
+            value: value.negated(),
+          },
+      transferModel.to_address_id == undefined
+        ? undefined
+        : {
+            address: transferModel.to_address_id,
+            asset: transferModel.asset_id,
+            value,
+          },
+    ].filter(utils.notNull),
   };
 
   return { action: actionModel, transfer: { value, result } };

@@ -6,15 +6,9 @@ import { ActionData, Context } from '../types';
 export function getActionDataForClient({
   context,
   action: actionIn,
-  transactionID,
-  transactionHash,
-  transactionIndex,
 }: {
   readonly context: Context;
   readonly action: ActionRaw;
-  readonly transactionID: string;
-  readonly transactionHash: string;
-  readonly transactionIndex: number;
 }): ActionData<ActionRaw> {
   const nep5Contract = context.nep5Contracts[actionIn.scriptHash];
   if (nep5Contract === undefined) {
@@ -45,28 +39,22 @@ export function getActionDataForClient({
     toAddressID: toAddressHash,
     assetID: actionIn.scriptHash,
     transferID: actionIn.globalIndex.toString(),
-    coinChanges: {
-      transactionIndex,
-      actionIndex: actionIn.index,
-      transactionID,
-      transactionHash,
-      changes: [
-        fromAddressHash === undefined
-          ? undefined
-          : {
-              address: fromAddressHash,
-              asset: actionIn.scriptHash,
-              value: value.negated(),
-            },
-        toAddressHash === undefined
-          ? undefined
-          : {
-              address: toAddressHash,
-              asset: actionIn.scriptHash,
-              value,
-            },
-      ].filter(utils.notNull),
-    },
+    coinChanges: [
+      fromAddressHash === undefined
+        ? undefined
+        : {
+            address: fromAddressHash,
+            asset: actionIn.scriptHash,
+            value: value.negated(),
+          },
+      toAddressHash === undefined
+        ? undefined
+        : {
+            address: toAddressHash,
+            asset: actionIn.scriptHash,
+            value,
+          },
+    ].filter(utils.notNull),
   };
 
   return { action: actionIn, transfer: { value, result } };

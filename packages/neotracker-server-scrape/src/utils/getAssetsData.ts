@@ -2,7 +2,7 @@ import { Monitor } from '@neo-one/monitor';
 import BigNumber from 'bignumber.js';
 import * as _ from 'lodash';
 import { Coin as CoinModel, SUBTYPE_CLAIM, SUBTYPE_ISSUE, SUBTYPE_REWARD } from 'neotracker-server-db';
-import { GAS_ASSET_ID, utils } from 'neotracker-shared-utils';
+import { GAS_ASSET_ID, NEO_ASSET_HASH, utils } from 'neotracker-shared-utils';
 import {
   ActionData,
   AssetData,
@@ -37,39 +37,38 @@ interface TransactionData {
 
 const getCoinData = (
   transactions: ReadonlyArray<TransactionData>,
-):
-  | {
-      readonly coins: ReadonlyArray<{
-        readonly addressHash: string;
-        readonly assetHash: string;
-        readonly value: BigNumber;
-      }>;
-      readonly transactionIndex: number;
-      readonly actionIndex: number | undefined;
-    }
-  | undefined => {
+): ReadonlyArray<{
+  readonly addressHash: string;
+  readonly assetHash: string;
+  readonly value: BigNumber;
+}> => {
   const coinChanges = transactions.reduce<CoinChanges | undefined>(
     (acc, { coinChanges: coinChangesIn }) => reduceCoinChanges(acc, coinChangesIn),
     undefined,
   );
   if (coinChanges === undefined) {
-    return undefined;
+    return [];
   }
 
-  const { transactionIndex, actionIndex, changes } = coinChanges;
-  const groupedValues = Object.entries(_.groupBy(changes, ({ address }) => address));
+  const groupedValues = Object.entries(_.groupBy(coinChanges, ({ address }) => address));
 
-  const coins = _.flatMap(groupedValues, ([addressHash, values]) => {
+  return _.flatMap(groupedValues, ([addressHash, values]) => {
     const reducedValues = _.mapValues(_.groupBy(values, ({ asset }) => asset), (assetValues) =>
       assetValues.reduce((acc, { value }) => acc.plus(value), ZERO),
     );
 
     return Object.entries(reducedValues)
       .map(([assetHash, value]) => ({ addressHash, assetHash, value }))
-      .filter(({ value }) => !value.isEqualTo(ZERO));
-  });
+      .filter(({ value }) => !value.isEqualTo(ZERO))
+      .map((opts) => {
+        const { assetHash, value } = opts;
+        if (assetHash === NEO_ASSET_HASH && value.lte(ZERO)) {
+          throw new Error('Found negative');
+        }
 
-  return { coins, transactionIndex, actionIndex };
+        return opts;
+      });
+  });
 };
 
 const getAssetOutputIssued = (outputs: ReadonlyArray<Output>): { readonly [asset: string]: BigNumber } => {
@@ -121,27 +120,28 @@ export const getAssetsData = async ({
     ),
   );
   const coinData = getCoinData(transactions);
-  let coinModelChanges: ReadonlyArray<CoinModelChange> = [];
-  if (coinData !== undefined) {
-    const coinModels = await Promise.all(
-      _.chunk(coinData.coins, context.chunkSize).map(async (chunk) =>
-        CoinModel.query(context.db)
-          .context(context.makeQueryContext(monitor))
-          .whereIn('id', chunk.map(({ addressHash, assetHash }) => CoinModel.makeID({ addressHash, assetHash }))),
-      ),
-    ).then((result) => _.flatMap(result));
-    const idToCoinModel = coinModels.reduce<{ [id: string]: CoinModel | undefined }>(
-      (acc, coinModel) => ({
-        ...acc,
-        [coinModel.id]: coinModel,
-      }),
-      {},
-    );
-    coinModelChanges = coinData.coins
-      .map<CoinModelChange | undefined>(({ addressHash, assetHash, value }) => {
-        const id = CoinModel.makeID({ addressHash, assetHash });
-        const coinModel = idToCoinModel[id];
-        if (coinModel === undefined) {
+  const coinModels = await Promise.all(
+    _.chunk(coinData, context.chunkSize).map(async (chunk) =>
+      CoinModel.query(context.db)
+        .context(context.makeQueryContext(monitor))
+        .whereIn('id', chunk.map(({ addressHash, assetHash }) => CoinModel.makeID({ addressHash, assetHash }))),
+    ),
+  ).then((result) => _.flatMap(result));
+  const idToCoinModel = coinModels.reduce<{ [id: string]: CoinModel | undefined }>(
+    (acc, coinModel) => ({
+      ...acc,
+      [coinModel.id]: coinModel,
+    }),
+    {},
+  );
+  const coinModelChanges = coinData
+    .map<CoinModelChange | undefined>(({ addressHash, assetHash, value }) => {
+      const id = CoinModel.makeID({ addressHash, assetHash });
+      const coinModel = idToCoinModel[id];
+      const updatedBlockIndex = negated ? blockIndex - 1 : blockIndex;
+      if (coinModel === undefined) {
+        const val = negated ? value.negated() : value;
+        if (val.gt(ZERO)) {
           return {
             type: 'create',
             assetHash,
@@ -149,38 +149,40 @@ export const getAssetsData = async ({
               id,
               address_id: addressHash,
               asset_id: assetHash,
-              value: negated ? value.negated().toString() : value.toString(),
-              block_id: blockIndex,
-            },
-          };
-        }
-
-        if ((negated && blockIndex === coinModel.block_id) || (!negated && blockIndex > coinModel.block_id)) {
-          const newValue = negated
-            ? new BigNumber(coinModel.value).minus(value)
-            : new BigNumber(coinModel.value).plus(value);
-          if (newValue.isEqualTo(0)) {
-            return {
-              type: 'delete',
-              id,
-              assetHash,
-            };
-          }
-
-          return {
-            type: 'patch',
-            value: coinModel,
-            patch: {
-              value: newValue.toString(),
-              block_id: blockIndex,
+              value: val.toString(),
+              block_id: updatedBlockIndex,
             },
           };
         }
 
         return undefined;
-      })
-      .filter(utils.notNull);
-  }
+      }
+
+      if ((negated && blockIndex === coinModel.block_id) || (!negated && blockIndex > coinModel.block_id)) {
+        const newValue = negated
+          ? new BigNumber(coinModel.value).minus(value)
+          : new BigNumber(coinModel.value).plus(value);
+        if (newValue.isEqualTo(0)) {
+          return {
+            type: 'delete',
+            id,
+            assetHash,
+          };
+        }
+
+        return {
+          type: 'patch',
+          value: coinModel,
+          patch: {
+            value: newValue.toString(),
+            block_id: updatedBlockIndex,
+          },
+        };
+      }
+
+      return undefined;
+    })
+    .filter(utils.notNull);
 
   const assetAddressCount = _.mapValues(
     _.groupBy(coinModelChanges.filter(isCoinModelCreateOrDelete), ({ assetHash }) => assetHash),

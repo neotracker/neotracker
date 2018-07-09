@@ -30,9 +30,6 @@ function calculateTransactionData({
           getActionDataForClient({
             context,
             action,
-            transactionID,
-            transactionHash,
-            transactionIndex,
           }),
         )
       : [];

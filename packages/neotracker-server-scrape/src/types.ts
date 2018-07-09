@@ -86,11 +86,7 @@ export interface CoinChange {
   readonly value: BigNumber;
 }
 
-export interface CoinChanges {
-  readonly transactionIndex: number;
-  readonly actionIndex?: number;
-  readonly changes: ReadonlyArray<CoinChange>;
-}
+export type CoinChanges = ReadonlyArray<CoinChange>;
 
 export interface InputOutputResultAddressIDs {
   readonly [addressID: string]: {
