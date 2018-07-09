@@ -12,7 +12,7 @@ import * as React from 'react';
 import classNames from 'classnames';
 
 import OpenWalletPassword from './OpenWalletPassword';
-import { Button, Typography, withStyles } from '../../../lib/base';
+import { Button, Typography, withStyles, TextField } from '../../../lib/base';
 import { type Theme } from '../../../styles/createTheme';
 import { Selector } from '../../../lib/selector';
 
@@ -30,6 +30,10 @@ const styles = (theme: Theme) => ({
   },
   hidden: {
     display: 'none',
+  },
+  hiddenUsername: {
+    height: '0px',
+    width: '0px',
   },
   selector: {
     display: 'flex',
@@ -124,12 +128,24 @@ function OpenWalletFilePassword({
       {errorElement}
     </div>
   );
+  const hiddenUsername = (
+    <div className={classes.hiddenUsername}>
+      <TextField
+        id="username"
+        type="text"
+        value={wallet == null ? '' : wallet.wallet}
+        autoComplete="username"
+        noTabIndex
+      />
+    </div>
+  );
   return (
     <OpenWalletPassword
       className={classNames(className, classes.root)}
       accessType="Keystore"
       keyElement={fileUploadElement}
       selectAccountElement={selectAccountElement}
+      hiddenUsernameElement={hiddenUsername}
       onOpen={onOpen}
       onOpenError={onOpenError}
       wallet={wallet}

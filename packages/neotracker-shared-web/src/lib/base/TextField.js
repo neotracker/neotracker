@@ -38,6 +38,8 @@ const styles = () => ({
 export type ExternalProps = {|
   id: string,
   value: string,
+  autoComplete?: string,
+  noTabIndex?: boolean,
   hasSubtext?: boolean,
   subtext?: ?string,
   error?: boolean,
@@ -78,6 +80,7 @@ type Props = {|
 function TextField({
   id: idIn,
   value,
+  autoComplete,
   subtext,
   hasSubtext,
   error,
@@ -92,6 +95,7 @@ function TextField({
   readOnly,
   inputClasses,
   className,
+  noTabIndex = false,
   onFocus,
   onBlur,
   onChange,
@@ -145,6 +149,7 @@ function TextField({
         id={id}
         classes={inputClasses}
         value={value}
+        autoComplete={autoComplete}
         inputRef={setInputRef}
         disabled={disabled}
         type={type}
@@ -156,6 +161,7 @@ function TextField({
           onKeyUp,
           onClick,
           readOnly: readOnly ? 'readonly' : undefined,
+          tabIndex: noTabIndex ? -1 : undefined,
         }}
         onFocus={onFocus}
         onBlur={onBlur}

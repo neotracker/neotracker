@@ -35,6 +35,7 @@ type ExternalProps = {|
   ...TextFieldExternalProps,
   value: string,
   copyOnClickName?: string,
+  autoComplete?: string,
   label?: string,
   validation?: string,
   hasSubtext?: boolean,
@@ -55,6 +56,7 @@ type Props = {|
 function PasswordField({
   value,
   label,
+  autoComplete,
   validation: validationIn,
   hasSubtext: hasSubtextIn,
   copyOnClickName,
@@ -76,6 +78,7 @@ function PasswordField({
       {...other}
       value={value}
       type={type}
+      autoComplete={autoComplete}
       error={validation != null}
       subtext={validation}
       hasSubtext={hasSubtext}
@@ -91,6 +94,7 @@ function PasswordField({
         {...other}
         value={value}
         type={type}
+        autoComplete={autoComplete}
         error={validation != null}
         subtext={validation}
         hasSubtext={hasSubtext}

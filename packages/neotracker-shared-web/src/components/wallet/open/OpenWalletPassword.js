@@ -54,6 +54,7 @@ type ExternalProps = {|
   onOpenError: (error: Error) => void,
   keyElement: React.Element<any>,
   selectAccountElement?: React.Element<any>,
+  hiddenUsernameElement?: React.Element<any>,
   className?: string,
   accessType: string,
   wallet: ?mixed,
@@ -80,6 +81,7 @@ function OpenWalletPassword({
   onSubmit,
   keyElement,
   selectAccountElement,
+  hiddenUsernameElement,
   classes,
 }: Props): React.Element<*> {
   let passwordElement;
@@ -88,6 +90,7 @@ function OpenWalletPassword({
       <div className={classes.passwordArea}>
         <PasswordField
           id="owfp-password"
+          autoComplete="current-password"
           className={classes.passwordField}
           value={password}
           validation={validation}
@@ -115,6 +118,7 @@ function OpenWalletPassword({
   return (
     <div className={classNames(className, classes.root)}>
       {keyElement}
+      {hiddenUsernameElement}
       {selectAccountElement}
       {passwordElement}
     </div>

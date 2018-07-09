@@ -14,13 +14,10 @@ import classNames from 'classnames';
 import { privateKeyToAddress, wifToPrivateKey } from '@neo-one/client';
 
 import type { AppContext } from '../../../AppContext';
-import Button from '../../../lib/base/Button';
-import Typography from '../../../lib/base/Typography';
-import PasswordField from '../common/PasswordField';
 import OpenWalletPassword from './OpenWalletPassword';
 // eslint-disable-next-line
 import OpenWalletPrivateKey from './OpenWalletPrivateKey';
-import { withStyles } from '../../../lib/base';
+import { withStyles, Button, Typography, TextField } from '../../../lib/base';
 import { type Theme } from '../../../styles/createTheme';
 
 import { api as walletAPI } from '../../../wallet';
@@ -74,10 +71,11 @@ function OpenWalletEncryptedKey({
 }: Props): React.Element<*> {
   const encryptedKeyElement = (
     <div className={classes.passwordArea}>
-      <PasswordField
+      <TextField
         id="owek-encrypted-key"
+        autoComplete="username"
+        subtext={nep2Key === '' ? null : error}
         value={nep2Key}
-        validation={error}
         hasSubtext
         onChange={onChangeNEP2}
         onEnter={onSubmit}
