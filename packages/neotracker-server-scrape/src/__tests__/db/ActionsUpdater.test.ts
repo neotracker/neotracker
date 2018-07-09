@@ -1,7 +1,7 @@
 import { ActionRaw } from '@neo-one/client';
 import BigNumber from 'bignumber.js';
 import Knex from 'knex';
-import { cleanupTest, Database, getDBData, getMonitor, startDB } from 'neotracker-server-test';
+import { Database, getDBData, getMonitor, startDB } from 'neotracker-server-test';
 import { data, makeContext } from '../../__data__';
 import { ActionsUpdater } from '../../db/ActionsUpdater';
 import { normalizeAction } from '../../normalizeBlock';
@@ -29,10 +29,6 @@ describe('ActionsUpdater', () => {
 
   beforeEach(async () => {
     await database.reset();
-  });
-
-  afterAll(async () => {
-    await cleanupTest();
   });
 
   test('inserts actions', async () => {

@@ -1,6 +1,6 @@
+export * from './addCleanup';
 export * from './cypress';
 export * from './checkReady';
-export * from './cleanupTest';
 export * from './getMonitor';
 export * from './jest';
 export * from './db';

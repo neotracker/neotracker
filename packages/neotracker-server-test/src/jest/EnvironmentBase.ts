@@ -1,13 +1,36 @@
+import { finalize as neoOneFinalize } from '@neo-one/utils';
+import * as fs from 'fs-extra';
 // @ts-ignore
 import NodeEnvironment from 'jest-environment-node';
+import { finalize } from 'neotracker-shared-utils';
+import * as tmp from 'tmp';
 
 export class NEOTrackerBase {
+  private readonly mutableCleanup: Array<() => Promise<void> | void> = [
+    async () => {
+      await Promise.all([finalize.wait(), neoOneFinalize.wait()]);
+    },
+  ];
+
   public async setup() {
     // do nothing
   }
 
-  public async teardown() {
-    // do nothing
+  public addCleanup(callback: () => Promise<void> | void): void {
+    this.mutableCleanup.push(callback);
+  }
+
+  public async teardown(): Promise<void> {
+    await Promise.all(this.mutableCleanup.map(async (callback) => callback()));
+  }
+
+  protected createDir(): string {
+    const dir = tmp.dirSync().name;
+    this.addCleanup(async () => {
+      await fs.remove(dir);
+    });
+
+    return dir;
   }
 }
 

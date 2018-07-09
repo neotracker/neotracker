@@ -21,7 +21,7 @@ import {
   TransactionInputOutput,
   Transfer,
 } from 'neotracker-server-db';
-import { addCleanup } from './cleanupTest';
+import { addCleanup } from './addCleanup';
 import { getMonitor } from './getMonitor';
 
 export interface Database {
