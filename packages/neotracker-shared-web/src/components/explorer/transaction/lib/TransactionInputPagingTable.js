@@ -11,6 +11,7 @@ import TransactionInputTable from './TransactionInputTable';
 import { fragmentContainer, queryRenderer } from '../../../../graphql/relay';
 import { getPagingVariables } from '../../../../utils';
 
+import { type AssetNameLink_asset } from '../../asset/lib/__generated__/AssetNameLink_asset.graphql';
 import { type TransactionInputPagingTable_transaction } from './__generated__/TransactionInputPagingTable_transaction.graphql';
 import { type TransactionInputPagingTableQueryResponse } from './__generated__/TransactionInputPagingTableQuery.graphql';
 
@@ -18,6 +19,13 @@ const PAGE_SIZE = 10;
 
 type ExternalProps = {|
   transaction: any,
+  transfers?: Array<{|
+    to_address_id: string,
+    from_address_id: string,
+    value: string,
+    asset: AssetNameLink_asset,
+  |}>,
+  offset?: number,
   addressHash?: string,
   positive?: boolean,
   className?: string,
@@ -37,6 +45,7 @@ type Props = {|
 |};
 function TransactionInputPagingTable({
   addressHash,
+  transfers,
   positive,
   className,
   props,
@@ -53,8 +62,16 @@ function TransactionInputPagingTable({
   }
 
   let inputs = [];
-  let hasPreviousPage = false;
+  let transferInputs = [];
+  if (transfers != null && page === 1) {
+    transferInputs = transfers.map((transfer) => ({
+      address_id: transfer.from_address_id,
+      value: transfer.value,
+      asset: transfer.asset,
+    }));
+  }
   let hasNextPage = false;
+  let hasPreviousPage = false;
   const transaction = currentProps == null ? null : currentProps.transaction;
   if (transaction != null) {
     inputs = transaction.inputs.edges.map((edge) => edge.node);
@@ -67,6 +84,7 @@ function TransactionInputPagingTable({
     <TransactionInputTable
       className={className}
       inputs={inputs}
+      transfers={transferInputs}
       addressHash={addressHash}
       positive={positive}
       isInitialLoad={currentProps == null}
@@ -84,12 +102,14 @@ function TransactionInputPagingTable({
 const mapPropsToVariables = ({
   transaction,
   page,
+  offset,
 }: {|
   transaction: TransactionInputPagingTable_transaction,
   page: number,
+  offset: number,
 |}) => ({
   hash: transaction.hash,
-  ...getPagingVariables(PAGE_SIZE, page),
+  ...getPagingVariables(PAGE_SIZE, page, offset),
 });
 
 const enhance: HOC<*, *> = compose(

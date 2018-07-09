@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash bdb4415854facb016272d6aa574fdca3
+ * @relayHash ce68ce7f65994c436a0e04f4abfcb9ff
  */
 
 /* eslint-disable */
@@ -62,35 +62,6 @@ fragment TransactionViewExtra_transaction on Transaction {
     verification_script
   }
   script
-  transfers {
-    edges {
-      node {
-        ...TransferTable_transfers
-        id
-      }
-    }
-  }
-}
-
-fragment TransferTable_transfers on Transfer {
-  ...TransferLink_transfer
-  from_address_id
-  to_address_id
-  value
-  asset {
-    ...AssetNameLink_asset
-    id
-  }
-  block_time
-}
-
-fragment TransferLink_transfer on Transfer {
-  transaction_hash
-}
-
-fragment AssetNameLink_asset on Asset {
-  id
-  symbol
 }
 
 fragment TransactionClaimSummaryBody_transaction on Transaction {
@@ -143,6 +114,20 @@ fragment TransactionInvocationSummaryBody_transaction on Transaction {
     ...AssetRegistered_asset
     id
   }
+  transfers {
+    edges {
+      node {
+        asset {
+          ...AssetNameLink_asset
+          id
+        }
+        from_address_id
+        to_address_id
+        value
+        id
+      }
+    }
+  }
   contracts {
     edges {
       node {
@@ -163,6 +148,11 @@ fragment TransactionOutputPagingTable_transaction on Transaction {
 
 fragment AssetRegistered_asset on Asset {
   ...AssetNameLink_asset
+}
+
+fragment AssetNameLink_asset on Asset {
+  id
+  symbol
 }
 
 fragment ContractPublished_contract on Contract {
@@ -228,19 +218,12 @@ v4 = {
       "storageKey": null
     }
   ]
-},
-v5 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "block_time",
-  "args": null,
-  "storageKey": null
 };
 return {
   "kind": "Request",
   "operationKind": "query",
   "name": "TransactionQuery",
-  "id": "30",
+  "id": "46",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -286,7 +269,7 @@ return {
           {
             "kind": "ScalarField",
             "alias": null,
-            "name": "size",
+            "name": "system_fee",
             "args": null,
             "storageKey": null
           },
@@ -358,16 +341,65 @@ return {
           },
           v4,
           {
-            "kind": "ScalarField",
+            "kind": "LinkedField",
             "alias": null,
-            "name": "network_fee",
+            "name": "transfers",
+            "storageKey": null,
             "args": null,
-            "storageKey": null
+            "concreteType": "TransactionToTransfersConnection",
+            "plural": false,
+            "selections": [
+              {
+                "kind": "LinkedField",
+                "alias": null,
+                "name": "edges",
+                "storageKey": null,
+                "args": null,
+                "concreteType": "TransactionToTransfersEdge",
+                "plural": true,
+                "selections": [
+                  {
+                    "kind": "LinkedField",
+                    "alias": null,
+                    "name": "node",
+                    "storageKey": null,
+                    "args": null,
+                    "concreteType": "Transfer",
+                    "plural": false,
+                    "selections": [
+                      v4,
+                      {
+                        "kind": "ScalarField",
+                        "alias": null,
+                        "name": "from_address_id",
+                        "args": null,
+                        "storageKey": null
+                      },
+                      {
+                        "kind": "ScalarField",
+                        "alias": null,
+                        "name": "to_address_id",
+                        "args": null,
+                        "storageKey": null
+                      },
+                      {
+                        "kind": "ScalarField",
+                        "alias": null,
+                        "name": "value",
+                        "args": null,
+                        "storageKey": null
+                      },
+                      v3
+                    ]
+                  }
+                ]
+              }
+            ]
           },
           {
             "kind": "ScalarField",
             "alias": null,
-            "name": "system_fee",
+            "name": "network_fee",
             "args": null,
             "storageKey": null
           },
@@ -378,7 +410,20 @@ return {
             "args": null,
             "storageKey": null
           },
-          v5,
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "name": "size",
+            "args": null,
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "name": "block_time",
+            "args": null,
+            "storageKey": null
+          },
           {
             "kind": "ScalarField",
             "alias": null,
@@ -417,70 +462,6 @@ return {
             "name": "script",
             "args": null,
             "storageKey": null
-          },
-          {
-            "kind": "LinkedField",
-            "alias": null,
-            "name": "transfers",
-            "storageKey": null,
-            "args": null,
-            "concreteType": "TransactionToTransfersConnection",
-            "plural": false,
-            "selections": [
-              {
-                "kind": "LinkedField",
-                "alias": null,
-                "name": "edges",
-                "storageKey": null,
-                "args": null,
-                "concreteType": "TransactionToTransfersEdge",
-                "plural": true,
-                "selections": [
-                  {
-                    "kind": "LinkedField",
-                    "alias": null,
-                    "name": "node",
-                    "storageKey": null,
-                    "args": null,
-                    "concreteType": "Transfer",
-                    "plural": false,
-                    "selections": [
-                      {
-                        "kind": "ScalarField",
-                        "alias": null,
-                        "name": "transaction_hash",
-                        "args": null,
-                        "storageKey": null
-                      },
-                      {
-                        "kind": "ScalarField",
-                        "alias": null,
-                        "name": "from_address_id",
-                        "args": null,
-                        "storageKey": null
-                      },
-                      {
-                        "kind": "ScalarField",
-                        "alias": null,
-                        "name": "to_address_id",
-                        "args": null,
-                        "storageKey": null
-                      },
-                      {
-                        "kind": "ScalarField",
-                        "alias": null,
-                        "name": "value",
-                        "args": null,
-                        "storageKey": null
-                      },
-                      v4,
-                      v5,
-                      v3
-                    ]
-                  }
-                ]
-              }
-            ]
           },
           v3
         ]

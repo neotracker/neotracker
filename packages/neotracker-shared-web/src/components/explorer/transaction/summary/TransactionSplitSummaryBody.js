@@ -1,54 +1,12 @@
 /* @flow */
 import * as React from 'react';
 
-import classNames from 'classnames';
 import { type HOC, compose, pure } from 'recompose';
 
-import { type Theme } from '../../../../styles/createTheme';
-
-import { withStyles } from '../../../../lib/base';
+import { Hidden } from '../../../../lib/base';
 
 import TransactionSplitSummaryBodyDense from './TransactionSplitSummaryBodyDense';
 import TransactionSplitSummaryBodyLR from './TransactionSplitSummaryBodyLR';
-
-const styles = (theme: Theme) => ({
-  [theme.breakpoints.down('sm')]: {
-    dense: {
-      display: 'initial',
-    },
-    lr: {
-      display: 'none',
-    },
-  },
-  [theme.breakpoints.up('sm')]: {
-    dense: {
-      display: 'none',
-    },
-    lr: {
-      display: 'initial',
-    },
-  },
-  [theme.breakpoints.up('md')]: {
-    denseDense: {
-      display: 'initial',
-    },
-    denseLR: {
-      display: 'none',
-    },
-  },
-  [theme.breakpoints.up('lg')]: {
-    denseDense: {
-      display: 'none',
-    },
-    denseLR: {
-      display: 'initial',
-    },
-  },
-  dense: {},
-  lr: {},
-  denseDense: {},
-  denseLR: {},
-});
 
 type ExternalProps = {|
   left: any,
@@ -57,12 +15,9 @@ type ExternalProps = {|
   dense?: boolean,
   className?: string,
 |};
-type InternalProps = {|
-  classes: Object,
-|};
+
 type Props = {|
   ...ExternalProps,
-  ...InternalProps,
 |};
 function TransactionSplitSummaryBody({
   left,
@@ -70,42 +25,30 @@ function TransactionSplitSummaryBody({
   extraRight,
   dense,
   className,
-  classes,
 }: Props): React.Element<*> {
+  const denseDense = dense ? ['xs', 'sm', 'md'] : ['xs', 'sm', 'md', 'lg'];
+  const lrDense = dense ? ['lg', 'xl'] : ['xl'];
   return (
     <div className={className}>
-      <div
-        className={classNames({
-          [classes.dense]: true,
-          [classes.denseDense]: dense,
-        })}
-      >
+      <Hidden implementation="js" initialWidth="md" only={denseDense}>
         <TransactionSplitSummaryBodyDense
           left={left}
           right={right}
           extraRight={extraRight}
         />
-      </div>
-      <div
-        className={classNames({
-          [classes.lr]: true,
-          [classes.denseLR]: dense,
-        })}
-      >
+      </Hidden>
+      <Hidden implementation="js" initialWidth="md" only={lrDense}>
         <TransactionSplitSummaryBodyLR
           left={left}
           right={right}
           extraRight={extraRight}
         />
-      </div>
+      </Hidden>
     </div>
   );
 }
 
-const enhance: HOC<*, *> = compose(
-  withStyles(styles),
-  pure,
-);
+const enhance: HOC<*, *> = compose(pure);
 
 export default (enhance(TransactionSplitSummaryBody): React.ComponentType<
   ExternalProps,

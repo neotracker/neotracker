@@ -11,6 +11,7 @@ import TransactionOutputTable from './TransactionOutputTable';
 import { fragmentContainer, queryRenderer } from '../../../../graphql/relay';
 import { getPagingVariables } from '../../../../utils';
 
+import { type AssetNameLink_asset } from '../../asset/lib/__generated__/AssetNameLink_asset.graphql';
 import { type TransactionOutputPagingTable_transaction } from './__generated__/TransactionOutputPagingTable_transaction.graphql';
 import { type TransactionOutputPagingTableQueryResponse } from './__generated__/TransactionOutputPagingTableQuery.graphql';
 
@@ -18,6 +19,13 @@ const PAGE_SIZE = 10;
 
 type ExternalProps = {|
   transaction: any,
+  transfers?: Array<{|
+    to_address_id: string,
+    from_address_id: string,
+    value: string,
+    asset: AssetNameLink_asset,
+  |}>,
+  offset?: number,
   addressHash?: string,
   className?: string,
 |};
@@ -36,6 +44,7 @@ type Props = {|
 |};
 function TransactionOutputPagingTable({
   addressHash,
+  transfers,
   className,
   props,
   error,
@@ -51,11 +60,21 @@ function TransactionOutputPagingTable({
   }
 
   let outputs = [];
+  let transferOutputs = [];
+  if (transfers != null && page === 1) {
+    transferOutputs = transfers.map((transfer) => ({
+      address_id: transfer.to_address_id,
+      value: transfer.value,
+      asset: transfer.asset,
+    }));
+  }
+
   let hasNextPage = false;
   let hasPreviousPage = false;
   const transaction = currentProps == null ? null : currentProps.transaction;
   if (transaction != null) {
     outputs = transaction.outputs.edges.map((edge) => edge.node);
+
     // eslint-disable-next-line
     hasNextPage = transaction.outputs.pageInfo.hasNextPage;
     hasPreviousPage = page > 1;
@@ -65,6 +84,7 @@ function TransactionOutputPagingTable({
     <TransactionOutputTable
       className={className}
       outputs={outputs}
+      transfers={transferOutputs}
       addressHash={addressHash}
       isInitialLoad={currentProps == null}
       isLoadingMore={props == null}
@@ -81,12 +101,14 @@ function TransactionOutputPagingTable({
 const mapPropsToVariables = ({
   transaction,
   page,
+  offset,
 }: {|
   transaction: TransactionOutputPagingTable_transaction,
   page: number,
+  offset: number,
 |}) => ({
   hash: transaction.hash,
-  ...getPagingVariables(PAGE_SIZE, page),
+  ...getPagingVariables(PAGE_SIZE, page, offset),
 });
 
 const enhance: HOC<*, *> = compose(

@@ -14,6 +14,7 @@ import { PagingView } from '../../../common/view';
 import { fragmentContainer } from '../../../../graphql/relay';
 import { withStyles } from '../../../../lib/base';
 
+import { type AssetNameLink_asset } from '../../asset/lib/__generated__/AssetNameLink_asset.graphql';
 import { type TransactionInputOutputTable_input_outputs } from './__generated__/TransactionInputOutputTable_input_outputs.graphql';
 import TransactionValue from './TransactionValue';
 
@@ -67,6 +68,11 @@ const styles = (theme: Theme) => ({
 
 type ExternalProps = {|
   input_outputs: any,
+  transfers?: Array<{|
+    address_id: string,
+    value: string,
+    asset: AssetNameLink_asset,
+  |}>,
   left?: any,
   right?: any,
   addressHash?: string,
@@ -91,6 +97,7 @@ type Props = {|
 |};
 function TransactionInputOutputTable({
   input_outputs,
+  transfers = [],
   left,
   right,
   addressHash,
@@ -109,7 +116,9 @@ function TransactionInputOutputTable({
   const addressLinks = [];
   const values = [];
   const assets = [];
-  input_outputs.forEach((inputOutput, idx) => {
+  const transfer_input_outputs = transfers.concat(input_outputs);
+
+  transfer_input_outputs.forEach((inputOutput, idx) => {
     addressLinks.push(
       <div key={idx} className={classNames(classes.margin, classes.row)}>
         <AddressLink
@@ -137,6 +146,7 @@ function TransactionInputOutputTable({
       />,
     );
   });
+
   const content = (
     <div className={classes.contentRoot}>
       {left == null ? null : (
@@ -166,12 +176,12 @@ function TransactionInputOutputTable({
       isLoadingMore={isLoadingMore}
       page={page}
       pageSize={pageSize}
-      currentPageSize={input_outputs.length}
+      currentPageSize={transfer_input_outputs.length}
       hasPreviousPage={hasPreviousPage}
       hasNextPage={hasNextPage}
       onUpdatePage={onUpdatePage}
       error={error}
-      omitPager={!hasNextPage && input_outputs.length <= pageSize}
+      omitPager={!hasNextPage && !hasPreviousPage}
       disablePadding
     />
   );

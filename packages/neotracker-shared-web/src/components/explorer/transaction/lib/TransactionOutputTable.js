@@ -13,6 +13,7 @@ import { Typography, withStyles } from '../../../../lib/base';
 import { fragmentContainer } from '../../../../graphql/relay';
 import * as routes from '../../../../routes';
 
+import { type AssetNameLink_asset } from '../../asset/lib/__generated__/AssetNameLink_asset.graphql';
 import { type TransactionOutputTable_outputs } from './__generated__/TransactionOutputTable_outputs.graphql';
 import TransactionInputOutputTable from './TransactionInputOutputTable';
 
@@ -30,6 +31,11 @@ const styles = (theme: Theme) => ({
 
 type ExternalProps = {|
   outputs: any,
+  transfers?: Array<{|
+    address_id: string,
+    value: string,
+    asset: AssetNameLink_asset,
+  |}>,
   addressHash?: string,
   page: number,
   isInitialLoad: boolean,
@@ -52,6 +58,7 @@ type Props = {|
 // TODO: INTL
 function TransactionOutputTable({
   outputs,
+  transfers = [],
   addressHash,
   page,
   isInitialLoad,
@@ -66,13 +73,20 @@ function TransactionOutputTable({
 }: Props): React.Element<*> {
   const links = outputs.map((output, idx) => {
     let link = (
-      <Typography key={idx} variant="body1" className={classes.row}>
+      <Typography
+        key={idx + transfers.length}
+        variant="body1"
+        className={classes.row}
+      >
         (Unspent)
       </Typography>
     );
     if (output.input_transaction_hash != null) {
       link = (
-        <div key={idx} className={classNames(classes.spentArea, classes.row)}>
+        <div
+          key={idx + transfers.length}
+          className={classNames(classes.spentArea, classes.row)}
+        >
           <Typography variant="body1" className={classes.spent}>
             (Spent)
           </Typography>
@@ -86,11 +100,15 @@ function TransactionOutputTable({
     }
     return link;
   });
+  const transferLinks = transfers.map((transfer, idx) => (
+    <Typography key={idx} variant="body1" className={classes.row} />
+  ));
   return (
     <TransactionInputOutputTable
       className={className}
       input_outputs={outputs}
-      right={links}
+      transfers={transfers}
+      right={transferLinks.concat(links)}
       addressHash={addressHash}
       positive
       page={page}

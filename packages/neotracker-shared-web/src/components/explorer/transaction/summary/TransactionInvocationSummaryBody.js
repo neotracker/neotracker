@@ -49,10 +49,16 @@ function TransactionInvocationSummaryBody({
   className,
   classes,
 }: Props): React.Element<*> {
+  const transfers = transaction.transfers.edges.map(
+    (transfer) => transfer.node,
+  );
+
   const input = (
     <TransactionInputPagingTable
       transaction={transaction}
       addressHash={addressHash}
+      transfers={(transfers: $FlowFixMe)}
+      offset={transfers.length}
     />
   );
 
@@ -79,8 +85,11 @@ function TransactionInvocationSummaryBody({
     <TransactionOutputPagingTable
       transaction={transaction}
       addressHash={addressHash}
+      transfers={(transfers: $FlowFixMe)}
+      offset={transfers.length}
     />
   );
+
   return (
     <div className={classNames(className, classes.root)}>
       <TransactionSplitSummaryBody
@@ -109,6 +118,18 @@ const enhance: HOC<*, *> = compose(
         ...TransactionOutputPagingTable_transaction
         asset {
           ...AssetRegistered_asset
+        }
+        transfers {
+          edges {
+            node {
+              asset {
+                ...AssetNameLink_asset
+              }
+              from_address_id
+              to_address_id
+              value
+            }
+          }
         }
         contracts {
           edges {

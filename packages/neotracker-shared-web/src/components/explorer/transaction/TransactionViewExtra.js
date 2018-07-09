@@ -9,7 +9,6 @@ import { graphql } from 'react-relay';
 import { type Theme } from '../../../styles/createTheme';
 import { ExpandoCard } from '../../common/card';
 import { Script } from '../script';
-import { TransferTable } from '../transfer';
 
 import { fragmentContainer } from '../../../graphql/relay';
 import { withStyles } from '../../../lib/base';
@@ -82,32 +81,19 @@ function TransactionViewExtra({
     );
   });
 
-  if (transaction.type === 'InvocationTransaction') {
-    if (transaction.transfers.edges.length > 0) {
-      elements.push(
-        <ExpandoCard
-          key="transfer"
-          title="Transfers"
-          content={
-            <TransferTable
-              transfers={transaction.transfers.edges.map((edge) => edge.node)}
-            />
-          }
-          initialShowContent
-        />,
-      );
-    }
-    if (transaction.script != null) {
-      elements.push(
-        <ExpandoCard
-          key="script"
-          title="Script"
-          content={
-            <Script className={classes.padding} script={transaction.script} />
-          }
-        />,
-      );
-    }
+  if (
+    transaction.type === 'InvocationTransaction' &&
+    transaction.script != null
+  ) {
+    elements.push(
+      <ExpandoCard
+        key="script"
+        title="Script"
+        content={
+          <Script className={classes.padding} script={transaction.script} />
+        }
+      />,
+    );
   }
 
   return <div className={classNames(className, classes.root)}>{elements}</div>;
@@ -124,13 +110,6 @@ const enhance: HOC<*, *> = compose(
           verification_script
         }
         script
-        transfers {
-          edges {
-            node {
-              ...TransferTable_transfers
-            }
-          }
-        }
       }
     `,
   }),

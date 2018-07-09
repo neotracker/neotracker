@@ -11,8 +11,9 @@ import { IconLink } from '../../../../lib/link';
 
 import { fragmentContainer } from '../../../../graphql/relay';
 import * as routes from '../../../../routes';
-import { withStyles } from '../../../../lib/base';
+import { Typography, withStyles } from '../../../../lib/base';
 
+import { type AssetNameLink_asset } from '../../asset/lib/__generated__/AssetNameLink_asset.graphql';
 import { type TransactionInputTable_inputs } from './__generated__/TransactionInputTable_inputs.graphql';
 import TransactionInputOutputTable from './TransactionInputOutputTable';
 
@@ -25,6 +26,11 @@ const styles = (theme: Theme) => ({
 
 type ExternalProps = {|
   inputs: any,
+  transfers?: Array<{|
+    address_id: string,
+    value: string,
+    asset: AssetNameLink_asset,
+  |}>,
   addressHash?: string,
   positive?: boolean,
   page: number,
@@ -47,6 +53,7 @@ type Props = {|
 |};
 function TransactionInputTable({
   inputs,
+  transfers = [],
   addressHash,
   positive,
   page,
@@ -62,17 +69,21 @@ function TransactionInputTable({
 }: Props): React.Element<*> {
   const links = inputs.map((input, idx) => (
     <IconLink
-      key={idx}
+      key={idx + transfers.length}
       className={classNames(classes.margin, classes.row)}
       icon="arrow_back"
       path={routes.makeTransaction(input.output_transaction_hash)}
     />
   ));
+  const transferLinks = transfers.map((transfer, idx) => (
+    <Typography key={idx} variant="body1" className={classes.row} />
+  ));
   return (
     <TransactionInputOutputTable
       className={className}
       input_outputs={inputs}
-      left={links}
+      transfers={transfers}
+      left={transferLinks.concat(links)}
       addressHash={addressHash}
       positive={positive}
       page={page}

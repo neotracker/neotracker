@@ -8,7 +8,6 @@
 
 /*::
 import type { ConcreteFragment } from 'relay-runtime';
-type TransferTable_transfers$ref = any;
 import type { FragmentReference } from "relay-runtime";
 declare export opaque type TransactionViewExtra_transaction$ref: FragmentReference;
 export type TransactionViewExtra_transaction = {|
@@ -18,13 +17,6 @@ export type TransactionViewExtra_transaction = {|
     +verification_script: string,
   |}>,
   +script: ?string,
-  +transfers: {|
-    +edges: $ReadOnlyArray<{|
-      +node: {|
-        +$fragmentRefs: TransferTable_transfers$ref
-      |}
-    |}>
-  |},
   +$refType: TransactionViewExtra_transaction$ref,
 |};
 */
@@ -75,47 +67,9 @@ const node/*: ConcreteFragment*/ = {
       "name": "script",
       "args": null,
       "storageKey": null
-    },
-    {
-      "kind": "LinkedField",
-      "alias": null,
-      "name": "transfers",
-      "storageKey": null,
-      "args": null,
-      "concreteType": "TransactionToTransfersConnection",
-      "plural": false,
-      "selections": [
-        {
-          "kind": "LinkedField",
-          "alias": null,
-          "name": "edges",
-          "storageKey": null,
-          "args": null,
-          "concreteType": "TransactionToTransfersEdge",
-          "plural": true,
-          "selections": [
-            {
-              "kind": "LinkedField",
-              "alias": null,
-              "name": "node",
-              "storageKey": null,
-              "args": null,
-              "concreteType": "Transfer",
-              "plural": false,
-              "selections": [
-                {
-                  "kind": "FragmentSpread",
-                  "name": "TransferTable_transfers",
-                  "args": null
-                }
-              ]
-            }
-          ]
-        }
-      ]
     }
   ]
 };
 // prettier-ignore
-(node/*: any*/).hash = '2f9bb227d8656628bef2a56a0fbb0b39';
+(node/*: any*/).hash = '5e9f2f42652387dc009f7b7ade1ace4b';
 module.exports = node;

@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 0308356a444e0108665e1ce6b55afa46
+ * @relayHash 8ed033bb41b5b583b68d20e9f0e0e55a
  */
 
 /* eslint-disable */
@@ -98,6 +98,20 @@ fragment TransactionInvocationSummaryBody_transaction on Transaction {
     ...AssetRegistered_asset
     id
   }
+  transfers {
+    edges {
+      node {
+        asset {
+          ...AssetNameLink_asset
+          id
+        }
+        from_address_id
+        to_address_id
+        value
+        id
+      }
+    }
+  }
   contracts {
     edges {
       node {
@@ -120,6 +134,11 @@ fragment AssetRegistered_asset on Asset {
   ...AssetNameLink_asset
 }
 
+fragment AssetNameLink_asset on Asset {
+  id
+  symbol
+}
+
 fragment ContractPublished_contract on Contract {
   ...ContractNameLink_contract
 }
@@ -127,11 +146,6 @@ fragment ContractPublished_contract on Contract {
 fragment ContractNameLink_contract on Contract {
   id
   name
-}
-
-fragment AssetNameLink_asset on Asset {
-  id
-  symbol
 }
 
 fragment TransactionClaimPagingTable_transaction on Transaction {
@@ -162,12 +176,31 @@ v2 = {
   "name": "id",
   "args": null,
   "storageKey": null
+},
+v3 = {
+  "kind": "LinkedField",
+  "alias": null,
+  "name": "asset",
+  "storageKey": null,
+  "args": null,
+  "concreteType": "Asset",
+  "plural": false,
+  "selections": [
+    v2,
+    {
+      "kind": "ScalarField",
+      "alias": null,
+      "name": "symbol",
+      "args": null,
+      "storageKey": null
+    }
+  ]
 };
 return {
   "kind": "Request",
   "operationKind": "query",
   "name": "TransactionSummaryBodyFooterQuery",
-  "id": "26",
+  "id": "44",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -293,22 +326,60 @@ return {
               }
             ]
           },
+          v3,
           {
             "kind": "LinkedField",
             "alias": null,
-            "name": "asset",
+            "name": "transfers",
             "storageKey": null,
             "args": null,
-            "concreteType": "Asset",
+            "concreteType": "TransactionToTransfersConnection",
             "plural": false,
             "selections": [
-              v2,
               {
-                "kind": "ScalarField",
+                "kind": "LinkedField",
                 "alias": null,
-                "name": "symbol",
+                "name": "edges",
+                "storageKey": null,
                 "args": null,
-                "storageKey": null
+                "concreteType": "TransactionToTransfersEdge",
+                "plural": true,
+                "selections": [
+                  {
+                    "kind": "LinkedField",
+                    "alias": null,
+                    "name": "node",
+                    "storageKey": null,
+                    "args": null,
+                    "concreteType": "Transfer",
+                    "plural": false,
+                    "selections": [
+                      v3,
+                      {
+                        "kind": "ScalarField",
+                        "alias": null,
+                        "name": "from_address_id",
+                        "args": null,
+                        "storageKey": null
+                      },
+                      {
+                        "kind": "ScalarField",
+                        "alias": null,
+                        "name": "to_address_id",
+                        "args": null,
+                        "storageKey": null
+                      },
+                      {
+                        "kind": "ScalarField",
+                        "alias": null,
+                        "name": "value",
+                        "args": null,
+                        "storageKey": null
+                      },
+                      v2
+                    ]
+                  }
+                ]
               }
             ]
           },
