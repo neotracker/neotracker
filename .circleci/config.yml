@@ -48,8 +48,16 @@ aliases:
           environment:
             JEST_JUNIT_OUTPUT: reports/jest/results.xml
       - run:
+          name: Test Browser
+          command: yarn test-browser-ci --testResultsProcessor="jest-junit"
+          environment:
+            JEST_JUNIT_OUTPUT: reports/jest-browser/results.xml
+      - run:
           name: E2E
           command: yarn e2e-ci
+      - run:
+          name: Build Storybook
+          command: yarn build-storybook
       - store_test_results:
           path: reports
       - store_artifacts:
@@ -58,6 +66,8 @@ aliases:
           path: cypress/videos
       - store_artifacts:
           path: cypress/screenshots
+      - store_artifacts:
+          path: .out
 
 version: 2
 jobs:

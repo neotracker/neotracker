@@ -51,3 +51,6 @@ hack/vendor
 cypress/screenshots
 cypress/videos
 reports
+
+# Storybook
+.out

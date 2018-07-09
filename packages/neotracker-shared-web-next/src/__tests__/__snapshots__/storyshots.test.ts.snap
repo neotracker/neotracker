@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Storyshots components/singel/Box Hello Box [snapshot] 1`] = `
+.c2 {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font-family: inherit;
+  vertical-align: baseline;
+  box-sizing: border-box;
+}
+
+.c1 {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font-family: inherit;
+  vertical-align: baseline;
+  box-sizing: border-box;
+}
+
+.c0 {
+  border: 1px solid rgba(0,0,0,0.3);
+  border-radius: 0.25em;
+}
+
+<div
+  className="c0 c1 c2"
+>
+  Hello Box
+</div>
+`;
