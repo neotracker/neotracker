@@ -1,0 +1,12 @@
+query HomeQuery {
+  first: block(index: 0) {
+    id
+    hash
+    __typename
+  }
+  second: block(index: 1) {
+    id
+    hash
+    __typename
+  }
+}

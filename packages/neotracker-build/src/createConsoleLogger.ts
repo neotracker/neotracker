@@ -1,5 +1,5 @@
 import { LoggerLogOptions } from '@neo-one/monitor';
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 export const createConsoleLogger = () => ({
   log: (info: LoggerLogOptions) => {

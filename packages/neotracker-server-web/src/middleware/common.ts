@@ -1,6 +1,7 @@
 import { Context } from 'koa';
 import { RootLoader } from 'neotracker-server-db';
 import { HTTPError } from 'neotracker-server-utils';
+import { QueryDeduplicator } from 'neotracker-shared-graphql';
 
 export const getRootLoader = (ctx: Context): RootLoader => {
   const { rootLoader } = ctx.state;
@@ -9,6 +10,15 @@ export const getRootLoader = (ctx: Context): RootLoader => {
   }
 
   return rootLoader;
+};
+
+export const getQueryDeduplicator = (ctx: Context): QueryDeduplicator => {
+  const { queryDeduplicator } = ctx.state;
+  if (!(queryDeduplicator instanceof QueryDeduplicator)) {
+    throw new HTTPError(500, HTTPError.PROGRAMMING_ERROR);
+  }
+
+  return queryDeduplicator;
 };
 
 export const getNonce = (ctx: Context): string => {

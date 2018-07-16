@@ -21,6 +21,9 @@ const environment = {
     react: {
       appVersion: 'staging',
     },
+    reactApp: {
+      appVersion: 'staging',
+    },
     db,
     directDB: db,
     server: {

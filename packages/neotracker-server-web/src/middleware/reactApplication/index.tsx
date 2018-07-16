@@ -44,7 +44,6 @@ import { MatchedRoute, matchRoutes } from 'react-router-config';
 import { of as _of } from 'rxjs';
 import { getNonce, getRootLoader, getUserAgent } from '../common';
 import { AddBodyElements, AddHeadElements, makeServerHTML } from './makeServerHTML';
-export { AddHeadElements, AddBodyElements } from './makeServerHTML';
 
 const provider = new LocalUserAccountProvider({
   keystore: new LocalKeyStore({
@@ -134,7 +133,7 @@ const renderApp = async ({
   const relayEnvironment = makeRelayEnvironment({
     monitor,
     rootLoader,
-    schema,
+    schema: schema(),
     relaySSRQueryCache,
   });
 

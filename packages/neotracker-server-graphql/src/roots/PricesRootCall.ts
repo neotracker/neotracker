@@ -3,7 +3,7 @@ import { Monitor } from '@neo-one/monitor';
 // @ts-ignore
 import cryptocompare from 'cryptocompare';
 import { GraphQLResolveInfo } from 'graphql';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { pubsub } from 'neotracker-server-utils';
 import { combineLatest, concat, Observable, timer } from 'rxjs';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';

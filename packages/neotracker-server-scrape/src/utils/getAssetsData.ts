@@ -1,6 +1,6 @@
 import { Monitor } from '@neo-one/monitor';
 import BigNumber from 'bignumber.js';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { Coin as CoinModel, SUBTYPE_CLAIM, SUBTYPE_ISSUE, SUBTYPE_REWARD } from 'neotracker-server-db';
 import { GAS_ASSET_ID, utils } from 'neotracker-shared-utils';
 import {

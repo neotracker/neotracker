@@ -27,7 +27,7 @@ export function makeContext(
     rootLoader,
     query,
     queryID,
-    schema,
+    schema: schema(),
     spans,
     getMonitor: (info?): Monitor => {
       if (info === undefined) {

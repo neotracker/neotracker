@@ -2,7 +2,7 @@ import { Monitor } from '@neo-one/monitor';
 import BigNumber from 'bignumber.js';
 import fetch from 'cross-fetch';
 import { GraphQLResolveInfo } from 'graphql';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { Asset, RootLoader } from 'neotracker-server-db';
 import { CodedError, pubsub } from 'neotracker-server-utils';
 import { GAS_ASSET_HASH, tryParseNumber } from 'neotracker-shared-utils';

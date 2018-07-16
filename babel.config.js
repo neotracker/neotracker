@@ -1,3 +1,4 @@
+// Only exists for eslint support
 module.exports = {
   presets: [
     '@babel/preset-react',
@@ -11,7 +12,6 @@ module.exports = {
     ],
   ],
   plugins: [
-    'babel-plugin-relay',
     '@babel/plugin-proposal-async-generator-functions',
     '@babel/plugin-proposal-class-properties',
     '@babel/plugin-proposal-optional-catch-binding',

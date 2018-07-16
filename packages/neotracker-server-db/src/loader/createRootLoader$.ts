@@ -7,7 +7,7 @@ import { pubsub } from 'neotracker-server-utils';
 import { Model } from 'objection';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map, scan, startWith } from 'rxjs/operators';
-import { PROCESSED_NEXT_INDEX } from '../channels';
+import { PROCESSED_NEXT_INDEX } from '../createPubSub';
 import { BaseModel, makeQueryContext as makeQueryContextBase, QueryContext } from '../lib';
 import { Block, loaderModels as models, ProcessedIndex, Transaction } from '../models';
 import { makeCache } from './makeCache';
@@ -132,7 +132,7 @@ const createLoaders = ({
     mutableLoaders[lcFirst(model.modelSchema.name)] = addLoaderByField(model, fieldName, loader);
   };
 
-  models.forEach((model) => {
+  models().forEach((model) => {
     addLoader(model);
     Object.entries(model.modelSchema.edges === undefined ? {} : model.modelSchema.edges).forEach(
       ([edgeName, edgeType]) => {

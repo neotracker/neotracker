@@ -30,7 +30,7 @@ class ShipNEOTracker {
       |> ShipItPathFilters::stripPaths(
           $$,
           ImmVector {
-            '@^(?!decls/|hack/|packages/|public/|root/|babel.config.js|.editorconfig|.eslintignore|.eslintrc.json|.flowconfig|.gitignore|.prettierignore|.prettierrc|lerna.json|LICENSE|package.oss.json|README.md|yarn.oss.lock|.circleci.oss/|.github/|.vscode/|\@types/|tsconfig.json|tsconfig.cli.json|tslint.json|e2e.json|jest.e2e.js|jest.unit.js|mocha.json|cypress.json|cypress/|tsconfig.compile.json|.storybook|jest.browser.unit.js)@',
+            '@^(?!decls/|hack/|packages/|public/|root/|babel.config.js|.editorconfig|.eslintignore|.eslintrc.json|.flowconfig|.gitignore|.prettierignore|.prettierrc|lerna.json|LICENSE|package.oss.json|README.md|yarn.oss.lock|.circleci.oss/|.github/|.vscode/|\@types/|tsconfig.json|tsconfig.cli.json|tslint.json|e2e.json|jest.e2e.js|jest.unit.js|mocha.json|cypress.json|cypress/|tsconfig.compile.json|.storybook|jest.browser.unit.js|wallaby.unit.js|wallaby.js|wallaby.base.js|tsconfig/|tsconfig.jest.json|jest/|explorer.config.js|.stylelintrc|.size-limit.js|.graphqlconfig|jest.config.oss.js)@',
             '@^packages/neotracker-internal@',
           },
         )

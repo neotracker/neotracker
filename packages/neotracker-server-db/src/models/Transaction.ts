@@ -6,13 +6,13 @@ import { BlockchainModel } from './BlockchainModel';
 import {
   BIG_INT_ID,
   BLOCK_TIME_COLUMN,
-  convertJSON,
   HASH_VALIDATOR,
   INTEGER_INDEX_VALIDATOR,
   SUBTYPE_ENROLLMENT,
   TYPE_DUPLICATE_CLAIM,
   TYPE_INPUT,
 } from './common';
+import { convertJSON } from './convertJSON';
 
 export const TRANSACTION_TYPES: ReadonlyArray<string> = [
   'MinerTransaction',

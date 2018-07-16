@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 export const getEdgeCount = (
   data: ReadonlyArray<{ readonly id1: string; readonly id2: string }>,

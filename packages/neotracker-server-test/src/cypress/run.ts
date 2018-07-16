@@ -1,10 +1,10 @@
 // tslint:disable no-console
 import execa from 'execa';
+import { createKillProcess } from 'neotracker-server-utils';
 import tmp from 'tmp';
 import v4 from 'uuid/v4';
 import yargs from 'yargs';
 import { checkReady } from '../checkReady';
-import { createKillProcess } from '../killProcess';
 import { runCypress } from './runCypress';
 
 yargs.describe('ci', 'Running as part of continuous integration.').default('ci', false);
@@ -69,7 +69,7 @@ const run = async ({ ci }: { readonly ci: boolean }) => {
 
   await neoOne(['bootstrap', '--network', networkName, '--reset']);
 
-  const proc = execa('yarn', ['develop'], {
+  const proc = execa('yarn', ['develop', '--fast'], {
     env: {
       NEOTRACKER_PORT: String(port),
       NEOTRACKER_RPC_URL: rpcURL,

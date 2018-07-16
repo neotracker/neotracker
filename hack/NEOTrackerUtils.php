@@ -12,6 +12,7 @@ class NEOTrackerUtils
       'package.oss.json' => 'package.json',
       'yarn.oss.lock' => 'yarn.lock',
       '.circleci.oss' => '.circleci',
+      'jest.config.oss.js' => 'jest.config.js',
     };
   }
 }

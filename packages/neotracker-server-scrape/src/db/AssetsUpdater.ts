@@ -1,5 +1,5 @@
 import { Monitor } from '@neo-one/monitor';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { Asset as AssetModel } from 'neotracker-server-db';
 import { Context } from '../types';
 import { SameContextDBUpdater } from './SameContextDBUpdater';

@@ -18,5 +18,6 @@ export interface AppOptions {
   readonly disableWalletModify: boolean;
   readonly confirmLimitMS: number;
   readonly bsaEnabled?: boolean;
+  readonly debug: boolean;
 }
 export type NetworkType = 'main' | 'test' | 'priv';

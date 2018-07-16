@@ -1,9 +1,5 @@
 {
-  "extends": [
-    "tslint:all",
-    "tslint-react",
-    "tslint-config-prettier"
-  ],
+  "extends": ["tslint:all", "tslint-react", "tslint-config-prettier", "tslint-plugin-graphql"],
   "rulesDirectory": [
     "tslint-microsoft-contrib",
     "./node_modules/tslint-immutable/rules",
@@ -13,11 +9,7 @@
     "./node_modules/rxjs-tslint-rules/dist/rules"
   ],
   "linterOptions": {
-    "exclude": [
-      "./packages/*/package.json",
-      "./package.json",
-      "./packages/*/src/**/__generated__/**/*"
-    ]
+    "exclude": ["./packages/*/package.json", "./package.json", "./packages/*/src/**/__generated__/**/*"]
   },
   "rules": {
     "cyclomatic-complexity": false,
@@ -54,15 +46,8 @@
       }
     ],
     "ordered-imports": true,
-    "quotemark": [
-      false,
-      "single",
-      "avoid-escape"
-    ],
-    "triple-equals": [
-      true,
-      "allow-undefined-check"
-    ],
+    "quotemark": [false, "single", "avoid-escape"],
+    "triple-equals": [true, "allow-undefined-check"],
     "member-ordering": [
       true,
       {
@@ -70,78 +55,39 @@
       }
     ],
     "no-inferrable-types": true,
-    "only-arrow-functions": [
-      true,
-      "allow-declarations"
-    ],
-    "no-submodule-imports": [
-      true,
-      "rxjs",
-      "ix",
-      "graphql",
-      "relay",
-      "uuid",
-      "@material-ui",
-      "react-dom",
-      "relay-runtime"
-    ],
-    "strict-boolean-expressions": [
-      true,
-      "allow-null-union",
-      "allow-undefined-union",
-      "allow-string",
-      "allow-number",
-      "allow-mix",
-      "allow-boolean-or-undefined"
-    ],
-    "no-implicit-dependencies": [
-      true,
-      "dev"
-    ],
-    "comment-format": [
-      true,
-      "check-space"
-    ],
-    "no-void-expression": [
-      true,
-      "ignore-arrow-function-shorthand"
-    ],
+    "only-arrow-functions": [true, "allow-declarations"],
+    "no-submodule-imports": [true, "rxjs", "ix", "graphql", "relay", "uuid", "@material-ui", "react-dom", "relay-runtime", "react-cosmos-test"],
+    "strict-boolean-expressions": [true, "allow-null-union", "allow-undefined-union", "allow-string", "allow-number", "allow-mix", "allow-boolean-or-undefined"],
+    "no-implicit-dependencies": [true, "dev"],
+    "comment-format": [true, "check-space"],
+    "no-void-expression": [true, "ignore-arrow-function-shorthand"],
     "no-this-assignment": [
       true,
       {
         "allow-destructuring": true
       }
     ],
-    "one-variable-per-declaration": [
-      true,
-      "ignore-for-loop"
-    ],
-    "variable-name": [
-      true,
-      "allow-pascal-case",
-      "ban-keywords",
-      "check-format",
-      "allow-leading-underscore"
-    ],
+    "one-variable-per-declaration": [true, "ignore-for-loop"],
+    "variable-name": [true, "allow-pascal-case", "ban-keywords", "check-format", "allow-leading-underscore"],
     "export-name": true,
     "no-control-regex": true,
     "no-empty-line-after-opening-brace": true,
     "no-increment-decrement": true,
     "no-invalid-regexp": true,
     "no-regex-spaces": true,
-    "no-single-line-block-comment": true,
+    "no-single-line-block-comment": false,
     "no-suspicious-comment": true,
     "no-unnecessary-field-initialization": true,
     "possible-timing-attack": true,
-    "prefer-array-literal": [ true, { "allow-type-parameters": true } ],
+    "prefer-array-literal": [true, { "allow-type-parameters": true }],
     "promise-must-complete": true,
     "use-named-parameter": true,
     "no-unused-expression": [true, "allow-fast-null-checks"],
-    "readonly-keyword": [true, "ignore-local", {"ignore-prefix": ["mutable", "this.mutable"] }],
-    "readonly-array": [true, "ignore-local", {"ignore-prefix": ["mutable", "this.mutable"] }],
+    "readonly-keyword": [true, "ignore-local", { "ignore-prefix": ["mutable", "this.mutable"] }],
+    "readonly-array": [true, "ignore-local", { "ignore-prefix": ["mutable", "this.mutable"] }],
     "no-let": [true, "ignore-local"],
-    "no-array-mutation": [true, {"ignore-prefix": ["mutable", "this.mutable", "ctx.mutable"] }],
-    "no-object-mutation": [true, {"ignore-prefix": ["mutable", "this.mutable", "app.proxy", "app.silent", "ctx."] }],
+    "no-array-mutation": [true, { "ignore-prefix": ["mutable", "this.mutable", "ctx.mutable"] }],
+    "no-object-mutation": [true, { "ignore-prefix": ["mutable", "this.mutable", "app.proxy", "app.silent", "ctx."] }],
     "no-method-signature": true,
     "no-loop-statement": true,
     "no-accessor-recursion": true,
@@ -171,6 +117,15 @@
     "use-primitive-type": true,
     "no-map-without-usage": true,
     "rxjs-finnish": true,
-    "rxjs-no-ignored-error": true
+    "rxjs-no-ignored-error": true,
+    "graphql": [
+      true,
+      {
+        "env": "apollo",
+        "schemaJsonFilepath": "./packages/neotracker-server-graphql/src/__generated__/schema.graphql.json",
+        "tagName": "gql"
+      }
+    ],
+    "jsx-boolean-value": false
   }
 }

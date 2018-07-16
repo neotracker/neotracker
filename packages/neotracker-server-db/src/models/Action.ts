@@ -1,9 +1,10 @@
 // tslint:disable variable-name no-useless-cast
 import Knex from 'knex';
-import { Constructor, Model, ModelOptions, Pojo } from 'objection';
+import { Constructor, Model, ModelOptions, Pojo, QueryContext as ObjectionQueryContext } from 'objection';
 import { EdgeSchema, FieldSchema, IndexSchema, QueryContext } from '../lib';
 import { BlockchainModel } from './BlockchainModel';
-import { BIG_INT_ID, CONTRACT_VALIDATOR, convertJSON, HASH_VALIDATOR, INTEGER_INDEX_VALIDATOR } from './common';
+import { BIG_INT_ID, CONTRACT_VALIDATOR, HASH_VALIDATOR, INTEGER_INDEX_VALIDATOR } from './common';
+import { convertJSON } from './convertJSON';
 
 const ACTION_TYPES: ReadonlyArray<ActionType> = ['Log', 'Notification'];
 export type ActionType = 'Log' | 'Notification';
@@ -142,4 +143,15 @@ export class Action extends BlockchainModel<string> {
   public readonly script_hash!: string;
   public readonly message!: string | undefined | null;
   public readonly args_raw!: string | undefined | null;
+
+  public async $afterGet(context: ObjectionQueryContext): Promise<void> {
+    await super.$afterGet(context);
+
+    // tslint:disable no-object-mutation
+    // @ts-ignore
+    this.id = convertJSON(this.id);
+    // @ts-ignore
+    this.transaction_id = convertJSON(this.transaction_id);
+    // tslint:enable no-object-mutation
+  }
 }

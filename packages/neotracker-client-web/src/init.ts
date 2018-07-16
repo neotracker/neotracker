@@ -1,14 +1,13 @@
-// tslint:disable-next-line no-import-side-effect
+// tslint:disable no-import-side-effect
 import '@babel/polyfill';
-// $FlowFixMe
-import { setObservableConfig } from 'recompose';
-// $FlowFixMe
-import { from } from 'rxjs';
-// tslint:disable-next-line no-import-side-effect
 import 'whatwg-fetch';
-// tslint:disable-next-line no-import-side-effect
-import './polyfill';
+// tslint:disable-next-line ordered-imports
+import { collectingMetrics, metrics } from '@neo-one/monitor';
+import { setObservableConfig } from 'recompose';
+import { from } from 'rxjs';
 
 setObservableConfig({
   fromESObservable: from,
 });
+
+metrics.setFactory(collectingMetrics);

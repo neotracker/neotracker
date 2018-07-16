@@ -40,7 +40,7 @@ export const startDB = async (): Promise<Database> => {
   return {
     knex: db,
     reset: async () => {
-      await dropTables(db, getMonitor());
+      await dropTables(db, getMonitor(), true);
       await createTables(db, getMonitor());
     },
   };
@@ -71,13 +71,6 @@ const makeQueryContext = (db: Knex) =>
     isAllPowerful: true,
   });
 
-// tslint:disable-next-line no-any
-const fixAction = (value: any) => ({
-  ...value,
-  id: String(value.id),
-  transaction_id: String(value.transaction_id),
-});
-
 export const getDBData = async (db: Knex): Promise<DBData> => {
   const [
     action,
@@ -98,7 +91,7 @@ export const getDBData = async (db: Knex): Promise<DBData> => {
   ] = await Promise.all([
     Action.query(db)
       .context(makeQueryContext(db))
-      .then((result) => result.map((value) => fixAction(value.toJSON()))),
+      .then((result) => result.map((value) => value.toJSON())),
     Address.query(db)
       .context(makeQueryContext(db))
       .then((result) => result.map((value) => value.toJSON())),

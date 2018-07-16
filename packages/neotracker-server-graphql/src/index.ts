@@ -8,3 +8,4 @@ export { schema } from './schema';
 export { QueryMap } from './QueryMap';
 export { RelaySSRQueryCache } from './RelaySSRQueryCache';
 export { GraphQLContext } from './GraphQLContext';
+export * from './SchemaLink';

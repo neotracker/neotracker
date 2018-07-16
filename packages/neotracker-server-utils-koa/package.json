@@ -12,8 +12,8 @@
   "license": "MIT",
   "main": "./src/index.ts",
   "dependencies": {
-    "@neo-one/monitor": "^1.0.0-alpha.42",
-    "koa": "^2.5.0",
+    "@neo-one/monitor": "^1.0.0-alpha.49",
+    "koa": "^2.5.2",
     "koa-better-body": "^3.0.4",
     "koa-convert": "^1.2.0",
     "koa-router": "^7.4.0",

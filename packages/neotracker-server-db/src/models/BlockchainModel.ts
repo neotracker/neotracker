@@ -1,6 +1,6 @@
 import { pubsub } from 'neotracker-server-utils';
 import { Observable } from 'rxjs';
-import { PROCESSED_NEXT_INDEX } from '../channels';
+import { PROCESSED_NEXT_INDEX } from '../createPubSub';
 import { ID } from '../lib';
 import { GraphQLContext } from '../types';
 import { BaseVisibleModel } from './BaseVisibleModel';

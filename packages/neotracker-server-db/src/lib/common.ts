@@ -1,7 +1,7 @@
 import { Monitor } from '@neo-one/monitor';
 import { GraphQLFieldResolver } from 'graphql';
 import Knex from 'knex';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { JsonSchema, RelationMapping, RelationMappings } from 'objection';
 import { isPostgres, isSqlite } from '../knexUtils';
 import { IFace } from './IFace';
@@ -435,9 +435,23 @@ export const createTable = async (
   }
 };
 
-export const dropTable = async (db: Knex, monitor: Monitor, modelSchema: ModelSchema) => {
+export const dropTable = async (db: Knex, monitor: Monitor, modelSchema: ModelSchema, checkEmpty = false) => {
   const schema = db.schema;
   if (modelSchema.materializedView === undefined) {
+    if (checkEmpty) {
+      const exists = await schema.queryContext(makeAllPowerfulQueryContext(monitor)).hasTable(modelSchema.tableName);
+      if (!exists) {
+        return;
+      }
+
+      const result = await db(modelSchema.tableName)
+        .select('*')
+        .limit(1)
+        .queryContext(makeAllPowerfulQueryContext(monitor));
+      if (result.length === 0) {
+        return;
+      }
+    }
     await schema.dropTableIfExists(modelSchema.tableName).queryContext(makeAllPowerfulQueryContext(monitor));
   } else {
     await schema

@@ -2,9 +2,7 @@ import { Monitor } from '@neo-one/monitor';
 import { pubsub as globalPubSub } from 'neotracker-server-utils';
 import { Observable, Observer } from 'rxjs';
 import { share } from 'rxjs/operators';
-import { createPubSub, Environment as PubSubEnvironment, Options as PubSubOptions, PubSub } from './createPubSub';
-
-export const PROCESSED_NEXT_INDEX = 'processed_next_index';
+import { createPubSub, PROCESSED_NEXT_INDEX, PubSub, PubSubEnvironment, PubSubOptions } from './createPubSub';
 
 export const createProcessedNextIndexPubSub = ({
   options,

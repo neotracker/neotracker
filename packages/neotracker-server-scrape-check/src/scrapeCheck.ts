@@ -9,7 +9,7 @@ import {
 import { Monitor } from '@neo-one/monitor';
 import BigNumber from 'bignumber.js';
 import Knex from 'knex';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import {
   Asset as AssetModel,
   Coin as CoinModel,

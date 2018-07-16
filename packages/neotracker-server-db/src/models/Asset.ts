@@ -11,10 +11,10 @@ import {
   BIG_INT_ID,
   BLOCK_ID_VALIDATOR,
   BLOCK_TIME_COLUMN,
-  convertJSON,
   HASH_VALIDATOR,
   NEP5_CONTRACT_TYPE,
 } from './common';
+import { convertJSON } from './convertJSON';
 
 export const ASSET_TYPES: ReadonlyArray<string> = [
   'CreditFlag',

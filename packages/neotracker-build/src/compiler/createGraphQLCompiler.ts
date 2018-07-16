@@ -1,35 +1,17 @@
-import * as appRootDir from 'app-root-dir';
 import * as path from 'path';
 import webpack from 'webpack';
-import { createNodeCompiler } from '../createNodeCompiler';
+import { createNodeCompiler } from './createNodeCompiler';
 import { setupGraphQLCompiler } from './setupGraphQLCompiler';
 
-export const createGraphQLCompiler = ({
-  entryPath,
-  outputPath,
-  graphqlOutputPath,
-  jsonOutputPath,
-  buildVersion,
-}: {
-  readonly entryPath: string;
-  readonly outputPath: string;
-  readonly graphqlOutputPath: string;
-  readonly jsonOutputPath: string;
-  readonly buildVersion: string;
-}): webpack.Compiler => {
+export const createGraphQLCompiler = (): webpack.Compiler => {
   const compiler = createNodeCompiler({
     title: 'graphql',
-    entry: {
-      index: path.resolve(appRootDir.get(), entryPath),
-    },
-    outputPath: path.resolve(appRootDir.get(), outputPath),
+    entryPath: path.join('packages', 'neotracker-build', 'src', 'entry', 'graphql.ts'),
+    outputPath: path.join('dist', 'neotracker-server-graphql'),
     type: 'server-web',
-    buildVersion,
+    buildVersion: 'dev',
+    dev: true,
   });
 
-  return setupGraphQLCompiler({
-    compiler,
-    graphqlOutputPath,
-    jsonOutputPath,
-  });
+  return setupGraphQLCompiler({ compiler });
 };

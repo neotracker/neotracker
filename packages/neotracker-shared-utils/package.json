@@ -12,9 +12,9 @@
   "license": "MIT",
   "main": "./src/index.ts",
   "dependencies": {
-    "@neo-one/monitor": "^1.0.0-alpha.42",
+    "@neo-one/monitor": "^1.0.0-alpha.49",
     "bignumber.js": "^7.2.0",
     "lodash": "^4.17.10",
-    "rxjs": "^6.2.0"
+    "rxjs": "^6.2.2"
   }
 }

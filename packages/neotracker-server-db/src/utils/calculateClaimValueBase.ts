@@ -26,8 +26,8 @@ export const calculateClaimValueBase = async ({
       endHeight: coin.endHeight,
     })),
 
-    decrementInterval: main.decrementInterval,
-    generationAmount: main.generationAmount,
+    decrementInterval: main().decrementInterval,
+    generationAmount: main().generationAmount,
     getSystemFee: async (index) => getSystemFee(index).then(bigNumberToBN),
   });
 

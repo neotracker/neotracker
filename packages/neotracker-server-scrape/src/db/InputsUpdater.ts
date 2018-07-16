@@ -1,5 +1,5 @@
 import { Monitor } from '@neo-one/monitor';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { TransactionInputOutput as TransactionInputOutputModel } from 'neotracker-server-db';
 import { Context } from '../types';
 import { InputUpdater } from './InputUpdater';

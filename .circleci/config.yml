@@ -31,6 +31,14 @@ aliases:
       - run: *yarn
       - save-cache: *save-yarn-cache
       - run:
+          name: Analyze
+          command: yarn analyze
+      - store_artifacts:
+          path: dist
+      - run:
+          name: Size Limit
+          command: yarn size
+      - run:
           name: Prettier
           command: yarn nit
       - run:
@@ -43,21 +51,17 @@ aliases:
           name: Lint
           command: yarn lint
       - run:
-          name: Test
-          command: yarn test-ci --testResultsProcessor="jest-junit"
-          environment:
-            JEST_JUNIT_OUTPUT: reports/jest/results.xml
+          name: Unit
+          command: yarn test:unit-ci
       - run:
-          name: Test Browser
-          command: yarn test-browser-ci --testResultsProcessor="jest-junit"
-          environment:
-            JEST_JUNIT_OUTPUT: reports/jest-browser/results.xml
+          name: Browser
+          command: yarn test:browser-ci
       - run:
           name: E2E
-          command: yarn e2e-ci
+          command: yarn test:e2e-ci
       - run:
-          name: Build Storybook
-          command: yarn build-storybook
+          name: Cypress
+          command: yarn test:cypress-ci
       - store_test_results:
           path: reports
       - store_artifacts:
@@ -66,8 +70,6 @@ aliases:
           path: cypress/videos
       - store_artifacts:
           path: cypress/screenshots
-      - store_artifacts:
-          path: .out
 
 version: 2
 jobs:

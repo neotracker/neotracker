@@ -1,29 +1,34 @@
-import { createClientCompiler, createServerCompiler } from './compiler';
+import { createClientCompiler, createClientCompilerNext, createServerCompiler } from './compiler';
+import { HotEntryServer } from './HotEntryServer';
 import { HotWebServerBase } from './HotWebServerBase';
 
-export class HotWebServer extends HotWebServerBase {
-  public constructor({
-    clientBundlePath,
-    clientAssetsPath,
-    env,
-  }: {
-    readonly clientBundlePath: string;
-    readonly clientAssetsPath: string;
-    readonly env?: object;
-  }) {
+class HotWebCompilerServer extends HotWebServerBase {
+  public constructor({ env }: { readonly env?: object }) {
     const options = {
-      serverCompiler: createServerCompiler({ buildVersion: 'dev' }),
+      serverCompiler: createServerCompiler(),
       clientCompiler: createClientCompiler({
-        clientBundlePath,
-        clientAssetsPath,
+        dev: true,
         buildVersion: 'dev',
       }),
-      graphqlEntryPath: './packages/neotracker-build/src/entry/graphql.ts',
-      graphqlOutputPath: './build/graphql',
-      graphqlSchemaOutputPath: './build/graphql/schema.graphql',
-      jsonOutputPath: './build/graphql/schema.graphql.json',
+      clientCompilerNext: createClientCompilerNext({
+        dev: true,
+        buildVersion: 'dev',
+      }),
       env,
     };
     super(options);
+  }
+}
+
+export class HotWebServer extends HotEntryServer {
+  public readonly options: { readonly env?: object };
+
+  public constructor(options: { readonly env?: object }) {
+    super();
+    this.options = options;
+  }
+
+  protected async startExclusive(): Promise<void> {
+    await this.startHotServer(new HotWebCompilerServer(this.options));
   }
 }

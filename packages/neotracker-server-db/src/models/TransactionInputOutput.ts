@@ -7,7 +7,6 @@ import {
   ADDRESS_VALIDATOR,
   ASSET_HASH_VALIDATOR,
   BIG_INT_ID,
-  convertJSON,
   HASH_VALIDATOR,
   INTEGER_INDEX_VALIDATOR,
   SUBTYPE_CLAIM,
@@ -18,6 +17,7 @@ import {
   TYPE_DUPLICATE_CLAIM,
   TYPE_INPUT,
 } from './common';
+import { convertJSON } from './convertJSON';
 
 // Always starts as an output
 // May be used as an input in contract (where it subtracts from the owner)

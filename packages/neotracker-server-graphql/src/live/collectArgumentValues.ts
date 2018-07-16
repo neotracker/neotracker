@@ -4,7 +4,7 @@ import { visit, visitWithTypeInfo } from 'graphql/language';
 import { FieldNode } from 'graphql/language/ast';
 import { getNamedType } from 'graphql/type/definition';
 import { TypeInfo } from 'graphql/utilities';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { getFieldEntryKey } from './utils';
 
 export const collectArgumentValues = (

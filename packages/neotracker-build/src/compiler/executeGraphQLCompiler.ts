@@ -6,15 +6,11 @@ import { logError } from '../logError';
 
 const title = 'build-graphql';
 
-export const executeGraphQLCompiler = async ({
-  compiler,
-  graphqlOutputPath,
-  jsonOutputPath,
-}: {
-  readonly compiler: webpack.Compiler;
-  readonly graphqlOutputPath: string;
-  readonly jsonOutputPath: string;
-}): Promise<void> => {
+const OUTPUT_DIR = path.resolve(appRootDir.get(), 'packages', 'neotracker-server-graphql', 'src', '__generated__');
+const SCHEMA_OUTPUT_PATH = path.resolve(OUTPUT_DIR, 'schema.graphql');
+const JSON_OUTPUT_PATH = path.resolve(OUTPUT_DIR, 'schema.graphql.json');
+
+export const executeGraphQLCompiler = async ({ compiler }: { readonly compiler: webpack.Compiler }): Promise<void> => {
   const compiledEntryFile = path.resolve(
     appRootDir.get(),
     // tslint:disable-next-line:no-non-null-assertion
@@ -27,8 +23,8 @@ export const executeGraphQLCompiler = async ({
     await execa('node', [compiledEntryFile], {
       env: {
         ...process.env,
-        OUTPUT_PATH: path.resolve(appRootDir.get(), graphqlOutputPath),
-        JSON_OUTPUT_PATH: path.resolve(appRootDir.get(), jsonOutputPath),
+        OUTPUT_PATH: SCHEMA_OUTPUT_PATH,
+        JSON_OUTPUT_PATH,
       },
     });
   } catch (error) {

@@ -35,6 +35,7 @@ flow-coverage/
 .DS_Store
 
 build
+dist/*
 data
 keys
 .awcache

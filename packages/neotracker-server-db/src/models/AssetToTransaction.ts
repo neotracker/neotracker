@@ -2,7 +2,7 @@
 import Knex from 'knex';
 import { Constructor, ModelOptions, Pojo } from 'objection';
 import { BaseEdge, BaseModel, QueryContext } from '../lib';
-import { convertJSON } from './common';
+import { convertJSON } from './convertJSON';
 
 export class AssetToTransaction extends BaseEdge<string, string> {
   public static readonly modelName = 'AssetToTransaction';

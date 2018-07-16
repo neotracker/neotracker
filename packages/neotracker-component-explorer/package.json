@@ -1,0 +1,15 @@
+{
+  "name": "neotracker-component-explorer",
+  "version": "0.0.1-alpha.0",
+  "keywords": ["neo", "blockchain", "neotracker"],
+  "description": "NEO Tracker component explorer.",
+  "repository": "https://github.com/neotracker/neotracker",
+  "bugs": "https://github.com/neotracker/neotracker/issues",
+  "license": "MIT",
+  "main": "./src/index.ts",
+  "dependencies": {
+    "enzyme": "^3.3.0",
+    "lodash": "^4.17.10",
+    "react": "^16.4.1"
+  }
+}

@@ -4,7 +4,8 @@ import { Constructor, Model, ModelOptions, Pojo } from 'objection';
 import { isPostgres } from '../knexUtils';
 import { EdgeSchema, FieldSchema, IndexSchema, QueryContext } from '../lib';
 import { BlockchainModel } from './BlockchainModel';
-import { ADDRESS_VALIDATOR, ASSET_HASH_VALIDATOR, BLOCK_ID_VALIDATOR, convertJSON } from './common';
+import { ADDRESS_VALIDATOR, ASSET_HASH_VALIDATOR, BLOCK_ID_VALIDATOR } from './common';
+import { convertJSON } from './convertJSON';
 
 export class Coin extends BlockchainModel<string> {
   public static readonly modelName = 'Coin';

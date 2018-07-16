@@ -13,7 +13,7 @@ function createNetwork(
   schema: GraphQLSchema,
   relaySSRQueryCache: RelaySSRQueryCache,
 ): Network {
-  const queryDeduplicator = createQueryDeduplicator(monitorIn, schema, new QueryMap(), rootLoader);
+  const queryDeduplicator = createQueryDeduplicator(monitorIn, schema, new QueryMap({ next: false }), rootLoader);
 
   // tslint:disable-next-line no-any
   return Network.create((operation: any, variables: any, { monitor }: any) => {

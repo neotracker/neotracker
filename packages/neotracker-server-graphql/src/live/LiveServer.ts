@@ -46,12 +46,14 @@ export class LiveServer {
     rootLoader$,
     monitor: monitorIn,
     socketOptions = {},
+    next,
   }: {
     readonly schema: GraphQLSchema;
     readonly rootLoader$: Observable<RootLoader>;
     readonly monitor: Monitor;
     // tslint:disable-next-line no-any
     readonly socketOptions?: any;
+    readonly next: boolean;
   }): Promise<LiveServer> {
     const monitor = monitorIn.at('live_server').withLabels({
       [monitorIn.labels.SPAN_KIND]: 'server',
@@ -88,6 +90,7 @@ export class LiveServer {
       rootLoader$,
       monitor,
       wsServer,
+      next,
     });
   }
 
@@ -98,6 +101,8 @@ export class LiveServer {
   public readonly wsServer: ws.Server;
   public readonly mutableSockets: { [K in string]?: SocketConfig };
   public mutableSubscription: Subscription | undefined;
+  private readonly next: boolean;
+  private readonly queryMap: QueryMap;
 
   public constructor({
     schema,
@@ -105,12 +110,14 @@ export class LiveServer {
     rootLoader$,
     monitor,
     wsServer,
+    next,
   }: {
     readonly schema: GraphQLSchema;
     readonly rootLoader: RootLoader;
     readonly rootLoader$: Observable<RootLoader>;
     readonly monitor: Monitor;
     readonly wsServer: ws.Server;
+    readonly next: boolean;
   }) {
     this.schema = schema;
     this.mutableRootLoader = rootLoader;
@@ -118,6 +125,8 @@ export class LiveServer {
     this.monitor = monitor.at('live_server');
     this.wsServer = wsServer;
     this.mutableSockets = {};
+    this.next = next;
+    this.queryMap = new QueryMap({ next: this.next });
   }
 
   public async start(): Promise<void> {
@@ -236,14 +245,14 @@ export class LiveServer {
     };
 
     const onSocketError = (error: NodeJS.ErrnoException) => {
-      if (error.code !== 'EPIPE') {
+      if (error.code !== 'EPIPE' && error.code !== 'ECONNRESET') {
         sendMessage({
           type: 'GQL_SOCKET_ERROR',
           message: sanitizeError(error).message,
         });
-      }
 
-      monitor.logError({ name: 'websocket_server_socket_error', error });
+        monitor.logError({ name: 'websocket_server_socket_error', error });
+      }
 
       closeSocket(1011);
     };
@@ -295,11 +304,9 @@ export class LiveServer {
       }
 
       const { mutableRootLoader } = this;
-      const queryMap = new QueryMap();
-
       let query: DocumentNode;
       try {
-        query = await span.captureLog(async () => queryMap.get(message.query.id), {
+        query = await span.captureLog(async () => this.queryMap.get(message.query.id), {
           name: 'graphql_get_query',
           level: 'verbose',
           error: {},

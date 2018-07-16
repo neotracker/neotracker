@@ -1,6 +1,6 @@
 import { ConfirmedTransaction, Input } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { TransactionInputOutput as TransactionInputOutputModel, TYPE_INPUT } from 'neotracker-server-db';
 import { Context, TransactionData } from '../types';
 import { getActionDataForClient } from './getActionDataForClient';

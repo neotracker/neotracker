@@ -1,5 +1,3 @@
-// tslint:disable-next-line no-import-side-effect
-import '@babel/polyfill';
 import * as fs from 'fs-extra';
 import { ExecutionResult, graphql, introspectionQuery } from 'graphql';
 // tslint:disable-next-line no-submodule-imports
@@ -41,7 +39,7 @@ const run = async () => {
 
   let result: ExecutionResult;
   try {
-    result = await graphql(schema, introspectionQuery);
+    result = await graphql(schema(), introspectionQuery);
   } catch (error) {
     logGraphQLError({ error });
     throw error;

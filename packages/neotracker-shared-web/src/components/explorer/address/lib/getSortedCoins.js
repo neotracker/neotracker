@@ -1,7 +1,7 @@
 /* @flow */
 import BigNumber from 'bignumber.js';
 
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 import {
   NEO_ASSET_HASH,

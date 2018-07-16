@@ -7,11 +7,11 @@ import { filter, map, scan } from 'rxjs/operators';
 // @ts-ignore
 import sqlSummary from 'sql-summary';
 
-export interface Environment {
+export interface DBEnvironment {
   readonly host?: string;
   readonly port?: number;
 }
-export interface Options {
+export interface DBOptions {
   readonly client: 'pg' | 'sqlite3';
   readonly connection?: {
     readonly database?: string;
@@ -28,10 +28,6 @@ export interface Options {
     readonly returnToHead?: boolean;
   };
   readonly acquireConnectionTimeout?: number;
-}
-export interface AllOptions extends Options {
-  // tslint:disable-next-line no-any
-  readonly connection?: any | Environment | Options['connection'];
 }
 
 const NAMESPACE = 'Knex';
@@ -205,7 +201,7 @@ export const create$ = ({
   );
 };
 
-const getOptions = (environment: Environment, options: Options): Knex.Config => ({
+const getOptions = (environment: DBEnvironment, options: DBOptions): Knex.Config => ({
   ...options,
   connection: {
     ...(options.connection === undefined ? {} : options.connection),
@@ -214,7 +210,7 @@ const getOptions = (environment: Environment, options: Options): Knex.Config => 
   },
 });
 
-export const createFromEnvironment = (monitor: Monitor, environment: Environment, options: Options) =>
+export const createFromEnvironment = (monitor: Monitor, environment: DBEnvironment, options: DBOptions) =>
   create({ options: getOptions(environment, options), monitor });
 
 export const createFromEnvironment$ = ({
@@ -223,8 +219,8 @@ export const createFromEnvironment$ = ({
   options$,
 }: {
   readonly monitor: Monitor;
-  readonly environment: Environment;
-  readonly options$: Observable<Options>;
+  readonly environment: DBEnvironment;
+  readonly options$: Observable<DBOptions>;
 }) =>
   create$({
     monitor,

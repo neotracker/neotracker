@@ -1,4 +1,3 @@
-import { NetworkType } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
 import http from 'http';
 import https from 'https';
@@ -8,10 +7,10 @@ import {
   createRootLoader$,
   DBEnvironment,
   DBOptions,
+  PubSubEnvironment,
+  PubSubOptions,
   RootLoaderOptions,
   subscribeProcessedNextIndex,
-  SubscribeProcessedNextIndexEnvironment,
-  SubscribeProcessedNextIndexOptions,
 } from 'neotracker-server-db';
 import { LiveServer, schema, startRootCalls$ } from 'neotracker-server-graphql';
 import { finalizeServer, handleServer } from 'neotracker-server-utils';
@@ -22,15 +21,19 @@ import {
   ServerMiddleware,
   ServerRoute,
 } from 'neotracker-server-utils-koa';
-import { finalize, mergeScanLatest, sanitizeError, utils } from 'neotracker-shared-utils';
+import { finalize, mergeScanLatest, NetworkType, sanitizeError, utils } from 'neotracker-shared-utils';
 // @ts-ignore
 import { AppOptions, routes } from 'neotracker-shared-web';
+import { routes as nextRoutes } from 'neotracker-shared-web-next';
+import LoadableExport from 'react-loadable';
 import { combineLatest, defer, merge, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, publishReplay, refCount, switchMap } from 'rxjs/operators';
+import url from 'url';
 import {
   AddBodyElements,
   AddHeadElements,
   clientAssets,
+  clientAssetsNext,
   cors,
   graphql,
   healthCheck,
@@ -38,7 +41,10 @@ import {
   publicAssets,
   ratelimit,
   RateLimitOptions,
+  reactApp,
+  ReactAppEnvironment,
   reactApplication,
+  ReactAppOptions,
   ReactEnvironment,
   ReactOptions,
   report,
@@ -60,8 +66,9 @@ export interface HTTPServerOptions {
 }
 export interface Environment {
   readonly react: ReactEnvironment;
+  readonly reactApp: ReactAppEnvironment;
   readonly db: DBEnvironment;
-  readonly directDB: SubscribeProcessedNextIndexEnvironment;
+  readonly directDB: PubSubEnvironment;
   readonly server: HTTPServerEnvironment;
   readonly network: NetworkType;
 }
@@ -70,9 +77,11 @@ export interface Options {
   readonly rootLoader: RootLoaderOptions;
   readonly rateLimit: RateLimitOptions;
   readonly react: ReactOptions;
+  readonly reactApp: ReactAppOptions;
   readonly toobusy: TooBusyOptions;
   readonly security: SecurityOptions;
   readonly clientAssets: ServeAssetsOptions;
+  readonly clientAssetsNext: ServeAssetsOptions;
   readonly publicAssets: ServeAssetsOptions;
   readonly rootAssets: ServeAssetsOptions;
   readonly domain: string;
@@ -80,7 +89,8 @@ export interface Options {
   readonly reportURL?: string;
   readonly server: HTTPServerOptions;
   readonly appOptions: AppOptions;
-  readonly subscribeProcessedNextIndex: SubscribeProcessedNextIndexOptions;
+  readonly subscribeProcessedNextIndex: PubSubOptions;
+  readonly serveNext: boolean;
 }
 export type AddMiddleware = ((
   middleware: ReadonlyArray<ServerMiddleware | ServerRoute>,
@@ -144,7 +154,8 @@ export const createServer$ = ({
     ),
   );
 
-  const graphqlMiddleware = graphql();
+  const graphqlMiddleware = graphql({ next: false });
+  const graphqlNextMiddleware = graphql({ next: true });
 
   const app$ = combineLatest(
     rootLoader$.pipe(map((rootLoader) => setRootLoader({ rootLoader }))),
@@ -155,6 +166,7 @@ export const createServer$ = ({
     mapDistinct$((_) => _.options.rateLimit).pipe(map((options) => ratelimit({ options }))),
     mapDistinct$((_) => _.options.security).pipe(map((options) => security({ options }))),
     mapDistinct$((_) => _.options.clientAssets).pipe(map((options) => clientAssets({ options }))),
+    mapDistinct$((_) => _.options.clientAssetsNext).pipe(map((options) => clientAssetsNext({ options }))),
     mapDistinct$((_) => _.options.publicAssets).pipe(map((options) => publicAssets({ options }))),
     mapDistinct$((_) => _.options.rootAssets).pipe(map((options) => rootAssets({ options }))),
     mapDistinct$((_) => _.options.domain).pipe(map((domain) => sitemap({ domain }))),
@@ -164,21 +176,34 @@ export const createServer$ = ({
       mapDistinct$(({ addHeadElements = noOpAddHeadElements }) => addHeadElements),
       mapDistinct$(({ addBodyElements = noOpAddBodyElements }) => addBodyElements),
       mapDistinct$((_) => _.options.react),
+      mapDistinct$((_) => _.options.reactApp),
       mapDistinct$((_) => _.options.appOptions),
+      mapDistinct$((_) => _.options.serveNext),
     ).pipe(
-      map(([addHeadElements, addBodyElements, react, appOptions]) =>
-        reactApplication({
-          monitor,
-          addHeadElements,
-          addBodyElements,
-          environment: environment.react,
-          options: react,
-          network: environment.network,
-          appOptions,
-        }),
+      map(
+        ([addHeadElements, addBodyElements, react, reactAppOptions, appOptions, serveNext]) =>
+          serveNext
+            ? reactApp({
+                addHeadElements,
+                addBodyElements,
+                environment: environment.reactApp,
+                options: reactAppOptions,
+                network: environment.network,
+                appOptions,
+              })
+            : reactApplication({
+                monitor,
+                addHeadElements,
+                addBodyElements,
+                environment: environment.react,
+                options: react,
+                network: environment.network,
+                appOptions,
+              }),
       ),
     ),
     mapDistinct$(({ addMiddleware = noOpAddMiddleware }) => addMiddleware),
+    defer(async () => LoadableExport.preloadAll()),
   ).pipe(
     map(
       ([
@@ -188,6 +213,7 @@ export const createServer$ = ({
         ratelimitMiddleware,
         securityMiddleware,
         clientAssetsMiddleware,
+        clientAssetsNextMiddleware,
         publicAssetsMiddleware,
         rootAssetsMiddleware,
         sitemapMiddleware,
@@ -205,7 +231,6 @@ export const createServer$ = ({
 
         // tslint:disable-next-line no-any
         const middlewares = (addMiddleware as any)([
-          setRootLoaderMiddleware,
           context({
             monitor,
             handleError: (ctx, error) => {
@@ -222,16 +247,19 @@ export const createServer$ = ({
               }
             },
           }),
+          setRootLoaderMiddleware,
           healthCheckMiddleware,
           cors,
           toobusyMiddleware,
           ratelimitMiddleware,
           securityMiddleware,
           clientAssetsMiddleware,
+          clientAssetsNextMiddleware,
           publicAssetsMiddleware,
           rootAssetsMiddleware,
           sitemapMiddleware,
           graphqlMiddleware,
+          graphqlNextMiddleware,
           nodeRPCMiddleware,
           reportMiddleware,
           reactApplicationMiddleware,
@@ -263,31 +291,54 @@ export const createServer$ = ({
     map(({ server }) => server),
     filter(utils.notNull),
     distinctUntilChanged(),
-    mergeScanLatest<http.Server | https.Server, LiveServer>(
+    mergeScanLatest<http.Server | https.Server, { graphqlServer: LiveServer; graphqlNext: LiveServer }>(
       (prevLiveServer, server) =>
         defer(async () => {
           if (prevLiveServer !== undefined) {
-            await prevLiveServer.stop();
+            await Promise.all([prevLiveServer.graphqlServer.stop(), prevLiveServer.graphqlNext.stop()]);
           }
-          const liveServer = await LiveServer.create({
-            schema,
-            rootLoader$,
-            monitor,
-            socketOptions: {
-              server,
-              path: routes.GRAPHQL,
-            },
+          const [graphqlServer, graphqlNext] = await Promise.all([
+            LiveServer.create({
+              schema: schema(),
+              rootLoader$,
+              monitor,
+              socketOptions: { noServer: true },
+              next: false,
+            }),
+            LiveServer.create({
+              schema: schema(),
+              rootLoader$,
+              monitor,
+              socketOptions: { noServer: true },
+              next: true,
+            }),
+          ]);
+
+          server.on('upgrade', (request, socket, head) => {
+            const pathname = url.parse(request.url).pathname;
+
+            if (pathname === routes.GRAPHQL) {
+              graphqlServer.wsServer.handleUpgrade(request, socket, head, (ws) => {
+                graphqlServer.wsServer.emit('connection', ws, request);
+              });
+            } else if (pathname === nextRoutes.GRAPHQL) {
+              graphqlNext.wsServer.handleUpgrade(request, socket, head, (ws) => {
+                graphqlNext.wsServer.emit('connection', ws, request);
+              });
+            } else {
+              socket.destroy();
+            }
           });
 
-          await liveServer.start();
+          await Promise.all([graphqlServer.start(), graphqlNext.start()]);
 
-          return liveServer;
+          return { graphqlServer, graphqlNext };
         }),
       undefined,
     ),
     finalize(async (liveServer) => {
       if (liveServer !== undefined) {
-        await liveServer.stop();
+        await Promise.all([liveServer.graphqlServer.stop(), liveServer.graphqlNext.stop()]);
       }
     }),
   );

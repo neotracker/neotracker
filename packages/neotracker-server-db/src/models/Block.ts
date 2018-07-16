@@ -7,11 +7,11 @@ import { BlockchainModel } from './BlockchainModel';
 import {
   ADDRESS_VALIDATOR,
   BLOCK_TIME_VALIDATOR,
-  convertJSON,
   HASH_VALIDATOR,
   INTEGER_INDEX_VALIDATOR,
   NONCE_VALIDATOR,
 } from './common';
+import { convertJSON } from './convertJSON';
 
 export class Block extends BlockchainModel<number> {
   public static readonly modelName = 'Block';

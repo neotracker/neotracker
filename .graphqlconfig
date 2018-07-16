@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "neotracker": {
+      "schemaPath": "packages/neotracker-server-graphql/src/__generated__/schema.graphql",
+      "includes": ["**/*.graphql"]
+    }
+  }
+}

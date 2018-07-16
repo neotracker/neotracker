@@ -1,7 +1,7 @@
 import { abi, ConfirmedTransaction, Contract, ReadSmartContract, RegisterTransaction } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
 import BigNumber from 'bignumber.js';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import {
   Asset as AssetModel,
   Contract as ContractModel,

@@ -1,6 +1,6 @@
 import { ConfirmedTransaction } from '@neo-one/client';
 import BigNumber from 'bignumber.js';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import {
   SUBTYPE_CLAIM,
   SUBTYPE_ENROLLMENT,

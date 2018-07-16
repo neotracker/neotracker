@@ -10,10 +10,10 @@ import {
   BIG_INT_ID,
   BLOCK_ID_VALIDATOR,
   BLOCK_TIME_COLUMN,
-  convertJSON,
   HASH_VALIDATOR,
   INTEGER_INDEX_VALIDATOR,
 } from './common';
+import { convertJSON } from './convertJSON';
 
 export class Address extends BlockchainModel<string> {
   public static readonly modelName = 'Address';

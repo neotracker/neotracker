@@ -7,13 +7,13 @@ import {
   BIG_INT_ID,
   BLOCK_TIME_COLUMN,
   CONTRACT_VALIDATOR,
-  convertJSON,
   HASH_VALIDATOR,
   INTEGER_INDEX_VALIDATOR,
   NEP5_BLACKLIST_CONTRACT_TYPE,
   NEP5_CONTRACT_TYPE,
   UNKNOWN_CONTRACT_TYPE,
 } from './common';
+import { convertJSON } from './convertJSON';
 
 export class Contract extends BlockchainModel<string> {
   public static readonly modelName = 'Contract';

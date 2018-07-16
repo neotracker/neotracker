@@ -1,0 +1,573 @@
+type Action implements Node {
+  id: ID!
+  type: String!
+  block_id: Int!
+  transaction_id: Int!
+  transaction_hash: String!
+  transaction_index: Int!
+  index: Int!
+  script_hash: String!
+  message: String
+  args_raw: String
+  transaction: Transaction!
+  transfer: Transfer
+}
+
+type ActionsConnection {
+  count: Int!
+  edges: [ActionsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ActionsEdge {
+  cursor: String!
+  node: Action!
+}
+
+type Address implements Node {
+  id: ID!
+  transaction_id: Int
+  transaction_hash: String
+  block_id: Int
+  block_time: Int!
+  transaction_count: Int!
+  transfer_count: Int!
+  last_transaction_id: Int
+  last_transaction_hash: String
+  last_transaction_time: Int
+  claim_value_available_coin: Coin!
+  coins(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): AddressToCoinsConnection!
+  transaction_input_outputs(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): AddressToTransactionInputOutputsConnection!
+  first_transaction: Transaction
+  transactions(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): AddressToTransactionsConnection!
+  transfers(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): AddressToTransfersConnection!
+}
+
+type AddressesConnection {
+  count: Int!
+  edges: [AddressesEdge!]!
+  pageInfo: PageInfo!
+}
+
+type AddressesEdge {
+  cursor: String!
+  node: Address!
+}
+
+type AddressToCoinsConnection {
+  count: Int!
+  edges: [AddressToCoinsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type AddressToCoinsEdge {
+  cursor: String!
+  node: Coin!
+}
+
+type AddressToTransactionInputOutputsConnection {
+  count: Int!
+  edges: [AddressToTransactionInputOutputsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type AddressToTransactionInputOutputsEdge {
+  cursor: String!
+  node: TransactionInputOutput!
+}
+
+type AddressToTransactionsConnection {
+  count: Int!
+  edges: [AddressToTransactionsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type AddressToTransactionsEdge {
+  cursor: String!
+  node: Transaction!
+}
+
+type AddressToTransfersConnection {
+  count: Int!
+  edges: [AddressToTransfersEdge!]!
+  pageInfo: PageInfo!
+}
+
+type AddressToTransfersEdge {
+  cursor: String!
+  node: Transfer!
+}
+
+type Asset implements Node {
+  id: ID!
+  transaction_id: Int!
+  transaction_hash: String!
+  type: String!
+  name: [AssetName!]!
+  symbol: String!
+  amount: String!
+  precision: Int!
+  owner: String
+  admin_address_id: String
+  block_time: Int!
+  issued: String!
+  available: String!
+  address_count: Int!
+  transaction_count: Int!
+  transfer_count: Int!
+  aggregate_block_id: Int!
+  coins(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): AssetToCoinsConnection!
+  transaction_input_outputs(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): AssetToTransactionInputOutputsConnection!
+  admin_address: Address
+  register_transaction: Transaction!
+  transactions(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): AssetToTransactionsConnection!
+  transfers(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): AssetToTransfersConnection!
+}
+
+type AssetName {
+  lang: String!
+  name: String!
+}
+
+type AssetsConnection {
+  count: Int!
+  edges: [AssetsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type AssetsEdge {
+  cursor: String!
+  node: Asset!
+}
+
+type AssetToCoinsConnection {
+  count: Int!
+  edges: [AssetToCoinsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type AssetToCoinsEdge {
+  cursor: String!
+  node: Coin!
+}
+
+type AssetToTransactionInputOutputsConnection {
+  count: Int!
+  edges: [AssetToTransactionInputOutputsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type AssetToTransactionInputOutputsEdge {
+  cursor: String!
+  node: TransactionInputOutput!
+}
+
+type AssetToTransactionsConnection {
+  count: Int!
+  edges: [AssetToTransactionsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type AssetToTransactionsEdge {
+  cursor: String!
+  node: Transaction!
+}
+
+type AssetToTransfersConnection {
+  count: Int!
+  edges: [AssetToTransfersEdge!]!
+  pageInfo: PageInfo!
+}
+
+type AssetToTransfersEdge {
+  cursor: String!
+  node: Transfer!
+}
+
+type Block implements Node {
+  id: ID!
+  hash: String!
+  size: Int!
+  version: Int!
+  merkle_root: String!
+  time: Int!
+  nonce: String!
+  validator_address_id: String
+  next_validator_address_id: String!
+  invocation_script: String!
+  verification_script: String!
+  transaction_count: Int!
+  previous_block_id: Int
+  previous_block_hash: String
+  next_block_id: Int
+  next_block_hash: String
+  system_fee: String!
+  network_fee: String!
+  aggregated_system_fee: String!
+  script: Script!
+  transactions(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): BlockToTransactionsConnection!
+}
+
+type BlocksConnection {
+  count: Int!
+  edges: [BlocksEdge!]!
+  pageInfo: PageInfo!
+}
+
+type BlocksEdge {
+  cursor: String!
+  node: Block!
+}
+
+type BlockToTransactionsConnection {
+  count: Int!
+  edges: [BlockToTransactionsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type BlockToTransactionsEdge {
+  cursor: String!
+  node: Transaction!
+}
+
+type Coin implements Node {
+  id: ID!
+  address_id: String!
+  asset_id: String!
+  value: String!
+  address: Address!
+  asset: Asset!
+}
+
+type Contract implements Node {
+  id: ID!
+  script: String!
+  parameters_raw: String!
+  return_type: String!
+  needs_storage: Boolean!
+  name: String!
+  version: String!
+  author: String!
+  email: String!
+  description: String!
+  transaction_id: Int!
+  transaction_hash: String!
+  block_time: Int!
+  type: String!
+  transaction: Transaction!
+  transfers(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): ContractToTransfersConnection!
+}
+
+type ContractsConnection {
+  count: Int!
+  edges: [ContractsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ContractsEdge {
+  cursor: String!
+  node: Contract!
+}
+
+type ContractToTransfersConnection {
+  count: Int!
+  edges: [ContractToTransfersEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ContractToTransfersEdge {
+  cursor: String!
+  node: Transfer!
+}
+
+type CurrentPrice implements Node {
+  id: ID!
+  sym: String!
+  price_usd: Float!
+  percent_change_24h: Float!
+  volume_usd_24h: Float!
+  market_cap_usd: Float!
+  last_updated: Int!
+}
+
+type DataPoint implements Node {
+  id: ID!
+  type: String!
+  time: Int!
+  value: String!
+}
+
+type DataPointsConnection {
+  count: Int!
+  edges: [DataPointsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type DataPointsEdge {
+  cursor: String!
+  node: DataPoint!
+}
+
+type Filter {
+  name: String!
+  operator: String!
+  value: String!
+}
+
+input FilterInput {
+  name: String!
+  operator: String!
+  value: String!
+}
+
+type Migration implements Node {
+  id: ID!
+}
+
+interface Node {
+  id: ID!
+}
+
+type OrderBy {
+  name: String!
+  direction: String!
+}
+
+input OrderByInput {
+  name: String!
+  direction: String!
+  type: String
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type ProcessedIndex implements Node {
+  id: ID!
+}
+
+type Query {
+  node(id: ID!): Node
+  nodes(ids: [ID!]!): [Node]!
+  actions(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): ActionsConnection!
+  action(id: ID!): Action
+  addresses(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): AddressesConnection!
+  assets(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): AssetsConnection!
+  blocks(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): BlocksConnection!
+  contracts(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): ContractsConnection!
+  data_points(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): DataPointsConnection!
+  data_point(id: ID!): DataPoint
+  transactions(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): TransactionsConnection!
+  transaction_input_outputs(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): TransactionInputOutputsConnection!
+  transaction_input_output(id: ID!): TransactionInputOutput
+  transfers(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): TransfersConnection!
+  transfer(id: ID!): Transfer
+  address(hash: String!): Address
+  app_options: String!
+  asset(hash: String!): Asset
+  block(hash: String, index: Int): Block
+  contract(hash: String!): Contract
+  current_price(sym: String!): CurrentPrice
+  prices(from: String!, to: String!): [DataPoint!]!
+  transaction(hash: String!): Transaction
+}
+
+type Script {
+  invocation_script: String!
+  verification_script: String!
+}
+
+type Transaction implements Node {
+  id: ID!
+  hash: String!
+  type: String!
+  size: Int!
+  version: Int!
+  system_fee: String!
+  network_fee: String!
+  nonce: String
+  pubkey: String
+  block_id: Int!
+  block_time: Int!
+  index: Int!
+  scripts: [Script!]!
+  script: String
+  gas: String
+  result_raw: String
+  inputs(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): TransactionToInputsConnection!
+  outputs(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): TransactionToOutputsConnection!
+  enrollment: TransactionInputOutput
+  claims(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): TransactionToClaimsConnection!
+  duplicate_claims(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): TransactionToDuplicateClaimsConnection!
+  asset: Asset
+  block: Block!
+  contracts(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): TransactionToContractsConnection!
+  actions(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): TransactionToActionsConnection!
+  transfers(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): TransactionToTransfersConnection!
+}
+
+type TransactionInputOutput implements Node {
+  id: ID!
+  type: String!
+  subtype: String!
+  input_transaction_id: Int
+  claim_transaction_id: Int
+  output_transaction_id: Int!
+  input_transaction_hash: String
+  claim_transaction_hash: String
+  output_transaction_hash: String!
+  output_transaction_index: Int!
+  asset_id: String!
+  value: String!
+  address_id: String!
+  claim_value: String
+  input_transaction: Transaction
+  claim_transaction: Transaction
+  duplicate_claim_transaction: Transaction
+  output_transaction: Transaction!
+  asset: Asset!
+  address: Address!
+}
+
+type TransactionInputOutputsConnection {
+  count: Int!
+  edges: [TransactionInputOutputsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type TransactionInputOutputsEdge {
+  cursor: String!
+  node: TransactionInputOutput!
+}
+
+type TransactionsConnection {
+  count: Int!
+  edges: [TransactionsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type TransactionsEdge {
+  cursor: String!
+  node: Transaction!
+}
+
+type TransactionToActionsConnection {
+  count: Int!
+  edges: [TransactionToActionsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type TransactionToActionsEdge {
+  cursor: String!
+  node: Action!
+}
+
+type TransactionToClaimsConnection {
+  count: Int!
+  edges: [TransactionToClaimsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type TransactionToClaimsEdge {
+  cursor: String!
+  node: TransactionInputOutput!
+}
+
+type TransactionToContractsConnection {
+  count: Int!
+  edges: [TransactionToContractsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type TransactionToContractsEdge {
+  cursor: String!
+  node: Contract!
+}
+
+type TransactionToDuplicateClaimsConnection {
+  count: Int!
+  edges: [TransactionToDuplicateClaimsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type TransactionToDuplicateClaimsEdge {
+  cursor: String!
+  node: TransactionInputOutput!
+}
+
+type TransactionToInputsConnection {
+  count: Int!
+  edges: [TransactionToInputsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type TransactionToInputsEdge {
+  cursor: String!
+  node: TransactionInputOutput!
+}
+
+type TransactionToOutputsConnection {
+  count: Int!
+  edges: [TransactionToOutputsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type TransactionToOutputsEdge {
+  cursor: String!
+  node: TransactionInputOutput!
+}
+
+type TransactionToTransfersConnection {
+  count: Int!
+  edges: [TransactionToTransfersEdge!]!
+  pageInfo: PageInfo!
+}
+
+type TransactionToTransfersEdge {
+  cursor: String!
+  node: Transfer!
+}
+
+type Transfer implements Node {
+  id: ID!
+  transaction_id: Int!
+  transaction_hash: String!
+  asset_id: String!
+  value: String!
+  from_address_id: String
+  to_address_id: String
+  block_time: Int!
+  transaction: Transaction
+  asset: Asset!
+  action: Action!
+  contract: Contract!
+  from_address: Address
+  to_address: Address
+  addresses(filters: [FilterInput!], orderBy: [OrderByInput!], first: Int, last: Int, before: String, after: String): TransferToAddressesConnection!
+}
+
+type TransfersConnection {
+  count: Int!
+  edges: [TransfersEdge!]!
+  pageInfo: PageInfo!
+}
+
+type TransfersEdge {
+  cursor: String!
+  node: Transfer!
+}
+
+type TransferToAddressesConnection {
+  count: Int!
+  edges: [TransferToAddressesEdge!]!
+  pageInfo: PageInfo!
+}
+
+type TransferToAddressesEdge {
+  cursor: String!
+  node: Address!
+}

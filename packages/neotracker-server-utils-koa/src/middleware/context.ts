@@ -86,6 +86,7 @@ export const context = ({
             error: HTTP_SERVER_REQUEST_FAILURES_TOTAL,
           },
           trace: true,
+          error: {},
         },
       );
     } catch (error) {

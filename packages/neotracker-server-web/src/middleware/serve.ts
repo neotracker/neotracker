@@ -165,7 +165,7 @@ function isHidden(root: any, path: any) {
  * File type.
  */
 
-function type(file: any, ext: any) {
+function type(file: string, ext: any) {
   return ext !== '' ? extname(basename(file, ext)) : extname(file);
 }
 

@@ -1,5 +1,5 @@
 /* eslint-disable */
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 // http://userguide.icu-project.org/locale
 export default function parse(locale) {

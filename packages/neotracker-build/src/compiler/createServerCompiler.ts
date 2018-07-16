@@ -1,14 +1,12 @@
-import * as appRootDir from 'app-root-dir';
 import * as path from 'path';
-import { createNodeCompiler } from '../createNodeCompiler';
+import { createNodeCompiler } from './createNodeCompiler';
 
-export const createServerCompiler = ({ buildVersion }: { readonly buildVersion: string }) =>
+export const createServerCompiler = () =>
   createNodeCompiler({
     title: 'server',
-    entry: {
-      index: path.resolve(appRootDir.get(), './packages/neotracker-build/src/entry/server.ts'),
-    },
-    outputPath: path.resolve(appRootDir.get(), './build/server'),
+    entryPath: path.join('packages', 'neotracker-build', 'src', 'entry', 'server.ts'),
+    outputPath: path.join('dist', 'neotracker-server-web'),
     type: 'server-web',
-    buildVersion,
+    buildVersion: 'dev',
+    dev: true,
   });

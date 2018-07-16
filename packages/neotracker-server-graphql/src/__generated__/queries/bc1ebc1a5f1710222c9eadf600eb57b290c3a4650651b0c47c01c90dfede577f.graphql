@@ -1,0 +1,3 @@
+query createAppContextAppOptionsQuery {
+  app_options
+}

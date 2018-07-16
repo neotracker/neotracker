@@ -7,81 +7,87 @@ import { bodyParser, getMonitor } from 'neotracker-server-utils-koa';
 import { sanitizeError } from 'neotracker-shared-utils';
 // @ts-ignore
 import { routes } from 'neotracker-shared-web';
+import { routes as routesNext } from 'neotracker-shared-web-next';
 import { getRootLoader } from './common';
 
-export const graphql = () => ({
-  type: 'route',
-  name: 'graphql',
-  method: 'post',
-  path: routes.GRAPHQL,
-  middleware: compose([
-    compress(),
-    bodyParser(),
-    async (ctx: Context) => {
-      // tslint:disable-next-line no-any
-      const { fields } = ctx.request as any;
-      if (fields == undefined) {
-        throw new HTTPError(400, HTTPError.INVALID_GRAPHQL_FIELDS_NULL);
-      }
+export const graphql = ({ next }: { readonly next: boolean }) => {
+  // NOTE: Use getQueryDeduplicator once we transition to only next
+  const path = next ? routesNext.GRAPHQL : routes.GRAPHQL;
 
-      if (!Array.isArray(fields)) {
-        throw new HTTPError(400, HTTPError.INVALID_GRAPHQL_FIELDS_ARRAY);
-      }
+  return {
+    type: 'route',
+    name: 'graphql',
+    method: 'post',
+    path,
+    middleware: compose([
+      compress(),
+      bodyParser(),
+      async (ctx: Context) => {
+        // tslint:disable-next-line no-any
+        const { fields } = ctx.request as any;
+        if (fields == undefined) {
+          throw new HTTPError(400, HTTPError.INVALID_GRAPHQL_FIELDS_NULL);
+        }
 
-      const rootLoader = getRootLoader(ctx);
-      const monitor = getMonitor(ctx);
-      const queryMap = new QueryMap();
-      const queryDeduplicator = createQueryDeduplicator(monitor, schema, queryMap, rootLoader);
+        if (!Array.isArray(fields)) {
+          throw new HTTPError(400, HTTPError.INVALID_GRAPHQL_FIELDS_ARRAY);
+        }
 
-      const result = await monitor
-        .withLabels({
-          [monitor.labels.HTTP_PATH]: '/graphql',
-          [monitor.labels.RPC_TYPE]: 'graphql',
-        })
-        .captureSpanLog(
-          async (span) =>
-            Promise.all(
-              fields.map(async (queryIn) =>
-                span
-                  .captureSpanLog(
-                    async (innerSpan) => {
-                      const query = queryIn;
-                      if (
-                        query == undefined ||
-                        typeof query !== 'object' ||
-                        query.id == undefined ||
-                        typeof query.id !== 'string' ||
-                        query.variables == undefined ||
-                        typeof query.variables !== 'object'
-                      ) {
-                        throw new CodedError(CodedError.PROGRAMMING_ERROR);
-                      }
+        const rootLoader = getRootLoader(ctx);
+        const monitor = getMonitor(ctx);
+        const queryMap = new QueryMap({ next });
+        const queryDeduplicator = createQueryDeduplicator(monitor, schema(), queryMap, rootLoader);
 
-                      return queryDeduplicator.execute({
-                        id: query.id,
-                        variables: query.variables,
-                        monitor: innerSpan,
-                      });
-                    },
-                    {
-                      name: 'http_server_graphql_request',
-                      level: { log: 'verbose', span: 'info' },
-                    },
-                  )
-                  .catch((error) => ({
-                    errors: [{ message: sanitizeError(error).message }],
-                  })),
+        const result = await monitor
+          .withLabels({
+            [monitor.labels.HTTP_PATH]: path,
+            [monitor.labels.RPC_TYPE]: 'graphql',
+          })
+          .captureSpanLog(
+            async (span) =>
+              Promise.all(
+                fields.map(async (queryIn) =>
+                  span
+                    .captureSpanLog(
+                      async (innerSpan) => {
+                        const query = queryIn;
+                        if (
+                          query == undefined ||
+                          typeof query !== 'object' ||
+                          query.id == undefined ||
+                          typeof query.id !== 'string' ||
+                          query.variables == undefined ||
+                          typeof query.variables !== 'object'
+                        ) {
+                          throw new CodedError(CodedError.PROGRAMMING_ERROR);
+                        }
+
+                        return queryDeduplicator.execute({
+                          id: query.id,
+                          variables: query.variables,
+                          monitor: innerSpan,
+                        });
+                      },
+                      {
+                        name: 'http_server_graphql_request',
+                        level: { log: 'verbose', span: 'info' },
+                      },
+                    )
+                    .catch((error) => ({
+                      errors: [{ message: sanitizeError(error).message }],
+                    })),
+                ),
               ),
-            ),
 
-          {
-            name: 'http_server_graphql_batch_request',
-            level: { log: 'verbose', span: 'info' },
-          },
-        );
+            {
+              name: 'http_server_graphql_batch_request',
+              level: { log: 'verbose', span: 'info' },
+            },
+          );
 
-      ctx.type = 'application/json';
-      ctx.body = JSON.stringify(result);
-    },
-  ]),
-});
+        ctx.type = 'application/json';
+        ctx.body = JSON.stringify(result);
+      },
+    ]),
+  };
+};

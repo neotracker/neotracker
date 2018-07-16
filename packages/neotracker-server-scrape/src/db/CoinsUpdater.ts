@@ -1,5 +1,5 @@
 import { Monitor } from '@neo-one/monitor';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { Coin as CoinModel } from 'neotracker-server-db';
 import { CoinModelChange, Context, isCoinModelCreate, isCoinModelDelete, isCoinModelPatch } from '../types';
 import { SameContextDBUpdater } from './SameContextDBUpdater';

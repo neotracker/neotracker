@@ -14,7 +14,7 @@ export interface PubSub<T> {
   readonly value$: Observable<T>;
 }
 
-export interface Options {
+export interface PubSubOptions {
   readonly db?: {
     readonly client?: 'pg' | 'sqlite3';
     readonly connection?: {
@@ -24,7 +24,7 @@ export interface Options {
     };
   };
 }
-export interface Environment {
+export interface PubSubEnvironment {
   readonly host?: string;
   readonly port?: number;
 }
@@ -37,8 +37,8 @@ const createPGPubSub = <T>({
 }: {
   readonly monitor: Monitor;
   readonly channel: string;
-  readonly options: Options;
-  readonly environment: Environment;
+  readonly options: PubSubOptions;
+  readonly environment: PubSubEnvironment;
 }): PubSub<T> => {
   const pgpubsub = new PGPubsub(
     createConnectionString({
@@ -88,8 +88,8 @@ export const createPubSub = <T>({
 }: {
   readonly monitor: Monitor;
   readonly channel: string;
-  readonly options: Options;
-  readonly environment: Environment;
+  readonly options: PubSubOptions;
+  readonly environment: PubSubEnvironment;
 }): PubSub<T> => {
   if (options.db !== undefined && options.db.client === 'pg') {
     return createPGPubSub({ options, channel, environment, monitor });

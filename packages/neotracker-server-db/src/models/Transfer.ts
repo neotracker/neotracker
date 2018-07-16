@@ -9,10 +9,10 @@ import {
   BIG_INT_ID,
   BLOCK_TIME_COLUMN,
   CONTRACT_VALIDATOR,
-  convertJSON,
   HASH_VALIDATOR,
   INTEGER_INDEX_VALIDATOR,
 } from './common';
+import { convertJSON } from './convertJSON';
 
 export class Transfer extends BlockchainModel<string> {
   public static readonly modelName = 'Transfer';

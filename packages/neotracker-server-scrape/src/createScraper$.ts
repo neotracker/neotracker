@@ -1,7 +1,7 @@
 import { abi, NEOONEDataProvider, NetworkType, ReadClient, ReadSmartContract } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
 import BigNumber from 'bignumber.js';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import {
   Block as BlockModel,
   Contract as ContractModel,

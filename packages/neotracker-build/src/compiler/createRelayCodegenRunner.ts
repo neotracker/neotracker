@@ -185,13 +185,8 @@ export interface CodegenRunner {
   readonly compileAll: (() => Promise<void>);
 }
 
-export const createRelayCodegenRunner = ({
-  srcDirs,
-  schemaPath,
-}: {
-  readonly srcDirs: ReadonlyArray<string>;
-  readonly schemaPath: string;
-}): CodegenRunner => {
+export const createRelayCodegenRunner = (): CodegenRunner => {
+  const srcDirs = ['./packages/neotracker-shared-web/src', './packages/neotracker-client-web/src'];
   const createParserConfig = (dir: string) => ({
     baseDir: path.resolve(appRootDir.get(), dir),
     getFileFilter: (baseDir: string) => (file: any) => {
@@ -199,7 +194,17 @@ export const createRelayCodegenRunner = ({
       return text.indexOf('graphql`') >= 0;
     },
     getParser: FileIRParser.getParser,
-    getSchema: () => getSchema(path.resolve(appRootDir.get(), schemaPath)),
+    getSchema: () =>
+      getSchema(
+        path.resolve(
+          appRootDir.get(),
+          'packages',
+          'neotracker-server-graphql',
+          'src',
+          '__generated__',
+          'schema.graphql',
+        ),
+      ),
     watchmanExpression: WATCH_EXPRESSION,
   });
 
