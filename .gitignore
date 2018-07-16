@@ -36,7 +36,6 @@ flow-coverage/
 
 build
 dist/*
-data
 keys
 .awcache
 db.sqlite
