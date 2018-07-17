@@ -7,6 +7,7 @@ import { HotCompilerServer } from './HotCompilerServer';
 export class HotWebServerBase extends HotCompilerServer {
   private readonly clientCompiler: webpack.Compiler;
   private readonly clientCompilerNext: webpack.Compiler;
+  private readonly isCI: boolean;
   private mutableClientWatcher: webpack.Watching | undefined;
   private mutableClientWatcherNext: webpack.Watching | undefined;
   private mutableClientCompiling: boolean;
@@ -18,11 +19,13 @@ export class HotWebServerBase extends HotCompilerServer {
     serverCompiler,
     clientCompiler,
     clientCompilerNext,
+    isCI,
     env = {},
   }: {
     readonly serverCompiler: webpack.Compiler;
     readonly clientCompiler: webpack.Compiler;
     readonly clientCompilerNext: webpack.Compiler;
+    readonly isCI: boolean;
     readonly env?: object;
   }) {
     super({
@@ -33,12 +36,13 @@ export class HotWebServerBase extends HotCompilerServer {
 
     this.clientCompiler = clientCompiler;
     this.clientCompilerNext = clientCompilerNext;
+    this.isCI = isCI;
     this.mutableClientCompiling = false;
     this.mutableClientCompilingNext = false;
   }
 
   public async start(): Promise<void> {
-    this.mutableGraphQLWatcher = await watchGraphQL();
+    this.mutableGraphQLWatcher = await watchGraphQL({ isCI: this.isCI });
     this.mutableGraphQLTypesProcess = execa('yarn', ['watch-gql-types']);
     const codegenRunner = createRelayCodegenRunner();
     await codegenRunner.watchAll();

@@ -69,7 +69,7 @@ const run = async ({ ci }: { readonly ci: boolean }) => {
 
   await neoOne(['bootstrap', '--network', networkName, '--reset']);
 
-  const proc = execa('yarn', ['develop', '--fast'], {
+  const proc = execa('yarn', ['develop', '--fast'].concat(ci ? ['--ci'] : []), {
     env: {
       NEOTRACKER_PORT: String(port),
       NEOTRACKER_RPC_URL: rpcURL,

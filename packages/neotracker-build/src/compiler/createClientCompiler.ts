@@ -19,10 +19,12 @@ import { createWebpackCompiler } from './createWebpackCompiler';
 export const createClientCompiler = ({
   dev,
   buildVersion,
+  isCI,
   analyze,
 }: {
   readonly dev: boolean;
   readonly buildVersion: string;
+  readonly isCI: boolean;
   readonly analyze?: boolean;
 }): webpack.Compiler => {
   const filename = dev ? '[name]' : '[name]-[chunkhash]';
@@ -109,5 +111,5 @@ export const createClientCompiler = ({
     },
   };
 
-  return createWebpackCompiler({ target: 'client', config: webpackConfig });
+  return createWebpackCompiler({ target: 'client', config: webpackConfig, isCI });
 };

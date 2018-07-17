@@ -8,9 +8,11 @@ const title = 'build';
 export const createWebpackCompiler = ({
   target,
   config,
+  isCI,
 }: {
   readonly target: string;
   readonly config: webpack.Configuration;
+  readonly isCI: boolean;
 }) => {
   try {
     log({
@@ -19,8 +21,10 @@ export const createWebpackCompiler = ({
       message: `Creating a bundle configuration for the ${target}`,
     });
 
-    // tslint:disable-next-line
-    config.plugins!.push(new webpack.ProgressPlugin());
+    if (!isCI) {
+      // tslint:disable-next-line
+      config.plugins!.push(new webpack.ProgressPlugin());
+    }
     const compiler = webpack(config);
 
     return addWebpackLogging({ title: target, compiler });

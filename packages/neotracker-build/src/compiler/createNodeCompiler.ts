@@ -13,6 +13,7 @@ export const createNodeCompiler = ({
   outputPath,
   dev,
   buildVersion,
+  isCI,
   type = 'node',
 }: {
   readonly title: string;
@@ -20,6 +21,7 @@ export const createNodeCompiler = ({
   readonly outputPath: string;
   readonly dev: boolean;
   readonly buildVersion: string;
+  readonly isCI: boolean;
   readonly type?: 'server-web' | 'node';
 }): webpack.Compiler => {
   const webpackConfig: webpack.Configuration = {
@@ -77,5 +79,5 @@ export const createNodeCompiler = ({
     },
   };
 
-  return createWebpackCompiler({ target: title, config: webpackConfig });
+  return createWebpackCompiler({ target: title, config: webpackConfig, isCI });
 };

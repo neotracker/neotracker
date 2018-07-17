@@ -32,7 +32,7 @@ aliases:
       - save-cache: *save-yarn-cache
       - run:
           name: Analyze
-          command: yarn analyze
+          command: yarn analyze --ci
       - store_artifacts:
           path: dist
       - run:

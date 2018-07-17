@@ -1,8 +1,5 @@
 {
-  "browserslist": [
-    "> 0.1%",
-    "not ie <= 10"
-  ],
+  "browserslist": ["> 0.1%", "not ie <= 10"],
   "bugs": "https://github.com/neotracker/neotracker/issues",
   "description": "NEO Tracker",
   "devDependencies": {
@@ -139,18 +136,8 @@
   },
   "license": "MIT",
   "lint-staged": {
-    "packages/*/src/**/*.js": [
-      "yarn run prettier --write",
-      "git add",
-      "yarn run lint:js"
-    ],
-    "packages/*/src/**/*.{ts,tsx}": [
-      "yarn run prettier --write",
-      "git add",
-      "yarn run test:unit --findRelatedTests --ci",
-      "yarn run test:browser --findRelatedTests --ci",
-      "yarn run lint:ts"
-    ]
+    "packages/*/src/**/*.js": ["yarn run prettier --write", "git add", "yarn run lint:js"],
+    "packages/*/src/**/*.{ts,tsx}": ["yarn run prettier --write", "git add", "yarn run test:unit --findRelatedTests --ci", "yarn run test:browser --findRelatedTests --ci", "yarn run lint:ts"]
   },
   "name": "neotracker",
   "private": true,
@@ -183,6 +170,7 @@
     "prettier:js": "yarn run prettier --write \"packages/*/src/**/*.js\"",
     "prettier:ts": "yarn run prettier --write \"packages/*/src/**/*.ts\"",
     "test:browser": "jest --projects jest/browser.js --passWithNoTests",
+    "size": "size-limit",
     "test:browser-ci": "jest --projects jest/browser-ci.js --ci -w 1 --passWithNoTests",
     "test:cypress": "yarn run ts-node ./packages/neotracker-server-test/src/cypress/run.ts",
     "test:cypress-ci": "yarn run test:cypress --ci",
