@@ -4,7 +4,7 @@ import * as React from 'react';
 import { type HOC, compose, getContext, pure, withHandlers } from 'recompose';
 import { connect } from 'react-redux';
 // $FlowFixMe
-import { sanitizeError } from 'neotracker-shared-utils';
+import { sanitizeError } from '@neotracker/shared-utils';
 
 import { type Theme } from '../../../styles/createTheme';
 import { Button, Typography, withStyles } from '../../../lib/base';

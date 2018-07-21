@@ -1,6 +1,4 @@
 import { ConfirmedTransaction } from '@neo-one/client';
-import BigNumber from 'bignumber.js';
-import _ from 'lodash';
 import {
   SUBTYPE_CLAIM,
   SUBTYPE_ENROLLMENT,
@@ -8,8 +6,10 @@ import {
   SUBTYPE_NONE,
   SUBTYPE_REWARD,
   TransactionInputOutput as TransactionInputOutputModel,
-} from 'neotracker-server-db';
-import { GAS_ASSET_HASH } from 'neotracker-shared-utils';
+} from '@neotracker/server-db';
+import { GAS_ASSET_HASH } from '@neotracker/shared-utils';
+import BigNumber from 'bignumber.js';
+import _ from 'lodash';
 
 const ZERO = new BigNumber('0');
 

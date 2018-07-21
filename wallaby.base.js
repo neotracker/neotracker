@@ -107,7 +107,9 @@ module.exports = function({ browser }) {
           : require('./jest/unit.js');
         jestConfig.moduleNameMapper = {
           ...jestConfig.moduleNameMapper,
-          '^neotracker-(.+)':
+          '^@neotracker-internal/(.+)':
+            wallaby.projectCacheDir + '/packages/neotracker-internal-$1/src',
+          '^@neotracker/(.+)':
             wallaby.projectCacheDir + '/packages/neotracker-$1/src',
         };
         jestConfig.transform = {};

@@ -1,5 +1,5 @@
 {
-  "name": "neotracker-shared-graphql",
+  "name": "@neotracker/shared-graphql",
   "version": "0.0.1-alpha.0",
   "keywords": ["neo", "blockchain", "neotracker"],
   "description": "NEO Tracker shared GraphQL code.",
@@ -10,7 +10,7 @@
   "dependencies": {
     "@neo-one/monitor": "^1.0.0-alpha.50",
     "lodash": "^4.17.10",
-    "neotracker-shared-utils": "^0.0.1-alpha.0",
+    "@neotracker/shared-utils": "^0.0.1-alpha.0",
     "safe-stable-stringify": "^1.0.1"
   },
   "sideEffects": false

@@ -12,7 +12,7 @@ import type { LockedLocalWallet } from '@neo-one/client';
 
 import classNames from 'classnames';
 // $FlowFixMe
-import { sanitizeError } from 'neotracker-shared-utils';
+import { sanitizeError } from '@neotracker/shared-utils';
 import { withRouter } from 'react-router-dom';
 
 import type { AppContext } from '../../../AppContext';

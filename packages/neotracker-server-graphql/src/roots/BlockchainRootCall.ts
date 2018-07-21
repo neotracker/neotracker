@@ -1,6 +1,6 @@
+import { PROCESSED_NEXT_INDEX } from '@neotracker/server-db';
+import { CodedError, pubsub } from '@neotracker/server-utils';
 import { GraphQLResolveInfo } from 'graphql';
-import { PROCESSED_NEXT_INDEX } from 'neotracker-server-db';
-import { CodedError, pubsub } from 'neotracker-server-utils';
 import { concat, of as _of } from 'rxjs';
 import { GraphQLResolver } from '../constants';
 import { GraphQLContext } from '../GraphQLContext';

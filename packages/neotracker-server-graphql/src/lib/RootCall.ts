@@ -1,7 +1,7 @@
 import { Monitor } from '@neo-one/monitor';
-import { RootLoader } from 'neotracker-server-db';
-import { CodedError } from 'neotracker-server-utils';
-import { AppOptions } from 'neotracker-shared-utils';
+import { RootLoader } from '@neotracker/server-db';
+import { CodedError } from '@neotracker/server-utils';
+import { AppOptions } from '@neotracker/shared-utils';
 import { EMPTY, Observable } from 'rxjs';
 import { GraphQLResolver } from '../constants';
 export interface RootCallOptions {

@@ -1,10 +1,10 @@
 // tslint:disable no-any no-object-mutation
 import { Monitor } from '@neo-one/monitor';
+import { pubsub } from '@neotracker/server-utils';
 // @ts-ignore
 import cryptocompare from 'cryptocompare';
 import { GraphQLResolveInfo } from 'graphql';
 import _ from 'lodash';
-import { pubsub } from 'neotracker-server-utils';
 import { combineLatest, concat, Observable, timer } from 'rxjs';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import { PRICES } from '../channels';

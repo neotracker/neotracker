@@ -1,4 +1,4 @@
-import { createTestContext } from 'neotracker-component-explorer';
+import { createTestContext } from '@neotracker/component-explorer';
 import { interval, of as _of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { examples } from '../../../../components/render/FromStream.example';

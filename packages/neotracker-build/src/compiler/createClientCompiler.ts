@@ -1,3 +1,4 @@
+import { utils } from '@neotracker/shared-utils';
 import * as appRootDir from 'app-root-dir';
 import AssetsWebpackPlugin from 'assets-webpack-plugin';
 // @ts-ignore
@@ -6,7 +7,6 @@ import CompressionPlugin from 'compression-webpack-plugin';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 // @ts-ignore
 import LodashModuleReplacementPlugin from 'lodash-webpack-plugin';
-import { utils } from 'neotracker-shared-utils';
 import * as path from 'path';
 import webpack from 'webpack';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';

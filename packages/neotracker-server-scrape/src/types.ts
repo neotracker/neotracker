@@ -8,8 +8,6 @@ import {
   ReadSmartContract,
 } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
-import BigNumber from 'bignumber.js';
-import Knex from 'knex';
 import {
   Action as ActionModel,
   Coin as CoinModel,
@@ -18,7 +16,9 @@ import {
   QueryContext,
   Transaction as TransactionModel,
   TransactionInputOutput as TransactionInputOutputModel,
-} from 'neotracker-server-db';
+} from '@neotracker/server-db';
+import BigNumber from 'bignumber.js';
+import Knex from 'knex';
 import { MigrationHandler } from './MigrationHandler';
 import { IWriteCache } from './WriteCache';
 

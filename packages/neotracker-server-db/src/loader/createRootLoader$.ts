@@ -1,9 +1,9 @@
 // tslint:disable prefer-switch
 import { Monitor } from '@neo-one/monitor';
+import { pubsub } from '@neotracker/server-utils';
 import { lcFirst } from 'change-case';
 import DataLoader from 'dataloader';
 import Knex from 'knex';
-import { pubsub } from 'neotracker-server-utils';
 import { Model } from 'objection';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map, scan, startWith } from 'rxjs/operators';

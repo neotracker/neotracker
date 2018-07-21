@@ -1,4 +1,4 @@
-import { Paging } from 'neotracker-shared-graphql';
+import { Paging } from '@neotracker/shared-graphql';
 
 export const getPagingArguments = ({
   first,

@@ -1,6 +1,6 @@
 import { Monitor, Span } from '@neo-one/monitor';
+import { RootLoader } from '@neotracker/server-db';
 import { DocumentNode } from 'graphql';
-import { RootLoader } from 'neotracker-server-db';
 import { GraphQLContext } from './GraphQLContext';
 import { schema } from './schema';
 

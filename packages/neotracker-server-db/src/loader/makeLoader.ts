@@ -1,7 +1,7 @@
 import { Monitor } from '@neo-one/monitor';
+import { labels } from '@neotracker/shared-utils';
 import DataLoader from 'dataloader';
 import Knex from 'knex';
-import { labels } from 'neotracker-shared-utils';
 import { Model, QueryBuilder } from 'objection';
 import { AllPowerfulQueryContext, QueryContext } from '../lib';
 

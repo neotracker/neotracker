@@ -1,7 +1,7 @@
 // tslint:disable no-import-side-effect ordered-imports
 import './init';
 import { CollectingLogger, DefaultMonitor, Reporter } from '@neo-one/monitor';
-import { labels } from 'neotracker-shared-utils';
+import { labels } from '@neotracker/shared-utils';
 import TraceKit from 'tracekit';
 import { render } from './render';
 

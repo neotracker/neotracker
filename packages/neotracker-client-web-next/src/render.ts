@@ -1,6 +1,6 @@
 import { Monitor } from '@neo-one/monitor';
-import { labels, ua } from 'neotracker-shared-utils';
-import { routes } from 'neotracker-shared-web-next';
+import { labels, ua } from '@neotracker/shared-utils';
+import { routes } from '@neotracker/shared-web-next';
 import { createApolloClient } from './createApolloClient';
 import { createAppContext } from './createAppContext';
 import { renderApp } from './renderApp';

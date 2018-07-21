@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 
 // @ts-ignore
-import { App, AppContext, createTheme, ThemeProvider } from 'neotracker-shared-web';
+import { App, AppContext, createTheme, ThemeProvider } from '@neotracker/shared-web';
 import { hydrate, render, unmountComponentAtNode } from 'react-dom';
 
 // tslint:disable-next-line no-let no-any

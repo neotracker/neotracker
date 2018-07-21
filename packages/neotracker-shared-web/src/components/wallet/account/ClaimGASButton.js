@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { type HOC, compose, getContext, pure, withHandlers } from 'recompose';
 import { connect } from 'react-redux';
 // $FlowFixMe
-import { sanitizeError } from 'neotracker-shared-utils';
+import { sanitizeError } from '@neotracker/shared-utils';
 
 import type { AppContext } from '../../../AppContext';
 import { type Theme } from '../../../styles/createTheme';

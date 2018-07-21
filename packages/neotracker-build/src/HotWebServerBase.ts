@@ -1,5 +1,5 @@
+import { killProcess } from '@neotracker/server-utils';
 import execa from 'execa';
-import { killProcess } from 'neotracker-server-utils';
 import webpack from 'webpack';
 import { createRelayCodegenRunner, watchGraphQL } from './compiler';
 import { HotCompilerServer } from './HotCompilerServer';

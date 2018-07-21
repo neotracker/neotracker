@@ -10,12 +10,12 @@ import {
   ReadClient,
 } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
+import { AppOptions } from '@neotracker/shared-utils';
+import { AppContext, observeQuery } from '@neotracker/shared-web-next';
 import ApolloClient from 'apollo-client';
 import FileSaver from 'file-saver';
 import gql from 'graphql-tag';
 import localforage from 'localforage';
-import { AppOptions } from 'neotracker-shared-utils';
-import { AppContext, observeQuery } from 'neotracker-shared-web-next';
 import { concat, of as _of } from 'rxjs';
 import { distinctUntilChanged, filter, map, publishReplay, refCount } from 'rxjs/operators';
 import { createAppContextAppOptionsQuery } from './__generated__/createAppContextAppOptionsQuery';

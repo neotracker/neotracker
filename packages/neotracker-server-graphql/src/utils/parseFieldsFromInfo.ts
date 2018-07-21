@@ -1,4 +1,5 @@
 // tslint:disable prefer-switch no-object-mutation
+import { CodedError } from '@neotracker/server-utils';
 import {
   FieldNode,
   FragmentDefinitionNode,
@@ -7,7 +8,6 @@ import {
   InlineFragmentNode,
   SelectionNode,
 } from 'graphql';
-import { CodedError } from 'neotracker-server-utils';
 
 interface Fragments {
   readonly [fragmentName: string]: FragmentDefinitionNode;

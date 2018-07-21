@@ -1,7 +1,7 @@
 import { Monitor } from '@neo-one/monitor';
+import { Action as ActionModel, Transfer as TransferModel } from '@neotracker/server-db';
+import { utils } from '@neotracker/shared-utils';
 import BigNumber from 'bignumber.js';
-import { Action as ActionModel, Transfer as TransferModel } from 'neotracker-server-db';
-import { utils } from 'neotracker-shared-utils';
 import { ActionData, Context } from '../types';
 
 export async function getActionDataForModel({

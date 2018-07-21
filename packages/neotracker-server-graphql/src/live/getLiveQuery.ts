@@ -1,3 +1,4 @@
+import { ExecutionResult } from '@neotracker/shared-graphql';
 import { FieldNode, GraphQLObjectType } from 'graphql';
 import { locatedError } from 'graphql/error/locatedError';
 import {
@@ -19,7 +20,6 @@ import { ObjMap } from 'graphql/jsutils/ObjMap';
 import { DocumentNode } from 'graphql/language/ast';
 import { GraphQLFieldResolver } from 'graphql/type/definition';
 import { GraphQLSchema } from 'graphql/type/schema';
-import { ExecutionResult } from 'neotracker-shared-graphql';
 import { Observable } from 'rxjs';
 
 // tslint:disable-next-line no-any

@@ -10,10 +10,10 @@ import {
   ReadClient,
 } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
+// @ts-ignore
+import { AppContext, AppOptions, observeQuery, routes } from '@neotracker/shared-web';
 import FileSaver from 'file-saver';
 import localforage from 'localforage';
-// @ts-ignore
-import { AppContext, AppOptions, observeQuery, routes } from 'neotracker-shared-web';
 // @ts-ignore
 import RelayQueryResponseCache from 'relay-runtime/lib/RelayQueryResponseCache';
 import { concat, of as _of } from 'rxjs';

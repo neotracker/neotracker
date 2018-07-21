@@ -5,7 +5,7 @@ import {
   createPaginationContainer,
 } from 'react-relay';
 // $FlowFixMe
-import { sanitizeError } from 'neotracker-shared-utils';
+import { sanitizeError } from '@neotracker/shared-utils';
 import * as React from 'react';
 
 import { compose, withHandlers, withStateHandlers } from 'recompose';

@@ -1,5 +1,5 @@
-import { Base } from 'neotracker-server-db';
-import { OrderByInput as OrderByInputType } from 'neotracker-shared-graphql';
+import { Base } from '@neotracker/server-db';
+import { OrderByInput as OrderByInputType } from '@neotracker/shared-graphql';
 import { QueryBuilder, RelationExpression } from 'objection';
 import { Input } from '../lib';
 import { getRelationExpressionForColumns } from '../utils';

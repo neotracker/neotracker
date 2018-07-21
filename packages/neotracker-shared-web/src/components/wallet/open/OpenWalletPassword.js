@@ -1,6 +1,6 @@
 /* @flow */
 // $FlowFixMe
-import { sanitizeError } from 'neotracker-shared-utils';
+import { sanitizeError } from '@neotracker/shared-utils';
 import {
   type HOC,
   compose,

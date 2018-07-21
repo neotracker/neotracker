@@ -12,7 +12,7 @@ import * as React from 'react';
 import type { UserAccount } from '@neo-one/client';
 
 // $FlowFixMe
-import { sanitizeError } from 'neotracker-shared-utils';
+import { sanitizeError } from '@neotracker/shared-utils';
 
 import type { AppContext } from '../../../AppContext';
 import {

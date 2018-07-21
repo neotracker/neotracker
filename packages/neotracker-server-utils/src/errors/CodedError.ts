@@ -1,4 +1,4 @@
-import { ClientError } from 'neotracker-shared-utils';
+import { ClientError } from '@neotracker/shared-utils';
 
 export enum ErrorCode {
   GRAPHQL_QUERY_NOT_FOUND_ERROR = 'Something went wrong. Try refreshing the page or going back to where you were.',

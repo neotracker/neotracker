@@ -1,5 +1,5 @@
 import { Monitor } from '@neo-one/monitor';
-import { Asset as AssetModel } from 'neotracker-server-db';
+import { Asset as AssetModel } from '@neotracker/server-db';
 import { raw } from 'objection';
 import { Assets, Context } from '../types';
 import { SameContextDBUpdater } from './SameContextDBUpdater';

@@ -1,4 +1,4 @@
-import { PExample } from 'neotracker-component-explorer';
+import { PExample } from '@neotracker/component-explorer';
 import * as React from 'react';
 import { concat, interval, of as _of } from 'rxjs';
 import { map } from 'rxjs/operators';

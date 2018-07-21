@@ -1,7 +1,7 @@
 import { Monitor } from '@neo-one/monitor';
-import { labels, ua } from 'neotracker-shared-utils';
+import { labels, ua } from '@neotracker/shared-utils';
 // @ts-ignore
-import { configureStore } from 'neotracker-shared-web';
+import { configureStore } from '@neotracker/shared-web';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 // @ts-ignore
 import RelayQueryResponseCache from 'relay-runtime/lib/RelayQueryResponseCache';

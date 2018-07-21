@@ -5,7 +5,7 @@ import {
   Contract as ContractModel,
   Transaction as TransactionModel,
   TransactionInputOutput as TransactionInputOutputModel,
-} from 'neotracker-server-db';
+} from '@neotracker/server-db';
 import { Context, TransactionModelData } from '../types';
 import { getActionDataForModel } from './getActionDataForModel';
 import { getInputOutputResultForModel } from './getInputOutputResultForModel';

@@ -1,8 +1,8 @@
 import { Monitor } from '@neo-one/monitor';
+import { Coin as CoinModel, SUBTYPE_CLAIM, SUBTYPE_ISSUE, SUBTYPE_REWARD } from '@neotracker/server-db';
+import { GAS_ASSET_ID, utils } from '@neotracker/shared-utils';
 import BigNumber from 'bignumber.js';
 import _ from 'lodash';
-import { Coin as CoinModel, SUBTYPE_CLAIM, SUBTYPE_ISSUE, SUBTYPE_REWARD } from 'neotracker-server-db';
-import { GAS_ASSET_ID, utils } from 'neotracker-shared-utils';
 import {
   ActionData,
   AssetData,

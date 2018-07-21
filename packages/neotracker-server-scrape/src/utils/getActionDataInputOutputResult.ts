@@ -1,5 +1,5 @@
+import { utils } from '@neotracker/shared-utils';
 import _ from 'lodash';
-import { utils } from 'neotracker-shared-utils';
 import { ActionData, CoinChanges, InputOutputResult } from '../types';
 import { reduceCoinChanges } from './reduceCoinChanges';
 

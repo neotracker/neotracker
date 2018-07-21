@@ -1,3 +1,5 @@
+import { Proxy, ProxyProps } from '@neotracker/component-explorer';
+import { AppOptions } from '@neotracker/shared-utils';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
 import { SchemaLink } from 'apollo-link-schema';
@@ -5,8 +7,6 @@ import fakerStatic from 'faker';
 import { addMockFunctionsToSchema, IMocks, makeExecutableSchema } from 'graphql-tools';
 import { buildClientSchema, printSchema } from 'graphql/utilities';
 import _ from 'lodash';
-import { Proxy, ProxyProps } from 'neotracker-component-explorer';
-import { AppOptions } from 'neotracker-shared-utils';
 import * as React from 'react';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AppContext } from '../../../AppContext';

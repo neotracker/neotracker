@@ -6,7 +6,7 @@ import {
   ClientError,
   ua,
   // $FlowFixMe
-} from 'neotracker-shared-utils';
+} from '@neotracker/shared-utils';
 
 const isSupported = (userAgent: UserAgent) => {
   if (typeof document === 'undefined') {

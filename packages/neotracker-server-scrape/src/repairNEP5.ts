@@ -1,7 +1,7 @@
 import { addressToScriptHash, ReadSmartContract } from '@neo-one/client';
 import { metrics, Monitor } from '@neo-one/monitor';
-import { Asset as AssetModel, Coin as CoinModel } from 'neotracker-server-db';
-import { labels } from 'neotracker-shared-utils';
+import { Asset as AssetModel, Coin as CoinModel } from '@neotracker/server-db';
+import { labels } from '@neotracker/shared-utils';
 import { Context } from './types';
 
 const NEOTRACKER_NEGATIVE_COIN_TOTAL = metrics.createCounter({

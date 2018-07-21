@@ -1,5 +1,5 @@
+import { ExecutionResult } from '@neotracker/shared-graphql';
 import { GraphQLFieldResolver, GraphQLResolveInfo } from 'graphql';
-import { ExecutionResult } from 'neotracker-shared-graphql';
 import { Observable } from 'rxjs';
 import { GraphQLContext } from './GraphQLContext';
 

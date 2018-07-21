@@ -1,5 +1,5 @@
+import { Base, IFace } from '@neotracker/server-db';
 import { pascalCase, snakeCase } from 'change-case';
-import { Base, IFace } from 'neotracker-server-db';
 
 export const getRootEdgeName = ({ model, plural }: { readonly model: typeof Base; readonly plural: boolean }) =>
   snakeCase(plural ? model.modelSchema.pluralName : model.modelSchema.name);

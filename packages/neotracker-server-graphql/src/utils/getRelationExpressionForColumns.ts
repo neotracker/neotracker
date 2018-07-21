@@ -1,4 +1,4 @@
-import { Base } from 'neotracker-server-db';
+import { Base } from '@neotracker/server-db';
 import { RelationExpression } from 'objection';
 import { stripColumn } from './stripColumn';
 

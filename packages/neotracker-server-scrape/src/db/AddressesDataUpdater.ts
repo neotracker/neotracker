@@ -1,5 +1,5 @@
 import { Monitor } from '@neo-one/monitor';
-import { Address as AddressModel } from 'neotracker-server-db';
+import { Address as AddressModel } from '@neotracker/server-db';
 import { raw } from 'objection';
 import { Addresses, Context } from '../types';
 import { SameContextDBUpdater } from './SameContextDBUpdater';

@@ -1,5 +1,5 @@
+import { PExample } from '@neotracker/component-explorer';
 import gql from 'graphql-tag';
-import { PExample } from 'neotracker-component-explorer';
 import * as React from 'react';
 import { Base } from 'reakit';
 import { ExampleBlockQuery } from './__generated__/ExampleBlockQuery';

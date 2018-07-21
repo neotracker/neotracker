@@ -1,5 +1,5 @@
 import { Monitor } from '@neo-one/monitor';
-import { Block as BlockModel } from 'neotracker-server-db';
+import { Block as BlockModel } from '@neotracker/server-db';
 import { BlockData, Context } from '../../types';
 
 export async function getPreviousBlockData(

@@ -1,6 +1,6 @@
 import { Monitor } from '@neo-one/monitor';
+import { RootLoader } from '@neotracker/server-db';
 import { GraphQLSchema } from 'graphql';
-import { RootLoader } from 'neotracker-server-db';
 // @ts-ignore
 import { Environment, Network, RecordSource, Store } from 'relay-runtime';
 import { createQueryDeduplicator } from './createQueryDeduplicator';

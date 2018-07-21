@@ -1,6 +1,6 @@
 import { Monitor } from '@neo-one/monitor';
+import { createTables, makeAllPowerfulQueryContext, Migration, QueryContext } from '@neotracker/server-db';
 import Knex from 'knex';
-import { createTables, makeAllPowerfulQueryContext, Migration, QueryContext } from 'neotracker-server-db';
 import { migrations } from './migrations';
 
 export class MigrationHandler {

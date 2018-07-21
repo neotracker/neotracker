@@ -1,7 +1,7 @@
 import { Block } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
+import { Block as BlockModel, isUniqueError } from '@neotracker/server-db';
 import BigNumber from 'bignumber.js';
-import { Block as BlockModel, isUniqueError } from 'neotracker-server-db';
 import { Context } from '../types';
 import { AddressesUpdater } from './AddressesUpdater';
 import { DBUpdater } from './DBUpdater';

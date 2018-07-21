@@ -1,5 +1,5 @@
 {
-  "name": "neotracker-server-db",
+  "name": "@neotracker/server-db",
   "version": "0.0.1-alpha.0",
   "keywords": ["neo", "blockchain", "neotracker"],
   "description": "NEO Tracker db definitions.",
@@ -19,8 +19,8 @@
     "knex": "^0.15.2",
     "lodash": "^4.17.10",
     "lru-cache": "^4.1.1",
-    "neotracker-server-utils": "^0.0.1-alpha.0",
-    "neotracker-shared-utils": "^0.0.1-alpha.0",
+    "@neotracker/server-utils": "^0.0.1-alpha.0",
+    "@neotracker/shared-utils": "^0.0.1-alpha.0",
     "objection": "^1.2.0",
     "pg": "^7.4.1",
     "pg-pubsub": "^0.4.0",

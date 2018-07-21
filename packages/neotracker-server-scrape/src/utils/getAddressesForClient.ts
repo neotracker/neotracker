@@ -1,4 +1,4 @@
-import { Address as AddressModel } from 'neotracker-server-db';
+import { Address as AddressModel } from '@neotracker/server-db';
 import { TransactionData } from '../types';
 import { reduceInputOutputResultAddressIDs } from './reduceInputOutputResultAddressIDs';
 

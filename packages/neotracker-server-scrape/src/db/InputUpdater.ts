@@ -1,7 +1,7 @@
 import { Monitor } from '@neo-one/monitor';
+import { TransactionInputOutput as TransactionInputOutputModel } from '@neotracker/server-db';
+import { NEO_ASSET_ID } from '@neotracker/shared-utils';
 import BigNumber from 'bignumber.js';
-import { TransactionInputOutput as TransactionInputOutputModel } from 'neotracker-server-db';
-import { NEO_ASSET_ID } from 'neotracker-shared-utils';
 import { Context } from '../types';
 import { calculateClaimAmount } from '../utils';
 import { SameContextDBUpdater } from './SameContextDBUpdater';

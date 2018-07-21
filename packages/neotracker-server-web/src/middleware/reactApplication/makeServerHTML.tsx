@@ -1,7 +1,7 @@
 import { NetworkType } from '@neo-one/client';
-import { utils } from 'neotracker-shared-utils';
+import { utils } from '@neotracker/shared-utils';
 // @ts-ignore
-import { AppOptions } from 'neotracker-shared-web';
+import { AppOptions } from '@neotracker/shared-web';
 import * as React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { HelmetData } from 'react-helmet';

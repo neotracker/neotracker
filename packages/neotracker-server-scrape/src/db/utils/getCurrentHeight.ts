@@ -1,5 +1,5 @@
 import { Monitor } from '@neo-one/monitor';
-import { ProcessedIndex } from 'neotracker-server-db';
+import { ProcessedIndex } from '@neotracker/server-db';
 import { Context } from '../../types';
 
 async function getCurrentHeightWorker(context: Context, monitor: Monitor): Promise<number> {

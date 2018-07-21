@@ -1,6 +1,6 @@
+import { utils } from '@neotracker/shared-utils';
 import execa from 'execa';
 import isRunning from 'is-running';
-import { utils } from 'neotracker-shared-utils';
 
 export const createKillProcess = (proc: execa.ExecaChildProcess) => async () => killProcess(proc);
 

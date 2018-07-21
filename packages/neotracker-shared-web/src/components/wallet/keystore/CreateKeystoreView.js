@@ -13,7 +13,7 @@ import {
   withState,
 } from 'recompose';
 // $FlowFixMe
-import { sanitizeError } from 'neotracker-shared-utils';
+import { sanitizeError } from '@neotracker/shared-utils';
 
 import type { AppContext } from '../../../AppContext';
 import { type Theme } from '../../../styles/createTheme';

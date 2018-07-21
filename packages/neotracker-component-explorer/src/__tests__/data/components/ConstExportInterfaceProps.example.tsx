@@ -1,5 +1,5 @@
 // tslint:disable no-implicit-dependencies
-import { CTExample } from 'neotracker-component-explorer';
+import { CTExample } from '@neotracker/component-explorer';
 import * as React from 'react';
 import { ConstExportInterfaceProps } from './ConstExportInterfaceProps';
 

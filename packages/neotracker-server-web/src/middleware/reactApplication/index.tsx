@@ -10,18 +10,10 @@ import {
   ReadClient,
 } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
-import * as appRootDir from 'app-root-dir';
-import fs from 'fs';
-import { create } from 'jss';
-// @ts-ignore
-import preset from 'jss-preset-default';
-import { Context } from 'koa';
-import compose from 'koa-compose';
-import compress from 'koa-compress';
-import { RootLoader } from 'neotracker-server-db';
-import { makeRelayEnvironment, RelaySSRQueryCache, schema } from 'neotracker-server-graphql';
-import { CodedError } from 'neotracker-server-utils';
-import { getMonitor } from 'neotracker-server-utils-koa';
+import { RootLoader } from '@neotracker/server-db';
+import { makeRelayEnvironment, RelaySSRQueryCache, schema } from '@neotracker/server-graphql';
+import { CodedError } from '@neotracker/server-utils';
+import { getMonitor } from '@neotracker/server-utils-koa';
 import {
   App,
   AppOptions,
@@ -31,7 +23,15 @@ import {
   routeConfigs,
   ThemeProvider,
   // @ts-ignore
-} from 'neotracker-shared-web';
+} from '@neotracker/shared-web';
+import * as appRootDir from 'app-root-dir';
+import fs from 'fs';
+import { create } from 'jss';
+// @ts-ignore
+import preset from 'jss-preset-default';
+import { Context } from 'koa';
+import compose from 'koa-compose';
+import compress from 'koa-compress';
 import * as path from 'path';
 import * as React from 'react';
 import { renderToString } from 'react-dom/server';

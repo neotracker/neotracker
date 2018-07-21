@@ -1,5 +1,5 @@
 import { Monitor } from '@neo-one/monitor';
-import { pubsub as globalPubSub } from 'neotracker-server-utils';
+import { pubsub as globalPubSub } from '@neotracker/server-utils';
 import { Observable, Observer } from 'rxjs';
 import { share } from 'rxjs/operators';
 import { createPubSub, PROCESSED_NEXT_INDEX, PubSub, PubSubEnvironment, PubSubOptions } from './createPubSub';

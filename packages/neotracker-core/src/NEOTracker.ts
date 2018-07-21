@@ -1,8 +1,8 @@
 import { Monitor } from '@neo-one/monitor';
-import { createFromEnvironment, createTables } from 'neotracker-server-db';
-import { createScraper$, ScrapeEnvironment, ScrapeOptions } from 'neotracker-server-scrape';
-import { createServer$, ServerEnvironment, ServerOptions } from 'neotracker-server-web';
-import { finalize } from 'neotracker-shared-utils';
+import { createFromEnvironment, createTables } from '@neotracker/server-db';
+import { createScraper$, ScrapeEnvironment, ScrapeOptions } from '@neotracker/server-scrape';
+import { createServer$, ServerEnvironment, ServerOptions } from '@neotracker/server-web';
+import { finalize } from '@neotracker/shared-utils';
 import { concat, defer, merge, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, map, take } from 'rxjs/operators';
 

@@ -1,5 +1,5 @@
 {
-  "name": "neotracker-component-explorer",
+  "name": "@neotracker/component-explorer",
   "version": "0.0.1-alpha.0",
   "keywords": ["neo", "blockchain", "neotracker"],
   "description": "NEO Tracker component explorer.",

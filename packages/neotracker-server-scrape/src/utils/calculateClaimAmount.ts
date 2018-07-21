@@ -1,6 +1,6 @@
 import { Monitor } from '@neo-one/monitor';
+import { calculateClaimValueBase } from '@neotracker/server-db';
 import BigNumber from 'bignumber.js';
-import { calculateClaimValueBase } from 'neotracker-server-db';
 import { Context } from '../types';
 
 const ZERO = new BigNumber('0');

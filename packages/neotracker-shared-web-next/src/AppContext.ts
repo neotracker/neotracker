@@ -7,8 +7,8 @@ import {
   ReadClient,
 } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
+import { AppOptions } from '@neotracker/shared-utils';
 import { ApolloClient } from 'apollo-client';
-import { AppOptions } from 'neotracker-shared-utils';
 import { Observable } from 'rxjs';
 
 export interface AppContext {

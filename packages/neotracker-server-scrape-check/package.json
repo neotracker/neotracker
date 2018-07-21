@@ -1,5 +1,5 @@
 {
-  "name": "neotracker-server-scrape-check",
+  "name": "@neotracker/server-scrape-check",
   "version": "0.0.1-alpha.0",
   "keywords": ["neo", "blockchain", "neotracker"],
   "description": "NEO Tracker scraper.",
@@ -13,8 +13,8 @@
     "bignumber.js": "^7.2.0",
     "knex": "^0.15.2",
     "lodash": "^4.17.10",
-    "neotracker-server-db": "^0.0.1-alpha.0",
-    "neotracker-shared-utils": "^0.0.1-alpha.0"
+    "@neotracker/server-db": "^0.0.1-alpha.0",
+    "@neotracker/shared-utils": "^0.0.1-alpha.0"
   },
   "sideEffects": false
 }

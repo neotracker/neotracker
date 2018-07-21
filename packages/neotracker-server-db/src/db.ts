@@ -1,6 +1,6 @@
 import { KnownLabel, Labels, metrics, Monitor, Span } from '@neo-one/monitor';
+import { finalize } from '@neotracker/shared-utils';
 import Knex from 'knex';
-import { finalize } from 'neotracker-shared-utils';
 import Objection, { transaction as dbTransaction } from 'objection';
 import { interval, Observable } from 'rxjs';
 import { filter, map, scan } from 'rxjs/operators';

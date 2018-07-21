@@ -1,7 +1,7 @@
+import { simpleMiddleware } from '@neotracker/server-utils-koa';
 import { Context } from 'koa';
 // @ts-ignore
 import koaRatelimit from 'koa-ratelimit-lru';
-import { simpleMiddleware } from 'neotracker-server-utils-koa';
 
 export interface Options {
   readonly enabled: boolean;

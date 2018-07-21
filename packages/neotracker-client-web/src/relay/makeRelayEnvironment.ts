@@ -1,6 +1,6 @@
 import { Monitor } from '@neo-one/monitor';
-import { QueryDeduplicator } from 'neotracker-shared-graphql';
-import { ClientError } from 'neotracker-shared-utils';
+import { QueryDeduplicator } from '@neotracker/shared-graphql';
+import { ClientError } from '@neotracker/shared-utils';
 // @ts-ignore
 import { Environment, Network, RecordSource, Store } from 'relay-runtime';
 // @ts-ignore

@@ -1,6 +1,6 @@
 /* @flow */
 // $FlowFixMe
-import { ClientError } from 'neotracker-shared-utils';
+import { ClientError } from '@neotracker/shared-utils';
 
 const ERROR_CODE_TO_MESSAGE = {
   PRIVATE_KEY_WIF_BASE58_ERROR:

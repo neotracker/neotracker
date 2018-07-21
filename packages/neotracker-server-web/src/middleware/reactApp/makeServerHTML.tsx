@@ -1,6 +1,6 @@
 import { NetworkType } from '@neo-one/client';
+import { AppOptions, utils } from '@neotracker/shared-utils';
 import { NormalizedCacheObject } from 'apollo-cache-inmemory';
-import { AppOptions, utils } from 'neotracker-shared-utils';
 import * as React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { HelmetData } from 'react-helmet';

@@ -1,6 +1,6 @@
 import { Monitor } from '@neo-one/monitor';
+import { createRootLoader, makeQueryContext as makeQueryContextInternal, PubSub } from '@neotracker/server-db';
 import Knex from 'knex';
-import { createRootLoader, makeQueryContext as makeQueryContextInternal, PubSub } from 'neotracker-server-db';
 import { EMPTY } from 'rxjs';
 import { Context } from '../../types';
 import { IWriteCache } from '../../WriteCache';

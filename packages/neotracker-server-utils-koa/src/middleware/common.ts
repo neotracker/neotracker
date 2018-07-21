@@ -1,6 +1,6 @@
 import { Span } from '@neo-one/monitor';
+import { HTTPError } from '@neotracker/server-utils';
 import { Context, Middleware } from 'koa';
-import { HTTPError } from 'neotracker-server-utils';
 
 export const getMonitor = (ctx: Context): Span => {
   const { monitor } = ctx.state;

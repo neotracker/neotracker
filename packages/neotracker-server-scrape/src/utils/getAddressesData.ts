@@ -1,5 +1,5 @@
+import { utils } from '@neotracker/shared-utils';
 import _ from 'lodash';
-import { utils } from 'neotracker-shared-utils';
 import { ActionData, AddressData, Addresses, InputOutputResultAddressIDs } from '../types';
 import { getEdgeCount } from './getEdgeCount';
 import { getValue } from './getValue';

@@ -1,6 +1,6 @@
 /* @flow */
 // $FlowFixMe
-import { labels } from 'neotracker-shared-utils';
+import { labels } from '@neotracker/shared-utils';
 import { metrics } from '@neo-one/monitor';
 
 export const NEOTRACKER_WALLET_NEW_FLOW_PRIVATE_KEY_TOTAL = metrics.createCounter(

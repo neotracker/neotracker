@@ -1,5 +1,5 @@
+import { ExecutionResult } from '@neotracker/shared-graphql';
 import { GraphQLResolveInfo } from 'graphql';
-import { ExecutionResult } from 'neotracker-shared-graphql';
 import { Observable, of as _of } from 'rxjs';
 import { catchError, finalize, publishReplay, refCount } from 'rxjs/operators';
 import stringify from 'safe-stable-stringify';

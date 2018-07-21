@@ -1,5 +1,5 @@
-import { Base } from 'neotracker-server-db';
-import { FilterInput as FilterInputType, OrderByInput as OrderByInputType } from 'neotracker-shared-graphql';
+import { Base } from '@neotracker/server-db';
+import { FilterInput as FilterInputType, OrderByInput as OrderByInputType } from '@neotracker/shared-graphql';
 import { QueryBuilder } from 'objection';
 import { FilterInput, OrderByInput } from '../inputs';
 

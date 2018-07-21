@@ -1,6 +1,6 @@
+import { utils } from '@neotracker/shared-utils';
 import Application from 'koa';
 import Router from 'koa-router';
-import { utils } from 'neotracker-shared-utils';
 import { ServerMiddleware, ServerRoute } from './middleware';
 
 export const routeMiddleware = ({

@@ -9,7 +9,7 @@ import {
   NEO_COIN_ASSET,
   GAS_COIN_ASSET,
   // $FlowFixMe
-} from 'neotracker-shared-utils';
+} from '@neotracker/shared-utils';
 
 import { getID } from '../../../../graphql/relay';
 

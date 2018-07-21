@@ -1,5 +1,5 @@
+import { Base } from '@neotracker/server-db';
 import { makeExecutableSchema } from 'graphql-tools';
-import { Base } from 'neotracker-server-db';
 import { SchemaBuilder } from './gen/SchemaBuilder';
 import { Input, Mutation, RootCall, Type } from './lib';
 

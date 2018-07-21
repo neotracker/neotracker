@@ -1,6 +1,6 @@
 /* @flow */
 // $FlowFixMe
-import { ClientError } from 'neotracker-shared-utils';
+import { ClientError } from '@neotracker/shared-utils';
 import { JssProvider, SheetsRegistry } from 'react-jss';
 import * as React from 'react';
 

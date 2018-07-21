@@ -1,6 +1,6 @@
+import { CodedError, ValidationError } from '@neotracker/server-utils';
 import { snakeCase } from 'change-case';
 import * as Knex from 'knex';
-import { CodedError, ValidationError } from 'neotracker-server-utils';
 import { Model, ModelClass, ModelOptions, QueryContext as ObjectionQueryContext } from 'objection';
 import { isPostgres, isUniqueError } from '../knexUtils';
 import { IDSchema, makeJSONSchema, makeRelationMappings, ModelSchema } from './common';

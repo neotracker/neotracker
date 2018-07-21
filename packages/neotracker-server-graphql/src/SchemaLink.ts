@@ -1,5 +1,5 @@
+import { QueryDeduplicator } from '@neotracker/shared-graphql';
 import { ApolloLink, FetchResult, Observable, Operation } from 'apollo-link';
-import { QueryDeduplicator } from 'neotracker-shared-graphql';
 import { defer } from 'rxjs';
 
 export class SchemaLink extends ApolloLink {

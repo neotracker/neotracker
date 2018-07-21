@@ -11,7 +11,7 @@ import {
   RawInvocationData,
   RawInvocationResult,
 } from '@neo-one/client';
-import { utils } from 'neotracker-shared-utils';
+import { utils } from '@neotracker/shared-utils';
 
 export const normalizeHash = (hash: string): string => {
   if (hash.startsWith('0x')) {

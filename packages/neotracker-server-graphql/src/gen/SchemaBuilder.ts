@@ -1,4 +1,4 @@
-import { Base } from 'neotracker-server-db';
+import { Base } from '@neotracker/server-db';
 import { Input, Mutation, RootCall, Type } from '../lib';
 import { ResolverBuilder } from './ResolverBuilder';
 import { TypeDefsBuilder } from './TypeDefsBuilder';

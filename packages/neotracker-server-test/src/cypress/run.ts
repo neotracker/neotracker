@@ -1,6 +1,6 @@
 // tslint:disable no-console
+import { createKillProcess } from '@neotracker/server-utils';
 import execa from 'execa';
-import { createKillProcess } from 'neotracker-server-utils';
 import tmp from 'tmp';
 import v4 from 'uuid/v4';
 import yargs from 'yargs';

@@ -4,7 +4,7 @@ import * as React from 'react';
 import { type HOC, compose, getContext, pure, withHandlers } from 'recompose';
 import { connect } from 'react-redux';
 // $FlowFixMe
-import { labels, sanitizeError } from 'neotracker-shared-utils';
+import { labels, sanitizeError } from '@neotracker/shared-utils';
 
 import type { AppContext } from '../../../AppContext';
 import TextField, {

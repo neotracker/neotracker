@@ -1,6 +1,6 @@
 // tslint:disable no-any no-array-mutation no-object-mutation readonly-keyword
+import { Base, BaseModel, Field } from '@neotracker/server-db';
 import _ from 'lodash';
-import { Base, BaseModel, Field } from 'neotracker-server-db';
 import { Model } from 'objection';
 import { Input, Mutation, RootCall, Type } from '../lib';
 import { getGraphQLType } from '../utils';

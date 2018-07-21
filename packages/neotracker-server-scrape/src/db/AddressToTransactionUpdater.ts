@@ -1,6 +1,6 @@
 import { Monitor } from '@neo-one/monitor';
+import { AddressToTransaction as AddressToTransactionModel } from '@neotracker/server-db';
 import _ from 'lodash';
-import { AddressToTransaction as AddressToTransactionModel } from 'neotracker-server-db';
 import { Context } from '../types';
 import { SameContextDBUpdater } from './SameContextDBUpdater';
 

@@ -1,4 +1,4 @@
-import { pubsub } from 'neotracker-server-utils';
+import { pubsub } from '@neotracker/server-utils';
 import { Observable } from 'rxjs';
 import { PROCESSED_NEXT_INDEX } from '../createPubSub';
 import { ID } from '../lib';

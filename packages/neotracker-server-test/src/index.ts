@@ -4,4 +4,4 @@ export * from './checkReady';
 export * from './db';
 export * from './until';
 
-export * from 'neotracker-shared-test';
+export * from '@neotracker/shared-test';

@@ -1,4 +1,4 @@
-import { Base, Edge } from 'neotracker-server-db';
+import { Base, Edge } from '@neotracker/server-db';
 import { Model, RelationExpression } from 'objection';
 
 // tslint:disable-next-line no-any

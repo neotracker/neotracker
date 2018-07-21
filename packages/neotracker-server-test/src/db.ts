@@ -1,4 +1,3 @@
-import Knex from 'knex';
 import {
   Action,
   Address,
@@ -20,8 +19,9 @@ import {
   Transaction,
   TransactionInputOutput,
   Transfer,
-} from 'neotracker-server-db';
-import { getMonitor } from 'neotracker-shared-test';
+} from '@neotracker/server-db';
+import { getMonitor } from '@neotracker/shared-test';
+import Knex from 'knex';
 import { addTeardownCleanup } from './addTeardownCleanup';
 
 export interface Database {

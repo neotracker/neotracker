@@ -1,6 +1,6 @@
 import { ActionRaw, scriptHashToAddress } from '@neo-one/client';
+import { utils } from '@neotracker/shared-utils';
 import BigNumber from 'bignumber.js';
-import { utils } from 'neotracker-shared-utils';
 import { ActionData, Context } from '../types';
 
 export function getActionDataForClient({

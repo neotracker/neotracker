@@ -1,4 +1,4 @@
-import { NetworkType } from 'neotracker-shared-utils';
+import { NetworkType } from '@neotracker/shared-utils';
 
 export const mainRPCURL = 'https://neotracker.io/rpc';
 export const testRPCURL = 'https://testnet.neotracker.io/rpc';

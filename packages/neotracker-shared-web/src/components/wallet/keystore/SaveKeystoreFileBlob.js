@@ -1,6 +1,6 @@
 /* @flow */
 // $FlowFixMe
-import { ClientError, sanitizeError } from 'neotracker-shared-utils';
+import { ClientError, sanitizeError } from '@neotracker/shared-utils';
 import * as React from 'react';
 
 import { type HOC, compose, getContext, pure, withHandlers } from 'recompose';

@@ -3,7 +3,7 @@ import { type HOC, compose, getContext, pure, withHandlers } from 'recompose';
 import * as React from 'react';
 
 // $FlowFixMe
-import { labels } from 'neotracker-shared-utils';
+import { labels } from '@neotracker/shared-utils';
 
 import type { AppContext } from '../../../AppContext';
 import { Link } from '../../../lib/link';

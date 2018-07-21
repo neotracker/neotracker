@@ -1,6 +1,6 @@
 import { Block } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
-import { Block as BlockModel } from 'neotracker-server-db';
+import { Block as BlockModel } from '@neotracker/server-db';
 import { Context } from '../types';
 import { SameContextDBUpdater } from './SameContextDBUpdater';
 

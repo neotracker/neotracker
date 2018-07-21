@@ -1,5 +1,5 @@
 // @ts-ignore
-import { routes } from 'neotracker-shared-web';
+import { routes } from '@neotracker/shared-web';
 import { Options, serveAssets } from './serveAssets';
 
 export const publicAssets = ({ options }: { readonly options: Options }) =>

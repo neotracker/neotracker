@@ -1,5 +1,5 @@
+import { simpleMiddleware } from '@neotracker/server-utils-koa';
 import { Context } from 'koa';
-import { simpleMiddleware } from 'neotracker-server-utils-koa';
 import toobusy_js from 'toobusy-js';
 
 export interface Options {

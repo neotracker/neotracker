@@ -7,9 +7,6 @@ import {
   ReadSmartContract,
 } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
-import BigNumber from 'bignumber.js';
-import Knex from 'knex';
-import _ from 'lodash';
 import {
   Asset as AssetModel,
   Coin as CoinModel,
@@ -19,8 +16,11 @@ import {
   makeAllPowerfulQueryContext,
   NEP5_CONTRACT_TYPE,
   ProcessedIndex,
-} from 'neotracker-server-db';
-import { utils } from 'neotracker-shared-utils';
+} from '@neotracker/server-db';
+import { utils } from '@neotracker/shared-utils';
+import BigNumber from 'bignumber.js';
+import Knex from 'knex';
+import _ from 'lodash';
 
 export interface Environment {
   readonly network: NetworkType;

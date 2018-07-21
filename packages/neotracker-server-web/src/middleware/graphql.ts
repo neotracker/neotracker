@@ -1,13 +1,13 @@
+import { createQueryDeduplicator, QueryMap, schema } from '@neotracker/server-graphql';
+import { CodedError, HTTPError } from '@neotracker/server-utils';
+import { bodyParser, getMonitor } from '@neotracker/server-utils-koa';
+import { sanitizeError } from '@neotracker/shared-utils';
+// @ts-ignore
+import { routes } from '@neotracker/shared-web';
+import { routes as routesNext } from '@neotracker/shared-web-next';
 import { Context } from 'koa';
 import compose from 'koa-compose';
 import compress from 'koa-compress';
-import { createQueryDeduplicator, QueryMap, schema } from 'neotracker-server-graphql';
-import { CodedError, HTTPError } from 'neotracker-server-utils';
-import { bodyParser, getMonitor } from 'neotracker-server-utils-koa';
-import { sanitizeError } from 'neotracker-shared-utils';
-// @ts-ignore
-import { routes } from 'neotracker-shared-web';
-import { routes as routesNext } from 'neotracker-shared-web-next';
 import { getRootLoader } from './common';
 
 export const graphql = ({ next }: { readonly next: boolean }) => {

@@ -1,6 +1,6 @@
 /* @flow */
 // $FlowFixMe
-import { GAS_ASSET_HASH } from 'neotracker-shared-utils';
+import { GAS_ASSET_HASH } from '@neotracker/shared-utils';
 import * as React from 'react';
 
 import { type HOC, compose, pure } from 'recompose';

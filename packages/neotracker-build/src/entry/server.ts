@@ -2,7 +2,7 @@
 import './init';
 // tslint:disable-next-line ordered-imports
 import { DefaultMonitor } from '@neo-one/monitor';
-import { NEOTracker } from 'neotracker-core';
+import { NEOTracker } from '@neotracker/core';
 import { BehaviorSubject } from 'rxjs';
 import { getOptions } from '../options';
 

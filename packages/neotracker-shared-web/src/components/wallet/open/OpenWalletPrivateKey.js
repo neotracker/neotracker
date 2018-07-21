@@ -13,7 +13,7 @@ import * as React from 'react';
 import classNames from 'classnames';
 import { privateKeyToAddress, wifToPrivateKey } from '@neo-one/client';
 // $FlowFixMe
-import { sanitizeError } from 'neotracker-shared-utils';
+import { sanitizeError } from '@neotracker/shared-utils';
 
 import type { AppContext } from '../../../AppContext';
 // eslint-disable-next-line

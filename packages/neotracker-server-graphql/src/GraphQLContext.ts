@@ -1,6 +1,6 @@
 import { Monitor } from '@neo-one/monitor';
+import { RootLoader } from '@neotracker/server-db';
 import { DocumentNode, GraphQLResolveInfo, GraphQLSchema } from 'graphql';
-import { RootLoader } from 'neotracker-server-db';
 
 export interface GraphQLContext {
   readonly rootLoader: RootLoader;

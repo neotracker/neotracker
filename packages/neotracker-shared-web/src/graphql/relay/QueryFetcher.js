@@ -9,7 +9,7 @@ import type {
 } from 'relay-runtime';
 
 // $FlowFixMe
-import { labels } from 'neotracker-shared-utils';
+import { labels } from '@neotracker/shared-utils';
 
 import executeOperation from './executeOperation';
 

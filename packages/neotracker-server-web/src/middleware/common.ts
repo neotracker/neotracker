@@ -1,7 +1,7 @@
+import { RootLoader } from '@neotracker/server-db';
+import { HTTPError } from '@neotracker/server-utils';
+import { QueryDeduplicator } from '@neotracker/shared-graphql';
 import { Context } from 'koa';
-import { RootLoader } from 'neotracker-server-db';
-import { HTTPError } from 'neotracker-server-utils';
-import { QueryDeduplicator } from 'neotracker-shared-graphql';
 
 export const getRootLoader = (ctx: Context): RootLoader => {
   const { rootLoader } = ctx.state;

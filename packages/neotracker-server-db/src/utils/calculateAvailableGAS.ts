@@ -1,5 +1,5 @@
+import { numbers } from '@neotracker/shared-utils';
 import BigNumber from 'bignumber.js';
-import { numbers } from 'neotracker-shared-utils';
 import { calculateClaimValueBase } from './calculateClaimValueBase';
 
 export const calculateAvailableGAS = async (maxIndex: number): Promise<BigNumber> =>

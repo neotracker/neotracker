@@ -2,7 +2,7 @@
 import './init';
 // tslint:disable-next-line ordered-imports
 import { CollectingLogger, DefaultMonitor, Reporter } from '@neo-one/monitor';
-import { labels } from 'neotracker-shared-utils';
+import { labels } from '@neotracker/shared-utils';
 import TraceKit from 'tracekit';
 import { render } from './render';
 

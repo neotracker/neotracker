@@ -1,7 +1,7 @@
 import { Monitor } from '@neo-one/monitor';
+import { QueryDeduplicator } from '@neotracker/shared-graphql';
+import { ClientError } from '@neotracker/shared-utils';
 import fetch from 'cross-fetch';
-import { QueryDeduplicator } from 'neotracker-shared-graphql';
-import { ClientError } from 'neotracker-shared-utils';
 
 export const createQueryDeduplicator = ({
   endpoint,

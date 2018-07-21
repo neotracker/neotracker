@@ -1,7 +1,7 @@
+import { simpleMiddleware } from '@neotracker/server-utils-koa';
+import { utils } from '@neotracker/shared-utils';
 import compose from 'koa-compose';
 import * as koaHelmet from 'koa-helmet';
-import { simpleMiddleware } from 'neotracker-server-utils-koa';
-import { utils } from 'neotracker-shared-utils';
 import { enforceHTTPS } from './enforceHttps';
 
 export interface Options {

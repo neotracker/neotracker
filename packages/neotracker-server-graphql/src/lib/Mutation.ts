@@ -1,6 +1,6 @@
+import { CodedError } from '@neotracker/server-utils';
 import { ucFirst } from 'change-case';
 import { GraphQLResolveInfo } from 'graphql';
-import { CodedError } from 'neotracker-server-utils';
 import { GraphQLContext } from '../GraphQLContext';
 
 // tslint:disable-next-line no-unnecessary-class

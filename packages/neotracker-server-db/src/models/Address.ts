@@ -1,6 +1,6 @@
 // tslint:disable variable-name no-useless-cast
+import { GAS_ASSET_ID } from '@neotracker/shared-utils';
 import Knex from 'knex';
-import { GAS_ASSET_ID } from 'neotracker-shared-utils';
 import { Constructor, Model, ModelOptions, Pojo } from 'objection';
 import { EdgeSchema, FieldSchema, IndexSchema, QueryContext } from '../lib';
 import { calculateAddressClaimValue } from '../utils';

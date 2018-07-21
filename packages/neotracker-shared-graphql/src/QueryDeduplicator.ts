@@ -1,6 +1,6 @@
 import { metrics, Monitor } from '@neo-one/monitor';
+import { labels } from '@neotracker/shared-utils';
 import _ from 'lodash';
-import { labels } from 'neotracker-shared-utils';
 import stringify from 'safe-stable-stringify';
 import { ExecutionResult } from './constants';
 

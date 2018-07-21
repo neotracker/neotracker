@@ -1,8 +1,8 @@
+import { schema } from '@neotracker/server-graphql';
 import * as fs from 'fs-extra';
 import { ExecutionResult, graphql, introspectionQuery } from 'graphql';
 // tslint:disable-next-line no-submodule-imports
 import { buildClientSchema, IntrospectionQuery, printSchema } from 'graphql/utilities';
-import { schema } from 'neotracker-server-graphql';
 import * as path from 'path';
 
 import { log } from '../log';

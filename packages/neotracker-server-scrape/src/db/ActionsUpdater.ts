@@ -1,7 +1,7 @@
 import { ActionRaw } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
+import { Action as ActionModel } from '@neotracker/server-db';
 import _ from 'lodash';
-import { Action as ActionModel } from 'neotracker-server-db';
 import { Context } from '../types';
 import { SameContextDBUpdater } from './SameContextDBUpdater';
 

@@ -1,4 +1,4 @@
-import { Connection, isPagingFirst, isPagingLast, Paging } from 'neotracker-shared-graphql';
+import { Connection, isPagingFirst, isPagingLast, Paging } from '@neotracker/shared-graphql';
 import { QueryBuilder } from 'objection';
 
 const getPagingArguments = (

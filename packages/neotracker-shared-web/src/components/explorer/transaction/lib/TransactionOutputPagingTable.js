@@ -4,7 +4,7 @@ import * as React from 'react';
 import { type HOC, compose, pure, withStateHandlers } from 'recompose';
 import { graphql } from 'react-relay';
 // $FlowFixMe
-import { sanitizeError } from 'neotracker-shared-utils';
+import { sanitizeError } from '@neotracker/shared-utils';
 
 import TransactionOutputTable from './TransactionOutputTable';
 

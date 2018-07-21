@@ -1,6 +1,6 @@
 /* @flow */
 // $FlowFixMe
-import { GAS_ASSET_HASH } from 'neotracker-shared-utils';
+import { GAS_ASSET_HASH } from '@neotracker/shared-utils';
 
 // eslint-disable-next-line
 export const ZERO_GAS_COIN = {

@@ -1,7 +1,7 @@
 /* @flow */
 import BigNumber from 'bignumber.js';
 // $FlowFixMe
-import { ClientError } from 'neotracker-shared-utils';
+import { ClientError } from '@neotracker/shared-utils';
 import * as React from 'react';
 import type { UserAccount } from '@neo-one/client';
 

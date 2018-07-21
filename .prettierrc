@@ -30,7 +30,7 @@
       "files": "*.json",
       "options": {
         "parser": "json",
-        "printWidth": 240
+        "printWidth": 80
       }
     }
   ]

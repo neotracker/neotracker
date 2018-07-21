@@ -1,6 +1,4 @@
 import { metrics, Monitor } from '@neo-one/monitor';
-import { AsyncIterableX } from 'ix/asynciterable/asynciterablex';
-import Knex from 'knex';
 import {
   AddressToTransfer as AddressToTransferModel,
   Asset as AssetModel,
@@ -11,7 +9,9 @@ import {
   NEP5_CONTRACT_TYPE,
   QueryContext,
   Transfer as TransferModel,
-} from 'neotracker-server-db';
+} from '@neotracker/server-db';
+import { AsyncIterableX } from 'ix/asynciterable/asynciterablex';
+import Knex from 'knex';
 import { concat, defer, Observable, Observer } from 'rxjs';
 import { BlockUpdater, getCurrentHeight } from './db';
 import { normalizeBlock } from './normalizeBlock';

@@ -13,7 +13,7 @@ import {
   withStateHandlers,
 } from 'recompose';
 // $FlowFixMe
-import { labels } from 'neotracker-shared-utils';
+import { labels } from '@neotracker/shared-utils';
 import { withRouter } from 'react-router';
 
 import Address from './pages/Address';

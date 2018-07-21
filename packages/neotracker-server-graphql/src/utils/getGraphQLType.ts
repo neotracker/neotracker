@@ -1,4 +1,4 @@
-import { FieldType } from 'neotracker-server-db';
+import { FieldType } from '@neotracker/server-db';
 
 export function getGraphQLType(fieldType: FieldType): string {
   switch (fieldType.type) {

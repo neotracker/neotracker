@@ -1,4 +1,4 @@
-import { App, AppContext } from 'neotracker-shared-web-next';
+import { App, AppContext } from '@neotracker/shared-web-next';
 import * as React from 'react';
 import { hydrate } from 'react-dom';
 import LoadableExport from 'react-loadable';

@@ -1,5 +1,5 @@
+import { models } from '@neotracker/server-db';
 import { GraphQLSchema } from 'graphql';
-import { models } from 'neotracker-server-db';
 import { inputs } from './inputs';
 import { makeSchema } from './makeSchema';
 import { roots } from './roots';

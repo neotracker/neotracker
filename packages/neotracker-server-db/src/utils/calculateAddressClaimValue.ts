@@ -1,6 +1,6 @@
+import { NEO_ASSET_ID, numbers, utils } from '@neotracker/shared-utils';
 import BigNumber from 'bignumber.js';
 import { GraphQLResolveInfo } from 'graphql';
-import { NEO_ASSET_ID, numbers, utils } from 'neotracker-shared-utils';
 import { Address } from '../models';
 import { TransactionInputOutput } from '../models/TransactionInputOutput';
 import { GraphQLContext } from '../types';

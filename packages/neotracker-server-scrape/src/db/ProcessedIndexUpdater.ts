@@ -1,5 +1,5 @@
 import { Monitor } from '@neo-one/monitor';
-import { isUniqueError, ProcessedIndex } from 'neotracker-server-db';
+import { isUniqueError, ProcessedIndex } from '@neotracker/server-db';
 import { Context } from '../types';
 import { SameContextDBUpdater } from './SameContextDBUpdater';
 

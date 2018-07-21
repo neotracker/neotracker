@@ -1,7 +1,7 @@
 /* @flow */
 import { connect } from 'react-redux';
 // $FlowFixMe
-import { sanitizeError } from 'neotracker-shared-utils';
+import { sanitizeError } from '@neotracker/shared-utils';
 import { setSnackbar } from '../redux';
 
 export default connect(

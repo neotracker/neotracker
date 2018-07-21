@@ -1,4 +1,4 @@
-import { utils } from 'neotracker-shared-utils';
+import { utils } from '@neotracker/shared-utils';
 
 export interface ExecutionResult {
   readonly data?: {} | undefined;

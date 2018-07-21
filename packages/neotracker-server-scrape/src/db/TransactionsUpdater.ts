@@ -1,8 +1,8 @@
 import { Block } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
+import { Block as BlockModel, Transaction as TransactionModel } from '@neotracker/server-db';
+import { utils } from '@neotracker/shared-utils';
 import _ from 'lodash';
-import { Block as BlockModel, Transaction as TransactionModel } from 'neotracker-server-db';
-import { utils } from 'neotracker-shared-utils';
 import { Context, TransactionData } from '../types';
 import {
   getAddressesData,

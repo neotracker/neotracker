@@ -1,6 +1,6 @@
 /* @flow */
 // $FlowFixMe
-import { NEO_ASSET_HASH, GAS_ASSET_HASH } from 'neotracker-shared-utils';
+import { NEO_ASSET_HASH, GAS_ASSET_HASH } from '@neotracker/shared-utils';
 import locale2 from 'locale2';
 
 import { getBest } from '../../../../utils';

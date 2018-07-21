@@ -1,4 +1,4 @@
-import { CodedError } from 'neotracker-server-utils';
+import { CodedError } from '@neotracker/server-utils';
 import { EMPTY, Observable } from 'rxjs';
 import { distinctUntilChanged, map, take } from 'rxjs/operators';
 import { GraphQLResolver } from '../constants';

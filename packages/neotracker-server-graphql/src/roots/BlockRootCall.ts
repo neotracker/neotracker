@@ -1,5 +1,5 @@
+import { CodedError } from '@neotracker/server-utils';
 import { GraphQLResolveInfo } from 'graphql';
-import { CodedError } from 'neotracker-server-utils';
 import { GraphQLContext } from '../GraphQLContext';
 import { BlockchainRootCall } from './BlockchainRootCall';
 

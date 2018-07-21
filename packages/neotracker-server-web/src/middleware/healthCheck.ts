@@ -1,8 +1,8 @@
-import { Context } from 'koa';
-import { isHealthyDB } from 'neotracker-server-db';
-import { getMonitor } from 'neotracker-server-utils-koa';
+import { isHealthyDB } from '@neotracker/server-db';
+import { getMonitor } from '@neotracker/server-utils-koa';
 // @ts-ignore
-import { routes } from 'neotracker-shared-web';
+import { routes } from '@neotracker/shared-web';
+import { Context } from 'koa';
 import { getRootLoader } from './common';
 export interface Options {
   readonly maintenance: boolean;

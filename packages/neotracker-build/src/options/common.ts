@@ -1,5 +1,5 @@
+import { Options } from '@neotracker/core';
 import * as appRootDir from 'app-root-dir';
-import { Options } from 'neotracker-core';
 import path from 'path';
 import { configuration } from '../configuration';
 

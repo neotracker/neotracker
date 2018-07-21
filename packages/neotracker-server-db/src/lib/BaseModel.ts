@@ -1,8 +1,8 @@
 // tslint:disable variable-name
 import { Monitor } from '@neo-one/monitor';
+import { CodedError } from '@neotracker/server-utils';
 import { lcFirst } from 'change-case';
 import DataLoader from 'dataloader';
-import { CodedError } from 'neotracker-server-utils';
 import { QueryContext } from 'objection';
 import { Observable } from 'rxjs';
 import { GraphQLContext } from '../types';

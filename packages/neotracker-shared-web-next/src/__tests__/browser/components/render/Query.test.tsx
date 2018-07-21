@@ -1,4 +1,4 @@
-import { createTestContext } from 'neotracker-component-explorer';
+import { createTestContext } from '@neotracker/component-explorer';
 import { examples } from '../../../../components/render/Query.example';
 
 const { mount, getWrapper } = createTestContext({ example: examples[0] });

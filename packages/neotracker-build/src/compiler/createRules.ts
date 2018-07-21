@@ -1,6 +1,6 @@
+import { utils } from '@neotracker/shared-utils';
 import * as appRootDir from 'app-root-dir';
 import * as fs from 'fs-extra';
-import { utils } from 'neotracker-shared-utils';
 import * as path from 'path';
 
 // tslint:disable-next-line no-require-imports no-var-requires

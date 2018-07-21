@@ -1,6 +1,6 @@
 // tslint:disable variable-name
+import { GAS_ASSET_HASH } from '@neotracker/shared-utils';
 import Knex from 'knex';
-import { GAS_ASSET_HASH } from 'neotracker-shared-utils';
 import { Constructor, Model, ModelOptions, Pojo } from 'objection';
 import { EdgeSchema, FieldSchema, IndexSchema, QueryContext } from '../lib';
 import { calculateAvailableGAS } from '../utils';

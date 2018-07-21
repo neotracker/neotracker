@@ -1,6 +1,6 @@
 import { Monitor } from '@neo-one/monitor';
+import { QueryDeduplicator } from '@neotracker/shared-graphql';
 import { ApolloLink, FetchResult, Observable, Operation } from 'apollo-link';
-import { QueryDeduplicator } from 'neotracker-shared-graphql';
 import { defer, interval } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { createQueryDeduplicator } from './createQueryDeduplicator';

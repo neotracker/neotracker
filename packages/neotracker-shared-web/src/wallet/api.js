@@ -5,7 +5,7 @@ import {
   labels,
   numbers,
   // $FlowFixMe
-} from 'neotracker-shared-utils';
+} from '@neotracker/shared-utils';
 import BigNumber from 'bignumber.js';
 import {
   type PrivateKeyString,
