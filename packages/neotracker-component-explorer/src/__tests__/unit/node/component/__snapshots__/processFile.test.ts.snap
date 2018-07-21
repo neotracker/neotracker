@@ -1,0 +1,281 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`processFile __tests__/data/components/ClassExportInlineProps.example.tsx: code 1`] = `
+"import { ClassExportInlineProps } from './ClassExportInlineProps';
+
+function foo() {
+  return 'foo';
+}
+"
+`;
+
+exports[`processFile __tests__/data/components/ClassExportInlineProps.example.tsx: exampleTemplate 1`] = `
+"{
+    element: () => {
+      __REPLACE_ME__
+    },
+  }"
+`;
+
+exports[`processFile __tests__/data/components/ClassExportInlineProps.example.tsx: id 1`] = `"packages/neotracker-component-explorer/src/__tests__/data/components/ClassExportInlineProps.tsx:ClassExportInlineProps"`;
+
+exports[`processFile __tests__/data/components/ClassExportInlineProps.example.tsx: returnText 1`] = `"<ClassExportInlineProps foo={foo()} />"`;
+
+exports[`processFile __tests__/data/components/ClassExportInlineProps.tsx: dependencies 1`] = `Array []`;
+
+exports[`processFile __tests__/data/components/ClassExportInlineProps.tsx: description 1`] = `""`;
+
+exports[`processFile __tests__/data/components/ClassExportInlineProps.tsx: displayName 1`] = `"ClassExportInlineProps"`;
+
+exports[`processFile __tests__/data/components/ClassExportInlineProps.tsx: id 1`] = `"packages/neotracker-component-explorer/src/__tests__/data/components/ClassExportInlineProps.tsx:ClassExportInlineProps"`;
+
+exports[`processFile __tests__/data/components/ClassExportInlineProps.tsx: props 1`] = `
+Object {
+  "foo": Object {
+    "defaultValue": undefined,
+    "description": "",
+    "required": true,
+    "type": "T",
+  },
+}
+`;
+
+exports[`processFile __tests__/data/components/ClassExportInlineProps.tsx: renderAPI 1`] = `undefined`;
+
+exports[`processFile __tests__/data/components/ConstExportInlineProps.example.tsx: code 1`] = `
+"import { ConstExportInlineProps } from './ConstExportInlineProps';
+
+class Foo {
+  public getFoo(): number {
+    return 1.2;
+  }
+}
+const foo = new Foo();
+"
+`;
+
+exports[`processFile __tests__/data/components/ConstExportInlineProps.example.tsx: exampleTemplate 1`] = `
+"{
+    element: () => {
+      __REPLACE_ME__
+    },
+  }"
+`;
+
+exports[`processFile __tests__/data/components/ConstExportInlineProps.example.tsx: id 1`] = `"packages/neotracker-component-explorer/src/__tests__/data/components/ConstExportInlineProps.tsx:ConstExportInlineProps"`;
+
+exports[`processFile __tests__/data/components/ConstExportInlineProps.example.tsx: returnText 1`] = `"<ConstExportInlineProps foo={Math.round(foo.getFoo())} />"`;
+
+exports[`processFile __tests__/data/components/ConstExportInlineProps.tsx: dependencies 1`] = `Array []`;
+
+exports[`processFile __tests__/data/components/ConstExportInlineProps.tsx: description 1`] = `""`;
+
+exports[`processFile __tests__/data/components/ConstExportInlineProps.tsx: displayName 1`] = `"ConstExportInlineProps"`;
+
+exports[`processFile __tests__/data/components/ConstExportInlineProps.tsx: id 1`] = `"packages/neotracker-component-explorer/src/__tests__/data/components/ConstExportInlineProps.tsx:ConstExportInlineProps"`;
+
+exports[`processFile __tests__/data/components/ConstExportInlineProps.tsx: props 1`] = `
+Object {
+  "foo": Object {
+    "defaultValue": undefined,
+    "description": "",
+    "required": true,
+    "type": "number",
+  },
+}
+`;
+
+exports[`processFile __tests__/data/components/ConstExportInlineProps.tsx: renderAPI 1`] = `undefined`;
+
+exports[`processFile __tests__/data/components/ConstExportInterfaceProps.example.tsx: code 1`] = `
+"import { ConstExportInterfaceProps } from './ConstExportInterfaceProps';
+
+const foo = 'foo';
+"
+`;
+
+exports[`processFile __tests__/data/components/ConstExportInterfaceProps.example.tsx: exampleTemplate 1`] = `
+"{
+    element: () => {
+      __REPLACE_ME__
+    },
+  }"
+`;
+
+exports[`processFile __tests__/data/components/ConstExportInterfaceProps.example.tsx: id 1`] = `"packages/neotracker-component-explorer/src/__tests__/data/components/ConstExportInterfaceProps.tsx:ConstExportInterfaceProps"`;
+
+exports[`processFile __tests__/data/components/ConstExportInterfaceProps.example.tsx: returnText 1`] = `"<ConstExportInterfaceProps foo={foo} />"`;
+
+exports[`processFile __tests__/data/components/ConstExportInterfaceProps.tsx: dependencies 1`] = `Array []`;
+
+exports[`processFile __tests__/data/components/ConstExportInterfaceProps.tsx: description 1`] = `""`;
+
+exports[`processFile __tests__/data/components/ConstExportInterfaceProps.tsx: displayName 1`] = `"ConstExportInterfaceProps"`;
+
+exports[`processFile __tests__/data/components/ConstExportInterfaceProps.tsx: id 1`] = `"packages/neotracker-component-explorer/src/__tests__/data/components/ConstExportInterfaceProps.tsx:ConstExportInterfaceProps"`;
+
+exports[`processFile __tests__/data/components/ConstExportInterfaceProps.tsx: props 1`] = `
+Object {
+  "foo": Object {
+    "defaultValue": undefined,
+    "description": "",
+    "required": true,
+    "type": "string",
+  },
+}
+`;
+
+exports[`processFile __tests__/data/components/ConstExportInterfaceProps.tsx: renderAPI 1`] = `undefined`;
+
+exports[`processFile __tests__/data/components/ConstReExportProps.example.tsx: code 1`] = `
+"import { ContextProvider, WithContext } from './ConstReExportProps';
+const value = <WithContext>{({ foo }) => <div>{foo}</div>}</WithContext>;
+"
+`;
+
+exports[`processFile __tests__/data/components/ConstReExportProps.example.tsx: exampleTemplate 1`] = `
+"{
+    element: () => {
+      __REPLACE_ME__
+    },
+  }"
+`;
+
+exports[`processFile __tests__/data/components/ConstReExportProps.example.tsx: id 1`] = `"packages/neotracker-component-explorer/src/__tests__/data/components/ConstReExportProps.tsx:WithContext"`;
+
+exports[`processFile __tests__/data/components/ConstReExportProps.example.tsx: returnText 1`] = `"<ContextProvider value={{ foo: 'foo' }}>{value}</ContextProvider>"`;
+
+exports[`processFile __tests__/data/components/ConstReExportProps.tsx: dependencies 1`] = `Array []`;
+
+exports[`processFile __tests__/data/components/ConstReExportProps.tsx: dependencies 2`] = `Array []`;
+
+exports[`processFile __tests__/data/components/ConstReExportProps.tsx: description 1`] = `""`;
+
+exports[`processFile __tests__/data/components/ConstReExportProps.tsx: description 2`] = `""`;
+
+exports[`processFile __tests__/data/components/ConstReExportProps.tsx: displayName 1`] = `"ContextProvider"`;
+
+exports[`processFile __tests__/data/components/ConstReExportProps.tsx: displayName 2`] = `"WithContext"`;
+
+exports[`processFile __tests__/data/components/ConstReExportProps.tsx: id 1`] = `"packages/neotracker-component-explorer/src/__tests__/data/components/ConstReExportProps.tsx:ContextProvider"`;
+
+exports[`processFile __tests__/data/components/ConstReExportProps.tsx: id 2`] = `"packages/neotracker-component-explorer/src/__tests__/data/components/ConstReExportProps.tsx:WithContext"`;
+
+exports[`processFile __tests__/data/components/ConstReExportProps.tsx: props 1`] = `
+Object {
+  "children": Object {
+    "defaultValue": undefined,
+    "description": "",
+    "required": false,
+    "type": "ReactNode",
+  },
+  "value": Object {
+    "defaultValue": undefined,
+    "description": "",
+    "required": true,
+    "type": "Props",
+  },
+}
+`;
+
+exports[`processFile __tests__/data/components/ConstReExportProps.tsx: props 2`] = `
+Object {
+  "children": Object {
+    "defaultValue": undefined,
+    "description": "",
+    "required": true,
+    "type": "(value: Props) => ReactNode",
+  },
+}
+`;
+
+exports[`processFile __tests__/data/components/ConstReExportProps.tsx: renderAPI 1`] = `undefined`;
+
+exports[`processFile __tests__/data/components/ConstReExportProps.tsx: renderAPI 2`] = `undefined`;
+
+exports[`processFile __tests__/data/components/DefaultExportInterfaceProps.example.tsx: code 1`] = `
+"import DefaultExportInterfaceProps from './DefaultExportInterfaceProps';
+
+const foo = 'foo';
+"
+`;
+
+exports[`processFile __tests__/data/components/DefaultExportInterfaceProps.example.tsx: exampleTemplate 1`] = `
+"{
+    element: () => {
+      __REPLACE_ME__
+    },
+  }"
+`;
+
+exports[`processFile __tests__/data/components/DefaultExportInterfaceProps.example.tsx: id 1`] = `"packages/neotracker-component-explorer/src/__tests__/data/components/DefaultExportInterfaceProps.tsx:default"`;
+
+exports[`processFile __tests__/data/components/DefaultExportInterfaceProps.example.tsx: returnText 1`] = `"<DefaultExportInterfaceProps foo={foo} />"`;
+
+exports[`processFile __tests__/data/components/DefaultExportInterfaceProps.tsx: dependencies 1`] = `Array []`;
+
+exports[`processFile __tests__/data/components/DefaultExportInterfaceProps.tsx: description 1`] = `""`;
+
+exports[`processFile __tests__/data/components/DefaultExportInterfaceProps.tsx: displayName 1`] = `"DefaultExportInterfaceProps"`;
+
+exports[`processFile __tests__/data/components/DefaultExportInterfaceProps.tsx: id 1`] = `"packages/neotracker-component-explorer/src/__tests__/data/components/DefaultExportInterfaceProps.tsx:default"`;
+
+exports[`processFile __tests__/data/components/DefaultExportInterfaceProps.tsx: props 1`] = `
+Object {
+  "foo": Object {
+    "defaultValue": undefined,
+    "description": "",
+    "required": true,
+    "type": "string",
+  },
+}
+`;
+
+exports[`processFile __tests__/data/components/DefaultExportInterfaceProps.tsx: renderAPI 1`] = `undefined`;
+
+exports[`processFile shared/app/components/explorer/ContentWrapper.example.tsx: code 1`] = `
+"import { ContentWrapper } from './ContentWrapper';
+"
+`;
+
+exports[`processFile shared/app/components/explorer/ContentWrapper.example.tsx: code 2`] = `
+"import { ContentWrapper } from './ContentWrapper';
+const goodnight = 'Goodnight Moon';
+"
+`;
+
+exports[`processFile shared/app/components/explorer/ContentWrapper.example.tsx: exampleTemplate 1`] = `
+"{
+    element: () => {
+      __REPLACE_ME__
+    },
+  }"
+`;
+
+exports[`processFile shared/app/components/explorer/ContentWrapper.example.tsx: exampleTemplate 2`] = `
+"{
+    element: () => {
+      __REPLACE_ME__
+    },
+  }"
+`;
+
+exports[`processFile shared/app/components/explorer/ContentWrapper.example.tsx: id 1`] = `"packages/neotracker-component-explorer/src/shared/app/components/explorer/ContentWrapper.tsx:ContentWrapper"`;
+
+exports[`processFile shared/app/components/explorer/ContentWrapper.example.tsx: id 2`] = `"packages/neotracker-component-explorer/src/shared/app/components/explorer/ContentWrapper.tsx:ContentWrapper"`;
+
+exports[`processFile shared/app/components/explorer/ContentWrapper.example.tsx: returnText 1`] = `"<ContentWrapper>Hello World</ContentWrapper>"`;
+
+exports[`processFile shared/app/components/explorer/ContentWrapper.example.tsx: returnText 2`] = `"<ContentWrapper>{goodnight}</ContentWrapper>"`;
+
+exports[`processFile shared/app/components/explorer/ContentWrapper.tsx: dependencies 1`] = `Array []`;
+
+exports[`processFile shared/app/components/explorer/ContentWrapper.tsx: description 1`] = `""`;
+
+exports[`processFile shared/app/components/explorer/ContentWrapper.tsx: displayName 1`] = `"ContentWrapper"`;
+
+exports[`processFile shared/app/components/explorer/ContentWrapper.tsx: id 1`] = `"packages/neotracker-component-explorer/src/shared/app/components/explorer/ContentWrapper.tsx:ContentWrapper"`;
+
+exports[`processFile shared/app/components/explorer/ContentWrapper.tsx: props 1`] = `Object {}`;
+
+exports[`processFile shared/app/components/explorer/ContentWrapper.tsx: renderAPI 1`] = `undefined`;

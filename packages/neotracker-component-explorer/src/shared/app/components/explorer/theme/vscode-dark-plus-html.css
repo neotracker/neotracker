@@ -1,0 +1,34 @@
+.cm-s-vscode-dark-plus-html.CodeMirror, .cm-s-vscode-dark-plus-html .CodeMirror-gutters {
+  background-color: #304148 !important;
+  color: #f8f8f2 !important;
+  border: none;
+}
+.cm-s-vscode-dark-plus-html .CodeMirror-gutters { color: #304148; }
+.cm-s-vscode-dark-plus-html .CodeMirror-cursor { border-left: solid thin #f8f8f2; }
+/* .cm-s-vscode-dark-plus-html .CodeMirror-linenumber { color: #6D8A88; } */
+.cm-s-vscode-dark-plus-html .CodeMirror-selected { background: #ADD6FF26; }
+.cm-s-vscode-dark-plus-html .CodeMirror-line::selection, .cm-s-vscode-dark-plus-html .CodeMirror-line > span::selection, .cm-s-vscode-dark-plus-html .CodeMirror-line > span > span::selection { background: #ADD6FF26; }
+.cm-s-vscode-dark-plus-html .CodeMirror-line::-moz-selection, .cm-s-vscode-dark-plus-html .CodeMirror-line > span::-moz-selection, .cm-s-vscode-dark-plus-html .CodeMirror-line > span > span::-moz-selection { background: #ADD6FF26; }
+.cm-s-vscode-dark-plus-html span.cm-comment { color: #608b4e; }
+.cm-s-vscode-dark-plus-html span.cm-string { color: #ce9178; }
+.cm-s-vscode-dark-plus-html span.cm-string-2 { color: #646695 }
+.cm-s-vscode-dark-plus-html span.cm-number { color: #b5cea8; }
+.cm-s-vscode-dark-plus-html span.cm-variable { color: #b5cea8; }
+.cm-s-vscode-dark-plus-html span.cm-variable-2 { color: #b5cea8; }
+.cm-s-vscode-dark-plus-html span.cm-variable-3 { color: #b5cea8; }
+.cm-s-vscode-dark-plus-html span.cm-property { color: #b5cea8; }
+.cm-s-vscode-dark-plus-html span.cm-def { color: #9CDCFE; }
+.cm-s-vscode-dark-plus-html span.cm-operator { color: #d4d4d4; }
+.cm-s-vscode-dark-plus-html span.cm-keyword { color: #569cd6; }
+
+/* .cm-s-vscode-dark-plus-html span.cm-atom { color: #bd93f9; } */
+/* .cm-s-vscode-dark-plus-html span.cm-meta { color: #f8f8f2; } */
+.cm-s-vscode-dark-plus-html span.cm-tag { color: #4EC9B0; }
+.cm-s-vscode-dark-plus-html span.cm-tag.cm-bracket { color: #808080; }
+.cm-s-vscode-dark-plus-html span.cm-attribute { color: #9cdcfe; }
+/* .cm-s-vscode-dark-plus-html span.cm-qualifier { color: #50fa7b; } */
+/* .cm-s-vscode-dark-plus-html span.cm-builtin { color: #50fa7b; } */
+.cm-s-vscode-dark-plus-html span.cm-type { color: #4EC9B0 }
+
+.cm-s-vscode-dark-plus-html .CodeMirror-activeline-background { background: rgba(255,255,255,0.1); }
+/* .cm-s-vscode-dark-plus-html .CodeMirror-matchingbracket { text-decoration: underline; color: white !important; } */

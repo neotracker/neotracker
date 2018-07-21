@@ -1,0 +1,23 @@
+/* eslint-disable */
+// WARNING: This function’s source is returned by a loader without transpilation.
+// Do not use any unsupported by IE11+ features.
+
+/**
+ * Return module from a given map (like {react: require('react')}) or throw.
+ * We alllow to require modules only from Markdown examples (won’t work dinamically becasue we need to know all required
+ * modules in advance to be able to bundle them with the code).
+ *
+ * @param {object} requireMap
+ * @param {string} filepath
+ * @return {object}
+ */
+module.exports = function requireInRuntime(requireMap, filepath) {
+  if (!(filepath in requireMap)) {
+    throw new Error(
+      "import statements can be added only by editing a Markdown example file: from '" +
+        filepath +
+        "'",
+    );
+  }
+  return requireMap[filepath];
+};

@@ -3,13 +3,13 @@ module.exports = [
     name: 'Total Size (next)',
     path: 'dist/neotracker-client-web-next/*.js.gz',
     webpack: false,
-    limit: '320 KB',
+    limit: '287 KB',
   },
   {
     name: 'Vendor Size (next)',
     path: 'dist/neotracker-client-web-next/vendors~index*.js.gz',
     webpack: false,
-    limit: '310 KB',
+    limit: '276 KB',
   },
   {
     name: 'Total Size (current)',

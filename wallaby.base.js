@@ -4,6 +4,7 @@ module.exports = function({ browser }) {
   return function(wallaby) {
     const compilers = {
       '**/*.ts?(x)': wallaby.compilers.typeScript({
+        typescript: require('typescript'),
         ...require('./tsconfig.json').compilerOptions,
         ...require('./tsconfig/tsconfig.build.json').compilerOptions,
         ...require('./tsconfig/tsconfig.cjs.json').compilerOptions,
@@ -36,6 +37,9 @@ module.exports = function({ browser }) {
     }
 
     const commonFiles = [
+      { pattern: 'tsconfig.json', instrument: false },
+      { pattern: '@types/**/*', instrument: false },
+      { pattern: 'node_modules/@types/**/*', instrument: false },
       { pattern: 'jest/**/*', instrument: false },
       { pattern: 'packages/**/jest/*.js', instrument: false },
       'packages/*/package.json',
@@ -47,10 +51,18 @@ module.exports = function({ browser }) {
     ];
     const browserFiles = [
       { pattern: 'explorer.config.js', instrument: false },
+      {
+        pattern:
+          'packages/neotracker-server-graphql/src/__generated__/schema.graphql.json',
+        instrument: false,
+      },
       'packages/neotracker-component-explorer/src/**/*.ts?(x)',
+      'packages/neotracker-component-explorer/src/**/*.js?(x)',
       'packages/neotracker-shared-web-next/src/**/*.ts?(x)',
+      'packages/neotracker-shared-web-next/src/**/*.js?(x)',
       'packages/neotracker-shared-web-next/src/**/*.snap',
       'packages/neotracker-shared-utils/src/**/*.ts?(x)',
+      'packages/neotracker-shared-test/src/**/*.ts?(x)',
     ];
     const commonNegatedFiles = [
       '!packages/*/src/**/__tests__/browser/**/*',

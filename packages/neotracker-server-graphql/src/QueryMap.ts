@@ -6,9 +6,8 @@ import { CodedError } from 'neotracker-server-utils';
 import { tryParseInt } from 'neotracker-shared-utils';
 import * as path from 'path';
 
-import queries from './__generated__/queries.json';
-
-interface Queries {
+type Queries = ReadonlyArray<string>;
+interface QueriesNext {
   readonly [key: string]: string;
 }
 
@@ -16,18 +15,24 @@ const queryCache: { [K in string]?: DocumentNode } = {};
 export class QueryMap {
   private readonly next: boolean;
   private mutableQueries: Promise<Queries> | undefined;
+  private mutableQueriesNext: Promise<QueriesNext> | undefined;
 
   public constructor({ next }: { readonly next: boolean }) {
     this.next = next;
   }
 
   public async get(id: string): Promise<DocumentNode> {
-    let queriesNextPromise = this.mutableQueries;
-    if (queriesNextPromise === undefined) {
-      this.mutableQueries = queriesNextPromise = this.loadQueries();
+    let queriesPromise = this.mutableQueries;
+    if (queriesPromise === undefined) {
+      this.mutableQueries = queriesPromise = this.loadQueries();
     }
 
-    const queriesNext = await queriesNextPromise;
+    let queriesNextPromise = this.mutableQueriesNext;
+    if (queriesNextPromise === undefined) {
+      this.mutableQueriesNext = queriesNextPromise = this.loadQueriesNext();
+    }
+
+    const [queries, queriesNext] = await Promise.all([queriesPromise, queriesNextPromise]);
 
     const doc = queryCache[id];
     if (doc === undefined) {
@@ -59,6 +64,25 @@ export class QueryMap {
   }
 
   private async loadQueries(): Promise<Queries> {
+    const file = path.resolve(
+      appRootDir.get(),
+      'packages',
+      'neotracker-server-graphql',
+      'src',
+      '__generated__',
+      'queries.json',
+    );
+    const exists = await fs.pathExists(file);
+    if (exists) {
+      const queries = await fs.readFile(file, 'utf8');
+
+      return JSON.parse(queries);
+    }
+
+    return [];
+  }
+
+  private async loadQueriesNext(): Promise<QueriesNext> {
     const dir = path.resolve(
       appRootDir.get(),
       'packages',

@@ -6,14 +6,11 @@ import * as React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { HelmetData } from 'react-helmet';
 import serializeJavascript from 'serialize-javascript';
+import { AddBodyElements, AddHeadElements } from '../reactApp';
 
 function stylesheetTag(stylesheetFilePath: string) {
   return <link href={stylesheetFilePath} media="screen, projection" rel="stylesheet" type="text/css" />;
 }
-// tslint:disable-next-line no-any
-export type AddHeadElements = ((nonce: string) => ReadonlyArray<React.CElement<any, any>>);
-// tslint:disable-next-line no-any
-export type AddBodyElements = (() => ReadonlyArray<React.CElement<any, any>>);
 
 interface Props {
   readonly css: ReadonlyArray<string>;

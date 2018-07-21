@@ -46,7 +46,8 @@ export const graphql = ({ next }: { readonly next: boolean }) => {
           .captureSpanLog(
             async (span) =>
               Promise.all(
-                fields.map(async (queryIn) =>
+                // tslint:disable-next-line no-any
+                fields.map(async (queryIn: any) =>
                   span
                     .captureSpanLog(
                       async (innerSpan) => {

@@ -1,19 +1,14 @@
 {
   "name": "neotracker-server-utils",
   "version": "0.0.1-alpha.0",
-  "keywords": [
-    "neo",
-    "blockchain",
-    "neotracker"
-  ],
+  "keywords": ["neo", "blockchain", "neotracker"],
   "description": "Utilities for server-side NEO Tracker.",
   "repository": "https://github.com/neotracker/neotracker",
   "bugs": "https://github.com/neotracker/neotracker/issues",
   "license": "MIT",
   "main": "./src/index.ts",
   "dependencies": {
-    "@neo-one/monitor": "^1.0.0-alpha.49",
-    "@neo-one/utils": "^1.0.0-alpha.54",
+    "@neo-one/monitor": "^1.0.0-alpha.50",
     "chokidar": "^2.0.3",
     "execa": "^0.10.0",
     "is-running": "^2.1.0",
@@ -21,5 +16,6 @@
     "neotracker-shared-utils": "^0.0.1-alpha.0",
     "rxjs": "^6.2.2",
     "ua-parser-js": "^0.7.17"
-  }
+  },
+  "sideEffects": false
 }

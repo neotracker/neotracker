@@ -32,6 +32,7 @@
     "no-expression-statement": false,
     "no-parameter-properties": false,
     "prefer-function-over-method": false,
+    "file-name-casing": false,
 
     "trailing-comma": [
       true,
@@ -126,6 +127,7 @@
         "tagName": "gql"
       }
     ],
-    "jsx-boolean-value": false
+    "jsx-boolean-value": false,
+    "jsx-no-lambda": false
   }
 }

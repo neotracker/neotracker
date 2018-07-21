@@ -1,22 +1,19 @@
 {
   "name": "neotracker-core",
   "version": "0.0.1-alpha.0",
-  "keywords": [
-    "neo",
-    "blockchain",
-    "neotracker"
-  ],
+  "keywords": ["neo", "blockchain", "neotracker"],
   "description": "NEO Tracker external api.",
   "repository": "https://github.com/neotracker/neotracker",
   "bugs": "https://github.com/neotracker/neotracker/issues",
   "license": "MIT",
   "main": "./src/index.ts",
   "dependencies": {
-    "@neo-one/monitor": "^1.0.0-alpha.49",
+    "@neo-one/monitor": "^1.0.0-alpha.50",
     "neotracker-server-db": "0.0.1-alpha.0",
     "neotracker-server-scrape": "0.0.1-alpha.0",
     "neotracker-server-web": "0.0.1-alpha.0",
     "neotracker-shared-utils": "0.0.1-alpha.0",
     "rxjs": "^6.2.2"
-  }
+  },
+  "sideEffects": false
 }

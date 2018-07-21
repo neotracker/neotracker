@@ -43,7 +43,8 @@ import { StaticRouter } from 'react-router';
 import { MatchedRoute, matchRoutes } from 'react-router-config';
 import { of as _of } from 'rxjs';
 import { getNonce, getRootLoader, getUserAgent } from '../common';
-import { AddBodyElements, AddHeadElements, makeServerHTML } from './makeServerHTML';
+import { AddBodyElements, AddHeadElements } from '../reactApp';
+import { makeServerHTML } from './makeServerHTML';
 
 const provider = new LocalUserAccountProvider({
   keystore: new LocalKeyStore({

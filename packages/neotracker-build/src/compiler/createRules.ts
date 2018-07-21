@@ -2,7 +2,9 @@ import * as appRootDir from 'app-root-dir';
 import * as fs from 'fs-extra';
 import { utils } from 'neotracker-shared-utils';
 import * as path from 'path';
-import pkg from '../../../../package.json';
+
+// tslint:disable-next-line no-require-imports no-var-requires
+const pkg = require('../../../../package.json');
 
 export type Type = 'client-web' | 'server-web' | 'node';
 
@@ -41,6 +43,7 @@ const getPlugins = ({ type, typescript }: { readonly type: Type; readonly typesc
     // ESNext features (only current)
     typescript ? undefined : '@babel/plugin-proposal-class-properties',
     typescript ? undefined : '@babel/plugin-proposal-export-namespace-from',
+    typescript ? undefined : '@babel/plugin-proposal-optional-catch-binding',
     typescript ? undefined : '@babel/plugin-transform-flow-strip-types',
     // Next
     (type === 'client-web' || type === 'server-web') && typescript ? graphqlTag : undefined,

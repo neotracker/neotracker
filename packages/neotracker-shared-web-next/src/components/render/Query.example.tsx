@@ -46,6 +46,9 @@ const BlockQuery = makeQuery<ExampleBlockQuery, ExampleBlockQueryVariables>({
 // tslint:disable-next-line export-name
 export const examples: [PExample<QueryProps<ExampleBlockQuery, ExampleBlockQueryVariables>>] = [
   {
+    // Not really a component, but it's a hacky way to get it into the documentation
+    // tslint:disable-next-line no-any
+    component: makeQuery as any,
     element: () => (
       <BlockQuery variables={{ index: 0 }}>
         {({ data, error }) => {

@@ -11,7 +11,7 @@ type Listener = ((request: http.IncomingMessage, response: http.ServerResponse) 
 export interface HandleServerResult<T extends http.Server | https.Server> {
   readonly server: T | undefined;
   readonly listener: Listener | undefined;
-  readonly app: Application;
+  readonly app: Application | undefined;
 }
 
 export async function handleServer<T extends http.Server | https.Server, TOptions extends ListenOptions>({

@@ -4,6 +4,7 @@ const tmp = require('tmp');
 class NEOTracker {
   constructor() {
     this.mutableCleanup = [];
+    this.mutableTeardownCleanup = [];
   }
 
   async startDB() {
@@ -19,8 +20,23 @@ class NEOTracker {
     this.mutableCleanup.push(callback);
   }
 
+  addTeardownCleanup(callback) {
+    this.mutableTeardownCleanup.push(callback);
+  }
+
+  async cleanupTest() {
+    const cleanup = this.mutableCleanup;
+    this.mutableCleanup = [];
+    await Promise.all(cleanup.map(async (callback) => callback()));
+  }
+
   async teardown() {
-    await Promise.all(this.mutableCleanup.map(async (callback) => callback()));
+    await Promise.all([
+      this.cleanupTest(),
+      Promise.all(
+        this.mutableTeardownCleanup.map(async (callback) => callback()),
+      ),
+    ]);
   }
 
   createDir() {

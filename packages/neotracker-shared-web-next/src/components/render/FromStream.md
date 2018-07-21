@@ -1,3 +1,7 @@
 Render a stream of values from an `Observable`.
 
-<**EXAMPLE_0**>
+<**EXAMPLE**>
+
+Renders null if there is no value.
+
+<**EXAMPLE**>

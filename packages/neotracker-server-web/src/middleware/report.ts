@@ -70,7 +70,7 @@ export const report = ({ reportURL }: { readonly reportURL?: string }) => ({
         );
 
       ctx.status = response.status;
-      response.headers.forEach((value: string, key: string) => {
+      response.headers.forEach((value, key) => {
         if (key !== 'transfer-encoding' && key !== 'content-encoding') {
           ctx.set(key, value);
         }

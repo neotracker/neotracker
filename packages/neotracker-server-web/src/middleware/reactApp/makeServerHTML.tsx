@@ -19,9 +19,9 @@ function stylesheetTag(stylesheetFilePath: string) {
 }
 
 // tslint:disable-next-line no-any
-export type AddHeadElements = ((nonce: string) => ReadonlyArray<React.CElement<any, any>>);
+export type AddHeadElements = ((nonce: string) => ReadonlyArray<React.ReactElement<any>>);
 // tslint:disable-next-line no-any
-export type AddBodyElements = (() => ReadonlyArray<React.CElement<any, any>>);
+export type AddBodyElements = (() => ReadonlyArray<React.ReactElement<any>>);
 
 interface Props {
   readonly css: ReadonlyArray<string>;

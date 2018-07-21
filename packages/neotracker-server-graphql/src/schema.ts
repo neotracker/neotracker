@@ -8,8 +8,8 @@ import { types } from './types';
 // tslint:disable-next-line no-let
 let schemaCache: GraphQLSchema | undefined;
 
-export const schema = (): GraphQLSchema => {
-  if (schemaCache !== undefined) {
+export const schema = (forceNew = false): GraphQLSchema => {
+  if (!forceNew && schemaCache !== undefined) {
     return schemaCache;
   }
 

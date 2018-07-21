@@ -3,6 +3,7 @@ import AssetsWebpackPlugin from 'assets-webpack-plugin';
 // @ts-ignore
 import BrotliPlugin from 'brotli-webpack-plugin';
 import CompressionPlugin from 'compression-webpack-plugin';
+import * as fs from 'fs-extra';
 // @ts-ignore
 import LodashModuleReplacementPlugin from 'lodash-webpack-plugin';
 import { utils } from 'neotracker-shared-utils';
@@ -120,5 +121,17 @@ export const createClientCompilerNext = ({
     },
   };
 
-  return createWebpackCompiler({ target: 'client-next', config: webpackConfig, isCI });
+  const compiler = createWebpackCompiler({ target: 'client-next', config: webpackConfig, isCI });
+
+  if (analyze) {
+    compiler.hooks.emit.tapPromise('Stats', async (compilation) => {
+      const stats = compilation.getStats().toJson({ chunkModules: true });
+      const outputFile = path.resolve(compilation.outputOptions.path, 'full-stats.json');
+
+      await fs.ensureDir(path.dirname(outputFile));
+      await fs.writeFile(outputFile, JSON.stringify(stats));
+    });
+  }
+
+  return compiler;
 };

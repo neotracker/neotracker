@@ -21,8 +21,8 @@ import {
   TransactionInputOutput,
   Transfer,
 } from 'neotracker-server-db';
-import { addCleanup } from './addCleanup';
-import { getMonitor } from './getMonitor';
+import { getMonitor } from 'neotracker-shared-test';
+import { addTeardownCleanup } from './addTeardownCleanup';
 
 export interface Database {
   readonly knex: Knex;
@@ -33,7 +33,7 @@ export const startDB = async (): Promise<Database> => {
   const options = await neotracker.startDB();
 
   const db = create({ options, monitor: getMonitor() });
-  addCleanup(async () => {
+  addTeardownCleanup(async () => {
     await db.destroy();
   });
 

@@ -66,7 +66,7 @@ export const nodeRPC = ({ rpcURL }: { readonly rpcURL: string }) => ({
         );
 
       ctx.status = response.status;
-      response.headers.forEach((value: string, key: string) => {
+      response.headers.forEach((value, key) => {
         if (key !== 'transfer-encoding' && key !== 'content-encoding') {
           ctx.set(key, value);
         }

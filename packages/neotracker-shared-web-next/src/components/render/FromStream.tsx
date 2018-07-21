@@ -2,7 +2,9 @@ import * as React from 'react';
 import { Observable, Subscription } from 'rxjs';
 
 interface Props<T> {
+  /* Stream of props to render */
   readonly props$: Observable<T>;
+  /* Render function */
   readonly children: (props: T) => React.ReactNode;
 }
 interface State<T> {

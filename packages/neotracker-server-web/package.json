@@ -1,11 +1,7 @@
 {
   "name": "neotracker-server-web",
   "version": "0.0.1-alpha.0",
-  "keywords": [
-    "neo",
-    "blockchain",
-    "neotracker"
-  ],
+  "keywords": ["neo", "blockchain", "neotracker"],
   "description": "NEO Tracker web.",
   "repository": "https://github.com/neotracker/neotracker",
   "bugs": "https://github.com/neotracker/neotracker/issues",
@@ -13,13 +9,12 @@
   "main": "./src/index.ts",
   "dependencies": {
     "@material-ui/core": "^1.4.0",
-    "@neo-one/client": "^1.0.0-alpha.79",
-    "@neo-one/monitor": "^1.0.0-alpha.49",
+    "@neo-one/client": "^1.0.0-alpha.80",
+    "@neo-one/monitor": "^1.0.0-alpha.50",
     "apollo-cache-inmemory": "^1.2.5",
     "apollo-client": "^2.3.5",
     "app-root-dir": "^1.0.2",
     "cross-fetch": "^2.2.2",
-    "debug": "^3.1.0",
     "http-errors": "^1.6.3",
     "jss": "^9.8.7",
     "jss-preset-default": "^4.3.0",
@@ -39,7 +34,6 @@
     "neotracker-shared-web": "^0.0.1-alpha.0",
     "neotracker-shared-web-next": "^0.0.1-alpha.0",
     "react": "^16.3.2",
-    "react-apollo": "^2.1.9",
     "react-dom": "^16.3.2",
     "react-helmet": "^5.2.0",
     "react-jss": "^8.6.1",
@@ -53,5 +47,6 @@
     "sitemap": "^1.13.0",
     "styled-components": "^3.3.3",
     "toobusy-js": "^0.5.1"
-  }
+  },
+  "sideEffects": false
 }
