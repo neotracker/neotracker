@@ -27,9 +27,6 @@ export const authenticate = async ({
     const installationTokenResponse = await api.apps.createInstallationToken({
       installation_id: `${installationID}`,
     });
-    if (installationTokenResponse.status !== 200) {
-      throw new Error(`Failed to fetch installation token for ${installationID}: ${installationTokenResponse.status}`);
-    }
 
     api.authenticate({ type: 'app', token: installationTokenResponse.data.token });
   }

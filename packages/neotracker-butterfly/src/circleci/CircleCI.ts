@@ -36,7 +36,7 @@ export class CircleCI {
       },
     );
 
-    if (response.status !== 200) {
+    if (!response.ok) {
       throw new Error(`Failed to retry job: ${response.status} ${response.statusText}`);
     }
 
