@@ -1,5 +1,4 @@
-import { circleci } from './circleci';
-import { github } from './github';
+import { ButterflyOptions, createButterfly } from './createButterfly';
 import { hooks, HooksOptions } from './hooks';
 import { Butterfly, GithubEvent } from './types';
 
@@ -10,13 +9,7 @@ export interface Hooks {
 }
 
 export interface ButterflyHandlerOptions {
-  readonly circleci: {
-    readonly token: string;
-  };
-  readonly github: {
-    readonly appID: string;
-    readonly privateKey: string;
-  };
+  readonly butterfly: ButterflyOptions;
   readonly hooks: HooksOptions;
 }
 
@@ -26,22 +19,9 @@ export class ButterflyHandler {
   private readonly butterfly: Butterfly;
   private readonly hooks: ReturnType<typeof hooks>;
 
-  public constructor({
-    circleci: { token },
-    github: { appID, privateKey },
-    hooks: hooksOptions,
-  }: ButterflyHandlerOptions) {
-    this.butterfly = {
-      circleci,
-      github,
-    };
+  public constructor({ butterfly, hooks: hooksOptions }: ButterflyHandlerOptions) {
+    this.butterfly = createButterfly(butterfly);
     this.hooks = hooks(hooksOptions);
-
-    this.butterfly.circleci.authenticate(token);
-    this.butterfly.github.authenticate({
-      appID,
-      privateKey,
-    });
   }
 
   // tslint:disable-next-line no-any
