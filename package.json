@@ -45,6 +45,7 @@
     "@types/jest": "^23.3.0",
     "@types/js-priority-queue": "^0.0.5",
     "@types/js-yaml": "^3.11.2",
+    "@types/jsonwebtoken": "^7.2.8",
     "@types/koa": "^2.0.46",
     "@types/koa-compress": "^2.0.8",
     "@types/koa-helmet": "^3.1.2",
@@ -204,6 +205,7 @@
   "version": "0.0.0",
   "workspaces": [
     "packages/neotracker-build",
+    "packages/neotracker-butterfly",
     "packages/neotracker-client-web",
     "packages/neotracker-client-web-next",
     "packages/neotracker-component-explorer",
