@@ -1,5 +1,5 @@
 import { URL } from 'url';
-import { VCS } from './CircleCI';
+import { CircleCI, VCS } from './CircleCI';
 
 interface TargetURLParts {
   readonly vcs: VCS;
@@ -20,6 +20,6 @@ const extractGithubTargetURLParts = (urlString: string): TargetURLParts => {
   };
 };
 
-export const utils = {
+export const utils = (_api: CircleCI) => ({
   extractGithubTargetURLParts,
-};
+});

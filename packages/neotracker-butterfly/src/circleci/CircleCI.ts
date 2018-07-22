@@ -1,14 +1,18 @@
 import fetch from 'cross-fetch';
 
+export interface CircleCIOptions {
+  readonly token: string;
+}
+
 export interface JobSummary {}
 
 export type VCS = 'github' | 'bitbucket';
 
 export class CircleCI {
-  private mutableToken: string | undefined;
+  private readonly token: string;
 
-  public authenticate(token: string) {
-    this.mutableToken = token;
+  public constructor({ token }: CircleCIOptions) {
+    this.token = token;
   }
 
   // /project/:vcs-type/:username/:project/:build_num/retry
@@ -23,10 +27,10 @@ export class CircleCI {
     readonly project: string;
     readonly jobNumber: number;
   }): Promise<JobSummary> {
-    const token = this.getToken();
-
     const response = await fetch(
-      `https://circleci.com/api/v1.1/project/${vcs}/${username}/${project}/${jobNumber}/retry?circle-token=${token}`,
+      `https://circleci.com/api/v1.1/project/${vcs}/${username}/${project}/${jobNumber}/retry?circle-token=${
+        this.token
+      }`,
       {
         method: 'POST',
       },
@@ -37,13 +41,5 @@ export class CircleCI {
     }
 
     return response.json();
-  }
-
-  private getToken(): string {
-    if (this.mutableToken === undefined) {
-      throw new Error(`CircleCI API has not been authenticated.`);
-    }
-
-    return this.mutableToken;
   }
 }

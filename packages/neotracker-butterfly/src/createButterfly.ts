@@ -1,28 +1,20 @@
-import { circleci } from './circleci';
-import { github } from './github';
+import { CircleCIOptions, createCircleCI } from './circleci';
+import { createGithub, GithubOptions } from './github';
 import { Butterfly } from './types';
 
 export interface ButterflyOptions {
-  readonly circleci: {
-    readonly token: string;
-  };
-  readonly github: {
-    readonly key: string;
-    readonly secret: string;
-  };
+  readonly circleci: CircleCIOptions;
+  readonly github: GithubOptions;
 }
 
-export const createButterfly = ({ circleci: { token }, github: { key, secret } }: ButterflyOptions): Butterfly => {
-  const butterfly = {
+export const createButterfly = async ({
+  circleci: circleciOptions,
+  github: githubOptions,
+}: ButterflyOptions): Promise<Butterfly> => {
+  const [circleci, github] = await Promise.all([createCircleCI(circleciOptions), createGithub(githubOptions)]);
+
+  return {
     circleci,
     github,
   };
-
-  butterfly.circleci.authenticate(token);
-  butterfly.github.authenticate({
-    key,
-    secret,
-  });
-
-  return butterfly;
 };

@@ -1,6 +1,7 @@
 // tslint:disable no-console
 // tslint:disable-next-line no-implicit-dependencies
 import { IssueComment, Issues, PullRequest } from 'github-webhook-event-types';
+import _ from 'lodash';
 import { Butterfly, GithubEvent } from '../../types';
 
 export interface CommandsOptions {
@@ -48,21 +49,23 @@ export const commands = (options: CommandsOptions) => {
   const COMMANDS: ReadonlyArray<Command> = [
     new Command('test', async (butterfly, _args, data) => {
       if (isIssueComment(data)) {
-        const statuses = await Promise.all(
-          options.test.circleCIContexts.map(async (context) =>
-            butterfly.github.utils
-              .findLastStatus({
-                isStatus: (status) => status.context === context,
-                issueNumber: data.issue.number,
-                owner: data.repository.owner.login,
-                repo: data.repository.name,
-              })
-              .then((status) => ({ status, context })),
-          ),
-        );
+        const contexts = new Set(options.test.circleCIContexts);
+        const statuses = await butterfly.github.utils.getStatusesForPullRequest({
+          filterStatus: (status) => contexts.has(status.context),
+          issueNumber: data.issue.number,
+          owner: data.repository.owner.login,
+          repo: data.repository.name,
+        });
+
+        const statusesReversed = _.reverse(statuses);
+        const contextLastStatuses = options.test.circleCIContexts.map((context) => {
+          const status = statusesReversed.find((stat) => stat.context === context);
+
+          return { status, context };
+        });
 
         await Promise.all(
-          statuses.map(async ({ status, context }) => {
+          contextLastStatuses.map(async ({ status, context }) => {
             if (status === undefined) {
               throw new Error(`Could not find circleci status for ${context}`);
             }

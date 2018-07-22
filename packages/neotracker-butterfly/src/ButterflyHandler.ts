@@ -1,4 +1,5 @@
-import { ButterflyOptions, createButterfly } from './createButterfly';
+import { ButterflyOptions as AllButterflyOptions, createButterfly } from './createButterfly';
+import { GithubOptions } from './github';
 import { hooks, HooksOptions } from './hooks';
 import { Butterfly, GithubEvent } from './types';
 
@@ -8,6 +9,12 @@ export interface Hooks {
   readonly [name: string]: ReadonlyArray<Hook> | undefined;
 }
 
+export type ButterflyOptions = Omit<AllButterflyOptions, 'github'> & {
+  readonly github: Omit<GithubOptions, 'authenticate'> & {
+    readonly authenticate: Omit<GithubOptions['authenticate'], 'owner' | 'repo'>;
+  };
+};
+
 export interface ButterflyHandlerOptions {
   readonly butterfly: ButterflyOptions;
   readonly hooks: HooksOptions;
@@ -15,12 +22,25 @@ export interface ButterflyHandlerOptions {
 
 const notNull = <T>(value: T | undefined | null): value is T => value != undefined;
 
+// tslint:disable-next-line no-any
+const getInstallationID = (payload: any): number | undefined => {
+  if (
+    typeof payload === 'object' &&
+    typeof payload.installation === 'object' &&
+    typeof payload.installation.id === 'number'
+  ) {
+    return payload.installation.id;
+  }
+
+  return undefined;
+};
+
 export class ButterflyHandler {
-  private readonly butterfly: Butterfly;
+  private readonly butterfly: ButterflyOptions;
   private readonly hooks: ReturnType<typeof hooks>;
 
   public constructor({ butterfly, hooks: hooksOptions }: ButterflyHandlerOptions) {
-    this.butterfly = createButterfly(butterfly);
+    this.butterfly = butterfly;
     this.hooks = hooks(hooksOptions);
   }
 
@@ -32,10 +52,21 @@ export class ButterflyHandler {
       eventActionsHandlers === undefined ? [] : eventActionsHandlers,
     );
 
+    const butterfly = await createButterfly({
+      ...this.butterfly,
+      github: {
+        ...this.butterfly.github,
+        authenticate: {
+          ...this.butterfly.github.authenticate,
+          installationID: getInstallationID(payload),
+        },
+      },
+    });
+
     const errors = await Promise.all(
       handlers.map(async (handler) => {
         try {
-          await handler(this.butterfly, { name: event, payload });
+          await handler(butterfly, { name: event, payload });
 
           return undefined;
         } catch (error) {

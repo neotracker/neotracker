@@ -1,9 +1,12 @@
-import { circleci } from './circleci';
-import { github } from './github';
+import { createCircleCI } from './circleci';
+import { createGithub } from './github';
+
+// tslint:disable-next-line no-any no-unused readonly-array
+type PromiseReturnType<T> = T extends (...args: any[]) => Promise<infer R> ? R : never;
 
 export interface Butterfly {
-  readonly circleci: typeof circleci;
-  readonly github: typeof github;
+  readonly circleci: PromiseReturnType<typeof createCircleCI>;
+  readonly github: PromiseReturnType<typeof createGithub>;
 }
 
 // tslint:disable-next-line no-any
