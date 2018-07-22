@@ -15,6 +15,11 @@ export enum ErrorCode {
   PERMISSION_DENIED = 'You are not allowed to take that action.',
   BAD_ACME_CHALLENGE_REQUEST = 'Invalid request format.',
   UNKNOWN_ACME_CHALLENGE_TOKEN = 'Unknown token.',
+  MISSING_X_HUB_SIGNATURE = 'Missing X-Hub Signature',
+  INVALID_X_HUB_SIGNATURE = 'Invalid X-Hub Signature',
+  INVALID_GITHUB_FIELDS_NULL = 'Invalid Payload',
+  INVALID_GITHUB_FIELDS_OBJECT = 'Invalid Payload',
+  INVALID_GITHUB_EVENT = 'Invalid Event',
 }
 
 export class CodedError extends ClientError {
@@ -32,6 +37,11 @@ export class CodedError extends ClientError {
   public static readonly PERMISSION_DENIED = 'PERMISSION_DENIED';
   public static readonly BAD_ACME_CHALLENGE_REQUEST = 'BAD_ACME_CHALLENGE_REQUEST';
   public static readonly UNKNOWN_ACME_CHALLENGE_TOKEN = 'UNKNOWN_ACME_CHALLENGE_TOKEN';
+  public static readonly MISSING_X_HUB_SIGNATURE = 'MISSING_X_HUB_SIGNATURE';
+  public static readonly INVALID_X_HUB_SIGNATURE = 'INVALID_X_HUB_SIGNATURE';
+  public static readonly INVALID_GITHUB_FIELDS_NULL = 'INVALID_GITHUB_FIELDS_NULL';
+  public static readonly INVALID_GITHUB_FIELDS_OBJECT = 'INVALID_GITHUB_FIELDS_OBJECT';
+  public static readonly INVALID_GITHUB_EVENT = 'INVALID_GITHUB_EVENT';
   public readonly code: string;
 
   public constructor(

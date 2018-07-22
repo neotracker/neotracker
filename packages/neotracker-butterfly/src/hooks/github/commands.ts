@@ -1,0 +1,140 @@
+// tslint:disable no-console
+// tslint:disable-next-line no-implicit-dependencies
+import { IssueComment, Issues, PullRequest } from 'github-webhook-event-types';
+import { Butterfly, GithubEvent } from '../../types';
+
+export interface CommandsOptions {
+  readonly test: {
+    readonly circleCIContexts: ReadonlyArray<string>;
+  };
+}
+
+type Data = IssueComment | PullRequest | Issues;
+
+interface Label {
+  readonly id: number;
+  readonly url: string;
+  readonly name: string;
+  readonly description: string;
+  readonly color: string;
+  readonly default: boolean;
+}
+
+class Command {
+  public constructor(
+    private readonly name: string,
+    private readonly callback: (butterfly: Butterfly, args: string, data: Data) => Promise<void>,
+  ) {}
+
+  public async execute(butterfly: Butterfly, data: Data, body: string): Promise<void> {
+    const args = body.match(this.matcher);
+    if (args !== null) {
+      await this.callback(butterfly, args[1].trim(), data);
+    }
+  }
+
+  private get matcher(): RegExp {
+    return new RegExp(`^\\/${this.name}(.*)$`);
+  }
+}
+
+// tslint:disable-next-line no-any
+const isIssueComment = (data: any): data is IssueComment => data.comment !== undefined;
+
+// tslint:disable-next-line no-any
+const isPullRequest = (data: any): data is PullRequest => data.pull_request !== undefined;
+
+export const commands = (options: CommandsOptions) => {
+  const COMMANDS: ReadonlyArray<Command> = [
+    new Command('test', async (butterfly, _args, data) => {
+      if (isIssueComment(data)) {
+        const statuses = await Promise.all(
+          options.test.circleCIContexts.map(async (context) =>
+            butterfly.github.utils
+              .findLastStatus({
+                isStatus: (status) => status.context === context,
+                issueNumber: data.issue.number,
+                owner: data.repository.owner.login,
+                repo: data.repository.name,
+              })
+              .then((status) => ({ status, context })),
+          ),
+        );
+
+        await Promise.all(
+          statuses.map(async ({ status, context }) => {
+            if (status === undefined) {
+              throw new Error(`Could not find circleci status for ${context}`);
+            }
+
+            const targetURLParts = butterfly.circleci.utils.extractGithubTargetURLParts(status.target_url);
+
+            await butterfly.circleci.api.retryJob(targetURLParts);
+          }),
+        );
+      }
+    }),
+    new Command('merge-on-green', async (butterfly, _args, data) => {
+      if (isIssueComment(data)) {
+        const issue = data.issue;
+        const comment = data.comment;
+        const api = butterfly.github.api;
+
+        // Only look at PR issue comments, this isn't in the type system
+        // tslint:disable-next-line no-any
+        if (!(issue as any).pull_request) {
+          return;
+        }
+
+        const label = 'merge-on-green';
+        // Check to see if the label has already been set
+        if (issue.labels.find((l) => l.name === label)) {
+          return;
+        }
+
+        const sender = comment.user;
+        const username = sender.login;
+        const org = data.repository.owner.login;
+
+        try {
+          await api.orgs.checkMembership({ org, username });
+        } catch {
+          throw new Error(`Sender ${username} does not have permission to merge in "${org}"`);
+        }
+
+        // Create or re-use an existing label
+        const owner = org;
+        const repo = data.repository.name;
+        const existingLabels = await api.issues.getLabels({ owner, repo });
+        const mergeOnGreen = existingLabels.data.find((l: Label) => l.name === label);
+
+        // Create the label if it doesn't exist yet
+        if (!mergeOnGreen) {
+          await api.issues.createLabel({
+            owner,
+            repo,
+            name: label,
+            color: '247A38',
+            description: 'A label to indicate that Butterfly should merge this PR when all statuses are green',
+          });
+        }
+
+        // Then add the label
+        await api.issues.addLabels({ owner, repo, number: issue.number, labels: [label] });
+      }
+    }),
+  ];
+
+  return async (butterfly: Butterfly, { payload }: GithubEvent<Data>): Promise<void> => {
+    let body: string;
+    if (isIssueComment(payload)) {
+      body = payload.comment.body;
+    } else if (isPullRequest(payload)) {
+      body = payload.pull_request.body;
+    } else {
+      body = payload.issue.body;
+    }
+
+    await Promise.all(COMMANDS.map(async (command) => command.execute(butterfly, payload, body)));
+  };
+};
