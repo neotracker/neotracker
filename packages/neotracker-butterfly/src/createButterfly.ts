@@ -7,15 +7,12 @@ export interface ButterflyOptions {
     readonly token: string;
   };
   readonly github: {
-    readonly appID: string;
-    readonly privateKey: string;
+    readonly key: string;
+    readonly secret: string;
   };
 }
 
-export const createButterfly = ({
-  circleci: { token },
-  github: { appID, privateKey },
-}: ButterflyOptions): Butterfly => {
+export const createButterfly = ({ circleci: { token }, github: { key, secret } }: ButterflyOptions): Butterfly => {
   const butterfly = {
     circleci,
     github,
@@ -23,8 +20,8 @@ export const createButterfly = ({
 
   butterfly.circleci.authenticate(token);
   butterfly.github.authenticate({
-    appID,
-    privateKey,
+    key,
+    secret,
   });
 
   return butterfly;
