@@ -21,7 +21,7 @@ export const utils = (api: Github) => ({
     });
     const commit = commitsResponse.data[commitsResponse.data.length - 1];
     const statusesResponse = await api.repos.getStatuses({
-      ref: commit.tree.sha,
+      ref: commit.sha,
       owner,
       repo,
     });

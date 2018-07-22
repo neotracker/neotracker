@@ -17,7 +17,7 @@ export const authenticate = async ({
   const nowSeconds = Math.round(Date.now() / 1000);
   const payload = {
     iat: nowSeconds,
-    exp: nowSeconds + 10 * 60,
+    exp: nowSeconds + 9 * 60,
     iss: appID,
   };
   const token = jwt.sign(payload, privateKey, { algorithm: 'RS256' });
