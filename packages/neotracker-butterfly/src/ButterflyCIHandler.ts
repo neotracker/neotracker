@@ -73,7 +73,7 @@ export class ButterflyCIHandler {
 
     const butterfly = await this.getButterfly();
 
-    await this.updateCheckRun(butterfly, name, { status: 'in_progress' });
+    await this.updateCheckRun(butterfly, name, { status: 'in_progress', started_at: new Date().toISOString() });
 
     try {
       const result = await check.run(butterfly);
