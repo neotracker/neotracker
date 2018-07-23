@@ -77,7 +77,7 @@ export class ButterflyCIHandler {
 
     try {
       const result = await check.run(butterfly);
-      await this.updateCheckRun(butterfly, name, {
+      await this.completeCheckRun(butterfly, name, {
         status: 'completed',
         conclusion: result.conclusion,
         output: {
@@ -88,7 +88,7 @@ export class ButterflyCIHandler {
         },
       });
     } catch (error) {
-      await this.updateCheckRun(butterfly, name, {
+      await this.completeCheckRun(butterfly, name, {
         status: 'completed',
         conclusion: 'failure',
         output: {
@@ -103,6 +103,17 @@ ${error.stack}
         },
       });
     }
+  }
+
+  private async completeCheckRun(
+    butterfly: ButterflyCI,
+    name: string,
+    update: Partial<Github.ChecksUpdateParams>,
+  ): Promise<void> {
+    await this.updateCheckRun(butterfly, name, {
+      ...update,
+      completed_at: new Date().toISOString(),
+    });
   }
 
   private async updateCheckRun(

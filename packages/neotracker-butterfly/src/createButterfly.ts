@@ -33,7 +33,7 @@ export const createButterfly = async ({
     circleci,
     github,
     exec: (file, argsOrOptions, optionsIn) => {
-      let args: ReadonlyArray<string> | undefined;
+      let args: ReadonlyArray<string> = [];
       let options: execa.Options | undefined;
       if (argsOrOptions !== undefined) {
         if (Array.isArray(argsOrOptions)) {
@@ -44,6 +44,7 @@ export const createButterfly = async ({
         }
       }
 
+      log.verbose(`$ ${file} ${args.join(' ')}`);
       const proc = execa(file, args, {
         ...(options === undefined ? {} : options),
         reject: false,
