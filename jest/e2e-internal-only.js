@@ -1,7 +1,7 @@
-const e2e = require('./e2e');
+const base = require('./base');
 const internal = require('./internal');
 
 module.exports = {
-  ...e2e,
+  ...base({ path: 'e2e-internal' }),
   ...internal,
 };

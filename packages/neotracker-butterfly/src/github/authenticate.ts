@@ -5,11 +5,15 @@ export interface AuthenticateOptions {
   readonly appID: number;
   readonly privateKey: string;
   readonly installationID?: number;
+  readonly project?: {
+    readonly owner: string;
+    readonly repo: string;
+  };
 }
 
 export const authenticate = async ({
   api,
-  options: { appID, privateKey, installationID },
+  options: { appID, privateKey, installationID: installationIDIn, project },
 }: {
   readonly options: AuthenticateOptions;
   readonly api: Github;
@@ -22,6 +26,15 @@ export const authenticate = async ({
   };
   const token = jwt.sign(payload, privateKey, { algorithm: 'RS256' });
   api.authenticate({ type: 'app', token });
+
+  let installationID = installationIDIn;
+  if (installationID === undefined && project !== undefined) {
+    const response = await api.apps.findRepoInstallation({
+      owner: project.owner,
+      repo: project.repo,
+    });
+    installationID = response.data.id;
+  }
 
   if (installationID !== undefined) {
     const installationTokenResponse = await api.apps.createInstallationToken({

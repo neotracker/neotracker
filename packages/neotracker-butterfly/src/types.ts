@@ -1,3 +1,4 @@
+import execa from 'execa';
 import { createCircleCI } from './circleci';
 import { createGithub } from './github';
 
@@ -14,6 +15,22 @@ export interface Butterfly {
   readonly circleci: PromiseReturnType<typeof createCircleCI>;
   readonly github: PromiseReturnType<typeof createGithub>;
   readonly log: Logger;
+  readonly exec: (
+    file: string,
+    argsOrOptions?: ReadonlyArray<string> | execa.Options,
+    options?: execa.Options,
+  ) => execa.ExecaChildProcess;
+  readonly tmp: {
+    readonly fileName: () => Promise<string>;
+  };
+}
+
+export interface PullRequest {
+  readonly body: string;
+}
+
+export interface ButterflyCI extends Butterfly {
+  readonly pr: PullRequest;
 }
 
 // tslint:disable-next-line no-any

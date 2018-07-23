@@ -1,3 +1,5 @@
+import execa from 'execa';
+import tmp from 'tmp';
 import { CircleCIOptions, createCircleCI } from './circleci';
 import { createGithub, GithubOptions } from './github';
 import { Butterfly, Logger } from './types';
@@ -30,6 +32,44 @@ export const createButterfly = async ({
   return {
     circleci,
     github,
+    exec: (file, argsOrOptions, optionsIn) => {
+      let args: ReadonlyArray<string> | undefined;
+      let options: execa.Options | undefined;
+      if (argsOrOptions !== undefined) {
+        if (Array.isArray(argsOrOptions)) {
+          args = argsOrOptions;
+          options = optionsIn;
+        } else {
+          options = argsOrOptions as execa.Options | undefined;
+        }
+      }
+
+      const proc = execa(file, args, {
+        ...(options === undefined ? {} : options),
+        reject: false,
+      });
+
+      proc.stdout.on('data', (value) => {
+        log.verbose(value instanceof Buffer ? value.toString('utf8') : value);
+      });
+      proc.stderr.on('data', (value) => {
+        log.error(value instanceof Buffer ? value.toString('utf8') : value);
+      });
+
+      return proc;
+    },
+    tmp: {
+      fileName: async () =>
+        new Promise<string>((resolve, reject) =>
+          tmp.tmpName((error: Error | undefined, filePath) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(filePath);
+            }
+          }),
+        ),
+    },
     log,
   };
 };

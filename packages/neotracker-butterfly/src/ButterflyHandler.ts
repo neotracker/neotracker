@@ -52,6 +52,10 @@ export class ButterflyHandler {
       eventActionsHandlers === undefined ? [] : eventActionsHandlers,
     );
 
+    if (handlers.length === 0) {
+      return [];
+    }
+
     const butterfly = await createButterfly({
       ...this.butterfly,
       github: {

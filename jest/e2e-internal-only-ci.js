@@ -1,4 +1,4 @@
-const e2e = require('./e2e-internal');
+const e2e = require('./e2e-internal-only');
 const ci = require('./ci');
 
 module.exports = {
