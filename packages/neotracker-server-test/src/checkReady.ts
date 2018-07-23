@@ -6,9 +6,14 @@ export async function checkReady(
   component: string,
   proc: ExecaChildProcess,
   port: number,
-  { path = 'ready_health_check', timeoutMS = 60000 }: { readonly path?: string; readonly timeoutMS?: number } = {
+  {
+    path = 'ready_health_check',
+    timeoutMS = 60000,
+    frequencyMS = 1000,
+  }: { readonly path?: string; readonly timeoutMS?: number; readonly frequencyMS?: number } = {
     path: 'ready_health_check',
     timeoutMS: 60000,
+    frequencyMS: 1000,
   },
 ) {
   let stdout = '';
@@ -24,12 +29,18 @@ export async function checkReady(
   proc.stderr.on('data', stderrListener);
 
   try {
-    await until(async () => {
-      const response = await fetch(`http://localhost:${port}/${path}`);
-      if (response.status !== 200) {
-        throw Error(`Component ${component} is not ready: ${response.status}. ${response.statusText}`);
-      }
-    }, timeoutMS);
+    await until(
+      async () => {
+        // tslint:disable-next-line no-console
+        console.log(`Checking if ${component} is ready...`);
+        const response = await fetch(`http://localhost:${port}/${path}`);
+        if (response.status !== 200) {
+          throw Error(`Component ${component} is not ready: ${response.status}. ${response.statusText}`);
+        }
+      },
+      timeoutMS,
+      frequencyMS,
+    );
   } catch (error) {
     throw new Error(`Failed to start ${component}:\nError: ${error.stack}\nstdout: ${stdout}\nstderr:${stderr}`);
   } finally {

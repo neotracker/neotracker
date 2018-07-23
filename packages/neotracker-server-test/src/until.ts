@@ -1,4 +1,4 @@
-export const until = async (func: () => Promise<void>, timeoutMS = 60000) => {
+export const until = async (func: () => Promise<void>, timeoutMS = 60000, frequencyMS = 1000) => {
   const start = Date.now();
   let finalError;
   // tslint:disable-next-line no-loop-statement
@@ -9,7 +9,7 @@ export const until = async (func: () => Promise<void>, timeoutMS = 60000) => {
       return;
     } catch (error) {
       finalError = error;
-      await new Promise<void>((resolve) => setTimeout(resolve, 1000));
+      await new Promise<void>((resolve) => setTimeout(resolve, frequencyMS));
     }
   }
 
