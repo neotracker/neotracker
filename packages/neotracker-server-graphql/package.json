@@ -1,14 +1,22 @@
 {
   "name": "@neotracker/server-graphql",
   "version": "0.0.1-alpha.0",
-  "keywords": ["neo", "blockchain", "neotracker"],
+  "keywords": [
+    "neo",
+    "blockchain",
+    "neotracker"
+  ],
   "description": "NEO Tracker graphql.",
   "repository": "https://github.com/neotracker/neotracker",
   "bugs": "https://github.com/neotracker/neotracker/issues",
   "license": "MIT",
   "main": "./src/index.ts",
   "dependencies": {
-    "@neo-one/monitor": "^1.0.0-alpha.50",
+    "@neo-one/monitor": "^1.0.0-alpha.51",
+    "@neotracker/server-db": "^0.0.1-alpha.0",
+    "@neotracker/server-utils": "^0.0.1-alpha.0",
+    "@neotracker/shared-graphql": "^0.0.1-alpha.0",
+    "@neotracker/shared-utils": "^0.0.1-alpha.0",
     "apollo-link": "^1.2.2",
     "app-root-dir": "^1.0.2",
     "bignumber.js": "^7.2.0",
@@ -21,16 +29,12 @@
     "graphql-tools": "^3.0.5",
     "iterall": "^1.2.2",
     "lodash": "^4.17.10",
-    "@neotracker/server-db": "^0.0.1-alpha.0",
-    "@neotracker/server-utils": "^0.0.1-alpha.0",
-    "@neotracker/shared-graphql": "^0.0.1-alpha.0",
-    "@neotracker/shared-utils": "^0.0.1-alpha.0",
     "objection": "^1.2.0",
     "relay-runtime": "^1.6.0",
     "rxjs": "^6.2.2",
     "safe-stable-stringify": "^1.0.1",
     "uuid": "^3.2.1",
-    "ws": "^5.2.2"
+    "ws": "^6.0.0"
   },
   "sideEffects": false
 }

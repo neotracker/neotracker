@@ -1,7 +1,11 @@
 {
   "name": "@neotracker/client-web-next",
   "version": "0.0.1-alpha.0",
-  "keywords": ["neo", "blockchain", "neotracker"],
+  "keywords": [
+    "neo",
+    "blockchain",
+    "neotracker"
+  ],
   "description": "NEO Tracker client.",
   "repository": "https://github.com/neotracker/neotracker",
   "bugs": "https://github.com/neotracker/neotracker/issues",
@@ -9,8 +13,11 @@
   "main": "./src/index.ts",
   "dependencies": {
     "@babel/polyfill": "7.0.0-beta.54",
-    "@neo-one/client": "^1.0.0-alpha.80",
-    "@neo-one/monitor": "^1.0.0-alpha.50",
+    "@neo-one/client": "^1.0.0-alpha.81",
+    "@neo-one/monitor": "^1.0.0-alpha.51",
+    "@neotracker/shared-graphql": "^0.0.1-alpha.0",
+    "@neotracker/shared-utils": "^0.0.1-alpha.0",
+    "@neotracker/shared-web-next": "^0.0.1-alpha.0",
     "apollo-cache-inmemory": "^1.2.5",
     "apollo-client": "^2.3.5",
     "apollo-link": "^1.2.2",
@@ -21,9 +28,6 @@
     "graphql-tag": "^2.9.2",
     "localforage": "^1.7.2",
     "lodash": "^4.17.10",
-    "@neotracker/shared-graphql": "^0.0.1-alpha.0",
-    "@neotracker/shared-utils": "^0.0.1-alpha.0",
-    "@neotracker/shared-web-next": "^0.0.1-alpha.0",
     "react": "16.4.1",
     "react-dom": "16.4.1",
     "react-loadable": "^5.4.0",

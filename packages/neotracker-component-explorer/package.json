@@ -1,7 +1,11 @@
 {
   "name": "@neotracker/component-explorer",
   "version": "0.0.1-alpha.0",
-  "keywords": ["neo", "blockchain", "neotracker"],
+  "keywords": [
+    "neo",
+    "blockchain",
+    "neotracker"
+  ],
   "description": "NEO Tracker component explorer.",
   "repository": "https://github.com/neotracker/neotracker",
   "bugs": "https://github.com/neotracker/neotracker/issues",
@@ -42,7 +46,7 @@
     "to-ast": "^1.0.0",
     "ts-node": "^7.0.0",
     "typescript": "^3.0.0-dev.20180712",
-    "webpack": "^4.16.1",
+    "webpack": "^4.16.2",
     "webpack-serve": "^2.0.2"
   },
   "devDependencies": {

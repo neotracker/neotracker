@@ -1,20 +1,24 @@
 {
   "name": "@neotracker/server-scrape-check",
   "version": "0.0.1-alpha.0",
-  "keywords": ["neo", "blockchain", "neotracker"],
+  "keywords": [
+    "neo",
+    "blockchain",
+    "neotracker"
+  ],
   "description": "NEO Tracker scraper.",
   "repository": "https://github.com/neotracker/neotracker",
   "bugs": "https://github.com/neotracker/neotracker/issues",
   "license": "MIT",
   "main": "./src/index.ts",
   "dependencies": {
-    "@neo-one/client": "^1.0.0-alpha.80",
-    "@neo-one/monitor": "^1.0.0-alpha.50",
+    "@neo-one/client": "^1.0.0-alpha.81",
+    "@neo-one/monitor": "^1.0.0-alpha.51",
+    "@neotracker/server-db": "^0.0.1-alpha.0",
+    "@neotracker/shared-utils": "^0.0.1-alpha.0",
     "bignumber.js": "^7.2.0",
     "knex": "^0.15.2",
-    "lodash": "^4.17.10",
-    "@neotracker/server-db": "^0.0.1-alpha.0",
-    "@neotracker/shared-utils": "^0.0.1-alpha.0"
+    "lodash": "^4.17.10"
   },
   "sideEffects": false
 }
