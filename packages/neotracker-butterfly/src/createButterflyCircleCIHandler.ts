@@ -16,7 +16,7 @@ export const createButterflyCircleCIHandler = (options: CreateButterflyCircleCIH
     github: {
       authenticate: {
         appID: parseInt(getEnv('BUTTERFLY_GITHUB_APP_ID'), 10),
-        privateKey: getEnv('BUTTERFLY_GITHUB_PRIVATE_KEY'),
+        privateKey: Buffer.from(getEnv('BUTTERFLY_GITHUB_PRIVATE_KEY'), 'base64').toString('utf8'),
       },
     },
     commit: {
