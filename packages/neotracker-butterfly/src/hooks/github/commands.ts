@@ -3,6 +3,7 @@
 import { IssueComment, Issues, PullRequest } from 'github-webhook-event-types';
 import _ from 'lodash';
 import { Butterfly, GithubEvent } from '../../types';
+import { LABEL_NAME } from './mergeOnGreen';
 
 export interface CommandsOptions {
   readonly test: {
@@ -89,9 +90,8 @@ export const commands = (options: CommandsOptions) => {
           return;
         }
 
-        const label = 'merge-on-green';
         // Check to see if the label has already been set
-        if (issue.labels.find((l) => l.name === label)) {
+        if (issue.labels.find((l) => l.name === LABEL_NAME)) {
           return;
         }
 
@@ -109,21 +109,21 @@ export const commands = (options: CommandsOptions) => {
         const owner = org;
         const repo = data.repository.name;
         const existingLabels = await api.issues.getLabels({ owner, repo });
-        const mergeOnGreen = existingLabels.data.find((l: Label) => l.name === label);
+        const mergeOnGreen = existingLabels.data.find((l: Label) => l.name === LABEL_NAME);
 
         // Create the label if it doesn't exist yet
         if (!mergeOnGreen) {
           await api.issues.createLabel({
             owner,
             repo,
-            name: label,
+            name: LABEL_NAME,
             color: '247A38',
             description: 'A label to indicate that Butterfly should merge this PR when all statuses are green',
           });
         }
 
         // Then add the label
-        await api.issues.addLabels({ owner, repo, number: issue.number, labels: [label] });
+        await api.issues.addLabels({ owner, repo, number: issue.number, labels: [LABEL_NAME] });
       }
     }),
   ];

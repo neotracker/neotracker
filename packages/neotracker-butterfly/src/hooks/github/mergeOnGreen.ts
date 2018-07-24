@@ -1,6 +1,8 @@
 import { Label, Status } from 'github-webhook-event-types';
 import { Butterfly, GithubEvent } from '../../types';
 
+export const LABEL_NAME = 'merge-on-green';
+
 export const mergeOnGreen = async (butterfly: Butterfly, { payload: status }: GithubEvent<Status>): Promise<void> => {
   const api = butterfly.github.api;
 
@@ -31,7 +33,7 @@ export const mergeOnGreen = async (butterfly: Butterfly, { payload: status }: Gi
     prsSet.map(async (issueNumber) => {
       const issue = await api.issues.get({ owner, repo, number: issueNumber });
 
-      const mergeLabel = issue.data.labels.find((l: Label['label']) => l.name === 'Merge On Green');
+      const mergeLabel = issue.data.labels.find((l: Label['label']) => l.name === LABEL_NAME);
       if (!mergeLabel) {
         butterfly.log.verbose('PR does not have Merge on Green');
 
