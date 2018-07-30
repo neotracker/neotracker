@@ -15,7 +15,7 @@ export interface AssetsDataRevert {
 
 export class AssetsDataUpdater extends SameContextDBUpdater<AssetsDataSave, AssetsDataRevert> {
   public async save(context: Context, monitor: Monitor, { assets, blockIndex }: AssetsDataSave): Promise<void> {
-    return monitor.captureSpan(
+    return monitor.captureSpanLog(
       async (span) => {
         await Promise.all(
           Object.entries(assets).map(async ([asset, { issued, transactionCount, addressCount, transferCount }]) => {
@@ -35,7 +35,7 @@ export class AssetsDataUpdater extends SameContextDBUpdater<AssetsDataSave, Asse
           }),
         );
       },
-      { name: 'neotracker_scrape_save_assets' },
+      { name: 'neotracker_scrape_save_assets', level: 'verbose', error: {} },
     );
   }
 

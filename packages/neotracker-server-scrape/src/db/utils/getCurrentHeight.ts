@@ -3,7 +3,7 @@ import { ProcessedIndex } from '@neotracker/server-db';
 import { Context } from '../../types';
 
 async function getCurrentHeightWorker(context: Context, monitor: Monitor): Promise<number> {
-  return monitor.captureSpan(
+  return monitor.captureSpanLog(
     async (span) =>
       ProcessedIndex.query(context.db)
         .context(context.makeQueryContext(span))
@@ -21,7 +21,7 @@ async function getCurrentHeightWorker(context: Context, monitor: Monitor): Promi
           return result === undefined || (result as any).max == undefined ? -1 : (result as any).max;
         })
         .then(Number),
-    { name: 'neotracker_scrape_run_get_current_height' },
+    { name: 'neotracker_scrape_run_get_current_height', level: 'verbose', error: {} },
   );
 }
 

@@ -13,7 +13,7 @@ export interface ContractsRevert {
 
 export class ContractsUpdater extends SameContextDBUpdater<ContractsSave, ContractsRevert> {
   public async save(context: Context, monitor: Monitor, { contracts }: ContractsSave): Promise<void> {
-    return monitor.captureSpan(
+    return monitor.captureSpanLog(
       async (span) => {
         await Promise.all(
           _.chunk(contracts, context.chunkSize).map(async (chunk) =>
@@ -21,7 +21,7 @@ export class ContractsUpdater extends SameContextDBUpdater<ContractsSave, Contra
           ),
         );
       },
-      { name: 'neotracker_scrape_save_contracts' },
+      { name: 'neotracker_scrape_save_contracts', level: 'verbose', error: {} },
     );
   }
 

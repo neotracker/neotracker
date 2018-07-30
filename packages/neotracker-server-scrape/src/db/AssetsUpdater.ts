@@ -13,7 +13,7 @@ export interface AssetsRevert {
 
 export class AssetsUpdater extends SameContextDBUpdater<AssetsSave, AssetsRevert> {
   public async save(context: Context, monitor: Monitor, { assets }: AssetsSave): Promise<void> {
-    return monitor.captureSpan(
+    return monitor.captureSpanLog(
       async (span) => {
         await Promise.all(
           _.chunk(assets, context.chunkSize).map(async (chunk) =>
@@ -21,7 +21,7 @@ export class AssetsUpdater extends SameContextDBUpdater<AssetsSave, AssetsRevert
           ),
         );
       },
-      { name: 'neotracker_scrape_save_assets' },
+      { name: 'neotracker_scrape_save_assets', level: 'verbose', error: {} },
     );
   }
 

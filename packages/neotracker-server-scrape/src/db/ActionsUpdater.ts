@@ -19,7 +19,7 @@ export interface ActionsRevert {
 
 export class ActionsUpdater extends SameContextDBUpdater<ActionsSave, ActionsRevert> {
   public async save(context: Context, monitor: Monitor, { actions }: ActionsSave): Promise<void> {
-    return monitor.captureSpan(
+    return monitor.captureSpanLog(
       async (span) => {
         await Promise.all(
           _.chunk(actions, context.chunkSize).map(async (chunk) =>
@@ -44,7 +44,7 @@ export class ActionsUpdater extends SameContextDBUpdater<ActionsSave, ActionsRev
           ),
         );
       },
-      { name: 'neotracker_scrape_save_actions' },
+      { name: 'neotracker_scrape_save_actions', level: 'verbose', error: {} },
     );
   }
 

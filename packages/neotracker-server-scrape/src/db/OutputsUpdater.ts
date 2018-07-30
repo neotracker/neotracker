@@ -16,7 +16,7 @@ export interface OutputsRevert {
 
 export class OutputsUpdater extends SameContextDBUpdater<OutputsSave, OutputsRevert> {
   public async save(context: Context, monitor: Monitor, { transactions }: OutputsSave): Promise<void> {
-    return monitor.captureSpan(
+    return monitor.captureSpanLog(
       async (span) => {
         const allOutputs = _.flatMap(transactions.map(({ outputs }) => outputs));
 
@@ -26,7 +26,7 @@ export class OutputsUpdater extends SameContextDBUpdater<OutputsSave, OutputsRev
           }),
         );
       },
-      { name: 'neotracker_scrape_save_outputs' },
+      { name: 'neotracker_scrape_save_outputs', level: 'verbose', error: {} },
     );
   }
 

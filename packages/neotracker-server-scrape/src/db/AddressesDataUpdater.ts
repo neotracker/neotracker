@@ -21,7 +21,7 @@ export class AddressesDataUpdater extends SameContextDBUpdater<AddressesDataSave
     monitor: Monitor,
     { addresses, blockIndex, blockTime }: AddressesDataSave,
   ): Promise<void> {
-    return monitor.captureSpan(
+    return monitor.captureSpanLog(
       async (span) => {
         await Promise.all(
           Object.entries(addresses).map(
@@ -44,7 +44,7 @@ export class AddressesDataUpdater extends SameContextDBUpdater<AddressesDataSave
           ),
         );
       },
-      { name: 'neotracker_scrape_save_addresses_data' },
+      { name: 'neotracker_scrape_save_addresses_data', level: 'verbose', error: {} },
     );
   }
 

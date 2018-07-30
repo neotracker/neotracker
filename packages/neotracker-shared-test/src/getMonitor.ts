@@ -1,4 +1,4 @@
-import { DefaultMonitor, Monitor } from '@neo-one/monitor-es2018-cjs';
+import { DefaultMonitor, Monitor } from '@neo-one/monitor';
 
 // tslint:disable-next-line no-let
 let monitor: Monitor | undefined;

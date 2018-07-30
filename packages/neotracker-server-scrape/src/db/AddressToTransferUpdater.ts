@@ -17,7 +17,7 @@ export interface AddressToTransferRevert {
 
 export class AddressToTransferUpdater extends SameContextDBUpdater<AddressToTransferSave, AddressToTransferRevert> {
   public async save(context: Context, monitor: Monitor, { transfers }: AddressToTransferSave): Promise<void> {
-    return monitor.captureSpan(
+    return monitor.captureSpanLog(
       async (span) => {
         const data = _.flatMap(transfers, ({ addressIDs, transferID }) =>
           [...new Set(addressIDs)].map((addressID) => ({
@@ -31,7 +31,7 @@ export class AddressToTransferUpdater extends SameContextDBUpdater<AddressToTran
           }),
         );
       },
-      { name: 'neotracker_scrape_save_address_to_transfer' },
+      { name: 'neotracker_scrape_save_address_to_transfer', level: 'verbose', error: {} },
     );
   }
 

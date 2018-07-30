@@ -14,7 +14,9 @@ export class SchemaLink extends ApolloLink {
     const id: string = (operation.query as any).id;
     const { monitor } = operation.getContext();
 
-    // tslint:disable-next-line no-any
-    return Observable.from(defer(async () => this.queryDeduplicator.execute({ id, variables, monitor })) as any);
+    return new Observable((subscriber) =>
+      // tslint:disable-next-line no-any
+      defer(async () => this.queryDeduplicator.execute({ id, variables, monitor })).subscribe(subscriber as any),
+    );
   }
 }

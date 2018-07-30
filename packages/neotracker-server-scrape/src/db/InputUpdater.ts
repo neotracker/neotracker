@@ -22,7 +22,7 @@ export class InputUpdater extends SameContextDBUpdater<InputSave, InputRevert> {
     monitor: Monitor,
     { transactionID, transactionHash, reference, blockIndex }: InputSave,
   ): Promise<void> {
-    return monitor.captureSpan(
+    return monitor.captureSpanLog(
       async (span) => {
         let claimValue = '0';
         if (reference.asset_id === `${NEO_ASSET_ID}`) {
@@ -43,7 +43,7 @@ export class InputUpdater extends SameContextDBUpdater<InputSave, InputRevert> {
             claim_value: claimValue,
           });
       },
-      { name: 'neotracker_scrape_save_input' },
+      { name: 'neotracker_scrape_save_input', level: 'verbose', error: {} },
     );
   }
 

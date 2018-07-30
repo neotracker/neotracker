@@ -66,19 +66,13 @@ export class NEOTracker {
     const server$ = createServer$({
       monitor: this.monitor,
       environment: this.environment.server,
-      createOptions$: this.options$.pipe(
-        map((options) => ({ options: options.server })),
-        distinctUntilChanged(),
-      ),
+      createOptions$: this.options$.pipe(map((options) => ({ options: options.server })), distinctUntilChanged()),
     });
 
     const scrape$ = createScraper$({
       monitor: this.monitor,
       environment: this.environment.scrape,
-      options$: this.options$.pipe(
-        map((options) => options.scrape),
-        distinctUntilChanged(),
-      ),
+      options$: this.options$.pipe(map((options) => options.scrape), distinctUntilChanged()),
     });
 
     this.mutableSubscription = concat(

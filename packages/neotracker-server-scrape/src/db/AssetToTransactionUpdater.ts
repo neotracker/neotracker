@@ -17,7 +17,7 @@ export interface AssetToTransactionRevert {
 
 export class AssetToTransactionUpdater extends SameContextDBUpdater<AssetToTransactionSave, AssetToTransactionRevert> {
   public async save(context: Context, monitor: Monitor, { transactions }: AssetToTransactionSave): Promise<void> {
-    return monitor.captureSpan(
+    return monitor.captureSpanLog(
       async (span) => {
         const data = _.flatMap(transactions, ({ assetIDs, transactionID }) =>
           [...new Set(assetIDs)].map((assetID) => ({
@@ -31,7 +31,7 @@ export class AssetToTransactionUpdater extends SameContextDBUpdater<AssetToTrans
           }),
         );
       },
-      { name: 'neotracker_scrape_save_asset_to_transaction' },
+      { name: 'neotracker_scrape_save_asset_to_transaction', level: 'verbose', error: {} },
     );
   }
 

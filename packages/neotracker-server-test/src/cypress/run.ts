@@ -64,7 +64,7 @@ const run = async ({ ci }: { readonly ci: boolean }) => {
 
   const { stdout } = await neoOne(['describe', 'network', networkName, '--json']);
   const networkInfo = JSON.parse(stdout);
-  const rpcURL = networkInfo[3][1].table[1][3];
+  const rpcURL = networkInfo.nodes[0].rpcAddress;
   const port = 1340;
 
   await neoOne(['bootstrap', '--network', networkName, '--reset']);
@@ -78,7 +78,7 @@ const run = async ({ ci }: { readonly ci: boolean }) => {
   });
   mutableCleanup.push(createKillProcess(proc));
 
-  await checkReady('web', proc, port, { path: 'healthcheck', timeoutMS: 600000, frequencyMS: 15000 });
+  await checkReady('web', proc, port, { path: 'healthcheck', timeoutMS: 300 * 1000, frequencyMS: 15 * 1000 });
 
   // Wait for server to startup and sync
   await new Promise<void>((resolve) => setTimeout(resolve, 5000));

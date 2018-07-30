@@ -20,7 +20,7 @@ export class AddressToTransactionUpdater extends SameContextDBUpdater<
   AddressToTransactionRevert
 > {
   public async save(context: Context, monitor: Monitor, { transactions }: AddressToTransactionSave): Promise<void> {
-    return monitor.captureSpan(
+    return monitor.captureSpanLog(
       async (span) => {
         const data = _.flatMap(transactions, ({ addressIDs, transactionID }) =>
           [...new Set(addressIDs)].map((addressID) => ({
@@ -34,7 +34,7 @@ export class AddressToTransactionUpdater extends SameContextDBUpdater<
           }),
         );
       },
-      { name: 'neotracker_scrape_save_address_to_transaction' },
+      { name: 'neotracker_scrape_save_address_to_transaction', level: 'verbose', error: {} },
     );
   }
 

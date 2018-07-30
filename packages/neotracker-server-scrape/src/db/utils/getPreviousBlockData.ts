@@ -7,7 +7,7 @@ export async function getPreviousBlockData(
   monitor: Monitor,
   index: number,
 ): Promise<BlockData | undefined> {
-  return monitor.captureSpan(
+  return monitor.captureSpanLog(
     async (span) => {
       const prevBlockData = context.prevBlockData;
       if (prevBlockData !== undefined && prevBlockData.previous_block_id + 1 === index) {
@@ -29,6 +29,6 @@ export async function getPreviousBlockData(
         aggregated_system_fee: blockModel.aggregated_system_fee,
       };
     },
-    { name: 'neotracker_scrape_get_previous_block_model' },
+    { name: 'neotracker_scrape_get_previous_block_model', level: 'verbose', error: {} },
   );
 }

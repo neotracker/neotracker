@@ -34,7 +34,7 @@ export class InputsUpdater extends SameContextDBUpdater<InputsSave, InputsRevert
   }
 
   public async save(context: Context, monitor: Monitor, { transactions, blockIndex }: InputsSave): Promise<void> {
-    return monitor.captureSpan(
+    return monitor.captureSpanLog(
       async (span) => {
         await Promise.all(
           _.flatMap(transactions, ({ inputs, transactionID, transactionHash }) =>
@@ -44,7 +44,7 @@ export class InputsUpdater extends SameContextDBUpdater<InputsSave, InputsRevert
           ),
         );
       },
-      { name: 'neotracker_scrape_save_inputs' },
+      { name: 'neotracker_scrape_save_inputs', level: 'verbose', error: {} },
     );
   }
 

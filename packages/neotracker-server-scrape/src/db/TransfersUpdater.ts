@@ -27,7 +27,7 @@ export class TransfersUpdater extends SameContextDBUpdater<TransfersSave, Transf
     monitor: Monitor,
     { transactions, blockIndex, blockTime }: TransfersSave,
   ): Promise<void> {
-    return monitor.captureSpan(
+    return monitor.captureSpanLog(
       async (span) => {
         await Promise.all(
           _.chunk(transactions, context.chunkSize).map(async (chunk) => {
@@ -54,7 +54,7 @@ export class TransfersUpdater extends SameContextDBUpdater<TransfersSave, Transf
           }),
         );
       },
-      { name: 'neotracker_scrape_save_transfers' },
+      { name: 'neotracker_scrape_save_transfers', level: 'verbose', error: {} },
     );
   }
 

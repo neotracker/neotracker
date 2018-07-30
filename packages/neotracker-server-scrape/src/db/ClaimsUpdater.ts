@@ -18,7 +18,7 @@ export interface ClaimsRevert {
 
 export class ClaimsUpdater extends SameContextDBUpdater<ClaimsSave, ClaimsRevert> {
   public async save(context: Context, monitor: Monitor, { transactions }: ClaimsSave): Promise<void> {
-    return monitor.captureSpan(
+    return monitor.captureSpanLog(
       async (span) => {
         await Promise.all(
           transactions.map(async ({ claims, transactionID, transactionHash }) => {
@@ -26,7 +26,7 @@ export class ClaimsUpdater extends SameContextDBUpdater<ClaimsSave, ClaimsRevert
           }),
         );
       },
-      { name: 'neotracker_scrape_save_claims' },
+      { name: 'neotracker_scrape_save_claims', level: 'verbose', error: {} },
     );
   }
 

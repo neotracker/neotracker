@@ -5,7 +5,7 @@ import { SameContextDBUpdater } from './SameContextDBUpdater';
 
 export class ProcessedIndexUpdater extends SameContextDBUpdater<number, number> {
   public async save(context: Context, monitor: Monitor, index: number): Promise<void> {
-    await monitor.captureSpan(
+    await monitor.captureSpanLog(
       async (span) => {
         try {
           await ProcessedIndex.query(context.db)
@@ -19,7 +19,7 @@ export class ProcessedIndexUpdater extends SameContextDBUpdater<number, number> 
           }
         }
       },
-      { name: 'neotracker_scrape_save_processed_index' },
+      { name: 'neotracker_scrape_save_processed_index', level: 'verbose', error: {} },
     );
   }
 

@@ -10,7 +10,7 @@ export interface CoinsSave {
 
 export class CoinsUpdater extends SameContextDBUpdater<CoinsSave, CoinsSave> {
   public async save(context: Context, monitor: Monitor, { coinModelChanges }: CoinsSave): Promise<void> {
-    return monitor.captureSpan(
+    return monitor.captureSpanLog(
       async (span) => {
         await Promise.all([
           Promise.all(
@@ -36,7 +36,7 @@ export class CoinsUpdater extends SameContextDBUpdater<CoinsSave, CoinsSave> {
           ),
         ]);
       },
-      { name: 'neotracker_scrape_save_coins' },
+      { name: 'neotracker_scrape_save_coins', level: 'verbose', error: {} },
     );
   }
 

@@ -1,8 +1,5 @@
 {
-  "browserslist": [
-    "> 0.1%",
-    "not ie <= 10"
-  ],
+  "browserslist": ["> 0.1%", "not ie <= 10"],
   "bugs": "https://github.com/neotracker/neotracker/issues",
   "description": "NEO Tracker",
   "devDependencies": {
@@ -14,12 +11,6 @@
     "@babel/preset-react": "^7.0.0-beta.54",
     "@cypress/webpack-preprocessor": "^2.0.1",
     "@neo-one/cli": "1.0.0-alpha.104",
-    "@neo-one/client-core-es2018-cjs": "1.0.0-alpha.66",
-    "@neo-one/client-es2018-cjs": "1.0.0-alpha.81",
-    "@neo-one/monitor-es2018-cjs": "1.0.0-alpha.51",
-    "@neo-one/node-es2018-cjs": "1.0.0-alpha.100",
-    "@neo-one/node-neo-settings-es2018-cjs": "1.0.0-alpha.66",
-    "@neo-one/utils-es2018-cjs": "1.0.0-alpha.56",
     "@types/app-root-dir": "^0.1.0",
     "@types/assets-webpack-plugin": "^3.5.1",
     "@types/babel__code-frame": "^7.0.0",
@@ -146,18 +137,8 @@
   },
   "license": "MIT",
   "lint-staged": {
-    "packages/*/src/**/*.js": [
-      "yarn run prettier --write",
-      "git add",
-      "yarn run lint:js"
-    ],
-    "packages/*/src/**/*.{ts,tsx}": [
-      "yarn run prettier --write",
-      "git add",
-      "yarn run test:unit --findRelatedTests --ci",
-      "yarn run test:browser --findRelatedTests --ci",
-      "yarn run lint:ts"
-    ]
+    "packages/*/src/**/*.js": ["yarn run prettier --write", "git add", "yarn run lint:js"],
+    "packages/*/src/**/*.{ts,tsx}": ["yarn run prettier --write", "git add", "yarn run test:unit --findRelatedTests --ci", "yarn run test:browser --findRelatedTests --ci", "yarn run lint:ts"]
   },
   "name": "neotracker",
   "private": true,

@@ -78,7 +78,7 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
   }
 
   public async save(contextIn: Context, monitor: Monitor, { block }: TransactionsSave): Promise<Context> {
-    return monitor.captureSpan(
+    return monitor.captureSpanLog(
       async (span) => {
         const transactionsIn = [...block.transactions.entries()].map(([transactionIndex, transaction]) => ({
           transactionIndex,
@@ -186,7 +186,7 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
 
         return context;
       },
-      { name: 'neotracker_scrape_save_transactions' },
+      { name: 'neotracker_scrape_save_transactions', level: 'verbose', error: {} },
     );
   }
 

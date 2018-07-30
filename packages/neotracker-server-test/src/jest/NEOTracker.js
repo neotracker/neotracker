@@ -41,7 +41,7 @@ class NEOTracker {
 
   createDir() {
     const dir = tmp.dirSync().name;
-    this.addCleanup(async () => {
+    this.addTeardownCleanup(async () => {
       await fs.remove(dir);
     });
 

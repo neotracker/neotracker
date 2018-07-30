@@ -1,4 +1,5 @@
 /* @flow */
+/* eslint-disable */
 import * as React from 'react';
 
 import classNames from 'classnames';
@@ -101,16 +102,14 @@ function Script({
           <div
             className={classNames(classes.firstOpCodesCol, classes.opCodesCol)}
           >
-            {opCodes.map(
-              // eslint-disable-next-line
-              ([value, opCode], idx) => <div key={idx}>{value}</div>,
-            )}
+            {opCodes.map(([value, opCode], idx) => (
+              <div key={idx}>{value}</div>
+            ))}
           </div>
           <div className={classes.opCodesCol}>
-            {opCodes.map(
-              // eslint-disable-next-line
-              ([value, opCode], idx) => <div key={idx}>{opCode}</div>,
-            )}
+            {opCodes.map(([value, opCode], idx) => (
+              <div key={idx}>{opCode}</div>
+            ))}
           </div>
         </div>
       );

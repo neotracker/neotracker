@@ -13,7 +13,7 @@ export interface PrevBlockRevert {
 
 export class PrevBlockUpdater extends SameContextDBUpdater<PrevBlockUpdate, PrevBlockRevert> {
   public async save(context: Context, monitor: Monitor, { block }: PrevBlockUpdate): Promise<void> {
-    return monitor.captureSpan(
+    return monitor.captureSpanLog(
       async (span) => {
         await BlockModel.query(context.db)
           .context(context.makeQueryContext(span))
@@ -23,7 +23,7 @@ export class PrevBlockUpdater extends SameContextDBUpdater<PrevBlockUpdate, Prev
             next_block_hash: block.hash,
           });
       },
-      { name: 'neotracker_scrape_save_prev_block' },
+      { name: 'neotracker_scrape_save_prev_block', level: 'verbose', error: {} },
     );
   }
 

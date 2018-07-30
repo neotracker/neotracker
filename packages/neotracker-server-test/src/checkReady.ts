@@ -28,9 +28,21 @@ export async function checkReady(
   };
   proc.stderr.on('data', stderrListener);
 
+  let exited = proc.killed;
+  const handleExit = () => {
+    exited = true;
+    // tslint:disable-next-line no-console
+    console.log(`${component} exited.`);
+  };
+  proc.on('exit', handleExit);
+
   try {
     await until(
       async () => {
+        if (exited) {
+          return;
+        }
+
         // tslint:disable-next-line no-console
         console.log(`Checking if ${component} is ready...`);
         const response = await fetch(`http://localhost:${port}/${path}`);
@@ -41,10 +53,15 @@ export async function checkReady(
       timeoutMS,
       frequencyMS,
     );
+
+    if (exited) {
+      throw new Error('Exited');
+    }
   } catch (error) {
     throw new Error(`Failed to start ${component}:\nError: ${error.stack}\nstdout: ${stdout}\nstderr:${stderr}`);
   } finally {
     proc.stdout.removeListener('data', stdoutListener);
     proc.stderr.removeListener('data', stderrListener);
+    proc.removeListener('exit', handleExit);
   }
 }

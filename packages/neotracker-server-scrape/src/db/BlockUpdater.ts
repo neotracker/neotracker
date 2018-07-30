@@ -41,7 +41,7 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
   }
 
   public async save(context: Context, monitor: Monitor, block: Block): Promise<Context> {
-    return monitor.captureSpan(
+    return monitor.captureSpanLog(
       async (span) => {
         const [height, prevBlockData] = await Promise.all([
           getCurrentHeight(context, span),
@@ -58,7 +58,8 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
                 ? systemFee
                 : new BigNumber(prevBlockData.aggregated_system_fee).plus(systemFee);
 
-            const [blockModel, innerNextContext] = await Promise.all([
+            const [innerNextContext] = await Promise.all([
+              this.updaters.transactions.save(context, span, { block }),
               BlockModel.insertAndReturn(context.db, context.makeQueryContext(span), {
                 ...prevBlockData,
                 id: block.index,
@@ -90,7 +91,6 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
                 }
                 throw error;
               }),
-              this.updaters.transactions.save(context, span, { block }),
               this.updaters.address.save(context, span, {
                 addresses: [
                   {
@@ -123,8 +123,8 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
               ...innerNextContext,
               prevBlockData: {
                 previous_block_id: block.index,
-                previous_block_hash: blockModel.hash,
-                validator_address_id: blockModel.next_validator_address_id,
+                previous_block_hash: block.hash,
+                validator_address_id: block.nextConsensus,
                 aggregated_system_fee: aggregatedSystemFee.toFixed(8),
               },
               currentHeight: block.index,
@@ -159,7 +159,7 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
 
         return context;
       },
-      { name: 'neotracker_scrape_save_block' },
+      { name: 'neotracker_scrape_save_block', level: 'verbose', error: {} },
     );
   }
 

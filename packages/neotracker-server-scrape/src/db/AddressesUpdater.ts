@@ -14,7 +14,7 @@ export interface AddressesRevert {
 
 export class AddressesUpdater extends SameContextDBUpdater<AddressesSave, AddressesRevert> {
   public async save(context: Context, monitor: Monitor, { addresses }: AddressesSave): Promise<void> {
-    return monitor.captureSpan(
+    return monitor.captureSpanLog(
       async (span) => {
         const existingAddressIDs = await Promise.all(
           _.chunk(addresses, context.chunkSize).map((chunk) =>
@@ -33,7 +33,7 @@ export class AddressesUpdater extends SameContextDBUpdater<AddressesSave, Addres
           ),
         );
       },
-      { name: 'neotracker_scrape_save_addresses' },
+      { name: 'neotracker_scrape_save_addresses', level: 'verbose', error: {} },
     );
   }
 
