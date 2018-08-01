@@ -4,14 +4,25 @@ import * as path from 'path';
 import webpack from 'webpack';
 import { ExplorerConfig } from '../types';
 import { ExplorerConfigPlugin } from './config';
+import { StaticOptions } from './runner';
 
-export const createWebpackConfig = (config: ExplorerConfig): webpack.Configuration => ({
+export const createWebpackConfig = (config: ExplorerConfig, staticOptions?: StaticOptions): webpack.Configuration => ({
   mode: 'development',
-  entry: ['react-dev-utils/webpackHotDevClient', path.resolve(__dirname, '../browser/entry.tsx')],
+  entry:
+    staticOptions === undefined
+      ? ['react-dev-utils/webpackHotDevClient', path.resolve(__dirname, '../browser/entry.tsx')]
+      : [path.resolve(__dirname, '../browser/entry.tsx')],
   resolve: {
     mainFields: ['browser', 'main'],
     aliasFields: ['browser'],
     extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
+  },
+  output: {
+    path: path.resolve(
+      process.cwd(),
+      staticOptions === undefined || staticOptions.outDir === undefined ? '.out' : staticOptions.outDir,
+    ),
+    publicPath: staticOptions === undefined ? undefined : staticOptions.publicPath,
   },
   plugins: [
     new ExplorerConfigPlugin(config),
@@ -36,6 +47,9 @@ export const createWebpackConfig = (config: ExplorerConfig): webpack.Configurati
     }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('development'),
+      'process.env.COMPONENT_EXPLORER_ROUTER': JSON.stringify(
+        staticOptions === undefined ? 'browser' : staticOptions.router,
+      ),
     }),
   ],
   module: {

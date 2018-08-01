@@ -8,7 +8,7 @@ export abstract class Runner {
   protected readonly autoExit: boolean;
   private mutableExiting = false;
 
-  public constructor({ isCI, autoExit = false }: RunnerOptions) {
+  public constructor({ isCI, autoExit = true }: RunnerOptions) {
     this.isCI = isCI;
     this.autoExit = autoExit;
   }
