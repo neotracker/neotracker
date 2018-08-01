@@ -2,8 +2,7 @@
 // @ts-ignore
 import { compiler } from 'markdown-to-jsx';
 import React from 'react';
-// @ts-ignore
-import OpenInNewIcon from 'react-icons/lib/md/open-in-new';
+import { MdOpenInNew as OpenInNew } from 'react-icons/md';
 import { Link as RouterLink } from 'react-router-dom';
 import { Code, Heading, Link, List, Paragraph } from 'reakit';
 import { styled } from '../../theme';
@@ -39,7 +38,7 @@ const Anchor = ({ href, ...props }: any) => {
     return (
       <Link href={href} target="_blank" {...props}>
         {props.children}
-        <OpenInNewIcon />
+        <OpenInNew />
       </Link>
     );
   }

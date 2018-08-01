@@ -125,6 +125,7 @@ export interface ExplorerConfig {
     readonly node: ReadonlyArray<Proxy>;
     readonly browser?: string;
   };
+  readonly dependencies: ReadonlyArray<string>;
 }
 
 /* Loader Results Configuration */

@@ -1,3 +1,4 @@
+import * as fs from 'fs-extra';
 import * as path from 'path';
 
 import { ExplorerConfig } from '../../types';
@@ -43,11 +44,37 @@ const getRelativeProxyPath = ({
   return absolutePath === undefined ? undefined : path.relative(__dirname, absolutePath);
 };
 
+const extractDependencies = (packageFile: string): ReadonlyArray<string> => {
+  const packageObj = fs.readJSONSync(packageFile);
+
+  return Object.keys(packageObj.dependencies);
+};
+
+const findDependencies = ({
+  currentPath,
+  configDir,
+}: {
+  readonly currentPath: string;
+  readonly configDir: string;
+}): ReadonlyArray<string> => {
+  const exists = fs.pathExistsSync(path.join(currentPath, 'package.json'));
+  if (exists) {
+    return extractDependencies(path.join(currentPath, 'package.json'));
+  }
+  if (currentPath === configDir) {
+    return [];
+  }
+
+  return findDependencies({ currentPath: path.resolve(currentPath, '..'), configDir });
+};
+
 const getExplorerConfigInternal = (): ExplorerConfig => {
   const configDir = process.cwd();
   const configPath = path.resolve(configDir, 'explorer.config.js');
   const userConfig = require(configPath);
-
+  const componentsDir =
+    userConfig.componentsDir === undefined ? path.join('src', 'components') : userConfig.componentsDir;
+  const dependencies = findDependencies({ currentPath: path.resolve(configDir, componentsDir), configDir });
   const nodeProxies = getRelativeProxyPath({ configDir, key: 'node', userConfig });
   const browserProxies = getAbsoluteProxyPath({ configDir, key: 'browser', userConfig });
 
@@ -62,7 +89,7 @@ const getExplorerConfigInternal = (): ExplorerConfig => {
           }
         : userConfig.meta,
     editorConfig: userConfig.editorConfig === undefined ? {} : userConfig.editorConfig,
-    componentsDir: userConfig.componentsDir === undefined ? 'src/components' : userConfig.componentsDir,
+    componentsDir,
     tsconfig: userConfig.tsconfig === undefined ? 'tsconfig.json' : userConfig.tsconfig,
     serverPort: userConfig.serverPort === undefined ? 4000 : userConfig.serverPort,
     serverHost: userConfig.serverHost === undefined ? 'localhost' : userConfig.serverHost,
@@ -70,5 +97,6 @@ const getExplorerConfigInternal = (): ExplorerConfig => {
       node: nodeProxies === undefined ? [] : require(nodeProxies),
       browser: browserProxies,
     },
+    dependencies,
   };
 };

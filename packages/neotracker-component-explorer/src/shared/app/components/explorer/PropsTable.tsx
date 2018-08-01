@@ -1,10 +1,7 @@
 // tslint:disable no-submodule-imports
 import _ from 'lodash';
 import * as React from 'react';
-// @ts-ignore
-import ArrowDownIcon from 'react-icons/lib/md/arrow-drop-down';
-// @ts-ignore
-import ArrowUpIcon from 'react-icons/lib/md/arrow-drop-up';
+import { MdArrowDownward as ArrowDownIcon, MdArrowUpward as ArrowUpIcon } from 'react-icons/md';
 import { Block, Button, Code, Heading, Hidden, Table } from 'reakit';
 import { SectionConfig } from '../../../../types';
 import { styled } from '../../theme';

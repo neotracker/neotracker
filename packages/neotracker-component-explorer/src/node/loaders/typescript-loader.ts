@@ -45,13 +45,15 @@ const getSource = async (
   const typescript = await getTypescriptConfig(loader, config, source);
   const allCode = typescript.examples.map((example) => example.code).join('\n');
   const requiresFromExamples = getRequires(allCode);
-  const allRequiresCode = requiresFromExamples.concat(['React']).reduce<{ [key: string]: Require }>(
-    (acc, requireRequest) => ({
-      ...acc,
-      [requireRequest]: createRequire(requireRequest),
-    }),
-    {},
-  );
+  const allRequiresCode = requiresFromExamples
+    .concat([...new Set(config.dependencies.concat(['react']))])
+    .reduce<{ [key: string]: Require }>(
+      (acc, requireRequest) => ({
+        ...acc,
+        [requireRequest]: createRequire(requireRequest),
+      }),
+      { components: createRequire(path.resolve(config.configDir, config.componentsDir)) },
+    );
 
   return `
 if (module.hot) {

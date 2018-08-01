@@ -14,7 +14,7 @@ export const compileComponent = ({
   const { code: compiledCode } = transform(code, { transforms: ['typescript', 'imports', 'jsx'] });
   const { example } = splitExampleCode({ code: compiledCode, exampleTemplate });
 
-  const withReact = `const React = require('React');\n${example}`;
+  const withReact = `const React = require('react');\n${example}`;
 
   return evalInContext(withReact)();
 };
