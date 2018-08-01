@@ -48,7 +48,7 @@ export class ButterflyHandler {
   public async handleGithubWebhook(event: string, payload: any): Promise<ReadonlyArray<Error>> {
     const eventHandlers = this.hooks.github[event];
     const eventActionsHandlers = payload.action === undefined ? [] : this.hooks.github[`${event}.${payload.action}`];
-    const eventStateHandlers = payload.status === undefined ? [] : this.hooks.github[`${event}.${payload.state}`];
+    const eventStateHandlers = payload.state === undefined ? [] : this.hooks.github[`${event}.${payload.state}`];
     const handlers = (eventHandlers === undefined ? [] : eventHandlers)
       .concat(eventActionsHandlers === undefined ? [] : eventActionsHandlers)
       .concat(eventStateHandlers === undefined ? [] : eventStateHandlers);
