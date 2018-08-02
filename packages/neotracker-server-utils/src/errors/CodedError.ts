@@ -9,8 +9,10 @@ export enum ErrorCode {
   INVALID_GRAPHQL_METHOD = 'Something went wrong. Try refreshing the page or going back to where you were.',
   INVALID_GRAPHQL_FIELDS_NULL = 'Something went wrong. Try refreshing the page or going back to where you were.',
   INVALID_GRAPHQL_FIELDS_ARRAY = 'Something went wrong. Try refreshing the page or going back to where you were.',
-  INVALID_CLIENT_COLLECTOR_FIELDS_NULL = 'Something went wrong. Try refreshing the page or going back to where you were.',
-  INVALID_CLIENT_COLLECTOR_FIELDS_OBJECT = 'Something went wrong. Try refreshing the page or going back to where you were.',
+  INVALID_CLIENT_COLLECTOR_FIELDS_NULL = 'Something went wrong. Report received was null or undefined.',
+  INVALID_CLIENT_COLLECTOR_FIELDS_OBJECT = 'Something went wrong. Report received was not a JSON object.',
+  INVALID_DISCORD_ALERTER_FIELDS_NULL = 'Something went wrong. Alert received was null or undefined.',
+  INVALID_DISCORD_ALERTER_FIELDS_OBJECT = 'Something went wrong.  Alert received was not a JSON object.',
   VALIDATION_ERROR = 'Something went wrong. Try refreshing the page or going back to where you were.',
   PERMISSION_DENIED = 'You are not allowed to take that action.',
   BAD_ACME_CHALLENGE_REQUEST = 'Invalid request format.',
@@ -33,6 +35,8 @@ export class CodedError extends ClientError {
   public static readonly INVALID_GRAPHQL_FIELDS_ARRAY = 'INVALID_GRAPHQL_FIELDS_ARRAY';
   public static readonly INVALID_CLIENT_COLLECTOR_FIELDS_NULL = 'INVALID_CLIENT_COLLECTOR_FIELDS_NULL';
   public static readonly INVALID_CLIENT_COLLECTOR_FIELDS_OBJECT = 'INVALID_CLIENT_COLLECTOR_FIELDS_OBJECT';
+  public static readonly INVALID_DISCORD_ALERTER_FIELDS_NULL = 'INVALID_DISCORD_ALERTER_FIELDS_NULL';
+  public static readonly INVALID_DISCORD_ALERTER_FIELDS_OBJECT = 'INVALID_DISCORD_ALERTER_FIELDS_OBJECT';
   public static readonly VALIDATION_ERROR = 'VALIDATION_ERROR';
   public static readonly PERMISSION_DENIED = 'PERMISSION_DENIED';
   public static readonly BAD_ACME_CHALLENGE_REQUEST = 'BAD_ACME_CHALLENGE_REQUEST';
