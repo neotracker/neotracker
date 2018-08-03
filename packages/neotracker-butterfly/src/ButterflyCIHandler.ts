@@ -184,7 +184,7 @@ ${error.stack}
     annotations: ReadonlyArray<CheckAnnotation> = [],
     // tslint:disable-next-line readonly-array
   ): Github.ChecksUpdateParamsOutputAnnotations[] {
-    return annotations.map(this.convertCheckAnnotation);
+    return annotations.map((item) => this.convertCheckAnnotation(item));
   }
 
   private convertCheckAnnotation({
