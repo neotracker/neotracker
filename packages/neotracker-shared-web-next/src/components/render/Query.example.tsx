@@ -49,8 +49,8 @@ export const examples: [PExample<QueryProps<ExampleBlockQuery, ExampleBlockQuery
     // Not really a component, but it's a hacky way to get it into the documentation
     // tslint:disable-next-line no-any
     component: makeQuery as any,
-    element: () => (
-      <BlockQuery variables={{ index: 0 }}>
+    element: (ref) => (
+      <BlockQuery ref={ref} variables={{ index: 0 }}>
         {({ data, error }) => {
           if (data.block != undefined) {
             return (

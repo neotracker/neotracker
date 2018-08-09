@@ -13,7 +13,7 @@ export interface CreateContextOptions<E extends ReactElement, W extends Wrapper,
 export interface Context<E extends ReactElement, W extends Wrapper> {
   readonly mount: () => Promise<void>;
   readonly unmount: () => void;
-  readonly getRef: () => React.Ref<E>;
+  readonly getRef: () => React.RefObject<E>;
   // tslint:disable-next-line no-any
   readonly getFixtureField: (key: string) => any;
   readonly getWrapper: () => W;
@@ -26,8 +26,8 @@ export function createContext<E extends ReactElement, W extends Wrapper, Rendere
   renderer,
   rendererOptions,
 }: CreateContextOptions<E, W, RendererOptions>): Context<E, W> {
-  let ref: React.Ref<E> | undefined;
-  const getRef = (): React.Ref<E> => {
+  let ref: React.RefObject<E> | undefined;
+  const getRef = (): React.RefObject<E> => {
     if (ref === undefined) {
       throw new Error('Component ref is not available yet. Did you call mount()?');
     }

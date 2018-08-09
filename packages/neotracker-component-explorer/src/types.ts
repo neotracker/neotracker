@@ -7,7 +7,7 @@ export type ReactElement = React.ReactElement<any>;
 export type Props<E extends ReactElement> = E extends React.ReactElement<infer P> ? P : never;
 export interface Example<E extends ReactElement = ReactElement> {
   readonly component?: React.ComponentType<any>;
-  readonly element: (ref?: React.Ref<E>) => E;
+  readonly element: (ref?: React.RefObject<any>) => E;
   readonly data?: FixtureData;
 }
 export type CTExample<C extends React.ComponentType<any>> = C extends React.ComponentType<infer P>

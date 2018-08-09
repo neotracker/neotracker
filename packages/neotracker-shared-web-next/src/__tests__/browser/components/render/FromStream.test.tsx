@@ -3,7 +3,7 @@ import { interval, of as _of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { examples } from '../../../../components/render/FromStream.example';
 
-const { mount, getWrapper, setProps } = createTestContext({ example: examples[0] });
+const { mount, getWrapper, setProps, getRef } = createTestContext({ example: examples[0] });
 
 describe('FromStream', () => {
   beforeEach(async () => {
@@ -23,5 +23,11 @@ describe('FromStream', () => {
   test('returns null on no value', () => {
     setProps({ props$: _of() });
     expect(getWrapper().isEmptyRender()).toBeTruthy();
+  });
+
+  test('access ref', () => {
+    const ref = getRef();
+    expect(ref.current).not.toBeNull();
+    expect(ref.current).toBeDefined();
   });
 });
