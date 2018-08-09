@@ -1,0 +1,154 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AssetToTransaction Updater AssetToTransaction Updater: handles duplicate inserts/saves 1`] = `
+Object {
+  "action": Array [],
+  "address": Array [],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [
+    Object {
+      "id1": "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
+      "id2": "123",
+    },
+    Object {
+      "id1": "tttttttttttttttttttttttttttttttttttttttt",
+      "id2": "123",
+    },
+  ],
+  "block": Array [],
+  "coin": Array [],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [],
+}
+`;
+
+exports[`AssetToTransaction Updater AssetToTransaction Updater: handles insert/save 1`] = `
+Object {
+  "action": Array [],
+  "address": Array [],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [
+    Object {
+      "id1": "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
+      "id2": "123",
+    },
+    Object {
+      "id1": "tttttttttttttttttttttttttttttttttttttttt",
+      "id2": "123",
+    },
+  ],
+  "block": Array [],
+  "coin": Array [],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [],
+}
+`;
+
+exports[`AssetToTransaction Updater AssetToTransaction Updater: handles reverting inputs/saves 1`] = `
+Object {
+  "action": Array [],
+  "address": Array [],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [
+    Object {
+      "id1": "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
+      "id2": "123",
+    },
+    Object {
+      "id1": "tttttttttttttttttttttttttttttttttttttttt",
+      "id2": "123",
+    },
+  ],
+  "block": Array [],
+  "coin": Array [],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [],
+}
+`;
+
+exports[`AssetToTransaction Updater AssetToTransaction Updater: handles reverting inputs/saves 2`] = `
+Object {
+  "action": Array [],
+  "address": Array [],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [
+    Object {
+      "id1": "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
+      "id2": "123",
+    },
+    Object {
+      "id1": "tttttttttttttttttttttttttttttttttttttttt",
+      "id2": "123",
+    },
+    Object {
+      "id1": "cccccccccccccccccccccccccccccccccccccccc",
+      "id2": "234",
+    },
+    Object {
+      "id1": "dddddddddddddddddddddddddddddddddddddddd",
+      "id2": "234",
+    },
+  ],
+  "block": Array [],
+  "coin": Array [],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [],
+}
+`;
+
+exports[`AssetToTransaction Updater AssetToTransaction Updater: handles reverting inputs/saves 3`] = `
+Object {
+  "action": Array [],
+  "address": Array [],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [
+    Object {
+      "id1": "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
+      "id2": "123",
+    },
+    Object {
+      "id1": "tttttttttttttttttttttttttttttttttttttttt",
+      "id2": "123",
+    },
+  ],
+  "block": Array [],
+  "coin": Array [],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [],
+}
+`;

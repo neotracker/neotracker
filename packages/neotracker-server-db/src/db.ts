@@ -97,11 +97,13 @@ const numPendingCreatesGauge = metrics.createGauge({
 export const create = ({
   options,
   monitor: monitorIn,
+  useNullAsDefault = options.client === 'sqlite3',
 }: {
   readonly options: Knex.Config;
   readonly monitor: Monitor;
+  readonly useNullAsDefault?: boolean;
 }): Knex => {
-  const db = Knex(options);
+  const db = Knex({ ...options, useNullAsDefault });
   let destroyed = false;
   const originalDestroy = db.destroy.bind(db);
   const { connection = {} } = options;

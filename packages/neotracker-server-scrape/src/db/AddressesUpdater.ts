@@ -51,8 +51,8 @@ export class AddressesUpdater extends SameContextDBUpdater<AddressesSave, Addres
         const addressToTransactionID = _.fromPairs(addresses.map(({ id, transactionID }) => [id, transactionID]));
         const toDelete = addressModels.filter(
           (address) =>
-            (address.transaction_id === undefined && address.block_id === blockIndex) ||
-            (address.transaction_id !== undefined && address.transaction_id === addressToTransactionID[address.id]),
+            (address.transaction_id == undefined && address.block_id === blockIndex) ||
+            (address.transaction_id != undefined && address.transaction_id === addressToTransactionID[address.id]),
         );
 
         await Promise.all(

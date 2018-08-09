@@ -5,6 +5,7 @@ import { Check, CheckAnnotation, CheckResult } from '../ButterflyCIHandler';
 export interface JestOptions {
   readonly name: string;
   readonly config: string;
+  readonly workers?: number;
 }
 
 interface JestData {
@@ -63,7 +64,7 @@ interface JestSnapshot {
 
 const resultWithFailures = (result: JestData) => !result.success && result.testResults.length > 0;
 
-export const jest = ({ name, config }: JestOptions): Check => ({
+export const jest = ({ name, config, workers = 2 }: JestOptions): Check => ({
   name,
   run: async (butterfly): Promise<CheckResult> => {
     const resultFile = await butterfly.tmp.fileName();
@@ -71,7 +72,7 @@ export const jest = ({ name, config }: JestOptions): Check => ({
       '-c',
       config,
       '-w',
-      '2',
+      workers.toString(),
       '--outputFile',
       resultFile,
       '--json',

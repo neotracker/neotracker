@@ -65,10 +65,10 @@ module.exports = function({ browser }) {
       'packages/neotracker-shared-test/src/**/*.ts?(x)',
     ];
     const commonNegatedFiles = [
-      '!packages/*/src/**/__tests__/browser/**/*',
-      '!packages/*/src/**/__tests__/unit/**/*',
-      '!packages/*/src/**/__tests__/e2e/**/*',
-      '!packages/*/src/**/__tests__/e2e-internal/**/*',
+      '!packages/*/src/**/__tests__/browser/**/*.test.ts',
+      '!packages/*/src/**/__tests__/unit/**/*.test.ts',
+      '!packages/*/src/**/__tests__/e2e/**/*.test.ts',
+      '!packages/*/src/**/__tests__/e2e-internal/**/*.test.ts',
     ];
     const unitNegatedFiles = ['!packages/*/src/**/*.examples.ts?(x)'];
     const browserNegatedFiles = [];

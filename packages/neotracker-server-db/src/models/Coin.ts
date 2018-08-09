@@ -1,6 +1,6 @@
 // tslint:disable variable-name
 import Knex from 'knex';
-import { Constructor, Model, ModelOptions, Pojo } from 'objection';
+import { Constructor, Model, ModelOptions, Pojo, QueryContext as ObjectionQueryContext } from 'objection';
 import { isPostgres } from '../knexUtils';
 import { EdgeSchema, FieldSchema, IndexSchema, QueryContext } from '../lib';
 import { BlockchainModel } from './BlockchainModel';
@@ -150,4 +150,17 @@ export class Coin extends BlockchainModel<string> {
   public readonly asset_id!: string;
   public readonly value!: string;
   public readonly block_id!: number;
+
+  public async $afterGet(context: ObjectionQueryContext): Promise<void> {
+    await super.$afterGet(context);
+
+    // tslint:disable no-object-mutation
+    // @ts-ignore
+    this.id = convertJSON(this.id);
+    // @ts-ignore
+    this.value = convertJSON(this.value);
+    // @ts-ignore
+    this.block_id = convertJSON(this.block_id);
+    // tslint:enable no-object-mutation
+  }
 }

@@ -1,0 +1,190 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Transfers Updater Transfers Updater: handles duplicate inserts/saves 1`] = `
+Object {
+  "action": Array [],
+  "address": Array [],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [],
+  "block": Array [],
+  "coin": Array [],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [
+    Object {
+      "action_index": 0,
+      "asset_id": "hashhashhashhashhashhashhashhashhashhash",
+      "block_id": 10,
+      "block_time": 15,
+      "contract_id": "hashhashhashhashhashhashhashhashhashhash",
+      "from_address_id": "APyEx5f4Zm4oCHwFWiSTaph1fPBxZacYVR",
+      "id": "11111111",
+      "to_address_id": "RIPEx5f4Zm4oCHwFWiSTaph1fPBxZacGVX",
+      "transaction_hash": "c6c9cd5cacfaa18921cb0869945fbdeda2d0308f3a7458f7a1c9528c06150cf5",
+      "transaction_id": "1111111111111111",
+      "transaction_index": 15,
+      "value": "3",
+    },
+  ],
+}
+`;
+
+exports[`Transfers Updater Transfers Updater: handles insert/save 1`] = `
+Object {
+  "action": Array [],
+  "address": Array [],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [],
+  "block": Array [],
+  "coin": Array [],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [
+    Object {
+      "action_index": 0,
+      "asset_id": "hashhashhashhashhashhashhashhashhashhash",
+      "block_id": 10,
+      "block_time": 15,
+      "contract_id": "hashhashhashhashhashhashhashhashhashhash",
+      "from_address_id": "APyEx5f4Zm4oCHwFWiSTaph1fPBxZacYVR",
+      "id": "11111111",
+      "to_address_id": "RIPEx5f4Zm4oCHwFWiSTaph1fPBxZacGVX",
+      "transaction_hash": "c6c9cd5cacfaa18921cb0869945fbdeda2d0308f3a7458f7a1c9528c06150cf5",
+      "transaction_id": "1111111111111111",
+      "transaction_index": 15,
+      "value": "3",
+    },
+  ],
+}
+`;
+
+exports[`Transfers Updater Transfers Updater: handles reverting inputs/saves 1`] = `
+Object {
+  "action": Array [],
+  "address": Array [],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [],
+  "block": Array [],
+  "coin": Array [],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [
+    Object {
+      "action_index": 0,
+      "asset_id": "hashhashhashhashhashhashhashhashhashhash",
+      "block_id": 10,
+      "block_time": 15,
+      "contract_id": "hashhashhashhashhashhashhashhashhashhash",
+      "from_address_id": "APyEx5f4Zm4oCHwFWiSTaph1fPBxZacYVR",
+      "id": "11111111",
+      "to_address_id": "RIPEx5f4Zm4oCHwFWiSTaph1fPBxZacGVX",
+      "transaction_hash": "c6c9cd5cacfaa18921cb0869945fbdeda2d0308f3a7458f7a1c9528c06150cf5",
+      "transaction_id": "1111111111111111",
+      "transaction_index": 15,
+      "value": "3",
+    },
+  ],
+}
+`;
+
+exports[`Transfers Updater Transfers Updater: handles reverting inputs/saves 2`] = `
+Object {
+  "action": Array [],
+  "address": Array [],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [],
+  "block": Array [],
+  "coin": Array [],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [
+    Object {
+      "action_index": 0,
+      "asset_id": "hashhashhashhashhashhashhashhashhashhash",
+      "block_id": 10,
+      "block_time": 15,
+      "contract_id": "hashhashhashhashhashhashhashhashhashhash",
+      "from_address_id": "APyEx5f4Zm4oCHwFWiSTaph1fPBxZacYVR",
+      "id": "11111111",
+      "to_address_id": "RIPEx5f4Zm4oCHwFWiSTaph1fPBxZacGVX",
+      "transaction_hash": "c6c9cd5cacfaa18921cb0869945fbdeda2d0308f3a7458f7a1c9528c06150cf5",
+      "transaction_id": "1111111111111111",
+      "transaction_index": 15,
+      "value": "3",
+    },
+    Object {
+      "action_index": 0,
+      "asset_id": "hashhashhashhashhashhashhashhashhashhash",
+      "block_id": 10,
+      "block_time": 15,
+      "contract_id": "hashhashhashhashhashhashhashhashhashhash",
+      "from_address_id": "APyEx5f4Zm4oCHwFWiSTaph1fPBxZacYVR",
+      "id": "22222222",
+      "to_address_id": "RIPEx5f4Zm4oCHwFWiSTaph1fPBxZacGVX",
+      "transaction_hash": "c6c9cd5cacfaa18921cb0869945fbdeda2d0308f3a7458f7a1c9528c06150cf5",
+      "transaction_id": "1111111111111111",
+      "transaction_index": 15,
+      "value": "4",
+    },
+  ],
+}
+`;
+
+exports[`Transfers Updater Transfers Updater: handles reverting inputs/saves 3`] = `
+Object {
+  "action": Array [],
+  "address": Array [],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [],
+  "block": Array [],
+  "coin": Array [],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [
+    Object {
+      "action_index": 0,
+      "asset_id": "hashhashhashhashhashhashhashhashhashhash",
+      "block_id": 10,
+      "block_time": 15,
+      "contract_id": "hashhashhashhashhashhashhashhashhashhash",
+      "from_address_id": "APyEx5f4Zm4oCHwFWiSTaph1fPBxZacYVR",
+      "id": "11111111",
+      "to_address_id": "RIPEx5f4Zm4oCHwFWiSTaph1fPBxZacGVX",
+      "transaction_hash": "c6c9cd5cacfaa18921cb0869945fbdeda2d0308f3a7458f7a1c9528c06150cf5",
+      "transaction_id": "1111111111111111",
+      "transaction_index": 15,
+      "value": "3",
+    },
+  ],
+}
+`;

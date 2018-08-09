@@ -206,7 +206,6 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
           transactions,
           blockIndex: blockModel.id,
         });
-
         const transactionIDs = transactions.map(({ transactionModel }) => transactionModel.id);
         const contractIDs = _.flatMap(transactions, ({ contracts }) => contracts.map(({ id }) => id));
         await Promise.all([
@@ -249,24 +248,18 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
             references: _.flatMap(transactions.map(({ inputs }) => inputs)),
           }),
           this.updaters.outputs.revert(context, span, {
-            outputs: _.flatMap(transactions.map(({ outputs }) => outputs)),
-          }),
-          this.updaters.transfers
-            .revert(context, span, {
-              transferIDs: _.flatMap(transactions, ({ actionDatas }) =>
-                actionDatas
-                  .map(({ action, transfer }) => (transfer === undefined ? undefined : action.id))
-                  .filter(utils.notNull),
-              ),
-            })
-            .then(async () =>
-              this.updaters.assetToTransaction.save(context, span, {
-                transactions: transactions.map(({ assetIDs, transactionID }) => ({
-                  assetIDs,
-                  transactionID,
-                })),
-              }),
+            outputIDs: transactions.reduce(
+              (acc: ReadonlyArray<string>, transaction) => acc.concat(transaction.outputs.map((output) => output.id)),
+              [],
             ),
+          }),
+          this.updaters.transfers.revert(context, span, {
+            transferIDs: _.flatMap(transactions, ({ actionDatas }) =>
+              actionDatas
+                .map(({ action, transfer }) => (transfer === undefined ? undefined : action.id))
+                .filter(utils.notNull),
+            ),
+          }),
         ]);
 
         await Promise.all([
@@ -283,7 +276,6 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
             transactionIDs,
           }),
         ]);
-
         await Promise.all(
           _.chunk(transactions, context.chunkSize).map((chunk) =>
             TransactionModel.query(context.db)

@@ -91,9 +91,11 @@ export const getDBData = async (db: Knex): Promise<DBData> => {
   ] = await Promise.all([
     Action.query(db)
       .context(makeQueryContext(db))
+      .orderBy('id')
       .then((result) => result.map((value) => value.toJSON())),
     Address.query(db)
       .context(makeQueryContext(db))
+      .orderBy('id')
       .then((result) => result.map((value) => value.toJSON())),
     AddressToTransaction.query(db)
       .context(makeQueryContext(db))
@@ -103,36 +105,46 @@ export const getDBData = async (db: Knex): Promise<DBData> => {
       .then((result) => result.map((value) => value.toJSON())),
     Asset.query(db)
       .context(makeQueryContext(db))
+      .orderBy('id')
       .then((result) => result.map((value) => value.toJSON())),
     AssetToTransaction.query(db)
       .context(makeQueryContext(db))
       .then((result) => result.map((value) => value.toJSON())),
     Block.query(db)
       .context(makeQueryContext(db))
+      .orderBy('id')
       .then((result) => result.map((value) => value.toJSON())),
     Coin.query(db)
       .context(makeQueryContext(db))
+      .orderBy('id')
       .then((result) => result.map((value) => value.toJSON())),
     Contract.query(db)
       .context(makeQueryContext(db))
+      .orderBy('id')
       .then((result) => result.map((value) => value.toJSON())),
     DataPoint.query(db)
       .context(makeQueryContext(db))
+      .orderBy('id')
       .then((result) => result.map((value) => value.toJSON())),
     Migration.query(db)
       .context(makeQueryContext(db))
+      .orderBy('id')
       .then((result) => result.map((value) => value.toJSON())),
     ProcessedIndex.query(db)
       .context(makeQueryContext(db))
+      .orderBy('id')
       .then((result) => result.map((value) => value.toJSON())),
     Transaction.query(db)
       .context(makeQueryContext(db))
+      .orderBy('id')
       .then((result) => result.map((value) => value.toJSON())),
     TransactionInputOutput.query(db)
       .context(makeQueryContext(db))
+      .orderBy('id')
       .then((result) => result.map((value) => value.toJSON())),
     Transfer.query(db)
       .context(makeQueryContext(db))
+      .orderBy('id')
       .then((result) => result.map((value) => value.toJSON())),
   ]);
 

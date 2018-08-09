@@ -1,7 +1,7 @@
 // tslint:disable variable-name no-useless-cast
 import { GAS_ASSET_ID } from '@neotracker/shared-utils';
 import Knex from 'knex';
-import { Constructor, Model, ModelOptions, Pojo } from 'objection';
+import { Constructor, Model, ModelOptions, Pojo, QueryContext as ObjectionQueryContext } from 'objection';
 import { EdgeSchema, FieldSchema, IndexSchema, QueryContext } from '../lib';
 import { calculateAddressClaimValue } from '../utils';
 import { BlockchainModel } from './BlockchainModel';
@@ -229,4 +229,21 @@ export class Address extends BlockchainModel<string> {
   public readonly last_transaction_id!: string | null | undefined;
   public readonly last_transaction_time!: number | null | undefined;
   public readonly last_transaction_hash!: string | null | undefined;
+
+  public async $afterGet(context: ObjectionQueryContext): Promise<void> {
+    await super.$afterGet(context);
+
+    // tslint:disable no-object-mutation
+    // @ts-ignore
+    this.id = convertJSON(this.id);
+    // @ts-ignore
+    this.transaction_id = convertJSON(this.transaction_id);
+    // @ts-ignore
+    this.transaction_count = convertJSON(this.transaction_count);
+    // @ts-ignore
+    this.transfer_count = convertJSON(this.transfer_count);
+    // @ts-ignore
+    this.last_transaction_id = convertJSON(this.last_transaction_id);
+    // tslint:enable no-object-mutation
+  }
 }

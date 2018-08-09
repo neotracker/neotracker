@@ -1,6 +1,6 @@
 // tslint:disable variable-name
 import Knex from 'knex';
-import { Constructor, ModelOptions, Pojo } from 'objection';
+import { Constructor, ModelOptions, Pojo, QueryContext as ObjectionQueryContext } from 'objection';
 import { BaseEdge, BaseModel, QueryContext } from '../lib';
 import { convertJSON } from './convertJSON';
 
@@ -35,5 +35,13 @@ export class AddressToTransaction extends BaseEdge<string, string> {
       opt,
       // tslint:disable-next-line no-any
     ) as any;
+  }
+  public async $afterGet(context: ObjectionQueryContext): Promise<void> {
+    await super.$afterGet(context);
+
+    // tslint:disable no-object-mutation
+    // @ts-ignore
+    this.id2 = convertJSON(this.id2);
+    // tslint:enable no-object-mutation
   }
 }

@@ -11,7 +11,7 @@ export interface OutputsSave {
   readonly transactions: ReadonlyArray<OutputsSaveSingle>;
 }
 export interface OutputsRevert {
-  readonly outputs: ReadonlyArray<TransactionInputOutputModel>;
+  readonly outputIDs: ReadonlyArray<string>;
 }
 
 export class OutputsUpdater extends SameContextDBUpdater<OutputsSave, OutputsRevert> {
@@ -30,14 +30,14 @@ export class OutputsUpdater extends SameContextDBUpdater<OutputsSave, OutputsRev
     );
   }
 
-  public async revert(context: Context, monitor: Monitor, { outputs }: OutputsRevert): Promise<void> {
+  public async revert(context: Context, monitor: Monitor, { outputIDs }: OutputsRevert): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
         await Promise.all(
-          _.chunk(outputs, context.chunkSize).map(async (chunk) => {
+          _.chunk(outputIDs, context.chunkSize).map(async (chunk) => {
             await TransactionInputOutputModel.query(context.db)
               .context(context.makeQueryContext(span))
-              .whereIn('id', chunk.map((output) => output.id))
+              .whereIn('id', chunk)
               .delete();
           }),
         );

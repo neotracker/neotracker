@@ -29,7 +29,6 @@ export class ClaimsUpdater extends SameContextDBUpdater<ClaimsSave, ClaimsRevert
       { name: 'neotracker_scrape_save_claims', level: 'verbose', error: {} },
     );
   }
-
   public async revert(context: Context, monitor: Monitor, { claims }: ClaimsRevert): Promise<void> {
     return monitor.captureSpan(
       async (span) => {
@@ -38,7 +37,6 @@ export class ClaimsUpdater extends SameContextDBUpdater<ClaimsSave, ClaimsRevert
       { name: 'neotracker_scrape_revert_claims' },
     );
   }
-
   private async updateClaims(
     context: Context,
     monitor: Monitor,
@@ -52,8 +50,10 @@ export class ClaimsUpdater extends SameContextDBUpdater<ClaimsSave, ClaimsRevert
           .context(context.makeQueryContext(monitor))
           .whereIn('id', chunk.map((claim) => claim.id))
           .patch({
-            claim_transaction_id: transactionID,
-            claim_transaction_hash: transactionHash,
+            // tslint:disable-next-line no-null-keyword
+            claim_transaction_id: transactionID === undefined ? null : transactionID,
+            // tslint:disable-next-line no-null-keyword
+            claim_transaction_hash: transactionHash === undefined ? null : transactionHash,
           });
       }),
     );

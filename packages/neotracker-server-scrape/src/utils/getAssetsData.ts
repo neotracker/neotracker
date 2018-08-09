@@ -149,7 +149,6 @@ export const getAssetsData = async ({
 
         return undefined;
       }
-
       if ((negated && blockIndex === coinModel.block_id) || (!negated && blockIndex > coinModel.block_id)) {
         const newValue = negated
           ? new BigNumber(coinModel.value).minus(value)

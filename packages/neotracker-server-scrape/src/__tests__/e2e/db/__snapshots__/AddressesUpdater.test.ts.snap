@@ -1,0 +1,184 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Addresses Updater Addresses Updater: handles duplicate inserts/saves 1`] = `
+Object {
+  "action": Array [],
+  "address": Array [
+    Object {
+      "aggregate_block_id": 9,
+      "block_id": 10,
+      "block_time": 15,
+      "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "last_transaction_hash": null,
+      "last_transaction_id": null,
+      "last_transaction_time": null,
+      "transaction_count": "10",
+      "transaction_hash": null,
+      "transaction_id": "1234123412341234",
+      "transfer_count": "20",
+    },
+  ],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [],
+  "block": Array [],
+  "coin": Array [],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [],
+}
+`;
+
+exports[`Addresses Updater Addresses Updater: handles insert/save 1`] = `
+Object {
+  "action": Array [],
+  "address": Array [
+    Object {
+      "aggregate_block_id": 9,
+      "block_id": 10,
+      "block_time": 15,
+      "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "last_transaction_hash": null,
+      "last_transaction_id": null,
+      "last_transaction_time": null,
+      "transaction_count": "10",
+      "transaction_hash": null,
+      "transaction_id": "1234123412341234",
+      "transfer_count": "20",
+    },
+  ],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [],
+  "block": Array [],
+  "coin": Array [],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [],
+}
+`;
+
+exports[`Addresses Updater Addresses Updater: handles reverting inputs/saves 1`] = `
+Object {
+  "action": Array [],
+  "address": Array [
+    Object {
+      "aggregate_block_id": 9,
+      "block_id": 10,
+      "block_time": 15,
+      "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "last_transaction_hash": null,
+      "last_transaction_id": null,
+      "last_transaction_time": null,
+      "transaction_count": "10",
+      "transaction_hash": null,
+      "transaction_id": "1234123412341234",
+      "transfer_count": "20",
+    },
+  ],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [],
+  "block": Array [],
+  "coin": Array [],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [],
+}
+`;
+
+exports[`Addresses Updater Addresses Updater: handles reverting inputs/saves 2`] = `
+Object {
+  "action": Array [],
+  "address": Array [
+    Object {
+      "aggregate_block_id": 9,
+      "block_id": 10,
+      "block_time": 15,
+      "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "last_transaction_hash": null,
+      "last_transaction_id": null,
+      "last_transaction_time": null,
+      "transaction_count": "10",
+      "transaction_hash": null,
+      "transaction_id": "1234123412341234",
+      "transfer_count": "20",
+    },
+    Object {
+      "aggregate_block_id": 10,
+      "block_id": 11,
+      "block_time": 15,
+      "id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "last_transaction_hash": null,
+      "last_transaction_id": null,
+      "last_transaction_time": null,
+      "transaction_count": "10",
+      "transaction_hash": null,
+      "transaction_id": "2345234523452345",
+      "transfer_count": "20",
+    },
+  ],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [],
+  "block": Array [],
+  "coin": Array [],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [],
+}
+`;
+
+exports[`Addresses Updater Addresses Updater: handles reverting inputs/saves 3`] = `
+Object {
+  "action": Array [],
+  "address": Array [
+    Object {
+      "aggregate_block_id": 9,
+      "block_id": 10,
+      "block_time": 15,
+      "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "last_transaction_hash": null,
+      "last_transaction_id": null,
+      "last_transaction_time": null,
+      "transaction_count": "10",
+      "transaction_hash": null,
+      "transaction_id": "1234123412341234",
+      "transfer_count": "20",
+    },
+  ],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [],
+  "block": Array [],
+  "coin": Array [],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [],
+}
+`;

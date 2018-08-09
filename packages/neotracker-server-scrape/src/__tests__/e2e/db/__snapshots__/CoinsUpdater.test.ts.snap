@@ -1,0 +1,183 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Coins Updater Coins Updater: handles duplicate inserts/saves 1`] = `
+Object {
+  "action": Array [],
+  "address": Array [],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [],
+  "block": Array [],
+  "coin": Array [
+    Object {
+      "address_id": "APyEx5f4Zm4oCHwFWiSTaph1fAAAAAAAAA",
+      "asset_id": "g95k2ovja9toglc9e42c8eb9tghid43ew3ry804eaf1a0b4kfob049OOOOOOOOO",
+      "block_id": "1",
+      "id": "11111111",
+      "value": "2",
+    },
+    Object {
+      "address_id": "APyEx5f4Zm4oCHwFWiSTaph1fAAAAAAAAA",
+      "asset_id": "7f48028c38117ac9e42c8e1f6f06ae027345678901234567830c9d81694e045c",
+      "block_id": "1",
+      "id": "22222222",
+      "value": "1",
+    },
+  ],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [],
+}
+`;
+
+exports[`Coins Updater Coins Updater: handles insert/save 1`] = `
+Object {
+  "action": Array [],
+  "address": Array [],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [],
+  "block": Array [],
+  "coin": Array [
+    Object {
+      "address_id": "APyEx5f4Zm4oCHwFWiSTaph1fAAAAAAAAA",
+      "asset_id": "g95k2ovja9toglc9e42c8eb9tghid43ew3ry804eaf1a0b4kfob049OOOOOOOOO",
+      "block_id": "1",
+      "id": "11111111",
+      "value": "2",
+    },
+    Object {
+      "address_id": "APyEx5f4Zm4oCHwFWiSTaph1fAAAAAAAAA",
+      "asset_id": "7f48028c38117ac9e42c8e1f6f06ae027345678901234567830c9d81694e045c",
+      "block_id": "1",
+      "id": "22222222",
+      "value": "1",
+    },
+  ],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [],
+}
+`;
+
+exports[`Coins Updater Coins Updater: handles reverting inputs/saves 1`] = `
+Object {
+  "action": Array [],
+  "address": Array [],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [],
+  "block": Array [],
+  "coin": Array [
+    Object {
+      "address_id": "APyEx5f4Zm4oCHwFWiSTaph1fAAAAAAAAA",
+      "asset_id": "g95k2ovja9toglc9e42c8eb9tghid43ew3ry804eaf1a0b4kfob049OOOOOOOOO",
+      "block_id": "1",
+      "id": "11111111",
+      "value": "2",
+    },
+    Object {
+      "address_id": "APyEx5f4Zm4oCHwFWiSTaph1fAAAAAAAAA",
+      "asset_id": "7f48028c38117ac9e42c8e1f6f06ae027345678901234567830c9d81694e045c",
+      "block_id": "1",
+      "id": "22222222",
+      "value": "1",
+    },
+  ],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [],
+}
+`;
+
+exports[`Coins Updater Coins Updater: handles reverting inputs/saves 2`] = `
+Object {
+  "action": Array [],
+  "address": Array [],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [],
+  "block": Array [],
+  "coin": Array [
+    Object {
+      "address_id": "APyEx5f4Zm4oCHwFWiSTaph1fAAAAAAAAA",
+      "asset_id": "g95k2ovja9toglc9e42c8eb9tghid43ew3ry804eaf1a0b4kfob049OOOOOOOOO",
+      "block_id": "1",
+      "id": "11111111",
+      "value": "2",
+    },
+    Object {
+      "address_id": "APyEx5f4Zm4oCHwFWiSTaph1fAAAAAAAAA",
+      "asset_id": "7f48028c38117ac9e42c8e1f6f06ae027345678901234567830c9d81694e045c",
+      "block_id": "1",
+      "id": "22222222",
+      "value": "1",
+    },
+    Object {
+      "address_id": "APyEx5f4Zm4oCHwFWiSTaph1fBBBBBBBBB",
+      "asset_id": "7f48028c38117ac9e42c8e1f6f06ae027345678901234567830c9d81694e045c",
+      "block_id": "2",
+      "id": "33333333",
+      "value": "1",
+    },
+  ],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [],
+}
+`;
+
+exports[`Coins Updater Coins Updater: handles reverting inputs/saves 3`] = `
+Object {
+  "action": Array [],
+  "address": Array [],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [],
+  "block": Array [],
+  "coin": Array [
+    Object {
+      "address_id": "APyEx5f4Zm4oCHwFWiSTaph1fAAAAAAAAA",
+      "asset_id": "g95k2ovja9toglc9e42c8eb9tghid43ew3ry804eaf1a0b4kfob049OOOOOOOOO",
+      "block_id": "1",
+      "id": "11111111",
+      "value": "2",
+    },
+    Object {
+      "address_id": "APyEx5f4Zm4oCHwFWiSTaph1fAAAAAAAAA",
+      "asset_id": "7f48028c38117ac9e42c8e1f6f06ae027345678901234567830c9d81694e045c",
+      "block_id": "1",
+      "id": "22222222",
+      "value": "1",
+    },
+  ],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [],
+}
+`;

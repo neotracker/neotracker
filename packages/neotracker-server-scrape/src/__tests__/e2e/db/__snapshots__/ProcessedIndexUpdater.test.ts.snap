@@ -1,0 +1,130 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Processed Index Updater Processed Index Updater: handles duplicate inserts/saves 1`] = `
+Object {
+  "action": Array [],
+  "address": Array [],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [],
+  "block": Array [],
+  "coin": Array [],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [
+    Object {
+      "id": 1,
+      "index": 10,
+    },
+  ],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [],
+}
+`;
+
+exports[`Processed Index Updater Processed Index Updater: handles insert/save 1`] = `
+Object {
+  "action": Array [],
+  "address": Array [],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [],
+  "block": Array [],
+  "coin": Array [],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [
+    Object {
+      "id": 1,
+      "index": 10,
+    },
+  ],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [],
+}
+`;
+
+exports[`Processed Index Updater Processed Index Updater: handles reverting inputs/saves 1`] = `
+Object {
+  "action": Array [],
+  "address": Array [],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [],
+  "block": Array [],
+  "coin": Array [],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [
+    Object {
+      "id": 1,
+      "index": 10,
+    },
+  ],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [],
+}
+`;
+
+exports[`Processed Index Updater Processed Index Updater: handles reverting inputs/saves 2`] = `
+Object {
+  "action": Array [],
+  "address": Array [],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [],
+  "block": Array [],
+  "coin": Array [],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [
+    Object {
+      "id": 1,
+      "index": 10,
+    },
+    Object {
+      "id": 2,
+      "index": 11,
+    },
+  ],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [],
+}
+`;
+
+exports[`Processed Index Updater Processed Index Updater: handles reverting inputs/saves 3`] = `
+Object {
+  "action": Array [],
+  "address": Array [],
+  "addressToTransaction": Array [],
+  "addressToTransfer": Array [],
+  "asset": Array [],
+  "assetToTransaction": Array [],
+  "block": Array [],
+  "coin": Array [],
+  "contract": Array [],
+  "dataPoint": Array [],
+  "migration": Array [],
+  "processedIndex": Array [
+    Object {
+      "id": 1,
+      "index": 10,
+    },
+  ],
+  "transaction": Array [],
+  "transactionInputOutput": Array [],
+  "transfer": Array [],
+}
+`;

@@ -39,12 +39,12 @@ export class AssetToTransactionUpdater extends SameContextDBUpdater<AssetToTrans
     return monitor.captureSpan(
       async (span) => {
         await Promise.all(
-          _.chunk(transactionIDs, context.chunkSize).map(async (chunk) => {
-            await AssetToTransactionModel.query(context.db)
+          _.chunk(transactionIDs, context.chunkSize).map((chunk) =>
+            AssetToTransactionModel.query(context.db)
               .context(context.makeQueryContext(span))
               .delete()
-              .whereIn('id2', chunk);
-          }),
+              .whereIn('id2', chunk),
+          ),
         );
       },
       { name: 'neotracker_scrape_revert_asset_to_transaction' },
