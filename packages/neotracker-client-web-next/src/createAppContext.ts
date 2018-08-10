@@ -61,9 +61,7 @@ export const createAppContext = ({
     refCount(),
   );
 
-  const provider = new NEOONEProvider({
-    options: [{ network, rpcURL: options.rpcURL }],
-  });
+  const provider = new NEOONEProvider([{ network, rpcURL: options.rpcURL }]);
 
   const storage = localforage.createInstance({
     name: 'neotracker',

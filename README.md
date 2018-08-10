@@ -14,7 +14,7 @@ The following instructions for how to setup your development environment for NEO
 ### Requirements
 
  - [Postgres 10.3](https://www.postgresql.org/download/)
- - [Node 10.6.0](https://github.com/creationix/nvm)
+ - [Node 10.8.0](https://github.com/creationix/nvm)
  - [NEO•ONE](https://neo-one.io/)
 
 ### Setup Postgres

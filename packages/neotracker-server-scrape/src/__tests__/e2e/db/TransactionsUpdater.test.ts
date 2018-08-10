@@ -1,4 +1,4 @@
-import { ConfirmedTransaction, Output, UnspentOutput } from '@neo-one/client';
+import { ConfirmedTransaction, Input, Output } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
 import { Block, TransactionInputOutput, TYPE_INPUT } from '@neotracker/server-db';
 import BigNumber from 'bignumber.js';
@@ -6,6 +6,8 @@ import Knex from 'knex';
 import { TransactionsRevert, TransactionsSave, TransactionsUpdater } from '../../../db/TransactionsUpdater';
 import { data, makeContext } from '../../data';
 import { updaterUnitTest, UpdaterUtilTestOptions } from '../../data/updaterTestUtil';
+
+interface UnspentOutput extends Output, Input {}
 
 const vinOptionsInit: ReadonlyArray<UnspentOutput> = [
   data.createUnspentOutput(

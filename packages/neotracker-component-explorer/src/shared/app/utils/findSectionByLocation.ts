@@ -17,7 +17,8 @@ export const findSectionByLocation = (
     return undefined;
   }
 
-  return slugs.slice(1).reduce((acc: SectionConfig | undefined, slug) => {
+  // tslint:disable-next-line
+  return slugs.slice(1).reduce((acc: SectionConfig | undefined, slug: string) => {
     if (acc === undefined) {
       return undefined;
     }

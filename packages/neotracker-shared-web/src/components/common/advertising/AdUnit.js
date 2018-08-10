@@ -1,5 +1,5 @@
 /* @flow */
-import { type HOC, compose, pure } from 'recompose';
+import { type HOC, compose } from 'recompose';
 import * as React from 'react';
 
 import type { AppOptions } from '../../../AppContext';
@@ -25,9 +25,6 @@ function AdUnit({ appOptions, children, className }: Props): ?React.Element<*> {
   return null;
 }
 
-const enhance: HOC<*, *> = compose(
-  mapAppOptions,
-  pure,
-);
+const enhance: HOC<*, *> = compose(mapAppOptions);
 
 export default (enhance(AdUnit): React.ComponentType<ExternalProps>);
