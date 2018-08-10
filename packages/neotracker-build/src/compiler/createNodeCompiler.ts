@@ -54,7 +54,10 @@ export const createNodeCompiler = ({
     ],
     plugins: [
       new webpack.BannerPlugin({
-        banner: "require('source-map-support').install({ handleUncaughtExceptions: false, environment: 'node' });",
+        banner: `require('source-map-support').install({ handleUncaughtExceptions: false, environment: 'node' });
+const { defaultMetrics, metrics } = require('@neo-one/monitor');
+metrics.setFactory(defaultMetrics);
+`,
         raw: true,
         entryOnly: true,
       }),
