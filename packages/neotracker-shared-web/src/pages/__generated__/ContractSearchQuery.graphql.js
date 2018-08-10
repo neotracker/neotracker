@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 1657a079d05b99c4a68ebe833cb3a5f2
+ * @relayHash 8b2dcc43cb7aba179af165cfa8f08adc
  */
 
 /* eslint-disable */
@@ -26,6 +26,10 @@ export type ContractSearchQueryResponse = {|
       +hasNextPage: boolean,
     |},
   |}
+|};
+export type ContractSearchQuery = {|
+  variables: ContractSearchQueryVariables,
+  response: ContractSearchQueryResponse,
 |};
 */
 

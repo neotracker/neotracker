@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 358c52fa45edaafefced895c13ed7652
+ * @relayHash 046870c1d2dfcaafc52cb3a102f05682
  */
 
 /* eslint-disable */
@@ -25,6 +25,10 @@ export type AssetSearchQueryResponse = {|
       +hasNextPage: boolean
     |},
   |}
+|};
+export type AssetSearchQuery = {|
+  variables: AssetSearchQueryVariables,
+  response: AssetSearchQueryResponse,
 |};
 */
 

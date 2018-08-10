@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash b916da3f7e5cbce9cf1edfd5e6d88159
+ * @relayHash cbb0f5be6c637956a6c275528ae36364
  */
 
 /* eslint-disable */
@@ -29,6 +29,10 @@ export type SearchQueryResponse = {|
   +transaction: ?{|
     +hash: string
   |},
+|};
+export type SearchQuery = {|
+  variables: SearchQueryVariables,
+  response: SearchQueryResponse,
 |};
 */
 

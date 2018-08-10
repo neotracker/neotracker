@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 21d71b3e42bf7bf4ddf0657a776135cf
+ * @relayHash 6e45f7c26fc5e69a32f847ecc7eea3f9
  */
 
 /* eslint-disable */
@@ -25,6 +25,10 @@ export type BlockSearchQueryResponse = {|
       +hasNextPage: boolean
     |},
   |}
+|};
+export type BlockSearchQuery = {|
+  variables: BlockSearchQueryVariables,
+  response: BlockSearchQueryResponse,
 |};
 */
 

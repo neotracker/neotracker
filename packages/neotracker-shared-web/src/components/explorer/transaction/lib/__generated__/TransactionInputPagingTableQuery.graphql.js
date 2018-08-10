@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 0342f998add5e60d13dbc4dd42080ca0
+ * @relayHash d7585436aeb3a02b036f171933aa5010
  */
 
 /* eslint-disable */
@@ -29,6 +29,10 @@ export type TransactionInputPagingTableQueryResponse = {|
       |},
     |}
   |}
+|};
+export type TransactionInputPagingTableQuery = {|
+  variables: TransactionInputPagingTableQueryVariables,
+  response: TransactionInputPagingTableQueryResponse,
 |};
 */
 

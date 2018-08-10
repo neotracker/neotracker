@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash b674cc453c5ca4264b19abd976907301
+ * @relayHash 31aed2e02aadc88f552025c8a46bdd4f
  */
 
 /* eslint-disable */
@@ -17,6 +17,10 @@ export type MainSelectCardQueryResponse = {|
   +address: ?{|
     +$fragmentRefs: SelectCard_address$ref
   |}
+|};
+export type MainSelectCardQuery = {|
+  variables: MainSelectCardQueryVariables,
+  response: MainSelectCardQueryResponse,
 |};
 */
 

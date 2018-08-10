@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash f8a1322de0a73b690f2ddf6f7c1cbdbe
+ * @relayHash 97269c8deb63adc1b21e2acf8446fd2a
  */
 
 /* eslint-disable */
@@ -18,6 +18,10 @@ export type ContractQueryResponse = {|
     +name: string,
     +$fragmentRefs: ContractView_contract$ref,
   |}
+|};
+export type ContractQuery = {|
+  variables: ContractQueryVariables,
+  response: ContractQueryResponse,
 |};
 */
 

@@ -1,11 +1,7 @@
 {
   "name": "@neotracker/client-web",
   "version": "0.0.1-alpha.0",
-  "keywords": [
-    "neo",
-    "blockchain",
-    "neotracker"
-  ],
+  "keywords": ["neo", "blockchain", "neotracker"],
   "description": "NEO Tracker client.",
   "repository": "https://github.com/neotracker/neotracker",
   "bugs": "https://github.com/neotracker/neotracker/issues",
@@ -36,5 +32,5 @@
     "tracekit": "^0.4.5",
     "whatwg-fetch": "^2.0.4"
   },
-  "sideEffects": false
+  "sideEffects": ["./src/init.ts"]
 }

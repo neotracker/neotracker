@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash a70bb752d6208a40357394ce26758f23
+ * @relayHash 19eba039c46d8cbafd5e030d2c4041fb
  */
 
 /* eslint-disable */
@@ -39,6 +39,10 @@ export type AddressSearchQueryResponse = {|
       +hasNextPage: boolean
     |},
   |}
+|};
+export type AddressSearchQuery = {|
+  variables: AddressSearchQueryVariables,
+  response: AddressSearchQueryResponse,
 |};
 */
 

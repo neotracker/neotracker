@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 8ed033bb41b5b583b68d20e9f0e0e55a
+ * @relayHash 4826a79cfc3f3c297db30cf0c1a13fd8
  */
 
 /* eslint-disable */
@@ -18,6 +18,10 @@ export type TransactionSummaryBodyFooterQueryResponse = {|
   +transaction: ?{|
     +$fragmentRefs: TransactionSummaryBody_transaction$ref & TransactionSummaryFooter_transaction$ref
   |}
+|};
+export type TransactionSummaryBodyFooterQuery = {|
+  variables: TransactionSummaryBodyFooterQueryVariables,
+  response: TransactionSummaryBodyFooterQueryResponse,
 |};
 */
 

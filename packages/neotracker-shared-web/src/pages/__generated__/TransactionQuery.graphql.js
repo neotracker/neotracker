@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash ce68ce7f65994c436a0e04f4abfcb9ff
+ * @relayHash 19155547aa9218ac0d865b228a39ea5e
  */
 
 /* eslint-disable */
@@ -18,6 +18,10 @@ export type TransactionQueryResponse = {|
     +hash: string,
     +$fragmentRefs: TransactionView_transaction$ref,
   |}
+|};
+export type TransactionQuery = {|
+  variables: TransactionQueryVariables,
+  response: TransactionQueryResponse,
 |};
 */
 

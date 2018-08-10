@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 5391679e27cfa01488934fab4b10a1a6
+ * @relayHash 4ed773723f88abd1dd3d07c750d411ae
  */
 
 /* eslint-disable */
@@ -19,6 +19,10 @@ export type AssetQueryResponse = {|
     +symbol: string,
     +$fragmentRefs: AssetView_asset$ref,
   |}
+|};
+export type AssetQuery = {|
+  variables: AssetQueryVariables,
+  response: AssetQueryResponse,
 |};
 */
 

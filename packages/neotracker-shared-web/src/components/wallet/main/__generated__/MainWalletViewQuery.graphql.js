@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash dbe8c28c515f58f8d28fe908f0349961
+ * @relayHash 7d64d178e13264e9b127cd74346eb943
  */
 
 /* eslint-disable */
@@ -20,6 +20,10 @@ export type MainWalletViewQueryResponse = {|
   +address: ?{|
     +$fragmentRefs: SelectCard_address$ref & TransferCard_address$ref & WalletTransactionsCard_address$ref & WalletTransfersCard_address$ref
   |}
+|};
+export type MainWalletViewQuery = {|
+  variables: MainWalletViewQueryVariables,
+  response: MainWalletViewQueryResponse,
 |};
 */
 

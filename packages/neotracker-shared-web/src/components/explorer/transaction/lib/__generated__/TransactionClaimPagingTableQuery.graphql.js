@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 70f9b593c21e2ac838a15f9595afff1e
+ * @relayHash ec26773bd95c04fe2c4c9629324b9566
  */
 
 /* eslint-disable */
@@ -29,6 +29,10 @@ export type TransactionClaimPagingTableQueryResponse = {|
       |},
     |}
   |}
+|};
+export type TransactionClaimPagingTableQuery = {|
+  variables: TransactionClaimPagingTableQueryVariables,
+  response: TransactionClaimPagingTableQueryResponse,
 |};
 */
 

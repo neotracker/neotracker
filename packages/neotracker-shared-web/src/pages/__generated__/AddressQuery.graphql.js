@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash c52c4c1ce151ebd9782c70deab086c0a
+ * @relayHash 043f2cbd787bf187a571b2d1c3155dac
  */
 
 /* eslint-disable */
@@ -17,6 +17,10 @@ export type AddressQueryResponse = {|
   +address: ?{|
     +$fragmentRefs: AddressView_address$ref
   |}
+|};
+export type AddressQuery = {|
+  variables: AddressQueryVariables,
+  response: AddressQueryResponse,
 |};
 */
 

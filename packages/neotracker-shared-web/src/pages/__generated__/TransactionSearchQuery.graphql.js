@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 60eec265434c4a92501ae422e93a84e6
+ * @relayHash e45d916864a4046f54256bf4c0a0a050
  */
 
 /* eslint-disable */
@@ -26,6 +26,10 @@ export type TransactionSearchQueryResponse = {|
       +hasNextPage: boolean,
     |},
   |}
+|};
+export type TransactionSearchQuery = {|
+  variables: TransactionSearchQueryVariables,
+  response: TransactionSearchQueryResponse,
 |};
 */
 

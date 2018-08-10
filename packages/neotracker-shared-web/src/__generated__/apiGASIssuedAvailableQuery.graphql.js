@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash c6aba515d930bf4f4c0527c145860212
+ * @relayHash cbf77dc48e377e567e8eb9aa65d327f7
  */
 
 /* eslint-disable */
@@ -15,6 +15,10 @@ export type apiGASIssuedAvailableQueryResponse = {|
     +issued: string,
     +available: string,
   |}
+|};
+export type apiGASIssuedAvailableQuery = {|
+  variables: apiGASIssuedAvailableQueryVariables,
+  response: apiGASIssuedAvailableQueryResponse,
 |};
 */
 

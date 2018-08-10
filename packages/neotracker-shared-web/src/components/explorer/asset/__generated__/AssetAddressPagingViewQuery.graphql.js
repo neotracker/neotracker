@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 761fe20c39db29fab99189ab0844a4d7
+ * @relayHash 599df0f01562eeab9790a23512ab489d
  */
 
 /* eslint-disable */
@@ -37,6 +37,10 @@ export type AssetAddressPagingViewQueryResponse = {|
       |},
     |},
   |}
+|};
+export type AssetAddressPagingViewQuery = {|
+  variables: AssetAddressPagingViewQueryVariables,
+  response: AssetAddressPagingViewQueryResponse,
 |};
 */
 
@@ -192,7 +196,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "AssetAddressPagingViewQuery",
-  "id": "36",
+  "id": "48",
   "text": null,
   "metadata": {},
   "fragment": {

@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 5f55f81d610ab68c269778020db6aac5
+ * @relayHash 8183a8da3d06b2401500a2fa97bde4fe
  */
 
 /* eslint-disable */
@@ -39,6 +39,10 @@ export type HomeQueryResponse = {|
   +neo_current_price: ?{|
     +$fragmentRefs: MarketCard_neo_current_price$ref
   |},
+|};
+export type HomeQuery = {|
+  variables: HomeQueryVariables,
+  response: HomeQueryResponse,
 |};
 */
 

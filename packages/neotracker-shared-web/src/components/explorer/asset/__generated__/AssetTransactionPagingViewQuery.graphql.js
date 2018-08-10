@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash a3af2563310836101500a5079dad4b04
+ * @relayHash e972d1a6ba25216577b24c2ab3cd4032
  */
 
 /* eslint-disable */
@@ -30,6 +30,10 @@ export type AssetTransactionPagingViewQueryResponse = {|
       |},
     |},
   |}
+|};
+export type AssetTransactionPagingViewQuery = {|
+  variables: AssetTransactionPagingViewQueryVariables,
+  response: AssetTransactionPagingViewQueryResponse,
 |};
 */
 

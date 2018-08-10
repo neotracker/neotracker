@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash df6802cd192b8eb3b98c572eda5939dd
+ * @relayHash 05fb7ffff170f1d7139db808d62732d2
  */
 
 /* eslint-disable */
@@ -12,6 +12,10 @@ import type { ConcreteRequest } from 'relay-runtime';
 export type createAppContextAppOptionsQueryVariables = {||};
 export type createAppContextAppOptionsQueryResponse = {|
   +app_options: string
+|};
+export type createAppContextAppOptionsQuery = {|
+  variables: createAppContextAppOptionsQueryVariables,
+  response: createAppContextAppOptionsQueryResponse,
 |};
 */
 

@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 7e4e90764554f9abfe0bf93ced43f7af
+ * @relayHash aee7c4e2b0e93f729f323e9344eec079
  */
 
 /* eslint-disable */
@@ -30,6 +30,10 @@ export type AddressTransferPagingViewQueryResponse = {|
       |},
     |},
   |}
+|};
+export type AddressTransferPagingViewQuery = {|
+  variables: AddressTransferPagingViewQueryVariables,
+  response: AddressTransferPagingViewQueryResponse,
 |};
 */
 

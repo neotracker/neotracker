@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash a380bae4960fa6e1a9d7fbdf7d817501
+ * @relayHash 3c5652f7a8e19f2a4ea71f30cc00a83e
  */
 
 /* eslint-disable */
@@ -19,6 +19,10 @@ export type BlockQueryResponse = {|
     +id: string,
     +$fragmentRefs: BlockView_block$ref,
   |}
+|};
+export type BlockQuery = {|
+  variables: BlockQueryVariables,
+  response: BlockQueryResponse,
 |};
 */
 

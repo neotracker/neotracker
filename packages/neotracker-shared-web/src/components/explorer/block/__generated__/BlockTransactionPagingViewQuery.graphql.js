@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 0003c36e9d1846316fa372f0b70d770b
+ * @relayHash 7de87744533c3fe5a8c85c159b566aab
  */
 
 /* eslint-disable */
@@ -29,6 +29,10 @@ export type BlockTransactionPagingViewQueryResponse = {|
       |},
     |}
   |}
+|};
+export type BlockTransactionPagingViewQuery = {|
+  variables: BlockTransactionPagingViewQueryVariables,
+  response: BlockTransactionPagingViewQueryResponse,
 |};
 */
 
