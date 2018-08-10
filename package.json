@@ -1,8 +1,5 @@
 {
-  "browserslist": [
-    "> 0.1%",
-    "not ie <= 10"
-  ],
+  "browserslist": ["> 0.1%", "not ie <= 10"],
   "bugs": "https://github.com/neotracker/neotracker/issues",
   "description": "NEO Tracker",
   "devDependencies": {
@@ -13,7 +10,7 @@
     "@babel/preset-env": "7.0.0-rc.1",
     "@babel/preset-react": "7.0.0-rc.1",
     "@cypress/webpack-preprocessor": "2.0.1",
-    "@neo-one/cli": "1.0.0-alpha.109",
+    "@neo-one/cli": "1.0.0-alpha.110",
     "@types/app-root-dir": "0.1.0",
     "@types/assets-webpack-plugin": "3.5.1",
     "@types/babel__code-frame": "7.0.0",
@@ -74,7 +71,7 @@
     "@types/webpack-node-externals": "1.6.3",
     "@types/ws": "5.1.2",
     "@types/yargs": "11.1.1",
-    "apollo": "1.6.0",
+    "apollo": "1.7.0",
     "app-root-dir": "1.0.2",
     "awesome-typescript-loader": "5.2.0",
     "babel-core": "7.0.0-bridge.0",
@@ -98,7 +95,7 @@
     "fs-extra": "7.0.0",
     "graphql": "0.13.2",
     "husky": "1.0.0-rc.13",
-    "jest": "23.4.2",
+    "jest": "23.5.0",
     "jest-junit": "5.1.0",
     "lerna": "3.0.1",
     "lint-staged": "7.2.0",
@@ -140,18 +137,8 @@
   },
   "license": "MIT",
   "lint-staged": {
-    "packages/*/src/**/*.js": [
-      "yarn run prettier --write",
-      "git add",
-      "yarn run lint:js"
-    ],
-    "packages/*/src/**/*.{ts,tsx}": [
-      "yarn run prettier --write",
-      "git add",
-      "yarn run test:unit --findRelatedTests --ci",
-      "yarn run test:browser --findRelatedTests --ci",
-      "yarn run lint:ts"
-    ]
+    "packages/*/src/**/*.js": ["yarn run prettier --write", "git add", "yarn run lint:js"],
+    "packages/*/src/**/*.{ts,tsx}": ["yarn run prettier --write", "git add", "yarn run test:unit --findRelatedTests --ci", "yarn run test:browser --findRelatedTests --ci", "yarn run lint:ts"]
   },
   "name": "neotracker",
   "private": true,
@@ -175,7 +162,7 @@
     "develop": "yarn run ts-node ./packages/neotracker-build/src/develop.ts",
     "flow": "flow",
     "generate-gql-types": "apollo codegen:generate __generated__ --addTypename --schema=./packages/neotracker-server-graphql/src/__generated__/schema.graphql.json --target=typescript --queries='./packages/*/src/**/*.{ts,tsx}'",
-    "jest": "jest --passWithNoTest",
+    "jest": "jest --passWithNoTests",
     "jest:ci": "yarn run jest --ci -w 2",
     "lint": "yarn run lint:ts && yarn run lint:js:all && yarn run lint:css",
     "lint-staged": "lint-staged",
