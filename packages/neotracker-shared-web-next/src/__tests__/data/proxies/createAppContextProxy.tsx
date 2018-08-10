@@ -159,5 +159,6 @@ export const createAppContextProxy = ({ mocks: defaultMocksIn }: AppContextProxy
     }
   }
 
-  return AppContextProxy;
+  // tslint:disable-next-line no-any
+  return AppContextProxy as any;
 };
