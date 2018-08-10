@@ -12,7 +12,7 @@ Object {
     Object {
       "aggregated_system_fee": "0.00000000",
       "hash": "6d5382f73b890eed53d6c9ba45584f22d8ebb2cddb7525ab83ae167ff7703941",
-      "id": "1",
+      "id": 1,
       "invocation_script": "0xecc6b20d3ccac1ee9ef109af5a7cdb85706b1df9",
       "merkle_root": "7f48028c38117ac9e42c8e1f6f06ae027cdbb904eaf1a0bdc30c9d81694e045c",
       "network_fee": "0.00000000",
@@ -33,7 +33,7 @@ Object {
     Object {
       "aggregated_system_fee": "0.00000000",
       "hash": "6d5382f73b890eed53d6c9ba45584f22d8ebb2cddb7525ab83ae167ff7703941",
-      "id": "2",
+      "id": 2,
       "invocation_script": "0xecc6b20d3ccac1ee9ef109af5a7cdb85706b1df9",
       "merkle_root": "7f48028c38117ac9e42c8e1f6f06ae027cdbb904eaf1a0bdc30c9d81694e045c",
       "network_fee": "0.00000000",
@@ -75,7 +75,7 @@ Object {
     Object {
       "aggregated_system_fee": "0.00000000",
       "hash": "6d5382f73b890eed53d6c9ba45584f22d8ebb2cddb7525ab83ae167ff7703941",
-      "id": "1",
+      "id": 1,
       "invocation_script": "0xecc6b20d3ccac1ee9ef109af5a7cdb85706b1df9",
       "merkle_root": "7f48028c38117ac9e42c8e1f6f06ae027cdbb904eaf1a0bdc30c9d81694e045c",
       "network_fee": "0.00000000",
@@ -96,7 +96,7 @@ Object {
     Object {
       "aggregated_system_fee": "0.00000000",
       "hash": "6d5382f73b890eed53d6c9ba45584f22d8ebb2cddb7525ab83ae167ff7703941",
-      "id": "2",
+      "id": 2,
       "invocation_script": "0xecc6b20d3ccac1ee9ef109af5a7cdb85706b1df9",
       "merkle_root": "7f48028c38117ac9e42c8e1f6f06ae027cdbb904eaf1a0bdc30c9d81694e045c",
       "network_fee": "0.00000000",
@@ -138,7 +138,7 @@ Object {
     Object {
       "aggregated_system_fee": "0.00000000",
       "hash": "6d5382f73b890eed53d6c9ba45584f22d8ebb2cddb7525ab83ae167ff7703941",
-      "id": "1",
+      "id": 1,
       "invocation_script": "0xecc6b20d3ccac1ee9ef109af5a7cdb85706b1df9",
       "merkle_root": "7f48028c38117ac9e42c8e1f6f06ae027cdbb904eaf1a0bdc30c9d81694e045c",
       "network_fee": "0.00000000",
@@ -159,7 +159,7 @@ Object {
     Object {
       "aggregated_system_fee": "0.00000000",
       "hash": "6d5382f73b890eed53d6c9ba45584f22d8ebb2cddb7525ab83ae167ff7703941",
-      "id": "2",
+      "id": 2,
       "invocation_script": "0xecc6b20d3ccac1ee9ef109af5a7cdb85706b1df9",
       "merkle_root": "7f48028c38117ac9e42c8e1f6f06ae027cdbb904eaf1a0bdc30c9d81694e045c",
       "network_fee": "0.00000000",
@@ -201,7 +201,7 @@ Object {
     Object {
       "aggregated_system_fee": "0.00000000",
       "hash": "6d5382f73b890eed53d6c9ba45584f22d8ebb2cddb7525ab83ae167ff7703941",
-      "id": "1",
+      "id": 1,
       "invocation_script": "0xecc6b20d3ccac1ee9ef109af5a7cdb85706b1df9",
       "merkle_root": "7f48028c38117ac9e42c8e1f6f06ae027cdbb904eaf1a0bdc30c9d81694e045c",
       "network_fee": "0.00000000",
@@ -222,7 +222,7 @@ Object {
     Object {
       "aggregated_system_fee": "0.00000000",
       "hash": "6d5382f73b890eed53d6c9ba45584f22d8ebb2cddb7525ab83ae167ff7703941",
-      "id": "2",
+      "id": 2,
       "invocation_script": "0xecc6b20d3ccac1ee9ef109af5a7cdb85706b1df9",
       "merkle_root": "7f48028c38117ac9e42c8e1f6f06ae027cdbb904eaf1a0bdc30c9d81694e045c",
       "network_fee": "0.00000000",
@@ -264,7 +264,7 @@ Object {
     Object {
       "aggregated_system_fee": "0.00000000",
       "hash": "6d5382f73b890eed53d6c9ba45584f22d8ebb2cddb7525ab83ae167ff7703941",
-      "id": "1",
+      "id": 1,
       "invocation_script": "0xecc6b20d3ccac1ee9ef109af5a7cdb85706b1df9",
       "merkle_root": "7f48028c38117ac9e42c8e1f6f06ae027cdbb904eaf1a0bdc30c9d81694e045c",
       "network_fee": "0.00000000",
@@ -285,7 +285,7 @@ Object {
     Object {
       "aggregated_system_fee": "0.00000000",
       "hash": "6d5382f73b890eed53d6c9ba45584f22d8ebb2cddb7525ab83ae167ff7703941",
-      "id": "2",
+      "id": 2,
       "invocation_script": "0xecc6b20d3ccac1ee9ef109af5a7cdb85706b1df9",
       "merkle_root": "7f48028c38117ac9e42c8e1f6f06ae027cdbb904eaf1a0bdc30c9d81694e045c",
       "network_fee": "0.00000000",

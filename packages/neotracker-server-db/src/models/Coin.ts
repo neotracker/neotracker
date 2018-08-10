@@ -156,11 +156,7 @@ export class Coin extends BlockchainModel<string> {
 
     // tslint:disable no-object-mutation
     // @ts-ignore
-    this.id = convertJSON(this.id);
-    // @ts-ignore
     this.value = convertJSON(this.value);
-    // @ts-ignore
-    this.block_id = convertJSON(this.block_id);
     // tslint:enable no-object-mutation
   }
 }

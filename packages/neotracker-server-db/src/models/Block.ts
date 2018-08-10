@@ -291,8 +291,6 @@ export class Block extends BlockchainModel<number> {
 
     // tslint:disable no-object-mutation
     // @ts-ignore
-    this.id = convertJSON(this.id);
-    // @ts-ignore
     this.system_fee = Number(this.system_fee).toFixed(8);
     // @ts-ignore
     this.network_fee = Number(this.network_fee).toFixed(8);

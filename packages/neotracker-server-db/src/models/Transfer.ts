@@ -253,6 +253,7 @@ export class Transfer extends BlockchainModel<string> {
     return super.fromJson(
       {
         ...json,
+        id: convertJSON(json.id),
         transaction_id: convertJSON(json.transaction_id),
         value: convertJSON(json.value),
       },

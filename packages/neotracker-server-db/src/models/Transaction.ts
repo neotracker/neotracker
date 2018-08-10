@@ -406,8 +406,6 @@ export class Transaction extends BlockchainModel<string> {
     // @ts-ignore
     this.id = convertJSON(this.id);
     // @ts-ignore
-    this.index = convertJSON(this.index);
-    // @ts-ignore
     this.system_fee = Number(this.system_fee).toFixed(8);
     // @ts-ignore
     this.network_fee = Number(this.network_fee).toFixed(8);

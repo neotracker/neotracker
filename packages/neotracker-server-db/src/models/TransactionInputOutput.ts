@@ -368,8 +368,6 @@ export class TransactionInputOutput extends BlockchainModel<string> {
 
     // tslint:disable no-object-mutation
     // @ts-ignore
-    this.id = convertJSON(this.id);
-    // @ts-ignore
     this.input_transaction_id = convertJSON(this.input_transaction_id);
     // @ts-ignore
     this.claim_transaction_id = convertJSON(this.claim_transaction_id);

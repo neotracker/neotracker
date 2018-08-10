@@ -200,8 +200,6 @@ export class Contract extends BlockchainModel<string> {
 
     // tslint:disable no-object-mutation
     // @ts-ignore
-    this.id = convertJSON(this.id);
-    // @ts-ignore
     this.transaction_id = convertJSON(this.transaction_id);
     // @ts-ignore
     // tslint:disable-next-line no-redundant-boolean
