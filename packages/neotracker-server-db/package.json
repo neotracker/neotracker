@@ -1,11 +1,7 @@
 {
   "name": "@neotracker/server-db",
   "version": "0.0.1-alpha.0",
-  "keywords": [
-    "neo",
-    "blockchain",
-    "neotracker"
-  ],
+  "keywords": ["neo", "blockchain", "neotracker"],
   "description": "NEO Tracker db definitions.",
   "repository": "https://github.com/neotracker/neotracker",
   "bugs": "https://github.com/neotracker/neotracker/issues",
@@ -27,7 +23,6 @@
     "lru-cache": "^4.1.1",
     "objection": "^1.2.2",
     "pg": "^7.4.1",
-    "pg-pubsub": "^0.4.0",
     "rxjs": "^6.2.2",
     "sql-summary": "^1.0.1"
   },
