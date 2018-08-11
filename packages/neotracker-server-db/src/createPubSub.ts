@@ -57,6 +57,9 @@ const createPGPubSub = <T>({
       },
     },
   );
+  pgpubsub.on('error', (error: Error) => {
+    monitor.logError({ name: 'pg_pubsub_event_error', error });
+  });
 
   const value$ = Observable.create((observer: Observer<T>) => {
     const listener = (payload: T) => {
