@@ -37,7 +37,7 @@ export const createClientCompilerNext = ({
       index: path.resolve(appRootDir.get(), './packages/neotracker-client-web-next/src/entry.ts'),
     },
     output: {
-      path: configuration.clientBundlePathNext,
+      path: path.resolve(appRootDir.get(), configuration.clientBundlePathNext),
       filename: `${filename}.js`,
       chunkFilename: `${filename}.js`,
       libraryTarget: 'var',
