@@ -1,8 +1,7 @@
-import * as appRootDir from 'app-root-dir';
 import * as path from 'path';
 
 // tslint:disable-next-line readonly-array
-const getPkgPath = (pkg: string, ...paths: string[]) => path.resolve(appRootDir.get(), 'dist', pkg, ...paths);
+const getPkgPath = (pkg: string, ...paths: string[]) => path.join('dist', pkg, ...paths);
 
 export const configuration = {
   clientBundlePath: getPkgPath('neotracker-client-web'),
