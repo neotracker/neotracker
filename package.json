@@ -137,8 +137,10 @@
   },
   "license": "MIT",
   "lint-staged": {
-    "packages/*/src/**/*.js": ["yarn run prettier --write", "git add", "yarn run lint:js"],
-    "packages/*/src/**/*.{ts,tsx}": ["yarn run prettier --write", "git add", "yarn run test:unit --findRelatedTests --ci", "yarn run test:browser --findRelatedTests --ci", "yarn run lint:ts"]
+    "linters": {
+      "packages/*/src/**/*.js": ["yarn run prettier --write", "git add", "yarn run lint:js"],
+      "packages/*/src/**/*.{ts,tsx}": ["yarn run prettier --write", "git add", "yarn run test:unit --findRelatedTests --ci", "yarn run test:browser --findRelatedTests --ci", "yarn run lint:ts"]
+    }
   },
   "name": "neotracker",
   "private": true,

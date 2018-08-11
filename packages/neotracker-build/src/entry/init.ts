@@ -2,8 +2,9 @@
 import 'cross-fetch/polyfill';
 import 'css.escape';
 import { setObservableConfig } from 'recompose';
-import { from } from 'rxjs';
+import { Observable } from 'rxjs';
 
 setObservableConfig({
-  fromESObservable: from,
+  // tslint:disable-next-line no-any
+  fromESObservable: (obs$) => new Observable<any>((subscriber) => obs$.subscribe(subscriber)),
 });

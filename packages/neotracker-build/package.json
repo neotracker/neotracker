@@ -1,7 +1,11 @@
 {
   "name": "@neotracker/build",
   "version": "0.0.1-alpha.0",
-  "keywords": ["neo", "blockchain", "neotracker"],
+  "keywords": [
+    "neo",
+    "blockchain",
+    "neotracker"
+  ],
   "description": "NEO Tracker build utilities.",
   "repository": "https://github.com/neotracker/neotracker",
   "bugs": "https://github.com/neotracker/neotracker/issues",
@@ -58,7 +62,7 @@
     "lodash-webpack-plugin": "^0.11.5",
     "persistgraphql": "^0.3.11",
     "react-loadable": "^5.5.0",
-    "recompose": "^0.27.1",
+    "recompose": "^0.28.2",
     "relay-compiler": "^1.6.0",
     "rxjs": "^6.2.2",
     "safe-stable-stringify": "^1.0.1",
@@ -69,5 +73,7 @@
     "webpack-node-externals": "^1.7.2",
     "yargs": "^12.0.1"
   },
-  "sideEffects": ["./src/entry/init.ts"]
+  "sideEffects": [
+    "./src/entry/init.ts"
+  ]
 }
