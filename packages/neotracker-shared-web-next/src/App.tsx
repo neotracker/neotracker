@@ -3,6 +3,7 @@ import LoadableExport, { LoadableComponent } from 'react-loadable';
 import { Route, RouteComponentProps, Switch } from 'react-router';
 import { AppContext } from './AppContext';
 import { AppShell } from './AppShell';
+import * as metrics from './metrics';
 import * as routes from './routes';
 
 interface RouteConfig {
@@ -56,17 +57,26 @@ const ROUTE_CONFIGS_WITH_RENDER = ROUTE_CONFIGS.map((config) => ({
 export interface ExternalProps {
   readonly appContext: AppContext;
 }
-export const App = ({ appContext }: ExternalProps) => (
-  <AppShell appContext={appContext}>
-    <Switch>
-      {ROUTE_CONFIGS_WITH_RENDER.map((config) => (
-        <Route
-          key={config.path === undefined ? 'nopath' : config.path}
-          exact={config.exact}
-          path={config.path}
-          render={config.render}
-        />
-      ))}
-    </Switch>
-  </AppShell>
-);
+
+export class App extends React.Component<ExternalProps> {
+  public render() {
+    return (
+      <AppShell appContext={this.props.appContext}>
+        <Switch>
+          {ROUTE_CONFIGS_WITH_RENDER.map((config) => (
+            <Route
+              key={config.path === undefined ? 'nopath' : config.path}
+              exact={config.exact}
+              path={config.path}
+              render={config.render}
+            />
+          ))}
+        </Switch>
+      </AppShell>
+    );
+  }
+
+  public componentDidMount() {
+    metrics.NEOTRACKER_SESSION.inc();
+  }
+}
