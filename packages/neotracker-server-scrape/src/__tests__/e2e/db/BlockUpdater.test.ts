@@ -40,7 +40,8 @@ describe(`Block Updater`, () => {
   let context: Context;
 
   beforeAll(async () => {
-    database = await startDB();
+    const databaseConfig = await startDB();
+    database = databaseConfig.database;
   });
 
   beforeEach(async () => {

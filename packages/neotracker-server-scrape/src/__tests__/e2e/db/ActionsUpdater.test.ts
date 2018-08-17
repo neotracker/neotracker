@@ -23,7 +23,8 @@ describe('ActionsUpdater', () => {
   let db: Knex;
 
   beforeAll(async () => {
-    database = await startDB();
+    const databaseConfig = await startDB();
+    database = databaseConfig.database;
     db = database.knex;
   });
 

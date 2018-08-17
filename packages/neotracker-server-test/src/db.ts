@@ -29,20 +29,28 @@ export interface Database {
   readonly reset: () => Promise<void>;
 }
 
-export const startDB = async (): Promise<Database> => {
+export interface DatabaseConfig {
+  readonly database: Database;
+  readonly metricsPort: number;
+}
+
+export const startDB = async (): Promise<DatabaseConfig> => {
   const options = await neotracker.startDB();
 
-  const db = create({ options, monitor: getMonitor() });
+  const db = create({ options: options.db, monitor: getMonitor() });
   addTeardownCleanup(async () => {
     await db.destroy();
   });
 
   return {
-    knex: db,
-    reset: async () => {
-      await dropTables(db, getMonitor(), true);
-      await createTables(db, getMonitor());
+    database: {
+      knex: db,
+      reset: async () => {
+        await dropTables(db, getMonitor(), true);
+        await createTables(db, getMonitor());
+      },
     },
+    metricsPort: options.metricsPort,
   };
 };
 

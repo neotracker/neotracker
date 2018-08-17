@@ -33,7 +33,8 @@ export const updaterUnitTest = <Save, Revert, References>(args: UpdaterUtilTestO
     let context: Context;
 
     beforeAll(async () => {
-      database = await startDB();
+      const databaseConfig = await startDB();
+      database = databaseConfig.database;
     });
 
     beforeEach(async () => {

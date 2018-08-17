@@ -9,9 +9,11 @@ class NEOTracker {
 
   async startDB() {
     return {
-      client: 'sqlite3',
-      connection: {
-        filename: ':memory:',
+      db: {
+        client: 'sqlite3',
+        connection: {
+          filename: ':memory:',
+        },
       },
     };
   }
