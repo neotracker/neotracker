@@ -7,9 +7,9 @@ export interface LoaderOptions extends ProxyChildrenProps {
 }
 export function Loader({ proxies, ...firstProps }: LoaderOptions) {
   if (proxies.length === 0) {
-    const { fixture, props } = firstProps;
+    const { element, props } = firstProps;
 
-    return cloneElement(fixture.element, props);
+    return cloneElement(element, props);
   }
 
   function nextProxy(props: ProxyChildrenProps, toIndex: number): ReactElement {

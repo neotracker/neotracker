@@ -65,8 +65,7 @@ export const createAppContextProxy = ({ mocks: defaultMocksIn }: AppContextProxy
   class AppContextProxy extends React.Component<ProxyProps, State> {
     public static getDerivedStateFromProps(props: ProxyProps, prevState?: State | null): Partial<State> | null {
       const currentFixtureData = prevState == undefined ? {} : prevState.fixtureData;
-      const newFixtureData: AppContextFixture =
-        props.fixture.data.appContext === undefined ? {} : props.fixture.data.appContext;
+      const newFixtureData: AppContextFixture = props.data.appContext === undefined ? {} : props.data.appContext;
       if (prevState != undefined && _.isEqual(newFixtureData, currentFixtureData)) {
         // tslint:disable-next-line no-null-keyword
         return null;

@@ -21,14 +21,10 @@ export type PExample<P> = Example<React.ReactElement<P>>;
 export interface FixtureData {
   readonly [fixtureName: string]: any;
 }
-export interface Fixture<E extends ReactElement = any> {
-  readonly element: E;
-  // tslint:disable-next-line
-  readonly data: FixtureData;
-}
 
 export interface ProxyChildrenProps<E extends ReactElement = any> {
-  readonly fixture: Fixture<E>;
+  readonly element: E;
+  readonly data: FixtureData;
   readonly props?: Partial<Props<E>>;
   readonly onUpdateFixtureData: (data: FixtureData) => void;
 }

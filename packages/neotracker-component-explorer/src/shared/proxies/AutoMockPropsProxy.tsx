@@ -2,8 +2,8 @@ import _ from 'lodash';
 import { ProxyProps, ReactElement } from '../../types';
 import { cloneElement } from '../utils';
 
-export function AutoMockPropsProxy<E extends ReactElement>({ fixture, props }: ProxyProps<E>) {
-  const element = cloneElement(fixture.element, props);
+export function AutoMockPropsProxy<E extends ReactElement>({ element: elementIn, props }: ProxyProps<E>) {
+  const element = cloneElement(elementIn, props);
   const { children: _children, ...newProps } = element.props;
 
   return cloneElement(element, decorateProps(newProps));

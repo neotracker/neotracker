@@ -1,8 +1,9 @@
-import { mount as mountEnzyme, MountRendererProps } from 'enzyme';
+import { mount as mountEnzyme, MountRendererProps, ReactWrapper } from 'enzyme';
 import * as React from 'react';
 import { getExplorerConfig } from '../../node/config';
-import { Example, Props, Proxy, ReactElement } from '../../types';
+import { Example, FixtureData, Props, Proxy, ReactElement } from '../../types';
 import { createContext } from '../context';
+import { LoaderOptions } from '../context/Loader';
 import { AutoMockPropsProxy } from '../proxies';
 
 // tslint:disable-next-line no-any
@@ -11,13 +12,19 @@ export interface CreateTestContextOptions<E extends React.ReactElement<any>> {
   readonly proxies?: ReadonlyArray<Proxy>;
   readonly rendererOptions?: MountRendererProps;
 }
+
 // tslint:disable-next-line no-any
 export function createTestContext<E extends ReactElement>({
   example,
   proxies = getExplorerConfig().proxies.node,
   rendererOptions,
 }: CreateTestContextOptions<E>) {
-  const { getRef, getWrapper: getRootWrapperBase, getFixtureField, mount } = createContext({
+  // tslint:disable-next-line no-any
+  const { getRef, getWrapper: getRootWrapperBase, getFixtureField, mount } = createContext<
+    E,
+    ReactWrapper<LoaderOptions>,
+    {}
+  >({
     renderer: mountEnzyme,
     example,
     proxies: [...proxies, AutoMockPropsProxy],
@@ -44,11 +51,19 @@ export function createTestContext<E extends ReactElement>({
     getRootWrapper().setProps({ props: prevProps });
   };
 
+  let fixtureData = {};
+  const setFixtureData = (newFixtureData: FixtureData): void => {
+    // tslint:disable-next-line prefer-object-spread
+    fixtureData = Object.assign({}, fixtureData, newFixtureData);
+    getRootWrapper().setProps({ ...prevProps, data: fixtureData });
+  };
+
   return {
     getRef,
     getRootWrapper,
     getWrapper,
     getFixtureField,
+    setFixtureData,
     setProps,
     mount,
   };

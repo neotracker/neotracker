@@ -71,7 +71,8 @@ export function createContext<E extends ReactElement, W extends Wrapper, Rendere
     wrapper = renderer(
       <Loader
         proxies={proxies}
-        fixture={{ element: example.element(ref), data: fixtureData }}
+        element={example.element(ref)}
+        data={fixtureData}
         onUpdateFixtureData={updateFixtureData}
       />,
       rendererOptions,
