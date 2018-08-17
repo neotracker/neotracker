@@ -3,15 +3,21 @@ import * as path from 'path';
 import prettier from 'prettier';
 import ts from 'typescript';
 import { notNull } from '../../shared/utils';
-import { PropInfo, RenderAPIInfo, REPLACE_ME } from '../../types';
+import { PropInfo, RenderAPIInfo, REPLACE_DATA_ME, REPLACE_ME } from '../../types';
 import { tsUtils } from '../tsUtils';
 import { Context } from './Context';
 
 export interface ComponentExample {
   readonly id: string;
-  readonly code: string;
-  readonly returnText: string;
   readonly exampleTemplate: string;
+  readonly example: {
+    readonly code: string;
+    readonly returnText: string;
+  };
+  readonly fixture: {
+    readonly code: string;
+    readonly returnText: string;
+  };
 }
 export interface Component {
   readonly id: string;
@@ -174,6 +180,7 @@ const processExample = ({
   readonly example: ts.ObjectLiteralExpression;
 }): ComponentExample => {
   const commonError = `Check the "element" function of example ${idx} in ${filePath}`;
+  const dataError = `Check the "data" key of example ${idx} in ${filePath}`;
 
   const exampleFunc = tsUtils.node.getProperty(example, 'element');
   if (exampleFunc === undefined) {
@@ -192,12 +199,36 @@ const processExample = ({
       `Expected example to be an object literal with an "element" key that is an arrow function. ${commonError}`,
     );
   }
+  const fixtureData = tsUtils.node.getProperty(example, 'data');
+  if (fixtureData !== undefined && !ts.isPropertyAssignment(fixtureData)) {
+    throw new Error(
+      `Expected example to be an object literal with a "data" key that is a property assignment. ${dataError}`,
+    );
+  }
+
+  const fixtureInitializer = fixtureData === undefined ? undefined : fixtureData.initializer;
+  if (fixtureInitializer !== undefined && !ts.isObjectLiteralExpression(fixtureInitializer)) {
+    throw new Error(
+      `Expected example to be an object literal with a "data" key that is an object literal. ${dataError}`,
+    );
+  }
+
+  const fixtureCode =
+    fixtureData === undefined
+      ? ''
+      : processDependencies({
+          dependencies: getDependencies({ context, node: fixtureData, filePath }),
+        });
 
   const exampleTemplate = `{
-    element: () => {
+    element: (ref) => {
       ${REPLACE_ME}
     },
+    data: () => {
+      ${REPLACE_DATA_ME}
+    },
   }`;
+
   const body = initializer.body;
   if (tsUtils.guards.isExpression(body)) {
     const code = processDependencies({ dependencies: getDependencies({ context, node: body, filePath }) });
@@ -206,9 +237,16 @@ const processExample = ({
 
     return {
       id,
-      code,
       exampleTemplate,
-      returnText: unsemicolon(format(returnValue.getText())),
+      example: {
+        code,
+        returnText: unsemicolon(format(returnValue.getText())),
+      },
+      fixture: {
+        code: fixtureCode,
+        // NOTE: We don't call format because fixture is a floating object literal and format expects valid code
+        returnText: fixtureInitializer === undefined ? '{}' : fixtureInitializer.getText(),
+      },
     };
   }
 
@@ -247,9 +285,16 @@ const processExample = ({
 
     return {
       id,
-      code,
       exampleTemplate,
-      returnText: unsemicolon(format(returnValue.getText())),
+      example: {
+        code,
+        returnText: unsemicolon(format(returnValue.getText())),
+      },
+      fixture: {
+        code: fixtureCode,
+        // NOTE: We don't call format because fixture is a floating object literal and format expects valid code
+        returnText: fixtureInitializer === undefined ? '{}' : fixtureInitializer.getText(),
+      },
     };
   }
 

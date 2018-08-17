@@ -523,9 +523,9 @@ export interface TabsTabProps {
   readonly show: () => void;
   readonly next: () => void;
   readonly previous: () => void;
-  readonly disabled: boolean;
+  readonly disabled?: boolean;
 }
-export interface TabsTab<A extends As = 'li'> extends AsComponent<Step<A>, TabsTabProps> {}
+export interface TabsTab<A extends As = 'li'> extends AsComponent<'li', TabsTabProps> {}
 
 export interface TabsProps {}
 export interface Tabs<A extends As = 'ul'> extends AsComponent<Base<A>, TabsProps> {

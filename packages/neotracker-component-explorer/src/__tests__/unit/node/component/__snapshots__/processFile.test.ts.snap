@@ -11,11 +11,18 @@ function foo() {
 
 exports[`processFile __tests__/data/components/ClassExportInlineProps.example.tsx: exampleTemplate 1`] = `
 "{
-    element: () => {
+    element: (ref) => {
       __REPLACE_ME__
+    },
+    data: () => {
+      __REPLACE_DATA_ME__
     },
   }"
 `;
+
+exports[`processFile __tests__/data/components/ClassExportInlineProps.example.tsx: fixtureCode 1`] = `""`;
+
+exports[`processFile __tests__/data/components/ClassExportInlineProps.example.tsx: fixtureReturnText 1`] = `"{}"`;
 
 exports[`processFile __tests__/data/components/ClassExportInlineProps.example.tsx: id 1`] = `"packages/neotracker-component-explorer/src/__tests__/data/components/ClassExportInlineProps.tsx:ClassExportInlineProps"`;
 
@@ -56,11 +63,18 @@ const foo = new Foo();
 
 exports[`processFile __tests__/data/components/ConstExportInlineProps.example.tsx: exampleTemplate 1`] = `
 "{
-    element: () => {
+    element: (ref) => {
       __REPLACE_ME__
+    },
+    data: () => {
+      __REPLACE_DATA_ME__
     },
   }"
 `;
+
+exports[`processFile __tests__/data/components/ConstExportInlineProps.example.tsx: fixtureCode 1`] = `""`;
+
+exports[`processFile __tests__/data/components/ConstExportInlineProps.example.tsx: fixtureReturnText 1`] = `"{}"`;
 
 exports[`processFile __tests__/data/components/ConstExportInlineProps.example.tsx: id 1`] = `"packages/neotracker-component-explorer/src/__tests__/data/components/ConstExportInlineProps.tsx:ConstExportInlineProps"`;
 
@@ -96,11 +110,18 @@ const foo = 'foo';
 
 exports[`processFile __tests__/data/components/ConstExportInterfaceProps.example.tsx: exampleTemplate 1`] = `
 "{
-    element: () => {
+    element: (ref) => {
       __REPLACE_ME__
+    },
+    data: () => {
+      __REPLACE_DATA_ME__
     },
   }"
 `;
+
+exports[`processFile __tests__/data/components/ConstExportInterfaceProps.example.tsx: fixtureCode 1`] = `""`;
+
+exports[`processFile __tests__/data/components/ConstExportInterfaceProps.example.tsx: fixtureReturnText 1`] = `"{}"`;
 
 exports[`processFile __tests__/data/components/ConstExportInterfaceProps.example.tsx: id 1`] = `"packages/neotracker-component-explorer/src/__tests__/data/components/ConstExportInterfaceProps.tsx:ConstExportInterfaceProps"`;
 
@@ -135,11 +156,18 @@ const value = <WithContext>{({ foo }) => <div>{foo}</div>}</WithContext>;
 
 exports[`processFile __tests__/data/components/ConstReExportProps.example.tsx: exampleTemplate 1`] = `
 "{
-    element: () => {
+    element: (ref) => {
       __REPLACE_ME__
+    },
+    data: () => {
+      __REPLACE_DATA_ME__
     },
   }"
 `;
+
+exports[`processFile __tests__/data/components/ConstReExportProps.example.tsx: fixtureCode 1`] = `""`;
+
+exports[`processFile __tests__/data/components/ConstReExportProps.example.tsx: fixtureReturnText 1`] = `"{}"`;
 
 exports[`processFile __tests__/data/components/ConstReExportProps.example.tsx: id 1`] = `"packages/neotracker-component-explorer/src/__tests__/data/components/ConstReExportProps.tsx:WithContext"`;
 
@@ -202,11 +230,18 @@ const foo = 'foo';
 
 exports[`processFile __tests__/data/components/DefaultExportInterfaceProps.example.tsx: exampleTemplate 1`] = `
 "{
-    element: () => {
+    element: (ref) => {
       __REPLACE_ME__
+    },
+    data: () => {
+      __REPLACE_DATA_ME__
     },
   }"
 `;
+
+exports[`processFile __tests__/data/components/DefaultExportInterfaceProps.example.tsx: fixtureCode 1`] = `""`;
+
+exports[`processFile __tests__/data/components/DefaultExportInterfaceProps.example.tsx: fixtureReturnText 1`] = `"{}"`;
 
 exports[`processFile __tests__/data/components/DefaultExportInterfaceProps.example.tsx: id 1`] = `"packages/neotracker-component-explorer/src/__tests__/data/components/DefaultExportInterfaceProps.tsx:default"`;
 
@@ -246,19 +281,33 @@ const goodnight = 'Goodnight Moon';
 
 exports[`processFile shared/app/components/explorer/ContentWrapper.example.tsx: exampleTemplate 1`] = `
 "{
-    element: () => {
+    element: (ref) => {
       __REPLACE_ME__
+    },
+    data: () => {
+      __REPLACE_DATA_ME__
     },
   }"
 `;
 
 exports[`processFile shared/app/components/explorer/ContentWrapper.example.tsx: exampleTemplate 2`] = `
 "{
-    element: () => {
+    element: (ref) => {
       __REPLACE_ME__
+    },
+    data: () => {
+      __REPLACE_DATA_ME__
     },
   }"
 `;
+
+exports[`processFile shared/app/components/explorer/ContentWrapper.example.tsx: fixtureCode 1`] = `""`;
+
+exports[`processFile shared/app/components/explorer/ContentWrapper.example.tsx: fixtureCode 2`] = `""`;
+
+exports[`processFile shared/app/components/explorer/ContentWrapper.example.tsx: fixtureReturnText 1`] = `"{}"`;
+
+exports[`processFile shared/app/components/explorer/ContentWrapper.example.tsx: fixtureReturnText 2`] = `"{}"`;
 
 exports[`processFile shared/app/components/explorer/ContentWrapper.example.tsx: id 1`] = `"packages/neotracker-component-explorer/src/shared/app/components/explorer/ContentWrapper.tsx:ContentWrapper"`;
 

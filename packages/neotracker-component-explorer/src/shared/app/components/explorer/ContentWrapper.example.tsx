@@ -7,6 +7,7 @@ import { ContentWrapper } from './ContentWrapper';
 export const examples: [PExample<AProps<typeof ContentWrapper>>, PExample<AProps<typeof ContentWrapper>>] = [
   {
     element: () => <ContentWrapper>Hello World</ContentWrapper>,
+    data: {},
   },
   {
     element: () => {

@@ -2,6 +2,7 @@
 import * as React from 'react';
 
 export const REPLACE_ME = '__REPLACE_ME__';
+export const REPLACE_DATA_ME = '__REPLACE_DATA_ME__';
 
 export type ReactElement = React.ReactElement<any>;
 export type Props<E extends ReactElement> = E extends React.ReactElement<infer P> ? P : never;
@@ -39,7 +40,12 @@ export interface Wrapper {
 export type Renderer<W extends Wrapper = Wrapper, Options = {}> = (element: ReactElement, options?: Options) => W;
 
 /* Component Explorer Frontend Configuration */
-export type EvalInContext = (example: string) => () => Example;
+export type EvalInContext = (
+  example: string,
+) => () => {
+  readonly element: (ref?: React.Ref<ReactElement>) => ReactElement;
+  readonly data: () => FixtureData;
+};
 export interface MarkdownContentConfig {
   readonly type: 'markdown';
   readonly content: string;
@@ -47,6 +53,7 @@ export interface MarkdownContentConfig {
 export interface CodeContentConfig {
   readonly type: 'code';
   readonly code: string;
+  readonly fixtureCode: string;
   readonly exampleTemplate: string;
 }
 export type ContentConfig = MarkdownContentConfig | CodeContentConfig;
@@ -131,9 +138,15 @@ export interface LoaderMarkdownConfig {
 }
 export interface LoaderComponentExample {
   readonly id: string;
-  readonly code: string;
-  readonly returnText: string;
   readonly exampleTemplate: string;
+  readonly example: {
+    readonly code: string;
+    readonly returnText: string;
+  };
+  readonly fixture: {
+    readonly code: string;
+    readonly returnText: string;
+  };
 }
 export interface LoaderComponent {
   readonly id: string;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { AProps, Grid, Input, Link, List } from 'reakit';
+import { AProps, Base, Grid, Input, Link, List } from 'reakit';
 import { SectionConfig } from '../../../../types';
 import { styled } from '../../theme';
 import { MenuContainer } from './MenuContainer';
@@ -9,12 +9,14 @@ const Wrapper = styled(Grid)`
   grid-gap: 16px;
 `;
 
+const ListItem = Base.as('li');
+
 const MenuList = styled(List)<{ readonly alwaysVisible: boolean }>`
   ${List} {
     ${({ alwaysVisible }) => (alwaysVisible ? 'display: block !important' : '')};
   }
 
-  ${List.Item} {
+  ${ListItem} {
     margin: 0;
   }
 `;
@@ -63,12 +65,12 @@ const renderList = (sections: ReadonlyArray<SectionConfig>, prevSlug = '') => {
   return (
     <MenuList alwaysVisible={alwaysVisible}>
       {sections.map((s) => (
-        <List.Item key={s.slug}>
+        <ListItem key={s.slug}>
           <SectionLink as={NavLink} to={`${prevSlug}/${s.slug}`}>
             {s.name}
           </SectionLink>
           {renderList(s.sections, `${prevSlug}/${s.slug}`)}
-        </List.Item>
+        </ListItem>
       ))}
     </MenuList>
   );

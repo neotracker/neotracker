@@ -63,8 +63,10 @@ describe('processFile', () => {
       expect(result.examples.length).toBeGreaterThan(0);
       result.examples.forEach((example) => {
         expect(example.id).toMatchSnapshot('id');
-        expect(example.code).toMatchSnapshot('code');
-        expect(example.returnText).toMatchSnapshot('returnText');
+        expect(example.example.code).toMatchSnapshot('code');
+        expect(example.fixture.code).toMatchSnapshot('fixtureCode');
+        expect(example.example.returnText).toMatchSnapshot('returnText');
+        expect(example.fixture.returnText).toMatchSnapshot('fixtureReturnText');
         expect(example.exampleTemplate).toMatchSnapshot('exampleTemplate');
       });
     });

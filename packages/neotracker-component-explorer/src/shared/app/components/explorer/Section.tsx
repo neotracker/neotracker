@@ -75,6 +75,7 @@ export const Section = ({ location, ...props }: RouteComponentProps<any> & CProp
                           return (
                             <Playground
                               code={content.code}
+                              fixtureCode={content.fixtureCode}
                               exampleTemplate={content.exampleTemplate}
                               evalInContext={section.component.evalInContext}
                               key={key}

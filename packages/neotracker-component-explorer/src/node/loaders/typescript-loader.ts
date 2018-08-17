@@ -43,7 +43,7 @@ const getSource = async (
   source: string,
 ): Promise<string> => {
   const typescript = await getTypescriptConfig(loader, config, source);
-  const allCode = typescript.examples.map((example) => example.code).join('\n');
+  const allCode = typescript.examples.map((example) => `${example.example.code}\n${example.fixture.code}`).join('\n');
   const requiresFromExamples = getRequires(allCode);
   const allRequiresCode = requiresFromExamples
     .concat([...new Set(config.dependencies.concat(['react']))])

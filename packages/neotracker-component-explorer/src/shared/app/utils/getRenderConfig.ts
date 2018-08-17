@@ -246,9 +246,10 @@ const getContent = (
     return [];
   }
 
-  const codeContent = examples.map<CodeContentConfig>(({ code, returnText, exampleTemplate }) => ({
+  const codeContent = examples.map<CodeContentConfig>(({ example, fixture, exampleTemplate }) => ({
     type: 'code',
-    code: `${code}\n${returnText}`,
+    code: `${example.code}\n${example.returnText}`,
+    fixtureCode: `${fixture.code}\n${fixture.returnText}`,
     exampleTemplate,
   }));
   if (markdown === undefined) {

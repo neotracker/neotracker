@@ -22,6 +22,7 @@ const getHTML = (markup: string) => pretty(markup.replace(/ class="[^"]+"/g, '')
 
 interface Props {
   readonly code: string;
+  readonly fixtureCode: string;
   readonly exampleTemplate: string;
   readonly evalInContext: EvalInContext;
   readonly proxies: ReadonlyArray<Proxy>;
@@ -49,13 +50,14 @@ export class Preview extends React.Component<Props, State> {
     return (
       this.state.error !== nextState.error ||
       this.props.code !== nextProps.code ||
+      this.props.fixtureCode !== nextProps.fixtureCode ||
       this.state.html !== nextState.html ||
       this.props.showHTML !== nextProps.showHTML
     );
   }
 
   public componentDidUpdate(prevProps: Props) {
-    if (this.props.code !== prevProps.code) {
+    if (this.props.code !== prevProps.code || this.props.fixtureCode !== prevProps.fixtureCode) {
       this.executeCode();
     }
   }
@@ -74,14 +76,14 @@ export class Preview extends React.Component<Props, State> {
 
   public executeCode() {
     this.setState({ error: undefined });
-    const { code, evalInContext, exampleTemplate, proxies } = this.props;
+    const { code, fixtureCode, evalInContext, exampleTemplate, proxies } = this.props;
     const container = this.mountNode.current;
     if (!code || !container) {
       return;
     }
 
     try {
-      const example = compileComponent({ code, evalInContext, exampleTemplate });
+      const example = compileComponent({ code, fixtureCode, evalInContext, exampleTemplate });
       const { mount, unmount } = createDOMContext({ example, container, proxies });
 
       window.requestAnimationFrame(() => {
