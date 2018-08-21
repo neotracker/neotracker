@@ -1,10 +1,9 @@
-import { ButterflyOptions as AllButterflyOptions, createButterfly } from './createButterfly';
+import { ButterflyWebhookOptions as AllButterflyOptions, createButterflyWebhook } from './createButterflyWebhook';
 import { GithubOptions } from './github';
 import { hooks, HooksOptions } from './hooks';
-import { Butterfly, GithubEvent } from './types';
+import { ButterflyWebhook, GithubEvent } from './types';
 
-// tslint:disable-next-line no-any
-export type Hook = (butterfly: Butterfly, event: GithubEvent) => Promise<void>;
+export type Hook = (butterfly: ButterflyWebhook, event: GithubEvent) => Promise<void>;
 export interface Hooks {
   readonly [name: string]: ReadonlyArray<Hook> | undefined;
 }
@@ -57,7 +56,7 @@ export class ButterflyHandler {
       return [];
     }
 
-    const butterfly = await createButterfly({
+    const butterfly = await createButterflyWebhook({
       ...this.butterfly,
       github: {
         ...this.butterfly.github,

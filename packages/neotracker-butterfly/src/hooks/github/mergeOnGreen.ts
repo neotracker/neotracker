@@ -1,9 +1,12 @@
 import { Label, Status } from 'github-webhook-event-types';
-import { Butterfly, GithubEvent } from '../../types';
+import { ButterflyWebhook, GithubEvent } from '../../types';
 
 export const LABEL_NAME = 'merge-on-green';
 
-export const mergeOnGreen = async (butterfly: Butterfly, { payload: status }: GithubEvent<Status>): Promise<void> => {
+export const mergeOnGreen = async (
+  butterfly: ButterflyWebhook,
+  { payload: status }: GithubEvent<Status>,
+): Promise<void> => {
   const api = butterfly.github.api;
 
   if (status.state !== 'success') {

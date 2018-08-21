@@ -2,7 +2,7 @@
 // tslint:disable-next-line no-implicit-dependencies
 import { IssueComment, Issues, PullRequest } from 'github-webhook-event-types';
 import _ from 'lodash';
-import { Butterfly, GithubEvent } from '../../types';
+import { ButterflyWebhook, GithubEvent } from '../../types';
 import { LABEL_NAME } from './mergeOnGreen';
 
 export interface CommandsOptions {
@@ -25,10 +25,10 @@ interface Label {
 class Command {
   public constructor(
     private readonly name: string,
-    private readonly callback: (butterfly: Butterfly, args: string, data: Data) => Promise<void>,
+    private readonly callback: (butterfly: ButterflyWebhook, args: string, data: Data) => Promise<void>,
   ) {}
 
-  public async execute(butterfly: Butterfly, data: Data, body: string): Promise<void> {
+  public async execute(butterfly: ButterflyWebhook, data: Data, body: string): Promise<void> {
     const args = body.match(this.matcher);
     if (args !== null) {
       await this.callback(butterfly, args[1].trim(), data);
@@ -51,6 +51,7 @@ export const commands = (options: CommandsOptions) => {
     new Command('test', async (butterfly, _args, data) => {
       if (isIssueComment(data)) {
         const contexts = new Set(options.test.circleCIContexts);
+
         const statuses = await butterfly.github.utils.getStatusesForPullRequest({
           filterStatus: (status) => contexts.has(status.context),
           issueNumber: data.issue.number,
@@ -70,7 +71,6 @@ export const commands = (options: CommandsOptions) => {
             if (status === undefined) {
               throw new Error(`Could not find circleci status for ${context}`);
             }
-
             const targetURLParts = butterfly.circleci.utils.extractGithubTargetURLParts(status.target_url);
 
             await butterfly.circleci.api.retryJob(targetURLParts);
@@ -128,7 +128,7 @@ export const commands = (options: CommandsOptions) => {
     }),
   ];
 
-  return async (butterfly: Butterfly, { payload }: GithubEvent<Data>): Promise<void> => {
+  return async (butterfly: ButterflyWebhook, { payload }: GithubEvent<Data>): Promise<void> => {
     let body: string;
     if (isIssueComment(payload)) {
       body = payload.comment.body;

@@ -1,6 +1,6 @@
 import Github from '@octokit/rest';
-import { ButterflyCIOptions, createButterflyCI } from './createButterflyCI';
-import { ButterflyCI } from './types';
+import { ButterflyWebhookOptions, createButterflyWebhook } from './createButterflyWebhook';
+import { Butterfly, ButterflyWebhook } from './types';
 
 export interface CheckAnnotation {
   readonly fileName: string;
@@ -19,7 +19,7 @@ export interface CheckResult {
   readonly annotations?: ReadonlyArray<CheckAnnotation>;
 }
 export interface Check {
-  readonly run: (butterfly: ButterflyCI) => Promise<CheckResult>;
+  readonly run: (butterfly: Butterfly) => Promise<CheckResult>;
   readonly name: string;
 }
 
@@ -28,9 +28,16 @@ export interface CommitOptions {
   readonly sha: string;
 }
 
-export interface ButterflyCIHandlerOptions extends ButterflyCIOptions {
+export interface ButterflyPullRequest {
+  readonly issueNumber: number;
+  readonly owner: string;
+  readonly repo: string;
+}
+
+export interface ButterflyWebhookHandlerOptions extends ButterflyWebhookOptions {
   readonly checks: ReadonlyArray<Check>;
   readonly commit: CommitOptions;
+  readonly pullRequest: ButterflyPullRequest;
 }
 
 interface CheckRun {
@@ -38,14 +45,16 @@ interface CheckRun {
 }
 
 export class ButterflyCIHandler {
-  private readonly butterfly: ButterflyCIOptions;
+  private readonly butterfly: ButterflyWebhookOptions;
   private readonly checks: ReadonlyArray<Check>;
   private readonly commit: CommitOptions;
+  private readonly pullRequest: ButterflyPullRequest;
 
-  public constructor({ checks, commit, ...rest }: ButterflyCIHandlerOptions) {
+  public constructor({ checks, commit, pullRequest, ...rest }: ButterflyWebhookHandlerOptions) {
     this.butterfly = rest;
     this.checks = checks;
     this.commit = commit;
+    this.pullRequest = pullRequest;
   }
 
   public async preRunAll(): Promise<void> {
@@ -65,7 +74,7 @@ export class ButterflyCIHandler {
     );
   }
 
-  public async run(name: string): Promise<void> {
+  public async run(name: string): Promise<0 | 1> {
     const check = this.checks.find(({ name: checkName }) => checkName === name);
     if (check === undefined) {
       throw new Error(`Could not find check with name ${name}`);
@@ -87,6 +96,8 @@ export class ButterflyCIHandler {
           annotations: this.convertCheckAnnotations(result.annotations),
         },
       });
+
+      return result.conclusion === 'failure' ? 1 : 0;
     } catch (error) {
       await this.completeCheckRun(butterfly, name, {
         status: 'completed',
@@ -102,11 +113,13 @@ ${error.stack}
 `.trim(),
         },
       });
+
+      return 1;
     }
   }
 
   private async completeCheckRun(
-    butterfly: ButterflyCI,
+    butterfly: ButterflyWebhook,
     name: string,
     update: Partial<Github.ChecksUpdateParams>,
   ): Promise<void> {
@@ -117,12 +130,11 @@ ${error.stack}
   }
 
   private async updateCheckRun(
-    butterfly: ButterflyCI,
+    butterfly: ButterflyWebhook,
     name: string,
     update: Partial<Github.ChecksUpdateParams>,
   ): Promise<void> {
     const checkRun = await this.getCheckRun(butterfly, name);
-
     await butterfly.github.api.checks.update({
       ...update,
       check_run_id: `${checkRun.id}`,
@@ -132,7 +144,7 @@ ${error.stack}
     });
   }
 
-  private async getCheckRun(butterfly: ButterflyCI, name: string): Promise<CheckRun> {
+  private async getCheckRun(butterfly: ButterflyWebhook, name: string): Promise<CheckRun> {
     const checkRunResponse = await butterfly.github.api.checks.listForRef({
       owner: this.owner,
       repo: this.repo,
@@ -149,11 +161,11 @@ ${error.stack}
   }
 
   private get owner(): string {
-    return this.butterfly.pullRequest.owner;
+    return this.pullRequest.owner;
   }
 
   private get repo(): string {
-    return this.butterfly.pullRequest.repo;
+    return this.pullRequest.repo;
   }
 
   private get sha(): string {
@@ -164,8 +176,8 @@ ${error.stack}
     return this.commit.branch;
   }
 
-  private async getButterfly(): Promise<ButterflyCI> {
-    return createButterflyCI({
+  private async getButterfly(): Promise<ButterflyWebhook> {
+    return createButterflyWebhook({
       ...this.butterfly,
       github: {
         ...this.butterfly.github,
