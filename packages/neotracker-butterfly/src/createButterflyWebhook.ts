@@ -1,7 +1,6 @@
 import { CircleCIOptions, createCircleCI } from './circleci';
 import { ButterflyOptions, createButterfly } from './createButterfly';
-import { createGithub } from './github';
-import { GithubOptions } from './github/createGithub';
+import { createGithub, GithubOptions } from './github';
 import { ButterflyWebhook, Logger } from './types';
 
 const DEFAULT_LOGGER: Logger = {

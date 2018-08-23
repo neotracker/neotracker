@@ -23,6 +23,10 @@ export interface Butterfly {
   readonly tmp: {
     readonly fileName: () => Promise<string>;
   };
+  readonly git: {
+    readonly resetToHead: () => Promise<void>;
+    readonly changedFiles: () => Promise<ReadonlyArray<string>>;
+  };
 }
 
 export interface PullRequest {

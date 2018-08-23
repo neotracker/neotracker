@@ -17,9 +17,8 @@ const DEFAULT_LOGGER: Logger = {
     // do nothing
   },
 };
-
-export const createButterfly = async ({ log = DEFAULT_LOGGER }: ButterflyOptions): Promise<Butterfly> => ({
-  exec: (file, argsOrOptions, optionsIn) => {
+export const createButterfly = async ({ log = DEFAULT_LOGGER }: ButterflyOptions): Promise<Butterfly> => {
+  const exec = (file: string, argsOrOptions?: execa.Options | ReadonlyArray<string>, optionsIn?: execa.Options) => {
     let args: ReadonlyArray<string> = [];
     let options: execa.Options | undefined;
     if (argsOrOptions !== undefined) {
@@ -45,18 +44,34 @@ export const createButterfly = async ({ log = DEFAULT_LOGGER }: ButterflyOptions
     });
 
     return proc;
-  },
-  tmp: {
-    fileName: async () =>
-      new Promise<string>((resolve, reject) =>
-        tmp.tmpName((error: Error | undefined, filePath) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(filePath);
-          }
-        }),
-      ),
-  },
-  log,
-});
+  };
+
+  const git = {
+    resetToHead: async (): Promise<void> => {
+      await exec('git', ['reset', 'HEAD', '--hard']);
+    },
+    changedFiles: async (): Promise<ReadonlyArray<string>> => {
+      const proc = await exec('git', ['status', '--porcelain']);
+
+      return proc.stdout.split('\n');
+    },
+  };
+
+  return {
+    exec,
+    tmp: {
+      fileName: async () =>
+        new Promise<string>((resolve, reject) =>
+          tmp.tmpName((error: Error | undefined, filePath) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(filePath);
+            }
+          }),
+        ),
+    },
+    log,
+    git,
+  };
+};
