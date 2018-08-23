@@ -1,12 +1,13 @@
-import { ActionRaw } from '@neo-one/client';
+import { addressToScriptHash, RawAction } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
 import { Action as ActionModel } from '@neotracker/server-db';
 import _ from 'lodash';
 import { Context } from '../types';
+import { strip0x } from '../utils';
 import { SameContextDBUpdater } from './SameContextDBUpdater';
 
 export interface ActionsSaveSingle {
-  readonly action: ActionRaw;
+  readonly action: RawAction;
   readonly transactionID: string;
   readonly transactionHash: string;
 }
@@ -34,7 +35,7 @@ export class ActionsUpdater extends SameContextDBUpdater<ActionsSave, ActionsRev
                 transaction_hash: transactionHash,
                 transaction_index: action.transactionIndex,
                 index: action.index,
-                script_hash: action.scriptHash,
+                script_hash: strip0x(addressToScriptHash(action.address)),
                 // tslint:disable no-any no-null-keyword
                 message: (action as any).message === undefined ? null : encodeURIComponent((action as any).message),
                 args_raw: (action as any).args === undefined ? null : JSON.stringify((action as any).args),

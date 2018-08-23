@@ -1,3 +1,4 @@
+// tslint:disable no-any
 import React from 'react';
 import { Container } from 'reakit';
 import { SectionConfig } from '../../../../types';
@@ -17,11 +18,13 @@ export const MenuContainer = ({
 }) => (
   <Container
     initialState={{ filtered: sections }}
-    actions={{
-      filter: (input: string) => () => ({
-        filtered: input ? filterSections(sections, input) : undefined,
-      }),
-    }}
-    children={children}
+    actions={
+      {
+        filter: (input: string) => () => ({
+          filtered: input ? filterSections(sections, input) : undefined,
+        }),
+      } as any
+    }
+    children={children as any}
   />
 );

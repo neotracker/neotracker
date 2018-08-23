@@ -1,12 +1,13 @@
-import { ActionRaw } from '@neo-one/client';
+import { addressToScriptHash, RawAction } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
 import { Transfer as TransferModel } from '@neotracker/server-db';
 import _ from 'lodash';
 import { Context, TransferData } from '../types';
+import { strip0x } from '../utils';
 import { SameContextDBUpdater } from './SameContextDBUpdater';
 
 export interface TransfersSaveSingle {
-  readonly action: ActionRaw;
+  readonly action: RawAction;
   readonly transferData: TransferData;
   readonly transactionID: string;
   readonly transactionHash: string;
@@ -39,8 +40,8 @@ export class TransfersUpdater extends SameContextDBUpdater<TransfersSave, Transf
                   id: result.transferID,
                   transaction_id: transactionID,
                   transaction_hash: transactionHash,
-                  asset_id: action.scriptHash,
-                  contract_id: action.scriptHash,
+                  asset_id: strip0x(addressToScriptHash(action.address)),
+                  contract_id: strip0x(addressToScriptHash(action.address)),
                   value: value.toString(),
                   from_address_id: result.fromAddressID,
                   to_address_id: result.toAddressID,

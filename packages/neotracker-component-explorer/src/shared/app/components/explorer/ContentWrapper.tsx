@@ -1,7 +1,10 @@
-import { Flex } from 'reakit';
-import { styled } from '../../theme';
+import { Flex, styled } from 'reakit';
 
-export const ContentWrapper = styled(Flex)`
+interface Props {
+  readonly column?: boolean;
+  readonly children?: React.ReactNode;
+}
+export const ContentWrapper = styled<Props>(Flex)`
   align-items: center;
   max-width: 1200px;
   padding: 0 16px;

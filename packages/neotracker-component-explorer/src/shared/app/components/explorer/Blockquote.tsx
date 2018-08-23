@@ -1,5 +1,4 @@
-import { as, Base } from 'reakit';
-import { styled } from '../../theme';
+import { as, Base, styled } from 'reakit';
 
 const BlockquoteBase = styled(Base)`
   background-color: rgba(255, 229, 100, 0.3);

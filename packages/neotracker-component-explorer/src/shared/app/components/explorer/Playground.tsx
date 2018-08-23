@@ -1,9 +1,9 @@
+// tslint:disable no-any
 import React from 'react';
 // tslint:disable-next-line no-submodule-imports
 import { GoPencil as PencilIcon } from 'react-icons/go';
-import { AProps, Block, Button, Group, Tabs } from 'reakit';
+import { Block, Button, Group, styled, Tabs } from 'reakit';
 import { EvalInContext } from '../../../../types';
-import { styled } from '../../theme';
 import { WithRenderConfig, WithState } from '../render';
 import { Editor } from './Editor';
 import { Preview } from './Preview';
@@ -40,17 +40,17 @@ const StyledPencilIcon = styled(PencilIcon)`
   }
 `;
 
-type Props = AProps<typeof Wrapper> & {
+interface Props {
   readonly code: string;
   readonly fixtureCode: string;
   readonly exampleTemplate: string;
   readonly evalInContext: EvalInContext;
-};
+}
 
 export const Playground = ({ code, fixtureCode, evalInContext, exampleTemplate, ...props }: Props) => (
   <WithRenderConfig>
     {({ proxies }) => (
-      <WithState initialState={{ state: { code, fixtureCode } }}>
+      <WithState initialState={{ code, fixtureCode }}>
         {({ state, setState }) => (
           <Wrapper {...props}>
             <Preview
@@ -61,7 +61,7 @@ export const Playground = ({ code, fixtureCode, evalInContext, exampleTemplate, 
               proxies={proxies}
             />
             <Tabs.Container>
-              {(tabs) => (
+              {(tabs: any) => (
                 <Wrapper>
                   <Tabs as={Group}>
                     <Tabs.Tab<Button> as={Button} tab="jsx" {...tabs}>
@@ -72,13 +72,10 @@ export const Playground = ({ code, fixtureCode, evalInContext, exampleTemplate, 
                     </Tabs.Tab>
                   </Tabs>
                   <Tabs.Panel tab="jsx" {...tabs}>
-                    <Editor code={state.code} onChange={(c) => setState({ state: { ...state, code: c.trim() } })} />
+                    <Editor code={state.code} onChange={(c) => setState({ code: c.trim() })} />
                   </Tabs.Panel>
                   <Tabs.Panel tab="data" {...tabs}>
-                    <Editor
-                      code={state.fixtureCode}
-                      onChange={(f) => setState({ state: { ...state, fixtureCode: f.trim() } })}
-                    />
+                    <Editor code={state.fixtureCode} onChange={(f) => setState({ fixtureCode: f.trim() })} />
                   </Tabs.Panel>
                 </Wrapper>
               )}

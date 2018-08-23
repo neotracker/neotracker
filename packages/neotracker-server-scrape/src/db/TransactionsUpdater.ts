@@ -318,8 +318,8 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
           context.db,
           context.makeQueryContext(monitor),
           chunk.map(({ transaction, transactionIndex }) => ({
-            id: transaction.data.globalIndex.toString(),
-            hash: transaction.txid,
+            id: transaction.receipt.globalIndex.toString(),
+            hash: transaction.hash,
             type: transaction.type,
             size: transaction.size,
             version: transaction.version,

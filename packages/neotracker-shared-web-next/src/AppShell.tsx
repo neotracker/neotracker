@@ -1,10 +1,10 @@
 import * as React from 'react';
 import Helmet from 'react-helmet';
 import { Base } from 'reakit';
-import { ThemeProvider } from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import { AppContext } from './AppContext';
 import { AppContextProvider, WithAppOptions, WithRouter } from './components';
-import { createTheme, styled } from './theme';
+import { createTheme } from './theme';
 
 const theme = createTheme();
 

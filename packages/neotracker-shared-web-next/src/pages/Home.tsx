@@ -1,9 +1,8 @@
 import gql from 'graphql-tag';
 import * as React from 'react';
-import { Box } from 'reakit';
+import { Box, styled } from 'reakit';
 import { AppContext } from '../AppContext';
 import { makeQuery } from '../components';
-import { styled } from '../theme';
 import { HomeQuery as HomeQueryData } from './__generated__/HomeQuery';
 
 const ErrorBox = styled(Box)`

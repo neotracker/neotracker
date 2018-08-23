@@ -1,7 +1,6 @@
 import React from 'react';
 import { NavLink as RouterLink } from 'react-router-dom';
-import { Flex, Grid } from 'reakit';
-import { styled } from '../../theme';
+import { Flex, Grid, styled } from 'reakit';
 import { ContentWrapper } from './ContentWrapper';
 import { Logo } from './Logo';
 

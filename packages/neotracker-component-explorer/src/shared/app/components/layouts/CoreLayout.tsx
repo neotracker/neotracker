@@ -1,6 +1,6 @@
 import React from 'react';
-import { AProps, Flex } from 'reakit';
-import { styled } from '../../theme';
+import { Flex, styled } from 'reakit';
+import { ComponentProps } from '../../../../types';
 import { Footer, Header } from '../explorer';
 
 const Wrapper = styled(Flex)`
@@ -32,7 +32,10 @@ const StyledFooter = styled(Footer)`
   margin-top: auto;
 `;
 
-export const CoreLayout = ({ children, ...props }: AProps<Flex>) => (
+export const CoreLayout = ({
+  children,
+  ...props
+}: { readonly children: React.ReactNode } & ComponentProps<typeof Flex>) => (
   <Wrapper {...props}>
     <StyledHeader />
     <Content>{children}</Content>

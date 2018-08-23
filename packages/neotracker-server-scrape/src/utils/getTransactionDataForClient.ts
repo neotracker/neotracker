@@ -22,8 +22,8 @@ function calculateTransactionData({
   readonly claims: ReadonlyArray<TransactionInputOutputModel>;
   readonly inputs: ReadonlyArray<TransactionInputOutputModel>;
 }): TransactionData {
-  const transactionID = transaction.data.globalIndex.toString();
-  const transactionHash = transaction.txid;
+  const transactionID = transaction.receipt.globalIndex.toString();
+  const transactionHash = transaction.hash;
   const actionDatas =
     transaction.type === 'InvocationTransaction' && transaction.invocationData.result.state === 'HALT'
       ? transaction.invocationData.actions.map((action) =>
@@ -51,16 +51,16 @@ function calculateTransactionData({
     transactionIndex,
     claims,
     inputs,
-    outputs: transaction.vout.map((output, idx) => ({
+    outputs: transaction.outputs.map((output, idx) => ({
       id: TransactionInputOutputModel.makeID({
-        outputTransactionHash: transaction.txid,
+        outputTransactionHash: transaction.hash,
         outputTransactionIndex: idx,
         type: TYPE_INPUT,
       }),
       type: TYPE_INPUT,
       subtype: getSubtype(issuedOutputs, transaction, output.asset, idx),
       output_transaction_id: transactionID,
-      output_transaction_hash: transaction.txid,
+      output_transaction_hash: transaction.hash,
       output_transaction_index: idx,
       output_block_id: blockIndex,
       asset_id: output.asset,
@@ -81,12 +81,12 @@ function mapReferences(
   inputs: ReadonlyArray<Input>,
 ): ReadonlyArray<TransactionInputOutputModel> {
   return inputs.map((input) => {
-    const inputOutputs = referencesMap[input.txid];
+    const inputOutputs = referencesMap[input.hash];
     if (inputOutputs === undefined) {
       throw new Error('Not found');
     }
 
-    const inputOutput = inputOutputs[input.vout];
+    const inputOutput = inputOutputs[input.index];
     if (inputOutput === undefined) {
       throw new Error('Not found');
     }
@@ -112,7 +112,7 @@ export async function getTransactionDataForClient({
   const ids = [
     ...new Set(
       _.flatMap(transactions, ({ transaction }) => {
-        let inputs = transaction.vin;
+        let inputs = transaction.inputs;
         if (transaction.type === 'ClaimTransaction') {
           inputs = inputs.concat(transaction.claims);
         }
@@ -120,8 +120,8 @@ export async function getTransactionDataForClient({
         return inputs.map((input) =>
           TransactionInputOutputModel.makeID({
             type: TYPE_INPUT,
-            outputTransactionHash: input.txid,
-            outputTransactionIndex: input.vout,
+            outputTransactionHash: input.hash,
+            outputTransactionIndex: input.index,
           }),
         );
       }),
@@ -149,7 +149,7 @@ export async function getTransactionDataForClient({
   }, {});
 
   return transactions.map(({ transactionIndex, transaction }) => {
-    const inputs = mapReferences(referencesMap, transaction.vin);
+    const inputs = mapReferences(referencesMap, transaction.inputs);
     const claims = mapReferences(referencesMap, transaction.type === 'ClaimTransaction' ? transaction.claims : []);
 
     return calculateTransactionData({ context, transaction, transactionIndex, blockIndex, claims, inputs });

@@ -45,10 +45,9 @@ const transferDataSecondary: TransferData = {
 const getInputs = (): TransfersSave => ({
   transactions: [
     {
-      action: data.createLogRaw({
+      action: data.createRawLog({
         index: 0,
         globalIndex: new BigNumber(0),
-        scriptHash: 'hash'.repeat(10),
       }),
       transferData: transferDataInit,
       transactionID: '1'.repeat(16),
@@ -63,10 +62,9 @@ const getInputs = (): TransfersSave => ({
 const getSecondaryInputs = (): TransfersSave => ({
   transactions: [
     {
-      action: data.createLogRaw({
+      action: data.createRawLog({
         index: 0,
         globalIndex: new BigNumber(0),
-        scriptHash: 'hash'.repeat(10),
       }),
       transferData: transferDataSecondary,
       transactionID: '1'.repeat(16),

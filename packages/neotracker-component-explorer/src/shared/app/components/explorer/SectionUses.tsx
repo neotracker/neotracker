@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { AProps, Grid, Link, List } from 'reakit';
+import { Grid, Link, List, styled } from 'reakit';
 import { SectionConfig } from '../../../../types';
-import { styled } from '../../theme';
 import { findSectionUses, getSectionURL } from '../../utils';
 import { WithRenderConfig } from '../render';
 import { SectionContentWrapper } from './SectionContentWrapper';
@@ -24,10 +23,10 @@ const Sections = styled(List)`
   }
 `;
 
-type Props = AProps<typeof Wrapper> & {
+interface Props {
   readonly section: SectionConfig;
   readonly usedBy?: boolean;
-};
+}
 
 export const SectionUses = ({ usedBy, section, ...props }: Props) => {
   const label = usedBy ? 'Used by' : 'Uses';

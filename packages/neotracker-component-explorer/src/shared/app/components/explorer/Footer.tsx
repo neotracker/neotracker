@@ -1,6 +1,6 @@
 import React from 'react';
-import { AProps, Flex, Paragraph } from 'reakit';
-import { styled } from '../../theme';
+import { Flex, Paragraph, styled } from 'reakit';
+import { ComponentProps } from '../../../../types';
 import { ContentWrapper } from './ContentWrapper';
 
 const year = new Date().getFullYear();
@@ -18,10 +18,13 @@ const Wrapper = styled(Flex)`
   }
 `;
 
-export const Footer = (props: AProps<typeof Wrapper>) => (
+export const Footer = (props: ComponentProps<typeof Wrapper>) => (
   <Wrapper {...props}>
     <ContentWrapper column>
-      <Paragraph>Copyright © 2017-{year} NEO Tracker</Paragraph>
+      <Paragraph>
+        Copyright © 2017-
+        {year} NEO Tracker
+      </Paragraph>
     </ContentWrapper>
   </Wrapper>
 );

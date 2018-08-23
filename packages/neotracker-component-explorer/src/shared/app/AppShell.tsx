@@ -1,10 +1,10 @@
 import * as React from 'react';
 import Helmet from 'react-helmet';
-import { Base } from 'reakit';
+import { Base, styled } from 'reakit';
 import { ThemeProvider } from 'styled-components';
 import { RenderConfig } from '../../types';
 import { CodeRevisionProvider, RenderConfigProvider } from './components';
-import { styled, theme } from './theme';
+import { theme } from './theme';
 
 const Root = styled(Base)`
   height: 100%;

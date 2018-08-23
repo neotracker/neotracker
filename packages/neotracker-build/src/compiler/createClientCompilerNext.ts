@@ -98,6 +98,10 @@ export const createClientCompilerNext = ({
       extensions: ['.wasm', '.mjs', '.js', '.json', '.mjsx', '.jsx', '.css', '.ts', '.tsx'],
       alias: createAlias(),
     },
+    node: {
+      fs: 'empty',
+      path: 'empty',
+    },
     parallelism: 16,
     optimization: {
       minimize: !dev,

@@ -1,5 +1,4 @@
-import { Flex } from 'reakit';
-import { styled } from '../../theme';
+import { Flex, styled } from 'reakit';
 
 export const SectionContentWrapper = styled(Flex)`
   @media (max-width: 768px) {

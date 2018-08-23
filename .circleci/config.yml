@@ -18,7 +18,7 @@ aliases:
 
   - &defaults
     docker:
-      - image: neotracker/circleci-test-10.8.0:1
+      - image: neotracker/circleci-test-10.9.0:1
         environment:
           TERM: xterm
         user: postgres

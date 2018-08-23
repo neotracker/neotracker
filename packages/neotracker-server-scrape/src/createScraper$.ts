@@ -1,4 +1,4 @@
-import { abi, NEOONEDataProvider, NetworkType, ReadClient, ReadSmartContract } from '@neo-one/client';
+import { NEOONEDataProvider, nep5, NetworkType, ReadClient, ReadSmartContractAny } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
 import {
   Block as BlockModel,
@@ -191,16 +191,14 @@ export const createScraper$ = ({
       const nep5ContractPairs = await Promise.all(
         contractModels
           .filter((contractModel) => !context.blacklistNEP5Hashes.has(contractModel.id))
-          .map<Promise<[string, ReadSmartContract]>>(async (contractModel) => {
-            const contractABI = await abi.NEP5({
-              client: context.client,
-              hash: add0x(contractModel.id),
-            });
-
-            const contract = context.client.smartContract({
-              hash: add0x(contractModel.id),
-              abi: contractABI,
-            });
+          .map<Promise<[string, ReadSmartContractAny]>>(async (contractModel) => {
+            const decimals = await nep5.getDecimals(context.client, add0x(contractModel.id));
+            const contract: ReadSmartContractAny = nep5.createNEP5ReadSmartContract(
+              context.client,
+              add0x(contractModel.id),
+              decimals,
+              // tslint:disable-next-line no-any
+            ) as any;
 
             return [contractModel.id, contract];
           }),

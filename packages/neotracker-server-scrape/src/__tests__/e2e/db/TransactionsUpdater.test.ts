@@ -11,7 +11,7 @@ interface UnspentOutput extends Output, Input {}
 
 const vinOptionsInit: ReadonlyArray<UnspentOutput> = [
   data.createUnspentOutput(
-    { txid: 'AAAA028c38117ac9e42c8e1f6f06ae027cdbb904eaf1a0bdc30c9d81694e0DDD', vout: 1 },
+    { hash: 'AAAA028c38117ac9e42c8e1f6f06ae027cdbb904eaf1a0bdc30c9d81694e0DDD', index: 1 },
     { value: new BigNumber(6), address: 'XXXEx5f4Zm4oCHwFWiSTaph1fPBxZacAAA' },
   ),
 ];
@@ -22,10 +22,10 @@ const voutOptionsInit: ReadonlyArray<Output> = [
 
 const transactionsInit: ReadonlyArray<ConfirmedTransaction> = [
   data.createConfirmedTransaction({
-    transBase: {
-      vin: vinOptionsInit,
-      vout: voutOptionsInit,
-      txid: 'AAAA028c38117ac9e42c8e1f6f06ae027cdbb904eaf1a0bdc30c9d81694e0CCC',
+    transactionBase: {
+      inputs: vinOptionsInit,
+      outputs: voutOptionsInit,
+      hash: 'AAAA028c38117ac9e42c8e1f6f06ae027cdbb904eaf1a0bdc30c9d81694e0CCC',
     },
     index: 1,
     blockIndex: 1,
@@ -35,7 +35,7 @@ const transactionsInit: ReadonlyArray<ConfirmedTransaction> = [
 
 const vinOptionsSecondary: ReadonlyArray<UnspentOutput> = [
   data.createUnspentOutput(
-    { txid: 'HHHH028c38117ac9e42c8e1f6f06ae027cdbb904eaf1a0bdc30c9d81694e0RRR', vout: 4 },
+    { hash: 'HHHH028c38117ac9e42c8e1f6f06ae027cdbb904eaf1a0bdc30c9d81694e0RRR', index: 4 },
     { value: new BigNumber(6), address: 'XXXEx5f4Zm4oCHwFWiSTaph1fPBxZacBBB' },
   ),
 ];
@@ -46,10 +46,10 @@ const voutOptionsSecondary: ReadonlyArray<Output> = [
 
 const transactionsSecondary: ReadonlyArray<ConfirmedTransaction> = [
   data.createConfirmedTransaction({
-    transBase: {
-      vin: vinOptionsSecondary,
-      vout: voutOptionsSecondary,
-      txid: 'HHHH028c38117ac9e42c8e1f6f06ae027cdbb904eaf1a0bdc30c9d81694e0HHH',
+    transactionBase: {
+      inputs: vinOptionsSecondary,
+      outputs: voutOptionsSecondary,
+      hash: 'HHHH028c38117ac9e42c8e1f6f06ae027cdbb904eaf1a0bdc30c9d81694e0HHH',
     },
     index: 2,
     blockIndex: 2,
@@ -76,14 +76,14 @@ const initiateTest = async (db: Knex, monitor: Monitor) => {
           data.createTransactionInputOutput({
             id: TransactionInputOutput.makeID({
               type: TYPE_INPUT,
-              outputTransactionHash: inOut.txid,
-              outputTransactionIndex: inOut.vout,
+              outputTransactionHash: inOut.hash,
+              outputTransactionIndex: inOut.index,
             }),
             type: TYPE_INPUT,
             output_transaction_id: '1',
             output_block_id: 1,
-            output_transaction_index: inOut.vout,
-            output_transaction_hash: inOut.txid,
+            output_transaction_index: inOut.index,
+            output_transaction_hash: inOut.hash,
             asset_id: inOut.asset,
             value: inOut.value.toString(),
             address_id: inOut.address,
@@ -115,14 +115,14 @@ const secondaryInit = async (db: Knex, monitor: Monitor) => {
           data.createTransactionInputOutput({
             id: TransactionInputOutput.makeID({
               type: TYPE_INPUT,
-              outputTransactionHash: inOut.txid,
-              outputTransactionIndex: inOut.vout,
+              outputTransactionHash: inOut.hash,
+              outputTransactionIndex: inOut.index,
             }),
             type: TYPE_INPUT,
             output_transaction_id: '2',
             output_block_id: 2,
-            output_transaction_index: inOut.vout,
-            output_transaction_hash: inOut.txid,
+            output_transaction_index: inOut.index,
+            output_transaction_hash: inOut.hash,
             asset_id: inOut.asset,
             value: inOut.value.toString(),
             address_id: inOut.address,

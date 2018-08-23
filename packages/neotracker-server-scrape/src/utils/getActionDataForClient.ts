@@ -1,16 +1,17 @@
-import { ActionRaw, scriptHashToAddress } from '@neo-one/client';
+import { addressToScriptHash, RawAction, scriptHashToAddress } from '@neo-one/client';
 import { utils } from '@neotracker/shared-utils';
 import BigNumber from 'bignumber.js';
 import { ActionData, Context } from '../types';
+import { strip0x } from './strip0x';
 
 export function getActionDataForClient({
   context,
   action: actionIn,
 }: {
   readonly context: Context;
-  readonly action: ActionRaw;
-}): ActionData<ActionRaw> {
-  const nep5Contract = context.nep5Contracts[actionIn.scriptHash];
+  readonly action: RawAction;
+}): ActionData<RawAction> {
+  const nep5Contract = context.nep5Contracts[strip0x(addressToScriptHash(actionIn.address))];
   if (nep5Contract === undefined) {
     return { action: actionIn };
   }
@@ -30,28 +31,28 @@ export function getActionDataForClient({
   let fromAddressHash = parameters.from === undefined ? undefined : scriptHashToAddress(parameters.from);
   const toAddressHash = parameters.to === undefined ? undefined : scriptHashToAddress(parameters.to);
   const value = parameters.amount as BigNumber;
-  if (scriptHashToAddress(actionIn.scriptHash) === fromAddressHash) {
+  if (actionIn.address === fromAddressHash) {
     fromAddressHash = undefined;
   }
 
   const result = {
     fromAddressID: fromAddressHash,
     toAddressID: toAddressHash,
-    assetID: actionIn.scriptHash,
+    assetID: strip0x(addressToScriptHash(actionIn.address)),
     transferID: actionIn.globalIndex.toString(),
     coinChanges: [
       fromAddressHash === undefined
         ? undefined
         : {
             address: fromAddressHash,
-            asset: actionIn.scriptHash,
+            asset: strip0x(addressToScriptHash(actionIn.address)),
             value: value.negated(),
           },
       toAddressHash === undefined
         ? undefined
         : {
             address: toAddressHash,
-            asset: actionIn.scriptHash,
+            asset: strip0x(addressToScriptHash(actionIn.address)),
             value,
           },
     ].filter(utils.notNull),

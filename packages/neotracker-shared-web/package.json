@@ -12,9 +12,9 @@
   "license": "MIT",
   "main": "./src/index.js",
   "dependencies": {
-    "@material-ui/core": "^1.4.3",
-    "@neo-one/client": "^1.0.0-alpha.86",
-    "@neo-one/monitor": "^1.0.0-alpha.53",
+    "@material-ui/core": "^1.5.1",
+    "@neo-one/client": "^1.0.0-alpha.90",
+    "@neo-one/monitor": "^1.0.0-alpha.54",
     "@neotracker/shared-utils": "^0.0.1-alpha.0",
     "bignumber.js": "^7.2.0",
     "classnames": "^2.2.6",

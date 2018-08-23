@@ -19,10 +19,10 @@ Object {
   "transfer": Array [
     Object {
       "action_index": 0,
-      "asset_id": "hashhashhashhashhashhashhashhashhashhash",
+      "asset_id": "ab38352559b8b203bde5fddfa0b07d8b25111111",
       "block_id": 10,
       "block_time": 15,
-      "contract_id": "hashhashhashhashhashhashhashhashhashhash",
+      "contract_id": "ab38352559b8b203bde5fddfa0b07d8b25111111",
       "from_address_id": "APyEx5f4Zm4oCHwFWiSTaph1fPBxZacYVR",
       "id": "11111111",
       "to_address_id": "RIPEx5f4Zm4oCHwFWiSTaph1fPBxZacGVX",
@@ -54,10 +54,10 @@ Object {
   "transfer": Array [
     Object {
       "action_index": 0,
-      "asset_id": "hashhashhashhashhashhashhashhashhashhash",
+      "asset_id": "ab38352559b8b203bde5fddfa0b07d8b25111111",
       "block_id": 10,
       "block_time": 15,
-      "contract_id": "hashhashhashhashhashhashhashhashhashhash",
+      "contract_id": "ab38352559b8b203bde5fddfa0b07d8b25111111",
       "from_address_id": "APyEx5f4Zm4oCHwFWiSTaph1fPBxZacYVR",
       "id": "11111111",
       "to_address_id": "RIPEx5f4Zm4oCHwFWiSTaph1fPBxZacGVX",
@@ -89,10 +89,10 @@ Object {
   "transfer": Array [
     Object {
       "action_index": 0,
-      "asset_id": "hashhashhashhashhashhashhashhashhashhash",
+      "asset_id": "ab38352559b8b203bde5fddfa0b07d8b25111111",
       "block_id": 10,
       "block_time": 15,
-      "contract_id": "hashhashhashhashhashhashhashhashhashhash",
+      "contract_id": "ab38352559b8b203bde5fddfa0b07d8b25111111",
       "from_address_id": "APyEx5f4Zm4oCHwFWiSTaph1fPBxZacYVR",
       "id": "11111111",
       "to_address_id": "RIPEx5f4Zm4oCHwFWiSTaph1fPBxZacGVX",
@@ -124,10 +124,10 @@ Object {
   "transfer": Array [
     Object {
       "action_index": 0,
-      "asset_id": "hashhashhashhashhashhashhashhashhashhash",
+      "asset_id": "ab38352559b8b203bde5fddfa0b07d8b25111111",
       "block_id": 10,
       "block_time": 15,
-      "contract_id": "hashhashhashhashhashhashhashhashhashhash",
+      "contract_id": "ab38352559b8b203bde5fddfa0b07d8b25111111",
       "from_address_id": "APyEx5f4Zm4oCHwFWiSTaph1fPBxZacYVR",
       "id": "11111111",
       "to_address_id": "RIPEx5f4Zm4oCHwFWiSTaph1fPBxZacGVX",
@@ -138,10 +138,10 @@ Object {
     },
     Object {
       "action_index": 0,
-      "asset_id": "hashhashhashhashhashhashhashhashhashhash",
+      "asset_id": "ab38352559b8b203bde5fddfa0b07d8b25333333",
       "block_id": 10,
       "block_time": 15,
-      "contract_id": "hashhashhashhashhashhashhashhashhashhash",
+      "contract_id": "ab38352559b8b203bde5fddfa0b07d8b25333333",
       "from_address_id": "APyEx5f4Zm4oCHwFWiSTaph1fPBxZacYVR",
       "id": "22222222",
       "to_address_id": "RIPEx5f4Zm4oCHwFWiSTaph1fPBxZacGVX",
@@ -173,10 +173,10 @@ Object {
   "transfer": Array [
     Object {
       "action_index": 0,
-      "asset_id": "hashhashhashhashhashhashhashhashhashhash",
+      "asset_id": "ab38352559b8b203bde5fddfa0b07d8b25111111",
       "block_id": 10,
       "block_time": 15,
-      "contract_id": "hashhashhashhashhashhashhashhashhashhash",
+      "contract_id": "ab38352559b8b203bde5fddfa0b07d8b25111111",
       "from_address_id": "APyEx5f4Zm4oCHwFWiSTaph1fPBxZacYVR",
       "id": "11111111",
       "to_address_id": "RIPEx5f4Zm4oCHwFWiSTaph1fPBxZacGVX",

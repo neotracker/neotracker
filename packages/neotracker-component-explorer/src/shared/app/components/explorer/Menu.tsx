@@ -1,15 +1,16 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { AProps, Base, Grid, Input, Link, List } from 'reakit';
-import { SectionConfig } from '../../../../types';
-import { styled } from '../../theme';
+import { Base, Grid, Input, Link, List, styled } from 'reakit';
+import { ComponentProps, SectionConfig } from '../../../../types';
 import { MenuContainer } from './MenuContainer';
 
 const Wrapper = styled(Grid)`
   grid-gap: 16px;
 `;
 
-const ListItem = Base.as('li');
+const ListItem = styled(Base.as('li'))`
+  /* stylelint-ignore-next-line */
+`;
 
 const MenuList = styled(List)<{ readonly alwaysVisible: boolean }>`
   ${List} {
@@ -76,7 +77,7 @@ const renderList = (sections: ReadonlyArray<SectionConfig>, prevSlug = '') => {
   );
 };
 
-type Props = AProps<typeof Wrapper> & {
+type Props = ComponentProps<typeof Wrapper> & {
   readonly sections: ReadonlyArray<SectionConfig>;
   readonly showFilter?: boolean;
 };

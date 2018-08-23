@@ -1,10 +1,10 @@
+// tslint:disable no-any
 import _ from 'lodash';
 import * as React from 'react';
 // tslint:disable-next-line no-submodule-imports
 import { MdArrowDownward as ArrowDownIcon, MdArrowUpward as ArrowUpIcon } from 'react-icons/md';
-import { Base, Block, Button, Code, Heading, Hidden, Table } from 'reakit';
+import { Base, Block, Button, Code, Heading, Hidden, styled, Table } from 'reakit';
 import { SectionConfig } from '../../../../types';
-import { styled } from '../../theme';
 import { findSectionPropInfo } from '../../utils';
 import { WithRenderConfig } from '../render';
 import { Icon } from './Icon';
@@ -23,6 +23,7 @@ const HeaderCell = styled(DataCell)`
 
 const StyledHeading = styled(Heading)`
   margin-bottom: 20px;
+
   @media (max-width: 768px) {
     margin-left: 16px;
     margin-right: 16px;
@@ -56,10 +57,10 @@ export const PropsTable = ({ section }: { readonly section: SectionConfig }) => 
 
         return (
           <Block>
-            <StyledHeading<'h2'> as="h2">Props</StyledHeading>
+            <StyledHeading as="h2">Props</StyledHeading>
             {propInfo.map(([compName, info], i) => (
               <Hidden.Container key={`${section.name}${compName}`} initialState={{ visible: i === 0 }}>
-                {({ visible, toggle }) => (
+                {({ visible, toggle }: any) => (
                   <>
                     <Button borderColor="white" backgroundColor="#eee" onClick={toggle} width="100%" borderRadius={0}>
                       {compName}
@@ -79,7 +80,7 @@ export const PropsTable = ({ section }: { readonly section: SectionConfig }) => 
                           </thead>
                           <tbody>
                             {Object.entries(info).map(([name, { type, required, defaultValue, description }]) => (
-                              <Base<'tr'> as="tr" key={name}>
+                              <Base as="tr" key={name}>
                                 <NameCell>{name}</NameCell>
                                 <TypeCell>{type}</TypeCell>
                                 <RequiredCell>{required ? 'Required' : ''}</RequiredCell>

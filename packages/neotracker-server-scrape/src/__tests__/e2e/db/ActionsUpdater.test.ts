@@ -1,4 +1,4 @@
-import { ActionRaw } from '@neo-one/client';
+import { RawAction } from '@neo-one/client';
 import { Database, getDBData, getMonitor, startDB } from '@neotracker/server-test';
 import BigNumber from 'bignumber.js';
 import Knex from 'knex';
@@ -8,7 +8,7 @@ import { data, makeContext } from '../../data';
 
 const monitor = getMonitor();
 
-const createAction = (actionIn: ActionRaw, transactionID: string) => {
+const createAction = (actionIn: RawAction, transactionID: string) => {
   const action = normalizeAction(actionIn);
 
   return {
@@ -38,8 +38,8 @@ describe('ActionsUpdater', () => {
 
     await updater.save(context, monitor, {
       actions: [
-        createAction(data.createLogRaw({ index: 0, globalIndex: new BigNumber(0) }), '0'),
-        createAction(data.createNotificationRaw({ index: 1, globalIndex: new BigNumber(1) }), '0'),
+        createAction(data.createRawLog({ index: 0, globalIndex: new BigNumber(0) }), '0'),
+        createAction(data.createRawNotification({ index: 1, globalIndex: new BigNumber(1) }), '0'),
       ],
     });
 
@@ -51,8 +51,8 @@ describe('ActionsUpdater', () => {
     const context = makeContext({ db });
     const updater = new ActionsUpdater();
     const actions = [
-      createAction(data.createLogRaw({ index: 0, globalIndex: new BigNumber(0) }), '0'),
-      createAction(data.createNotificationRaw({ index: 1, globalIndex: new BigNumber(1) }), '0'),
+      createAction(data.createRawLog({ index: 0, globalIndex: new BigNumber(0) }), '0'),
+      createAction(data.createRawNotification({ index: 1, globalIndex: new BigNumber(1) }), '0'),
     ];
 
     await updater.save(context, monitor, { actions });
@@ -71,8 +71,8 @@ describe('ActionsUpdater', () => {
 
     await updater.save(context, monitor, {
       actions: [
-        createAction(data.createLogRaw({ index: 0, globalIndex: new BigNumber(0) }), '0'),
-        createAction(data.createNotificationRaw({ index: 1, globalIndex: new BigNumber(1) }), '0'),
+        createAction(data.createRawLog({ index: 0, globalIndex: new BigNumber(0) }), '0'),
+        createAction(data.createRawNotification({ index: 1, globalIndex: new BigNumber(1) }), '0'),
       ],
     });
 
@@ -81,8 +81,8 @@ describe('ActionsUpdater', () => {
 
     await updater.save(context, monitor, {
       actions: [
-        createAction(data.createLogRaw({ index: 0, globalIndex: new BigNumber(2) }), '1'),
-        createAction(data.createNotificationRaw({ index: 1, globalIndex: new BigNumber(3) }), '1'),
+        createAction(data.createRawLog({ index: 0, globalIndex: new BigNumber(2) }), '1'),
+        createAction(data.createRawNotification({ index: 1, globalIndex: new BigNumber(3) }), '1'),
       ],
     });
 

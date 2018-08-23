@@ -4,8 +4,7 @@ import React from 'react';
 // tslint:disable-next-line no-submodule-imports
 import { MdOpenInNew as OpenInNewIcon } from 'react-icons/md';
 import { Link as RouterLink } from 'react-router-dom';
-import { Code, Heading, Link, List, Paragraph } from 'reakit';
-import { styled } from '../../theme';
+import { Code, Heading, Link, List, Paragraph, styled } from 'reakit';
 import { Blockquote } from './Blockquote';
 import { Editor } from './Editor';
 

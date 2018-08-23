@@ -325,6 +325,33 @@ exports[`processFile shared/app/components/explorer/ContentWrapper.tsx: displayN
 
 exports[`processFile shared/app/components/explorer/ContentWrapper.tsx: id 1`] = `"packages/neotracker-component-explorer/src/shared/app/components/explorer/ContentWrapper.tsx:ContentWrapper"`;
 
-exports[`processFile shared/app/components/explorer/ContentWrapper.tsx: props 1`] = `Object {}`;
+exports[`processFile shared/app/components/explorer/ContentWrapper.tsx: props 1`] = `
+Object {
+  "children": Object {
+    "defaultValue": undefined,
+    "description": "",
+    "required": false,
+    "type": "ReactNode",
+  },
+  "column": Object {
+    "defaultValue": undefined,
+    "description": "",
+    "required": false,
+    "type": "boolean | undefined",
+  },
+  "innerRef": Object {
+    "defaultValue": undefined,
+    "description": "",
+    "required": false,
+    "type": "((instance: any) => void) | RefObject<HTMLElement | SVGElement | Component<{}, {}, any>> | undefined",
+  },
+  "theme": Object {
+    "defaultValue": undefined,
+    "description": "",
+    "required": false,
+    "type": "any",
+  },
+}
+`;
 
 exports[`processFile shared/app/components/explorer/ContentWrapper.tsx: renderAPI 1`] = `undefined`;

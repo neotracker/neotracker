@@ -1,4 +1,5 @@
-import Github from '@octokit/rest';
+// tslint:disable no-any
+import Github, { ListForRefResponseCheckRunsItem } from '@octokit/rest';
 import { ButterflyWebhookOptions, createButterflyWebhook } from './createButterflyWebhook';
 import { Butterfly, ButterflyWebhook } from './types';
 
@@ -69,7 +70,7 @@ export class ButterflyCIHandler {
           owner: this.owner,
           repo: this.repo,
           status: 'queued',
-        });
+        } as any);
       }),
     );
   }
@@ -152,7 +153,9 @@ ${error.stack}
       check_name: name,
     });
 
-    const checkRun = checkRunResponse.data.check_runs[checkRunResponse.data.check_runs.length - 1];
+    const checkRun = checkRunResponse.data.check_runs[checkRunResponse.data.check_runs.length - 1] as
+      | ListForRefResponseCheckRunsItem
+      | undefined;
     if (checkRun === undefined) {
       throw new Error(`Could not find existing check run for ${name}`);
     }

@@ -1,9 +1,10 @@
+// tslint:disable no-any
 import React from 'react';
-import { Container, ContainerChildren, StateWithSetState } from 'reakit';
+import { Container } from 'reakit';
 
 function setState<State>(state: Partial<State>) {
-  return (props: StateWithSetState<State>) => {
-    props.setState(state);
+  return (props: any) => {
+    props.setState({ state });
   };
 }
 
@@ -12,11 +13,9 @@ export function WithState<State>({
   children,
 }: {
   readonly initialState: State;
-  readonly children?: ContainerChildren<
-    State,
-    {},
-    { readonly setState: (state: Partial<State>) => (props: StateWithSetState<State>) => void }
-  >;
+  readonly children?: (
+    props: { readonly state: State; readonly setState: (state: Partial<State>) => void },
+  ) => React.ReactNode;
 }) {
-  return <Container effects={{ setState }} initialState={initialState} children={children} />;
+  return <Container effects={{ setState } as any} initialState={{ state: initialState }} children={children as any} />;
 }

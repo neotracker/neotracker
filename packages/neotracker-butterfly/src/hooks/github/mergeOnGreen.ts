@@ -36,7 +36,9 @@ export const mergeOnGreen = async (
     prsSet.map(async (issueNumber) => {
       const issue = await api.issues.get({ owner, repo, number: issueNumber });
 
-      const mergeLabel = issue.data.labels.find((l: Label['label']) => l.name === LABEL_NAME);
+      const labels = issue.data.labels === undefined ? [] : issue.data.labels;
+
+      const mergeLabel = labels.find((l: Label['label']) => l.name === LABEL_NAME);
       if (!mergeLabel) {
         butterfly.log.verbose('PR does not have Merge on Green');
 

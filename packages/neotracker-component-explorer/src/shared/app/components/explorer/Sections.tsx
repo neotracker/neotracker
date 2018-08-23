@@ -1,6 +1,6 @@
 import React from 'react';
 import { Redirect, Route, RouteComponentProps } from 'react-router';
-import { styled } from '../../theme';
+import { styled } from 'reakit';
 import { flattenSections, getSectionURL, hasContent } from '../../utils';
 import { CoreLayout } from '../layouts';
 import { WithRenderConfig } from '../render';

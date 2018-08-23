@@ -1,7 +1,11 @@
 import * as React from 'react';
-import { Blockquote, BlockquoteProps } from 'reakit';
+import { Blockquote } from 'reakit';
 import { createTestContext } from '../../shared/test/createTestContext';
 import { PExample } from '../../types';
+
+interface BlockquoteProps {
+  readonly children: React.ReactNode;
+}
 
 const defaultFixtureData = { oldFixtureData: 'old' };
 const example: PExample<BlockquoteProps> = {

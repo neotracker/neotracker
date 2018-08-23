@@ -1,11 +1,11 @@
 import {
-  ActionRaw,
   Asset,
   ConfirmedTransaction,
   Contract,
   NEOONEDataProvider,
+  RawAction,
   ReadClient,
-  ReadSmartContract,
+  ReadSmartContractAny,
 } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
 import {
@@ -70,7 +70,7 @@ export interface Context {
   readonly prevBlockData: BlockData | undefined;
   readonly currentHeight: number | undefined;
   readonly systemFee: IWriteCache<number, BigNumber, SystemFeeSave, number>;
-  readonly nep5Contracts: { readonly [K in string]?: ReadSmartContract };
+  readonly nep5Contracts: { readonly [K in string]?: ReadSmartContractAny };
   readonly chunkSize: number;
   readonly processedIndexPubSub: PubSub<{ readonly index: number }>;
   readonly client: ReadClient<NEOONEDataProvider>;
@@ -134,7 +134,7 @@ export interface TransactionData extends InputOutputResult {
     readonly value: string;
     readonly address_id: string;
   }>;
-  readonly actionDatas: ReadonlyArray<ActionData<ActionRaw>>;
+  readonly actionDatas: ReadonlyArray<ActionData<RawAction>>;
   readonly transaction: ConfirmedTransaction;
   readonly transactionHash: string;
   readonly transactionID: string;
@@ -154,7 +154,7 @@ export interface TransactionModelData extends InputOutputResult {
 }
 
 export interface ContractActionData extends InputOutputResult {
-  readonly actionData: ActionData<ActionRaw>;
+  readonly actionData: ActionData<RawAction>;
   readonly transactionHash: string;
   readonly transactionID: string;
   readonly transactionIndex: number;

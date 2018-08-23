@@ -1,12 +1,12 @@
 import React from 'react';
-import { AProps, Block, Code, Heading, Paragraph, Table } from 'reakit';
+import { Block, Code, Heading, Paragraph, Table } from 'reakit';
 import { SectionConfig } from '../../../../types';
 import { SectionContentWrapper } from './SectionContentWrapper';
 import { TableWrapper } from './TableWrapper';
 
-type Props = AProps<Block> & {
+interface Props {
   readonly section: SectionConfig;
-};
+}
 
 export const RenderAPITable = ({ section, ...props }: Props) => {
   if (section.type !== 'component') {
@@ -24,7 +24,7 @@ export const RenderAPITable = ({ section, ...props }: Props) => {
   return (
     <Block {...props}>
       <SectionContentWrapper column>
-        <Heading<'h2'> as="h2">API</Heading>
+        <Heading as="h2">API</Heading>
         <Paragraph>
           Props passed to <Code>children</Code>.
         </Paragraph>

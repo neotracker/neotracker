@@ -1,9 +1,8 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Redirect, RouteComponentProps } from 'react-router';
-import { Base, Block, Heading } from 'reakit';
+import { Base, Block, Heading, styled } from 'reakit';
 import { assertNever } from '../../../utils';
-import { styled } from '../../theme';
 import { findNonEmptySiblingSection, findSectionByLocation, getSectionContent, getSectionURL } from '../../utils';
 import { WithCodeRevision, WithRenderConfig } from '../render';
 import { Markdown } from './Markdown';

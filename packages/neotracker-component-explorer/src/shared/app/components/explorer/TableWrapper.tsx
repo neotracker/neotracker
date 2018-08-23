@@ -1,5 +1,4 @@
-import { Block } from 'reakit';
-import { styled } from '../../theme';
+import { Block, styled } from 'reakit';
 
 export const TableWrapper = styled(Block)`
   width: 100%;

@@ -20,8 +20,8 @@ export function getInputOutputResultForClient({
   // tslint:disable-next-line no-any
   readonly actionDatas: ReadonlyArray<ActionData<any>>;
 }): InputOutputResult {
-  const transactionID = transaction.data.globalIndex.toString();
-  const transactionHash = transaction.txid;
+  const transactionID = transaction.receipt.globalIndex.toString();
+  const transactionHash = transaction.hash;
   const addressData = {
     startTransactionID: transactionID,
     startTransactionIndex: transactionIndex,
@@ -39,9 +39,9 @@ export function getInputOutputResultForClient({
   };
 
   const outputsResult = {
-    addressIDs: _.fromPairs(transaction.vout.map((output) => [output.address, addressData])),
-    assetIDs: transaction.vout.map((output) => output.asset),
-    coinChanges: transaction.vout.map((output) => ({
+    addressIDs: _.fromPairs(transaction.outputs.map((output) => [output.address, addressData])),
+    assetIDs: transaction.outputs.map((output) => output.asset),
+    coinChanges: transaction.outputs.map((output) => ({
       address: output.address,
       asset: output.asset,
       value: new BigNumber(output.value),
@@ -62,11 +62,11 @@ export function getInputOutputResultForClient({
 
   let assetsResult = EMPTY_INPUT_OUTPUT_RESULT;
   if (transaction.type === 'RegisterTransaction') {
-    assetsResult = { addressIDs: _.fromPairs([[transaction.asset.admin, addressData]]), assetIDs: [transaction.txid] };
+    assetsResult = { addressIDs: _.fromPairs([[transaction.asset.admin, addressData]]), assetIDs: [transaction.hash] };
   } else if (transaction.type === 'InvocationTransaction' && transaction.invocationData.asset !== undefined) {
     assetsResult = {
       addressIDs: _.fromPairs([[transaction.invocationData.asset.admin, addressData]]),
-      assetIDs: [transaction.txid],
+      assetIDs: [transaction.hash],
     };
   }
 

@@ -1,12 +1,14 @@
 import {
+  addressToScriptHash,
   Block,
   ConfirmedTransaction,
   ConfirmedTransactionBase,
   Header,
   Input,
-  LogRaw,
-  NotificationRaw,
   Output,
+  RawLog,
+  RawNotification,
+  scriptHashToAddress,
   StringContractParameter,
   TransactionBase,
 } from '@neo-one/client';
@@ -77,7 +79,7 @@ let defaultTransactionHash = defaults[currentBlock].defaultTransactionHash;
 let defaultTransactionIndex = defaults[currentBlock].defaultTransactionIndex;
 let defaultAddressID = defaults[currentBlock].defaultAddressID;
 let defaultAssetID = defaults[currentBlock].defaultAssetID;
-let defaultScriptHash = defaults[currentBlock].defaultScriptHash;
+let defaultScriptHash = scriptHashToAddress(defaults[currentBlock].defaultScriptHash);
 // tslint:enable no-let
 
 export const nextBlock = () => {
@@ -89,7 +91,7 @@ export const nextBlock = () => {
   defaultTransactionIndex = defaults[currentBlock].defaultTransactionIndex;
   defaultAddressID = defaults[currentBlock].defaultAddressID;
   defaultAssetID = defaults[currentBlock].defaultAssetID;
-  defaultScriptHash = defaults[currentBlock].defaultScriptHash;
+  defaultScriptHash = scriptHashToAddress(defaults[currentBlock].defaultScriptHash);
 };
 
 const defaultStringValue = 'foobar';
@@ -102,7 +104,7 @@ export const createStringContractParameter = ({
   value,
 });
 
-export const createNotificationRaw = ({
+export const createRawNotification = ({
   version = 0,
   blockIndex = defaultBlockIndex,
   blockHash = defaultBlockHash,
@@ -110,9 +112,9 @@ export const createNotificationRaw = ({
   transactionHash = defaultTransactionHash,
   index,
   globalIndex,
-  scriptHash = defaultScriptHash,
+  address = defaultScriptHash,
   args = [createStringContractParameter({})],
-}: Partial<NotificationRaw> & Pick<NotificationRaw, 'globalIndex' | 'index'>): NotificationRaw => ({
+}: Partial<RawNotification> & Pick<RawNotification, 'globalIndex' | 'index'>): RawNotification => ({
   type: 'Notification',
   version,
   blockIndex,
@@ -121,11 +123,11 @@ export const createNotificationRaw = ({
   transactionHash,
   index,
   globalIndex,
-  scriptHash,
+  address,
   args,
 });
 
-export const createLogRaw = ({
+export const createRawLog = ({
   version = 0,
   blockIndex = defaultBlockIndex,
   blockHash = defaultBlockHash,
@@ -133,9 +135,9 @@ export const createLogRaw = ({
   transactionHash = defaultTransactionHash,
   index,
   globalIndex,
-  scriptHash = defaultScriptHash,
+  address = defaultScriptHash,
   message = defaultStringValue,
-}: Partial<LogRaw> & Pick<LogRaw, 'globalIndex' | 'index'>): LogRaw => ({
+}: Partial<RawLog> & Pick<RawLog, 'globalIndex' | 'index'>): RawLog => ({
   type: 'Log',
   version,
   blockIndex,
@@ -144,7 +146,7 @@ export const createLogRaw = ({
   transactionHash,
   index,
   globalIndex,
-  scriptHash,
+  address,
   message,
 });
 
@@ -293,7 +295,7 @@ export const createTransaction = ({
   block_id = defaultBlockIndex,
   block_time = 15,
   index = defaultBlockIndex,
-  scripts_raw = defaultScriptHash,
+  scripts_raw = addressToScriptHash(defaultScriptHash),
 }: Partial<TransactionModel> & Pick<TransactionModel, 'id'>): Partial<TransactionModel> => ({
   id,
   hash,
@@ -375,21 +377,21 @@ const createBlockHeader = ({
 
 const createTransactionBase = ({
   version = 0,
-  txid = defaultStaticHash,
+  hash = defaultStaticHash,
   size = 10,
   attributes = [],
-  vin = [],
-  vout = [],
+  inputs = [],
+  outputs = [],
   scripts = [],
   systemFee = new BigNumber(0),
   networkFee = new BigNumber(0),
 }: Partial<TransactionBase>): TransactionBase => ({
   version,
-  txid,
+  hash,
   size,
   attributes,
-  vin,
-  vout,
+  inputs,
+  outputs,
   scripts,
   systemFee,
   networkFee,
@@ -406,7 +408,7 @@ const createConfirmedTransactionBase = ({
   readonly index?: number;
   readonly globalIndex?: BigNumber;
 }): ConfirmedTransactionBase => ({
-  data: {
+  receipt: {
     blockHash,
     blockIndex,
     index,
@@ -414,9 +416,9 @@ const createConfirmedTransactionBase = ({
   },
 });
 
-export const createInput = ({ txid = defaultStaticHash, vout = 1 }: Partial<Input>): Input => ({
-  txid,
-  vout,
+export const createInput = ({ hash = defaultStaticHash, index = 1 }: Partial<Input>): Input => ({
+  hash,
+  index,
 });
 
 export const createOutput = ({
@@ -436,7 +438,7 @@ export const createUnspentOutput = (inputData: Partial<Input> = {}, outputData: 
 
 export const createConfirmedTransaction = ({
   type = 'ContractTransaction',
-  transBase = {},
+  transactionBase = {},
   blockHash,
   blockIndex,
   index,
@@ -444,7 +446,7 @@ export const createConfirmedTransaction = ({
   typeOptions = {},
 }: {
   readonly type?: string;
-  readonly transBase: Partial<TransactionBase>;
+  readonly transactionBase: Partial<TransactionBase>;
   readonly blockHash?: string;
   readonly blockIndex?: number;
   readonly index?: number;
@@ -452,7 +454,7 @@ export const createConfirmedTransaction = ({
   // tslint:disable-next-line no-any
   readonly typeOptions?: any;
 }) => ({
-  ...createTransactionBase(transBase),
+  ...createTransactionBase(transactionBase),
   ...createConfirmedTransactionBase({
     blockHash,
     blockIndex,

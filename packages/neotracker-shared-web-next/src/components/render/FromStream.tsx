@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { Observable, Subscription } from 'rxjs';
 
+// tslint:disable-next-line no-null-keyword
+const initialValue = Symbol.for('initialValue');
+
 interface Props<T> {
   /* Stream of props to render */
   readonly props$: Observable<T>;
@@ -8,8 +11,27 @@ interface Props<T> {
   readonly children: (props: T) => React.ReactNode;
 }
 interface State<T> {
-  readonly value?: T;
+  readonly value: T | typeof initialValue;
 }
+/**
+ * Renders a stream of `Observable` data.
+ *
+ * The `props$` `Observable` is immediately subscribed on mount so the first render will include any data the observable immediately resolves with. This can be used to render a loading state in combination with `concat` and `of`. See example below.
+ *
+ * @example
+ * import { concat, defer, of as _of } from 'rxjs';
+ *
+ * <FromStream
+ *  props$={concat(
+ *    _of(undefined),
+ *    defer(async () => loadData()),
+ *  )}
+ * >
+ *  {(data) => data === undefined
+ *    ? <Loading />
+ *    : <Component data={data} />}
+ * </FromStream>
+ */
 export class FromStream<T> extends React.Component<Props<T>, State<T>> {
   // tslint:disable-next-line readonly-keyword
   public state: State<T>;
@@ -19,7 +41,9 @@ export class FromStream<T> extends React.Component<Props<T>, State<T>> {
   public constructor(props: Props<T>) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      value: initialValue,
+    };
     this.subscribe();
     this.mutableMounted = true;
   }
@@ -37,13 +61,9 @@ export class FromStream<T> extends React.Component<Props<T>, State<T>> {
 
   public render(): React.ReactNode {
     const { value } = this.state;
-    if (value === undefined) {
+    if (value === initialValue) {
       // tslint:disable-next-line no-null-keyword
       return null;
-    }
-
-    if (process.env.BUILD_FLAG_IS_SERVER) {
-      this.unsubscribe();
     }
 
     return this.props.children(value);
@@ -60,11 +80,11 @@ export class FromStream<T> extends React.Component<Props<T>, State<T>> {
     });
 
     if (!stateSet) {
-      this._setValue();
+      this._setValue(initialValue);
     }
   }
 
-  private _setValue(value?: T): void {
+  private _setValue(value: T | typeof initialValue): void {
     if (this.mutableMounted) {
       this.setState(() => ({ value }));
     } else {

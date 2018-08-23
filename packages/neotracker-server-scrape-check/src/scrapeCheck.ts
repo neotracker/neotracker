@@ -1,10 +1,10 @@
 import {
-  abi,
   addressToScriptHash,
   NEOONEDataProvider,
+  nep5,
   NetworkType,
   ReadClient,
-  ReadSmartContract,
+  ReadSmartContractAny,
 } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
 import {
@@ -41,10 +41,11 @@ const getSmartContract = async ({
 }: {
   readonly asset: string;
   readonly client: ReadClient<NEOONEDataProvider>;
-}): Promise<ReadSmartContract> => {
-  const nep5ABI = await abi.NEP5({ client, hash: add0x(asset) });
+}): Promise<ReadSmartContractAny> => {
+  const decimals = await nep5.getDecimals(client, add0x(asset));
 
-  return client.smartContract({ hash: add0x(asset), abi: nep5ABI });
+  // tslint:disable-next-line no-any
+  return nep5.createNEP5ReadSmartContract(client, add0x(asset), decimals) as any;
 };
 
 const getSmartContracts = async ({
@@ -55,7 +56,7 @@ const getSmartContracts = async ({
   readonly monitor: Monitor;
   readonly db: Knex;
   readonly client: ReadClient<NEOONEDataProvider>;
-}): Promise<{ readonly [asset: string]: ReadSmartContract }> => {
+}): Promise<{ readonly [asset: string]: ReadSmartContractAny }> => {
   const nep5Assets = await AssetModel.query(db)
     .context(makeAllPowerfulQueryContext(monitor))
     .where('type', NEP5_CONTRACT_TYPE);
@@ -64,7 +65,7 @@ const getSmartContracts = async ({
     nep5Hashes.map(async (nep5Hash) => getSmartContract({ asset: nep5Hash, client })),
   );
 
-  return utils.zip(nep5Hashes, smartContractArray).reduce<{ readonly [asset: string]: ReadSmartContract }>(
+  return utils.zip(nep5Hashes, smartContractArray).reduce<{ readonly [asset: string]: ReadSmartContractAny }>(
     (acc, [nep5Hash, smartContract]) => ({
       ...acc,
       [nep5Hash]: smartContract,
@@ -94,7 +95,7 @@ const getNEP5CoinBalance = async ({
   address,
   asset,
 }: {
-  readonly smartContracts: { readonly [asset: string]: ReadSmartContract };
+  readonly smartContracts: { readonly [asset: string]: ReadSmartContractAny };
   readonly address: string;
   readonly asset: string;
 }): Promise<BigNumber | undefined> => smartContracts[asset].balanceOf(addressToScriptHash(address));
@@ -107,10 +108,10 @@ const getCoinBalance = async ({
 }: {
   readonly coinModel: CoinModel;
   readonly client: ReadClient<NEOONEDataProvider>;
-  readonly smartContracts: { readonly [asset: string]: ReadSmartContract };
+  readonly smartContracts: { readonly [asset: string]: ReadSmartContractAny };
   readonly monitor: Monitor;
 }): Promise<BigNumber | undefined> => {
-  if ((smartContracts[coinModel.asset_id] as ReadSmartContract | undefined) !== undefined) {
+  if ((smartContracts[coinModel.asset_id] as ReadSmartContractAny | undefined) !== undefined) {
     return getNEP5CoinBalance({
       smartContracts,
       address: coinModel.address_id,
@@ -139,7 +140,7 @@ const getNodeBalances = async ({
 }: {
   readonly coins: ReadonlyArray<CoinModel>;
   readonly client: ReadClient<NEOONEDataProvider>;
-  readonly smartContracts: { readonly [asset: string]: ReadSmartContract };
+  readonly smartContracts: { readonly [asset: string]: ReadSmartContractAny };
   readonly monitor: Monitor;
 }): Promise<ReadonlyArray<CoinAndBalance>> => {
   const nodeBalances = await Promise.all(
@@ -182,7 +183,7 @@ const logCoinMismatch = async ({
 }: {
   readonly coinModel: CoinModel;
   readonly client: ReadClient<NEOONEDataProvider>;
-  readonly smartContracts: { readonly [asset: string]: ReadSmartContract };
+  readonly smartContracts: { readonly [asset: string]: ReadSmartContractAny };
   readonly db: Knex;
   readonly secondTry: boolean;
   readonly monitor: Monitor;
@@ -264,7 +265,7 @@ const checkCoins = async ({
   readonly client: ReadClient<NEOONEDataProvider>;
   readonly offset?: number;
   readonly options: Options;
-  readonly smartContracts: { readonly [asset: string]: ReadSmartContract };
+  readonly smartContracts: { readonly [asset: string]: ReadSmartContractAny };
 }): Promise<number | undefined> => {
   const coins = await CoinModel.query(db)
     .context(makeAllPowerfulQueryContext(monitor))

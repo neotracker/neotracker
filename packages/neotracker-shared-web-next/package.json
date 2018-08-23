@@ -12,10 +12,10 @@
   "license": "MIT",
   "main": "./src/index.ts",
   "dependencies": {
-    "@neo-one/client": "^1.0.0-alpha.86",
-    "@neo-one/monitor": "^1.0.0-alpha.53",
+    "@neo-one/client": "^1.0.0-alpha.90",
+    "@neo-one/monitor": "^1.0.0-alpha.54",
     "@neotracker/shared-utils": "0.0.1-alpha.0",
-    "apollo-client": "^2.3.8",
+    "apollo-client": "^2.4.0",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.2",
     "lodash": "^4.17.10",
@@ -25,9 +25,9 @@
     "react-known-props": "^2.3.1",
     "react-loadable": "^5.5.0",
     "react-router": "^4.3.1",
-    "reakit": "^0.14.0",
+    "reakit": "^0.14.4",
     "rxjs": "^6.2.2",
-    "styled-components": "^3.4.2"
+    "styled-components": "^3.4.5"
   },
   "devDependencies": {
     "@neotracker/component-explorer": "^0.0.1-alpha.0",
@@ -36,8 +36,8 @@
     "apollo-link-schema": "^1.1.0",
     "faker": "^4.1.0",
     "graphql-tools": "^3.1.1",
-    "source-map-support": "^0.5.8",
-    "ts-node": "^7.0.0"
+    "source-map-support": "^0.5.9",
+    "ts-node": "^7.0.1"
   },
   "sideEffects": false
 }

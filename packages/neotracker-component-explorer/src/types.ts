@@ -170,3 +170,9 @@ export interface LoaderRenderConfig {
   readonly typescript: ReadonlyArray<LoaderTypescriptConfig>;
   readonly proxies: ReadonlyArray<Proxy>;
 }
+
+export type ComponentProps<C extends React.ComponentType<any> | React.Component<any>> = C extends React.ComponentType<
+  infer P
+>
+  ? P
+  : C extends React.Component<infer P1> ? P1 : never;

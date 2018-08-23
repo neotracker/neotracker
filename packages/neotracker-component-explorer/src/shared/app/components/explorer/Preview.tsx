@@ -1,11 +1,10 @@
 // @ts-ignore
 import pretty from 'pretty';
 import * as React from 'react';
-import { Block } from 'reakit';
+import { Block, styled } from 'reakit';
 import { interval, Subscription } from 'rxjs';
 import { EvalInContext, Proxy } from '../../../../types';
 import { createDOMContext } from '../../../dom';
-import { styled } from '../../theme';
 import { compileComponent } from '../../utils';
 import { Editor } from './Editor';
 
@@ -110,7 +109,7 @@ export class Preview extends React.Component<Props, State> {
     return (
       <React.Fragment>
         {error ? (
-          <FontSizeBlock<'pre'> as="pre" color="red">
+          <FontSizeBlock as="pre" color="red">
             {error}
           </FontSizeBlock>
         ) : (

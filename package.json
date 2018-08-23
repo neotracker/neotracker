@@ -129,7 +129,7 @@
     "typescript-styled-plugin": "0.10.0"
   },
   "engines": {
-    "node": "^10.8.0"
+    "node": "^10.9.0"
   },
   "husky": {
     "hooks": {

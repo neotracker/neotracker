@@ -12,10 +12,10 @@
   "license": "MIT",
   "main": "./src/index.ts",
   "dependencies": {
-    "@neo-one/monitor": "^1.0.0-alpha.53",
+    "@neo-one/monitor": "^1.0.0-alpha.54",
     "@neotracker/shared-utils": "^0.0.1-alpha.0",
     "chokidar": "^2.0.3",
-    "execa": "^0.10.0",
+    "execa": "^0.11.0",
     "is-running": "^2.1.0",
     "koa": "^2.5.2",
     "rxjs": "^6.2.2",

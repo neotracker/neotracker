@@ -4,9 +4,9 @@
   "description": "NEO Tracker butterfly events.",
   "main": "./src/index.ts",
   "dependencies": {
-    "@octokit/rest": "^15.9.5",
+    "@octokit/rest": "^15.10.0",
     "cross-fetch": "^2.2.2",
-    "execa": "^0.10.0",
+    "execa": "^0.11.0",
     "fs-extra": "^7.0.0",
     "github-webhook-event-types": "^1.1.0",
     "jsonwebtoken": "^8.3.0",

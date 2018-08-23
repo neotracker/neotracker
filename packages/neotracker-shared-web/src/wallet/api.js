@@ -11,8 +11,7 @@ import {
   type PrivateKeyString,
   type UnlockedLocalWallet,
   type UserAccountID,
-  abi,
-  addressToScriptHash,
+  nep5,
   privateKeyToAddress,
   isNEP2 as clientIsNEP2,
 } from '@neo-one/client';
@@ -369,20 +368,21 @@ export const doSendAsset = async ({
   const transactionOptions = { from: account };
 
   if (assetType === 'NEP5') {
-    const contractABI = await abi.NEP5({ client: readClient, hash: asset });
-    const contract = client.smartContract({
-      networks: { [network]: { hash: asset } },
-      abi: contractABI,
-    });
+    const decimals = await nep5.getDecimals(readClient, asset);
+    const contract = nep5.createNEP5SmartContract(
+      client,
+      { [network]: { hash: asset } },
+      decimals,
+    );
 
     const result = await contract.transfer(
-      addressToScriptHash(account.address),
-      addressToScriptHash(toAddress),
+      account.address,
+      toAddress,
       amount,
       transactionOptions,
     );
 
-    return strip0x(result.transaction.txid);
+    return strip0x(result.transaction.hash);
   }
 
   const result = await client.transfer(
@@ -392,7 +392,7 @@ export const doSendAsset = async ({
     transactionOptions,
   );
 
-  return result.transaction.txid;
+  return strip0x(result.transaction.hash);
 };
 
 export type ClaimAllGASProgress =
@@ -451,7 +451,7 @@ export const claimAllGAS = ({
           );
           callOnProgress({
             type: 'spend-all-confirming',
-            hash: strip0x(result.transaction.txid),
+            hash: strip0x(result.transaction.hash),
           });
           await result.confirmed({
             timeoutMS: appOptions.confirmLimitMS,
@@ -467,7 +467,7 @@ export const claimAllGAS = ({
           const result = await client.claim(transactionOptions);
           callOnProgress({
             type: 'claim-gas-confirming',
-            hash: strip0x(result.transaction.txid),
+            hash: strip0x(result.transaction.hash),
           });
           await result.confirmed({
             timeoutMS: appOptions.confirmLimitMS,

@@ -6,7 +6,7 @@ import _ from 'lodash';
 import React from 'react';
 // @ts-ignore
 import { Controlled as ControlledCodeMirror, UnControlled as CodeMirror } from 'react-codemirror2';
-import { styled } from '../../theme';
+import { styled } from 'reakit';
 import { WithRenderConfig, WithViewport } from '../render';
 import './theme/vscode-dark-plus-html.css';
 import './theme/vscode-dark-plus.css';

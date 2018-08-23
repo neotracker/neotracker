@@ -1,4 +1,4 @@
-import { addressToScriptHash, ReadSmartContract } from '@neo-one/client';
+import { addressToScriptHash, ReadSmartContractAny } from '@neo-one/client';
 import { metrics, Monitor } from '@neo-one/monitor';
 import { Asset as AssetModel, Coin as CoinModel } from '@neotracker/server-db';
 import { labels } from '@neotracker/shared-utils';
@@ -13,7 +13,7 @@ const fetchNegativeCoins = async (context: Context, monitor: Monitor) =>
     .context(context.makeQueryContext(monitor))
     .where('value', '<', 0);
 
-const updateCoin = async (context: Context, monitor: Monitor, contract: ReadSmartContract, coin: CoinModel) => {
+const updateCoin = async (context: Context, monitor: Monitor, contract: ReadSmartContractAny, coin: CoinModel) => {
   NEOTRACKER_NEGATIVE_COIN_TOTAL.inc();
   const balance = await contract.balanceOf(addressToScriptHash(coin.address_id), monitor);
 
@@ -27,7 +27,7 @@ const repairAssetSupply = async (
   context: Context,
   monitor: Monitor,
   assetHash: string,
-  contract: ReadSmartContract,
+  contract: ReadSmartContractAny,
 ) => {
   let issued;
   try {

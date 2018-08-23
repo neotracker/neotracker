@@ -1,5 +1,4 @@
 import {
-  ActionRaw,
   Asset,
   Attribute,
   Block,
@@ -8,6 +7,7 @@ import {
   ContractParameter,
   Input,
   Output,
+  RawAction,
   RawInvocationData,
   RawInvocationResult,
 } from '@neo-one/client';
@@ -22,8 +22,8 @@ export const normalizeHash = (hash: string): string => {
 };
 
 const normalizeInput = (input: Input): Input => ({
-  txid: normalizeHash(input.txid),
-  vout: input.vout,
+  hash: normalizeHash(input.hash),
+  index: input.index,
 });
 
 const normalizeOutput = (output: Output): Output => ({
@@ -40,7 +40,7 @@ const normalizeAttribute = (attribute: Attribute): Attribute => ({
 
 const normalizeContract = (contract: Contract): Contract => ({
   version: contract.version,
-  hash: normalizeHash(contract.hash),
+  address: contract.address,
   script: contract.script,
   parameters: contract.parameters,
   returnType: contract.returnType,
@@ -49,7 +49,9 @@ const normalizeContract = (contract: Contract): Contract => ({
   author: contract.author,
   email: contract.email,
   description: contract.description,
-  properties: contract.properties,
+  storage: contract.storage,
+  dynamicInvoke: contract.dynamicInvoke,
+  payable: contract.payable,
 });
 
 const normalizeContractParameter = (contractParameter: ContractParameter): ContractParameter => {
@@ -72,10 +74,10 @@ const normalizeContractParameter = (contractParameter: ContractParameter): Contr
         value: contractParameter.value,
       };
 
-    case 'Hash160':
+    case 'Address':
       return {
-        type: 'Hash160',
-        value: normalizeHash(contractParameter.value),
+        type: 'Address',
+        value: contractParameter.value,
       };
 
     case 'Hash256':
@@ -84,9 +86,9 @@ const normalizeContractParameter = (contractParameter: ContractParameter): Contr
         value: normalizeHash(contractParameter.value),
       };
 
-    case 'ByteArray':
+    case 'Buffer':
       return {
-        type: 'ByteArray',
+        type: 'Buffer',
         value: contractParameter.value,
       };
 
@@ -124,7 +126,7 @@ const normalizeContractParameter = (contractParameter: ContractParameter): Contr
   }
 };
 
-export const normalizeAction = (action: ActionRaw): ActionRaw => {
+export const normalizeAction = (action: RawAction): RawAction => {
   switch (action.type) {
     case 'Log':
       return {
@@ -136,7 +138,7 @@ export const normalizeAction = (action: ActionRaw): ActionRaw => {
         transactionHash: normalizeHash(action.transactionHash),
         index: action.index,
         globalIndex: action.globalIndex,
-        scriptHash: normalizeHash(action.scriptHash),
+        address: action.address,
         message: action.message,
       };
 
@@ -150,7 +152,7 @@ export const normalizeAction = (action: ActionRaw): ActionRaw => {
         transactionHash: normalizeHash(action.transactionHash),
         index: action.index,
         globalIndex: action.globalIndex,
-        scriptHash: normalizeHash(action.scriptHash),
+        address: action.address,
         args: action.args.map(normalizeContractParameter),
       };
 
@@ -201,30 +203,25 @@ const normalizeInvocationData = (data: RawInvocationData): RawInvocationData => 
   result: normalizeInvocationResult(data.result),
   asset: data.asset === undefined ? data.asset : normalizeAsset(data.asset),
   contracts: data.contracts.map(normalizeContract),
-  deletedContractHashes: data.deletedContractHashes.map(normalizeHash),
-  migratedContractHashes: data.migratedContractHashes.map<[string, string]>(([hash0, hash1]) => [
-    normalizeHash(hash0),
-    normalizeHash(hash1),
-  ]),
-  voteUpdates: data.voteUpdates,
+  deletedContractAddresses: data.deletedContractAddresses,
+  migratedContractAddresses: data.migratedContractAddresses,
   actions: data.actions.map(normalizeAction),
 });
 
 const normalizeTransaction = (transaction: ConfirmedTransaction): ConfirmedTransaction => {
   const transactionBase = {
-    txid: normalizeHash(transaction.txid),
+    hash: normalizeHash(transaction.hash),
     size: transaction.size,
     version: transaction.version,
     attributes: transaction.attributes.map(normalizeAttribute),
-
-    vin: transaction.vin.map(normalizeInput),
-    vout: transaction.vout.map(normalizeOutput),
+    inputs: transaction.inputs.map(normalizeInput),
+    outputs: transaction.outputs.map(normalizeOutput),
     scripts: transaction.scripts,
     systemFee: transaction.systemFee,
     networkFee: transaction.networkFee,
-    data: {
-      ...transaction.data,
-      blockHash: normalizeHash(transaction.data.blockHash),
+    receipt: {
+      ...transaction.receipt,
+      blockHash: normalizeHash(transaction.receipt.blockHash),
     },
   };
 
@@ -289,7 +286,6 @@ const normalizeTransaction = (transaction: ConfirmedTransaction): ConfirmedTrans
       return {
         ...transactionBase,
         type: 'StateTransaction',
-        descriptors: transaction.descriptors,
       };
 
     default:

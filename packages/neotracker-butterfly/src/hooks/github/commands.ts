@@ -123,7 +123,8 @@ export const commands = (options: CommandsOptions) => {
         }
 
         // Then add the label
-        await api.issues.addLabels({ owner, repo, number: issue.number, labels: [LABEL_NAME] });
+        // tslint:disable-next-line no-any
+        await api.issues.addLabels({ owner, repo, number: issue.number, labels: [LABEL_NAME] } as any);
       }
     }),
   ];

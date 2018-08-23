@@ -20,6 +20,10 @@ export const utils = (api: Github) => ({
       repo,
     });
     const commit = commitsResponse.data[commitsResponse.data.length - 1];
+    if (commit.sha === undefined) {
+      return [];
+    }
+
     const statusesResponse = await api.repos.getStatuses({
       ref: commit.sha,
       owner,

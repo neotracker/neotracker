@@ -111,6 +111,10 @@ export const createClientCompiler = ({
     optimization: {
       minimize: !dev,
     },
+    node: {
+      fs: 'empty',
+      path: 'empty',
+    },
   };
 
   return createWebpackCompiler({ target: 'client', config: webpackConfig, isCI });

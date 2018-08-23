@@ -38,7 +38,7 @@ export const getIssuedOutputs = (
     transaction.networkFee,
   );
 
-  transaction.vout.forEach((otherOutput) => {
+  transaction.outputs.forEach((otherOutput) => {
     if ((mutableValues[otherOutput.asset] as BigNumber | undefined) === undefined) {
       mutableValues[otherOutput.asset] = new BigNumber('0');
     }
