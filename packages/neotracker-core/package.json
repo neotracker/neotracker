@@ -1,6 +1,6 @@
 {
   "name": "@neotracker/core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "NEO Tracker external api.",
   "main": "./src/index.ts",
   "dependencies": {
@@ -14,6 +14,7 @@
     "lodash": "^4.17.10",
     "recompose": "^0.28.2",
     "rxjs": "^6.2.2",
+    "sqlite3": "^4.0.2",
     "yargs": "^12.0.1"
   },
   "sideEffects": ["./src/bin/init.ts"]

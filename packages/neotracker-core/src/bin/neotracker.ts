@@ -14,18 +14,19 @@ yargs.describe('rpc-url', 'NEO•ONE node rpc url.').default('rpc-url', 'http://
 yargs.describe('next', 'Run NEO Tracker Next').default('next', false);
 yargs.describe('db-file', 'DB file').default('db-file', 'db.sqlite');
 yargs.describe('port', 'Port to listen on').default('port', 1340);
+yargs.describe('metrics-port', 'Port to serve metrics on').default('port', 1341);
 
 // tslint:disable-next-line readonly-array
-const getPkgPath = (pkg: string, ...paths: string[]) => path.resolve(__dirname, '..', 'dist', pkg, ...paths);
+const getDistPath = (...paths: string[]) => path.resolve(__dirname, '..', 'dist', ...paths);
 
 const configuration = {
-  clientBundlePath: getPkgPath('neotracker-client-web'),
-  clientBundlePathNext: getPkgPath('neotracker-client-web-next'),
+  clientBundlePath: getDistPath('neotracker-client-web'),
+  clientBundlePathNext: getDistPath('neotracker-client-web-next'),
   clientPublicPath: '/client/',
   clientPublicPathNext: '/client-next/',
-  clientAssetsPath: getPkgPath('neotracker-client-web', 'assets.json'),
-  clientAssetsPathNext: getPkgPath('neotracker-client-web-next', 'assets.json'),
-  statsPath: getPkgPath('neotracker-client-web-next', 'stats.json'),
+  clientAssetsPath: getDistPath('neotracker-client-web', 'assets.json'),
+  clientAssetsPathNext: getDistPath('neotracker-client-web-next', 'assets.json'),
+  statsPath: getDistPath('neotracker-client-web-next', 'stats.json'),
 };
 
 const port: number = yargs.argv.port;
@@ -57,6 +58,10 @@ const environment = {
       port,
     },
     network,
+    queryMap: {
+      queriesPath: getDistPath('queries.json'),
+      nextQueriesDir: getDistPath('queries'),
+    },
   },
   scrape: {
     db: {},
@@ -64,7 +69,7 @@ const environment = {
     pubSub: {},
   },
   start: {
-    metricsPort: 1341,
+    metricsPort: yargs.argv['metrics-port'],
   },
 };
 

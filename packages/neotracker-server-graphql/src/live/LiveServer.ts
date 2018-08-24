@@ -46,14 +46,14 @@ export class LiveServer {
     rootLoader$,
     monitor: monitorIn,
     socketOptions = {},
-    next,
+    queryMap,
   }: {
     readonly schema: GraphQLSchema;
     readonly rootLoader$: Observable<RootLoader>;
     readonly monitor: Monitor;
     // tslint:disable-next-line no-any
     readonly socketOptions?: any;
-    readonly next: boolean;
+    readonly queryMap: QueryMap;
   }): Promise<LiveServer> {
     const monitor = monitorIn.at('live_server').withLabels({
       [monitorIn.labels.SPAN_KIND]: 'server',
@@ -90,7 +90,7 @@ export class LiveServer {
       rootLoader$,
       monitor,
       wsServer,
-      next,
+      queryMap,
     });
   }
 
@@ -101,7 +101,6 @@ export class LiveServer {
   public readonly wsServer: ws.Server;
   public readonly mutableSockets: { [K in string]?: SocketConfig };
   public mutableSubscription: Subscription | undefined;
-  private readonly next: boolean;
   private readonly queryMap: QueryMap;
 
   public constructor({
@@ -110,14 +109,14 @@ export class LiveServer {
     rootLoader$,
     monitor,
     wsServer,
-    next,
+    queryMap,
   }: {
     readonly schema: GraphQLSchema;
     readonly rootLoader: RootLoader;
     readonly rootLoader$: Observable<RootLoader>;
     readonly monitor: Monitor;
     readonly wsServer: ws.Server;
-    readonly next: boolean;
+    readonly queryMap: QueryMap;
   }) {
     this.schema = schema;
     this.mutableRootLoader = rootLoader;
@@ -125,8 +124,7 @@ export class LiveServer {
     this.monitor = monitor.at('live_server');
     this.wsServer = wsServer;
     this.mutableSockets = {};
-    this.next = next;
-    this.queryMap = new QueryMap({ next: this.next });
+    this.queryMap = queryMap;
   }
 
   public async start(): Promise<void> {

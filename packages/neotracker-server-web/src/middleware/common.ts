@@ -1,4 +1,5 @@
 import { RootLoader } from '@neotracker/server-db';
+import { QueryMap } from '@neotracker/server-graphql';
 import { HTTPError } from '@neotracker/server-utils';
 import { QueryDeduplicator } from '@neotracker/shared-graphql';
 import { Context } from 'koa';
@@ -10,6 +11,15 @@ export const getRootLoader = (ctx: Context): RootLoader => {
   }
 
   return rootLoader;
+};
+
+export const getQueryMap = (ctx: Context): QueryMap => {
+  const { queryMap } = ctx.state;
+  if (!(queryMap instanceof QueryMap)) {
+    throw new HTTPError(500, HTTPError.PROGRAMMING_ERROR);
+  }
+
+  return queryMap;
 };
 
 export const getQueryDeduplicator = (ctx: Context): QueryDeduplicator => {

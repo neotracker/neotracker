@@ -9,7 +9,7 @@ import {
   RootLoaderOptions,
   subscribeProcessedNextIndex,
 } from '@neotracker/server-db';
-import { LiveServer, schema, startRootCalls$ } from '@neotracker/server-graphql';
+import { LiveServer, QueryMap, schema, startRootCalls$ } from '@neotracker/server-graphql';
 import { finalizeServer, handleServer } from '@neotracker/server-utils';
 import {
   context,
@@ -22,13 +22,14 @@ import { finalize, mergeScanLatest, NetworkType, sanitizeError, utils } from '@n
 // @ts-ignore
 import { AppOptions, routes } from '@neotracker/shared-web';
 import { routes as nextRoutes } from '@neotracker/shared-web-next';
+import * as appRootDir from 'app-root-dir';
 import http from 'http';
 import https from 'https';
 import Application from 'koa';
+import * as path from 'path';
 import LoadableExport from 'react-loadable';
 import { combineLatest, defer, merge, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, publishReplay, refCount, switchMap } from 'rxjs/operators';
-import url from 'url';
 import {
   AddBodyElements,
   AddHeadElements,
@@ -64,6 +65,10 @@ export interface HTTPServerEnvironment {
 export interface HTTPServerOptions {
   readonly keepAliveTimeoutMS: number;
 }
+export interface QueryMapEnvironment {
+  readonly queriesPath: string;
+  readonly nextQueriesDir: string;
+}
 export interface Environment {
   readonly react: ReactEnvironment;
   readonly reactApp: ReactAppEnvironment;
@@ -71,6 +76,7 @@ export interface Environment {
   readonly directDB: PubSubEnvironment;
   readonly server: HTTPServerEnvironment;
   readonly network: NetworkType;
+  readonly queryMap?: QueryMapEnvironment;
 }
 export interface Options {
   readonly db: DBOptions;
@@ -138,6 +144,39 @@ export const createServer$ = ({
     refCount(),
   );
 
+  const queryMapEnv =
+    environment.queryMap === undefined
+      ? {
+          queriesPath: path.resolve(
+            appRootDir.get(),
+            'packages',
+            'neotracker-server-graphql',
+            'src',
+            '__generated__',
+            'queries.json',
+          ),
+          nextQueriesDir: path.resolve(
+            appRootDir.get(),
+            'packages',
+            'neotracker-server-graphql',
+            'src',
+            '__generated__',
+            'queries',
+          ),
+        }
+      : environment.queryMap;
+
+  const queryMap$ = mapDistinct$((_) => _.options.serveNext).pipe(
+    map(
+      (next) =>
+        new QueryMap({
+          next,
+          queriesPath: queryMapEnv.queriesPath,
+          nextQueriesDir: queryMapEnv.nextQueriesDir,
+        }),
+    ),
+  );
+
   const rootCalls$ = startRootCalls$(
     combineLatest(mapDistinct$((_) => _.options.appOptions), rootLoader$).pipe(
       map(([appOptions, rootLoader]) => ({ monitor, appOptions, rootLoader })),
@@ -158,7 +197,9 @@ export const createServer$ = ({
   const graphqlNextMiddleware = graphql({ next: true });
 
   const app$ = combineLatest(
-    rootLoader$.pipe(map((rootLoader) => setRootLoader({ rootLoader }))),
+    combineLatest(rootLoader$, queryMap$).pipe(
+      map(([rootLoader, queryMap]) => setRootLoader({ rootLoader, queryMap })),
+    ),
     mapDistinct$((_) => _.options.appOptions.maintenance).pipe(
       map((maintenance) => healthCheck({ options: { maintenance } })),
     ),
@@ -291,57 +332,37 @@ export const createServer$ = ({
     map(({ server }) => server),
     filter(utils.notNull),
     distinctUntilChanged(),
-    mergeScanLatest<http.Server | https.Server, { graphqlServer: LiveServer; graphqlNext: LiveServer }>(
-      (prevLiveServer, server) =>
+  );
+
+  const liveServer$ = combineLatest(server$, queryMap$).pipe(
+    mergeScanLatest<[http.Server | https.Server, QueryMap], LiveServer>(
+      (prevLiveServer, [server, queryMap]) =>
         defer(async () => {
           if (prevLiveServer !== undefined) {
-            await Promise.all([prevLiveServer.graphqlServer.stop(), prevLiveServer.graphqlNext.stop()]);
+            await prevLiveServer.stop();
           }
-          const [graphqlServer, graphqlNext] = await Promise.all([
-            LiveServer.create({
-              schema: schema(),
-              rootLoader$,
-              monitor,
-              socketOptions: { noServer: true },
-              next: false,
-            }),
-            LiveServer.create({
-              schema: schema(),
-              rootLoader$,
-              monitor,
-              socketOptions: { noServer: true },
-              next: true,
-            }),
-          ]);
-
-          server.on('upgrade', (request, socket, head) => {
-            const pathname = url.parse(request.url).pathname;
-
-            if (pathname === routes.GRAPHQL) {
-              graphqlServer.wsServer.handleUpgrade(request, socket, head, (ws) => {
-                graphqlServer.wsServer.emit('connection', ws, request);
-              });
-            } else if (pathname === nextRoutes.GRAPHQL) {
-              graphqlNext.wsServer.handleUpgrade(request, socket, head, (ws) => {
-                graphqlNext.wsServer.emit('connection', ws, request);
-              });
-            } else {
-              socket.destroy();
-            }
+          const graphqlServer = await LiveServer.create({
+            schema: schema(),
+            rootLoader$,
+            monitor,
+            queryMap,
+            socketOptions: {
+              server,
+              path: queryMap.next ? nextRoutes.GRAPHQL : routes.GRAPHQL,
+            },
           });
+          await graphqlServer.start();
 
-          await Promise.all([graphqlServer.start(), graphqlNext.start()]);
-
-          return { graphqlServer, graphqlNext };
+          return graphqlServer;
         }),
       undefined,
     ),
     finalize(async (liveServer) => {
       if (liveServer !== undefined) {
-        await Promise.all([liveServer.graphqlServer.stop(), liveServer.graphqlNext.stop()]);
+        await liveServer.stop();
       }
     }),
   );
 
-  return merge(rootCalls$, subscriber$, server$);
+  return merge(rootCalls$, subscriber$, liveServer$);
 };

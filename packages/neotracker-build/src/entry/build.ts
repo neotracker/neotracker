@@ -88,6 +88,7 @@ const run = async () => {
   });
   const serverCompiler = createNodeCompiler({
     dev: false,
+    bin: true,
     title: 'server',
     entryPath: path.join('packages', 'neotracker-core', 'src', 'bin', 'neotracker.ts'),
     outputPath: path.join('dist', 'neotracker-core', 'bin'),
@@ -112,6 +113,14 @@ const run = async () => {
     fs.move(
       path.resolve(dist, 'neotracker-client-web-next'),
       path.resolve(outputPath, 'dist', 'neotracker-client-web-next'),
+    ),
+    fs.copy(
+      path.resolve(appRootDir.get(), 'packages', 'neotracker-server-graphql', 'src', '__generated__', 'queries.json'),
+      path.resolve(outputPath, 'dist', 'queries.json'),
+    ),
+    fs.copy(
+      path.resolve(appRootDir.get(), 'packages', 'neotracker-server-graphql', 'src', '__generated__', 'queries'),
+      path.resolve(outputPath, 'dist', 'queries'),
     ),
     Promise.all(
       ROOT_FILES.map(async (fileName) =>

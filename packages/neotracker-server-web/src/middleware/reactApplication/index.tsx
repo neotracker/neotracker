@@ -11,7 +11,7 @@ import {
 } from '@neo-one/client';
 import { Monitor } from '@neo-one/monitor';
 import { RootLoader } from '@neotracker/server-db';
-import { makeRelayEnvironment, RelaySSRQueryCache, schema } from '@neotracker/server-graphql';
+import { makeRelayEnvironment, QueryMap, RelaySSRQueryCache, schema } from '@neotracker/server-graphql';
 import { CodedError } from '@neotracker/server-utils';
 import { getMonitor } from '@neotracker/server-utils-koa';
 import {
@@ -42,7 +42,7 @@ import { Provider } from 'react-redux';
 import { StaticRouter } from 'react-router';
 import { MatchedRoute, matchRoutes } from 'react-router-config';
 import { of as _of } from 'rxjs';
-import { getNonce, getRootLoader, getUserAgent } from '../common';
+import { getNonce, getQueryMap, getRootLoader, getUserAgent } from '../common';
 import { AddBodyElements, AddHeadElements } from '../reactApp';
 import { makeServerHTML } from './makeServerHTML';
 
@@ -118,6 +118,7 @@ const renderApp = async ({
   userAgent,
   network,
   appOptions,
+  queryMap,
 }: {
   // tslint:disable-next-line no-any
   readonly match: ReadonlyArray<MatchedRoute<{}>>;
@@ -129,6 +130,7 @@ const renderApp = async ({
   readonly userAgent: IUAParser.IResult;
   readonly network: NetworkType;
   readonly appOptions: AppOptions;
+  readonly queryMap: QueryMap;
 }) => {
   const relaySSRQueryCache = new RelaySSRQueryCache();
   const relayEnvironment = makeRelayEnvironment({
@@ -136,6 +138,7 @@ const renderApp = async ({
     rootLoader,
     schema: schema(),
     relaySSRQueryCache,
+    queryMap,
   });
 
   await App.asyncBootstrap(match[0], relayEnvironment);
@@ -279,6 +282,7 @@ export const reactApplication = ({
               userAgent,
               network,
               appOptions,
+              queryMap: getQueryMap(ctx),
             })
           : appShellResult);
 

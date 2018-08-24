@@ -15,6 +15,7 @@ export const createNodeCompiler = ({
   buildVersion,
   isCI,
   type = 'node',
+  bin = false,
 }: {
   readonly title: string;
   readonly entryPath: string;
@@ -23,6 +24,7 @@ export const createNodeCompiler = ({
   readonly buildVersion: string;
   readonly isCI: boolean;
   readonly type?: 'server-web' | 'node';
+  readonly bin?: boolean;
 }): webpack.Compiler => {
   const webpackConfig: webpack.Configuration = {
     mode: dev ? 'development' : 'production',
@@ -54,7 +56,9 @@ export const createNodeCompiler = ({
     ],
     plugins: [
       new webpack.BannerPlugin({
-        banner: `require('source-map-support').install({ handleUncaughtExceptions: false, environment: 'node' });
+        banner: `${
+          bin ? '#!/usr/bin/env node\n' : ''
+        }require('source-map-support').install({ handleUncaughtExceptions: false, environment: 'node' });
 const { defaultMetrics, metrics } = require('@neo-one/monitor');
 metrics.setFactory(defaultMetrics);
 `,

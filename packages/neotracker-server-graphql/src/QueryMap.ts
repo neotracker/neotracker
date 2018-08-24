@@ -1,6 +1,5 @@
 import { CodedError } from '@neotracker/server-utils';
 import { tryParseInt } from '@neotracker/shared-utils';
-import * as appRootDir from 'app-root-dir';
 import * as fs from 'fs-extra';
 import { DocumentNode, parse } from 'graphql';
 import _ from 'lodash';
@@ -13,12 +12,24 @@ interface QueriesNext {
 
 const queryCache: { [K in string]?: DocumentNode } = {};
 export class QueryMap {
-  private readonly next: boolean;
+  public readonly next: boolean;
+  private readonly queriesPath: string;
+  private readonly nextQueriesDir: string;
   private mutableQueries: Promise<Queries> | undefined;
   private mutableQueriesNext: Promise<QueriesNext> | undefined;
 
-  public constructor({ next }: { readonly next: boolean }) {
+  public constructor({
+    next,
+    queriesPath,
+    nextQueriesDir,
+  }: {
+    readonly next: boolean;
+    readonly queriesPath: string;
+    readonly nextQueriesDir: string;
+  }) {
     this.next = next;
+    this.queriesPath = queriesPath;
+    this.nextQueriesDir = nextQueriesDir;
   }
 
   public async get(id: string): Promise<DocumentNode> {
@@ -64,17 +75,9 @@ export class QueryMap {
   }
 
   private async loadQueries(): Promise<Queries> {
-    const file = path.resolve(
-      appRootDir.get(),
-      'packages',
-      'neotracker-server-graphql',
-      'src',
-      '__generated__',
-      'queries.json',
-    );
-    const exists = await fs.pathExists(file);
+    const exists = await fs.pathExists(this.queriesPath);
     if (exists) {
-      const queries = await fs.readFile(file, 'utf8');
+      const queries = await fs.readFile(this.queriesPath, 'utf8');
 
       return JSON.parse(queries);
     }
@@ -83,21 +86,13 @@ export class QueryMap {
   }
 
   private async loadQueriesNext(): Promise<QueriesNext> {
-    const dir = path.resolve(
-      appRootDir.get(),
-      'packages',
-      'neotracker-server-graphql',
-      'src',
-      '__generated__',
-      'queries',
-    );
-    const exists = await fs.pathExists(dir);
+    const exists = await fs.pathExists(this.nextQueriesDir);
     if (exists) {
-      const files = await fs.readdir(dir);
+      const files = await fs.readdir(this.nextQueriesDir);
       const hashAndContents = await Promise.all(
         files.map(async (fileName) => {
           const queryID = fileName.slice(0, -'.graphql'.length);
-          const content = await fs.readFile(path.resolve(dir, fileName), 'utf8');
+          const content = await fs.readFile(path.resolve(this.nextQueriesDir, fileName), 'utf8');
 
           return [queryID, content];
         }),

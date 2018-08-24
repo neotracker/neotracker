@@ -1,4 +1,4 @@
-import { createQueryDeduplicator, QueryMap, schema } from '@neotracker/server-graphql';
+import { createQueryDeduplicator, schema } from '@neotracker/server-graphql';
 import { CodedError, HTTPError } from '@neotracker/server-utils';
 import { bodyParser, getMonitor } from '@neotracker/server-utils-koa';
 import { sanitizeError } from '@neotracker/shared-utils';
@@ -8,7 +8,7 @@ import { routes as routesNext } from '@neotracker/shared-web-next';
 import { Context } from 'koa';
 import compose from 'koa-compose';
 import compress from 'koa-compress';
-import { getRootLoader } from './common';
+import { getQueryMap, getRootLoader } from './common';
 
 export const graphql = ({ next }: { readonly next: boolean }) => {
   // NOTE: Use getQueryDeduplicator once we transition to only next
@@ -35,7 +35,7 @@ export const graphql = ({ next }: { readonly next: boolean }) => {
 
         const rootLoader = getRootLoader(ctx);
         const monitor = getMonitor(ctx);
-        const queryMap = new QueryMap({ next });
+        const queryMap = getQueryMap(ctx);
         const queryDeduplicator = createQueryDeduplicator(monitor, schema(), queryMap, rootLoader);
 
         const result = await monitor

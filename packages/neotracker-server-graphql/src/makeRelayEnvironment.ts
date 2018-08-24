@@ -12,8 +12,9 @@ function createNetwork(
   rootLoader: RootLoader,
   schema: GraphQLSchema,
   relaySSRQueryCache: RelaySSRQueryCache,
+  queryMap: QueryMap,
 ): Network {
-  const queryDeduplicator = createQueryDeduplicator(monitorIn, schema, new QueryMap({ next: false }), rootLoader);
+  const queryDeduplicator = createQueryDeduplicator(monitorIn, schema, queryMap, rootLoader);
 
   // tslint:disable-next-line no-any
   return Network.create((operation: any, variables: any, { monitor }: any) => {
@@ -35,14 +36,16 @@ export function makeRelayEnvironment({
   rootLoader,
   schema,
   relaySSRQueryCache,
+  queryMap,
 }: {
   readonly monitor: Monitor;
   readonly rootLoader: RootLoader;
   readonly schema: GraphQLSchema;
   readonly relaySSRQueryCache: RelaySSRQueryCache;
+  readonly queryMap: QueryMap;
 }) {
   return new Environment({
-    network: createNetwork(monitor, rootLoader, schema, relaySSRQueryCache),
+    network: createNetwork(monitor, rootLoader, schema, relaySSRQueryCache, queryMap),
     store: new Store(new RecordSource()),
   });
 }
