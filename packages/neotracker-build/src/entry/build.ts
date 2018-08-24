@@ -105,7 +105,8 @@ const run = async () => {
   ]);
 
   const outputPath = path.resolve(appRootDir.get(), 'dist', 'neotracker-core');
-  const ROOT_FILES = ['LICENSE', 'README.md', 'root', 'public'];
+  const ROOT_FILES = ['LICENSE', 'README.md'];
+  const DIST_FILES = ['root', 'public'];
   const outputPKGJSON = await createPackageJSON(pkgJSON);
   await Promise.all([
     fs.writeFile(path.resolve(outputPath, 'package.json'), outputPKGJSON),
@@ -125,6 +126,11 @@ const run = async () => {
     Promise.all(
       ROOT_FILES.map(async (fileName) =>
         fs.copy(path.resolve(appRootDir.get(), fileName), path.resolve(outputPath, fileName)),
+      ),
+    ),
+    Promise.all(
+      DIST_FILES.map(async (fileName) =>
+        fs.copy(path.resolve(appRootDir.get(), fileName), path.resolve(outputPath, 'dist', fileName)),
       ),
     ),
   ]);
