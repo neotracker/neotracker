@@ -1,6 +1,6 @@
 {
   "name": "@neotracker/core",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "NEO Tracker external api.",
   "main": "./src/index.ts",
   "dependencies": {
