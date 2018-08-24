@@ -5,3 +5,4 @@ export * from './getUA';
 export * from './handleServer';
 export * from './killProcess';
 export * from './watchFile$';
+export * from './resolveRootPath';

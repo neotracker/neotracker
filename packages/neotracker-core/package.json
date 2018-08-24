@@ -1,6 +1,6 @@
 {
   "name": "@neotracker/core",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "NEO Tracker external api.",
   "main": "./src/index.ts",
   "dependencies": {
@@ -17,7 +17,5 @@
     "sqlite3": "^4.0.2",
     "yargs": "^12.0.1"
   },
-  "sideEffects": [
-    "./src/bin/init.ts"
-  ]
+  "sideEffects": ["./src/bin/init.ts"]
 }

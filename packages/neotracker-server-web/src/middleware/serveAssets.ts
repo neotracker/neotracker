@@ -1,5 +1,4 @@
-import * as appRootDir from 'app-root-dir';
-import { resolve as pathResolve } from 'path';
+import { resolveRootPath } from '@neotracker/server-utils';
 import { serve } from './serve';
 
 export interface Options {
@@ -24,7 +23,7 @@ export const serveAssets = ({
   method: 'get',
   name,
   path: route === '/' || route.endsWith('/') ? `${route}*` : `${route}/*`,
-  middleware: serve(pathResolve(appRootDir.get(), options.path), {
+  middleware: serve(resolveRootPath(options.path), {
     ...options.config,
     prefix: route.endsWith('/') ? route.slice(0, -1) : route,
   }),

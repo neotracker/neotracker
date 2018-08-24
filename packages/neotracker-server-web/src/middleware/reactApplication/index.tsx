@@ -12,7 +12,7 @@ import {
 import { Monitor } from '@neo-one/monitor';
 import { RootLoader } from '@neotracker/server-db';
 import { makeRelayEnvironment, QueryMap, RelaySSRQueryCache, schema } from '@neotracker/server-graphql';
-import { CodedError } from '@neotracker/server-utils';
+import { CodedError, resolveRootPath } from '@neotracker/server-utils';
 import { getMonitor } from '@neotracker/server-utils-koa';
 import {
   App,
@@ -24,7 +24,6 @@ import {
   ThemeProvider,
   // @ts-ignore
 } from '@neotracker/shared-web';
-import * as appRootDir from 'app-root-dir';
 import fs from 'fs';
 import { create } from 'jss';
 // @ts-ignore
@@ -32,7 +31,6 @@ import preset from 'jss-preset-default';
 import { Context } from 'koa';
 import compose from 'koa-compose';
 import compress from 'koa-compress';
-import * as path from 'path';
 import * as React from 'react';
 import { renderToString } from 'react-dom/server';
 import Helmet from 'react-helmet';
@@ -208,7 +206,7 @@ const renderApp = async ({
 };
 
 const getAssets = (clientAssetsPath: string) =>
-  JSON.parse(fs.readFileSync(path.resolve(appRootDir.get(), clientAssetsPath), 'utf8')).index;
+  JSON.parse(fs.readFileSync(resolveRootPath(clientAssetsPath), 'utf8')).index;
 export interface Environment {
   readonly appVersion: string;
 }

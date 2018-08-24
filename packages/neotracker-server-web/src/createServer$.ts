@@ -10,7 +10,7 @@ import {
   subscribeProcessedNextIndex,
 } from '@neotracker/server-db';
 import { LiveServer, QueryMap, schema, startRootCalls$ } from '@neotracker/server-graphql';
-import { finalizeServer, handleServer } from '@neotracker/server-utils';
+import { finalizeServer, handleServer, resolveRootPath } from '@neotracker/server-utils';
 import {
   context,
   onError as createOnError,
@@ -22,7 +22,6 @@ import { finalize, mergeScanLatest, NetworkType, sanitizeError, utils } from '@n
 // @ts-ignore
 import { AppOptions, routes } from '@neotracker/shared-web';
 import { routes as nextRoutes } from '@neotracker/shared-web-next';
-import * as appRootDir from 'app-root-dir';
 import http from 'http';
 import https from 'https';
 import Application from 'koa';
@@ -147,21 +146,11 @@ export const createServer$ = ({
   const queryMapEnv =
     environment.queryMap === undefined
       ? {
-          queriesPath: path.resolve(
-            appRootDir.get(),
-            'packages',
-            'neotracker-server-graphql',
-            'src',
-            '__generated__',
-            'queries.json',
+          queriesPath: resolveRootPath(
+            path.join('packages', 'neotracker-server-graphql', 'src', '__generated__', 'queries.json'),
           ),
-          nextQueriesDir: path.resolve(
-            appRootDir.get(),
-            'packages',
-            'neotracker-server-graphql',
-            'src',
-            '__generated__',
-            'queries',
+          nextQueriesDir: resolveRootPath(
+            path.join('packages', 'neotracker-server-graphql', 'src', '__generated__', 'queries'),
           ),
         }
       : environment.queryMap;

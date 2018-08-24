@@ -30,11 +30,12 @@ const configuration = {
 };
 
 const port: number = yargs.argv.port;
+const dbFileName = yargs.argv['db-file'];
 const { options, network } = getOptions({
   network: yargs.argv.network,
   rpcURL: yargs.argv['rpc-url'],
   port,
-  dbFileName: yargs.argv['db-file'],
+  dbFileName: path.isAbsolute(dbFileName) ? dbFileName : path.resolve(process.cwd(), dbFileName),
   configuration,
 });
 const options$ = new BehaviorSubject(options);
