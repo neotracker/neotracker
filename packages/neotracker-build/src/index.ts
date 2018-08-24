@@ -1,4 +1,3 @@
-export { createConsoleLogger } from '@neotracker/core';
 export { HotCompilerServer } from './HotCompilerServer';
 export { HotEntryServer } from './HotEntryServer';
 export { log } from './log';
