@@ -27,6 +27,8 @@ const configuration = {
   clientAssetsPath: getDistPath('neotracker-client-web', 'assets.json'),
   clientAssetsPathNext: getDistPath('neotracker-client-web-next', 'assets.json'),
   statsPath: getDistPath('neotracker-client-web-next', 'stats.json'),
+  rootAssetsPath: getDistPath('root'),
+  publicAssetsPath: getDistPath('public'),
 };
 
 const port: number = yargs.argv.port;

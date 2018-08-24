@@ -21,6 +21,8 @@ export interface AssetsConfiguration {
   readonly clientPublicPathNext: string;
   readonly clientBundlePath: string;
   readonly clientBundlePathNext: string;
+  readonly publicAssetsPath: string;
+  readonly rootAssetsPath: string;
 }
 
 export const common = ({
@@ -105,10 +107,10 @@ export const common = ({
       path: configuration.clientBundlePathNext,
     },
     publicAssets: {
-      path: './public',
+      path: configuration.publicAssetsPath,
     },
     rootAssets: {
-      path: './root',
+      path: configuration.rootAssetsPath,
     },
     domain: '127.0.0.1',
     rpcURL,

@@ -105,7 +105,7 @@ const run = async () => {
   ]);
 
   const outputPath = path.resolve(appRootDir.get(), 'dist', 'neotracker-core');
-  const ROOT_FILES = ['LICENSE', 'README.md'];
+  const ROOT_FILES = ['LICENSE', 'README.md', 'root', 'public'];
   const outputPKGJSON = await createPackageJSON(pkgJSON);
   await Promise.all([
     fs.writeFile(path.resolve(outputPath, 'package.json'), outputPKGJSON),

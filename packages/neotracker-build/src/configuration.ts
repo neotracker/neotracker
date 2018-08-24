@@ -11,4 +11,6 @@ export const configuration = {
   clientAssetsPath: getPkgPath('neotracker-client-web', 'assets.json'),
   clientAssetsPathNext: getPkgPath('neotracker-client-web-next', 'assets.json'),
   statsPath: getPkgPath('neotracker-client-web-next', 'stats.json'),
+  publicAssetsPath: './public',
+  rootAssetsPath: './root',
 };
