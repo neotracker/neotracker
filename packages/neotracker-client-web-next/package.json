@@ -12,9 +12,9 @@
   "license": "MIT",
   "main": "./src/index.ts",
   "dependencies": {
-    "@babel/polyfill": "7.0.0-rc.2",
-    "@neo-one/client": "^1.0.0-alpha.90",
-    "@neo-one/monitor": "^1.0.0-alpha.54",
+    "@babel/polyfill": "7.0.0-rc.3",
+    "@neo-one/client": "^1.0.0-alpha.91",
+    "@neo-one/monitor": "^1.0.0-alpha.55",
     "@neotracker/shared-graphql": "^0.0.1-alpha.0",
     "@neotracker/shared-utils": "^0.0.1-alpha.0",
     "@neotracker/shared-web-next": "^0.0.1-alpha.0",

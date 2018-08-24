@@ -12,8 +12,8 @@
   "license": "MIT",
   "main": "./src/index.ts",
   "dependencies": {
-    "@neo-one/client": "^1.0.0-alpha.90",
-    "@neo-one/monitor": "^1.0.0-alpha.54",
+    "@neo-one/client": "^1.0.0-alpha.91",
+    "@neo-one/monitor": "^1.0.0-alpha.55",
     "@neotracker/shared-utils": "0.0.1-alpha.0",
     "apollo-client": "^2.4.0",
     "graphql": "^0.13.2",
@@ -25,7 +25,7 @@
     "react-known-props": "^2.3.1",
     "react-loadable": "^5.5.0",
     "react-router": "^4.3.1",
-    "reakit": "^0.14.4",
+    "reakit": "^0.14.5",
     "rxjs": "^6.2.2",
     "styled-components": "^3.4.5"
   },

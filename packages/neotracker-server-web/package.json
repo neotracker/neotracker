@@ -13,8 +13,8 @@
   "main": "./src/index.ts",
   "dependencies": {
     "@material-ui/core": "^1.5.1",
-    "@neo-one/client": "^1.0.0-alpha.90",
-    "@neo-one/monitor": "^1.0.0-alpha.54",
+    "@neo-one/client": "^1.0.0-alpha.91",
+    "@neo-one/monitor": "^1.0.0-alpha.55",
     "@neotracker/server-db": "^0.0.1-alpha.0",
     "@neotracker/server-graphql": "^0.0.1-alpha.0",
     "@neotracker/server-utils": "^0.0.1-alpha.0",
