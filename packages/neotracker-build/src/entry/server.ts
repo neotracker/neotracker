@@ -1,15 +1,40 @@
-// tslint:disable no-import-side-effect no-let
+// tslint:disable no-import-side-effect no-let ordered-imports
 import './init';
-// tslint:disable-next-line ordered-imports
 import { DefaultMonitor } from '@neo-one/monitor';
-import { NEOTracker } from '@neotracker/core';
+import { createConsoleLogger, getOptions, NEOTracker } from '@neotracker/core';
 import { BehaviorSubject } from 'rxjs';
-import { getOptions } from '../options';
-
-import { createConsoleLogger } from '../createConsoleLogger';
+import * as path from 'path';
+import * as appRootDir from 'app-root-dir';
+import { configuration } from '../configuration';
+import { NetworkType } from '@neotracker/shared-utils';
 
 const port = process.env.NEOTRACKER_PORT === undefined ? 1340 : parseInt(process.env.NEOTRACKER_PORT, 10);
-const { options, network } = getOptions({ port });
+const dbFileName =
+  process.env.NEOTRACKER_DB_FILE === undefined
+    ? path.resolve(appRootDir.get(), 'db.sqlite')
+    : process.env.NEOTRACKER_DB_FILE;
+const network = process.env.NEOTRACKER_NETWORK === undefined ? 'priv' : (process.env.NEOTRACKER_NETWORK as NetworkType);
+let rpcURL: string | undefined;
+switch (network) {
+  case 'priv':
+    rpcURL = process.env.NEOTRACKER_RPC_URL;
+    if (rpcURL === undefined) {
+      rpcURL = 'http://localhost:40200/rpc';
+    }
+    break;
+  case 'main':
+    rpcURL = 'https://neotracker.io/rpc';
+    break;
+  default:
+    rpcURL = 'https://testnet.neotracker.io/rpc';
+}
+const { options } = getOptions({
+  network,
+  port,
+  dbFileName,
+  configuration,
+  rpcURL,
+});
 const options$ = new BehaviorSubject(options);
 const monitor = DefaultMonitor.create({
   service: 'web_server',

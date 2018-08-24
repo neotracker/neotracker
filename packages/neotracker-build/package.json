@@ -1,15 +1,7 @@
 {
   "name": "@neotracker/build",
   "version": "0.0.1-alpha.0",
-  "keywords": [
-    "neo",
-    "blockchain",
-    "neotracker"
-  ],
   "description": "NEO Tracker build utilities.",
-  "repository": "https://github.com/neotracker/neotracker",
-  "bugs": "https://github.com/neotracker/neotracker/issues",
-  "license": "MIT",
   "main": "./src/index.ts",
   "dependencies": {
     "@babel/core": "^7.0.0-rc.2",
@@ -30,7 +22,7 @@
     "@neo-one/node-esnext-esm": "^1.0.0-alpha.108",
     "@neo-one/node-neo-settings-esnext-esm": "^1.0.0-alpha.70",
     "@neo-one/utils-esnext-esm": "^1.0.0-alpha.59",
-    "@neotracker/core": "^0.0.1-alpha.0",
+    "@neotracker/core": "^1.0.0",
     "@neotracker/server-graphql": "^0.0.1-alpha.0",
     "@neotracker/server-utils": "^0.0.1-alpha.0",
     "@neotracker/server-web": "^0.0.1-alpha.0",
@@ -73,7 +65,5 @@
     "webpack-node-externals": "^1.7.2",
     "yargs": "^12.0.1"
   },
-  "sideEffects": [
-    "./src/entry/init.ts"
-  ]
+  "sideEffects": ["./src/entry/init.ts"]
 }

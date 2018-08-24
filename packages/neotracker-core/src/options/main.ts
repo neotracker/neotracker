@@ -1,10 +1,20 @@
-import { common } from './common';
+import { AssetsConfiguration, common } from './common';
 import { mainRPCURL } from './utils';
 
-export const main = ({ port }: { readonly port: number }) =>
+export const main = ({
+  port,
+  dbFileName,
+  configuration,
+  rpcURL = mainRPCURL,
+}: {
+  readonly port: number;
+  readonly dbFileName: string;
+  readonly configuration: AssetsConfiguration;
+  readonly rpcURL?: string;
+}) =>
   common({
     database: 'neotracker_main',
-    rpcURL: mainRPCURL,
+    rpcURL,
     port,
     blacklistNEP5Hashes: [
       '4b4f63919b9ecfd2483f0c72ff46ed31b5bbb7a4', //  Phantasma
@@ -17,4 +27,6 @@ export const main = ({ port }: { readonly port: number }) =>
       '2e25d2127e0240c6deaf35394702feb236d4d7fc', //  Narrative Token
       '6d36b38af912ca107f55a5daedc650054f7e4f75',
     ],
+    dbFileName,
+    configuration,
   });

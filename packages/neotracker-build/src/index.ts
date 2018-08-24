@@ -1,11 +1,10 @@
-export { createConsoleLogger } from './createConsoleLogger';
+export { createConsoleLogger } from '@neotracker/core';
 export { HotCompilerServer } from './HotCompilerServer';
 export { HotEntryServer } from './HotEntryServer';
 export { log } from './log';
 export { logError } from './logError';
 export { setupProcessListeners } from './setupProcessListeners';
 
-export * from './options';
 export { HotServer } from './HotServer';
 export { HotWebServerBase } from './HotWebServerBase';
 
