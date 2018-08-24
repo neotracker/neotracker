@@ -13,7 +13,7 @@ import {
   NEP5_CONTRACT_TYPE,
   UNKNOWN_CONTRACT_TYPE,
 } from './common';
-import { convertJSON } from './convertJSON';
+import { convertJSON, convertJSONBoolean } from './convertJSON';
 
 export class Contract extends BlockchainModel<string> {
   public static readonly modelName = 'Contract';
@@ -174,6 +174,7 @@ export class Contract extends BlockchainModel<string> {
       {
         ...json,
         transaction_id: convertJSON(json.transaction_id),
+        needs_storage: convertJSONBoolean(json.needs_storage),
       },
       opt,
       // tslint:disable-next-line no-any
@@ -203,7 +204,7 @@ export class Contract extends BlockchainModel<string> {
     this.transaction_id = convertJSON(this.transaction_id);
     // @ts-ignore
     // tslint:disable-next-line no-redundant-boolean
-    this.needs_storage = this.needs_storage === 0 || !this.needs_storage ? false : true;
+    this.needs_storage = convertJSONBoolean(this.needs_storage);
     // tslint:enable no-object-mutation
   }
 }

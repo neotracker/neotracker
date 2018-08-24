@@ -57,7 +57,7 @@ function TransactionInvocationSummaryBody({
     <TransactionInputPagingTable
       transaction={transaction}
       addressHash={addressHash}
-      transfers={(transfers: $FlowFixMe)}
+      transfers={transfers}
       offset={transfers.length}
     />
   );
@@ -85,7 +85,7 @@ function TransactionInvocationSummaryBody({
     <TransactionOutputPagingTable
       transaction={transaction}
       addressHash={addressHash}
-      transfers={(transfers: $FlowFixMe)}
+      transfers={transfers}
       offset={transfers.length}
     />
   );

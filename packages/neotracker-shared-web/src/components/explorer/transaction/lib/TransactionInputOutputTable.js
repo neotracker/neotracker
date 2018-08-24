@@ -14,7 +14,6 @@ import { PagingView } from '../../../common/view';
 import { fragmentContainer } from '../../../../graphql/relay';
 import { withStyles } from '../../../../lib/base';
 
-import { type AssetNameLink_asset } from '../../asset/lib/__generated__/AssetNameLink_asset.graphql';
 import { type TransactionInputOutputTable_input_outputs } from './__generated__/TransactionInputOutputTable_input_outputs.graphql';
 import TransactionValue from './TransactionValue';
 
@@ -69,9 +68,9 @@ const styles = (theme: Theme) => ({
 type ExternalProps = {|
   input_outputs: any,
   transfers?: Array<{|
-    address_id: string,
-    value: string,
-    asset: AssetNameLink_asset,
+    +address_id: string,
+    +value: string,
+    +asset: any,
   |}>,
   left?: any,
   right?: any,

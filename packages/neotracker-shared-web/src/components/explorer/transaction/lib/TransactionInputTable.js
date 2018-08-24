@@ -13,7 +13,6 @@ import { fragmentContainer } from '../../../../graphql/relay';
 import * as routes from '../../../../routes';
 import { Typography, withStyles } from '../../../../lib/base';
 
-import { type AssetNameLink_asset } from '../../asset/lib/__generated__/AssetNameLink_asset.graphql';
 import { type TransactionInputTable_inputs } from './__generated__/TransactionInputTable_inputs.graphql';
 import TransactionInputOutputTable from './TransactionInputOutputTable';
 
@@ -27,9 +26,9 @@ const styles = (theme: Theme) => ({
 type ExternalProps = {|
   inputs: any,
   transfers?: Array<{|
-    address_id: string,
-    value: string,
-    asset: AssetNameLink_asset,
+    +address_id: string,
+    +value: string,
+    +asset: any,
   |}>,
   addressHash?: string,
   positive?: boolean,

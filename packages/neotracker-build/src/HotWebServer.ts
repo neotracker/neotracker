@@ -3,16 +3,24 @@ import { HotEntryServer } from './HotEntryServer';
 import { HotWebServerBase } from './HotWebServerBase';
 
 class HotWebCompilerServer extends HotWebServerBase {
-  public constructor({ env, isCI }: { readonly env?: object; readonly isCI: boolean }) {
+  public constructor({
+    env,
+    isCI,
+    prod = false,
+  }: {
+    readonly env?: object;
+    readonly isCI: boolean;
+    readonly prod?: boolean;
+  }) {
     const options = {
       serverCompiler: createServerCompiler({ isCI }),
       clientCompiler: createClientCompiler({
-        dev: true,
+        dev: !prod,
         buildVersion: 'dev',
         isCI,
       }),
       clientCompilerNext: createClientCompilerNext({
-        dev: true,
+        dev: !prod,
         buildVersion: 'dev',
         isCI,
       }),
@@ -26,7 +34,7 @@ class HotWebCompilerServer extends HotWebServerBase {
 export class HotWebServer extends HotEntryServer {
   public readonly options: { readonly env?: object; readonly isCI: boolean };
 
-  public constructor(options: { readonly env?: object; readonly isCI: boolean }) {
+  public constructor(options: { readonly env?: object; readonly isCI: boolean; readonly prod?: boolean }) {
     super();
     this.options = options;
   }

@@ -11,7 +11,6 @@ import TransactionInputTable from './TransactionInputTable';
 import { fragmentContainer, queryRenderer } from '../../../../graphql/relay';
 import { getPagingVariables } from '../../../../utils';
 
-import { type AssetNameLink_asset } from '../../asset/lib/__generated__/AssetNameLink_asset.graphql';
 import { type TransactionInputPagingTable_transaction } from './__generated__/TransactionInputPagingTable_transaction.graphql';
 import { type TransactionInputPagingTableQueryResponse } from './__generated__/TransactionInputPagingTableQuery.graphql';
 
@@ -20,10 +19,10 @@ const PAGE_SIZE = 10;
 type ExternalProps = {|
   transaction: any,
   transfers?: Array<{|
-    to_address_id: string,
-    from_address_id: string,
-    value: string,
-    asset: AssetNameLink_asset,
+    +to_address_id: ?string,
+    +from_address_id: ?string,
+    +value: string,
+    +asset: any,
   |}>,
   offset?: number,
   addressHash?: string,
@@ -62,13 +61,17 @@ function TransactionInputPagingTable({
   }
 
   let inputs = [];
-  let transferInputs = [];
+  const transferInputs = [];
   if (transfers != null && page === 1) {
-    transferInputs = transfers.map((transfer) => ({
-      address_id: transfer.from_address_id,
-      value: transfer.value,
-      asset: transfer.asset,
-    }));
+    for (const transfer of transfers) {
+      if (transfer.from_address_id != null) {
+        transferInputs.push({
+          address_id: transfer.from_address_id,
+          value: transfer.value,
+          asset: transfer.asset,
+        });
+      }
+    }
   }
   let hasNextPage = false;
   let hasPreviousPage = false;

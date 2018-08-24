@@ -39,11 +39,21 @@ const makeMaxIndexFetcher = (db: Knex, monitor: Monitor, makeQueryContext: ((mon
           .context(makeQueryContext(monitor))
           .max('index')
           .first()
-          // tslint:disable-next-line no-any strict-type-predicates
-          .then((res) => (res === undefined || (res as any).max == undefined ? 0 : (res as any).max));
+          .then((result) => {
+            // Handle sqlite return
+            // tslint:disable-next-line no-any
+            if (result !== undefined && (result as any)['max(`index`)'] != undefined) {
+              // tslint:disable-next-line no-any
+              return (result as any)['max(`index`)'];
+            }
+
+            // tslint:disable-next-line no-any
+            return result === undefined || (result as any).max == undefined ? 0 : (result as any).max;
+          })
+          .then(Number);
       }
 
-      return maxIndex === undefined ? 0 : maxIndex;
+      return maxIndex;
     },
     reset(): void {
       maxIndex = undefined;
