@@ -1,4 +1,4 @@
-import { addressToScriptHash, RawAction, scriptHashToAddress } from '@neo-one/client';
+import { addressToScriptHash, RawAction } from '@neo-one/client';
 import { utils } from '@neotracker/shared-utils';
 import BigNumber from 'bignumber.js';
 import { ActionData, Context } from '../types';
@@ -28,8 +28,8 @@ export function getActionDataForClient({
 
   const parameters = action.parameters;
 
-  let fromAddressHash = parameters.from === undefined ? undefined : scriptHashToAddress(parameters.from);
-  const toAddressHash = parameters.to === undefined ? undefined : scriptHashToAddress(parameters.to);
+  let fromAddressHash = parameters.from === undefined ? undefined : parameters.from;
+  const toAddressHash = parameters.to === undefined ? undefined : parameters.to;
   const value = parameters.amount as BigNumber;
   if (actionIn.address === fromAddressHash) {
     fromAddressHash = undefined;
