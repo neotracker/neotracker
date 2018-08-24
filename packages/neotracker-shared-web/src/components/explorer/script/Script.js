@@ -12,7 +12,7 @@ import {
   withPropsOnChange,
   withState,
 } from 'recompose';
-import { disassembleByteCode } from '@neo-one/client';
+import { disassembleByteCode } from '@neo-one/client-core';
 
 import { type Theme } from '../../../styles/createTheme';
 import { Button, Typography, withStyles } from '../../../lib/base';
