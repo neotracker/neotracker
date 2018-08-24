@@ -1,5 +1,6 @@
 import {
   Asset,
+  AssetType,
   Attribute,
   Block,
   ConfirmedTransaction,
@@ -185,9 +186,34 @@ const normalizeInvocationResult = (result: RawInvocationResult): RawInvocationRe
   }
 };
 
+const normalizeAssetType = (asset: AssetType) => {
+  switch (asset) {
+    case 'Credit':
+      return 'CreditFlag';
+    case 'Duty':
+      return 'DutyFlag';
+    case 'Governing':
+      return 'GoverningToken';
+    case 'Utility':
+      return 'UtilityToken';
+    case 'Currency':
+      return 'Currency';
+    case 'Share':
+      return 'Share';
+    case 'Invoice':
+      return 'Invoice';
+    case 'Token':
+      return 'Token';
+    default:
+      utils.assertNever(asset);
+      throw new Error('Unknown AssetType');
+  }
+};
+
 const normalizeAsset = (asset: Asset): Asset => ({
   hash: normalizeHash(asset.hash),
-  type: asset.type,
+  // tslint:disable-next-line no-any
+  type: normalizeAssetType(asset.type) as any,
   name: asset.name,
   amount: asset.amount,
   available: asset.available,
@@ -257,7 +283,11 @@ const normalizeTransaction = (transaction: ConfirmedTransaction): ConfirmedTrans
       return {
         ...transactionBase,
         type: 'RegisterTransaction',
-        asset: transaction.asset,
+        asset: {
+          ...transaction.asset,
+          // tslint:disable-next-line no-any
+          type: normalizeAssetType(transaction.asset.type) as any,
+        },
       };
 
     case 'ContractTransaction':
