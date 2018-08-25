@@ -8,14 +8,25 @@ const pkg = require('../../../../package.json');
 
 export type Type = 'client-web' | 'server-web' | 'node';
 
-const getPresets = ({ type, typescript }: { readonly type: Type; readonly typescript: boolean }) =>
+const getPresets = ({
+  type,
+  typescript,
+  nodeVersion,
+}: {
+  readonly type: Type;
+  readonly typescript: boolean;
+  readonly nodeVersion?: string;
+}) =>
   [
     // Current
     (type === 'client-web' || type === 'server-web') && !typescript ? '@babel/preset-react' : undefined,
     [
       '@babel/preset-env',
       {
-        targets: type === 'client-web' ? { browsers: pkg.browserslist } : { node: true },
+        targets:
+          type === 'client-web'
+            ? { browsers: pkg.browserslist }
+            : { node: nodeVersion === undefined ? true : nodeVersion },
         modules: false,
         useBuiltIns: 'entry',
         ignoreBrowserslistConfig: true,
@@ -55,9 +66,11 @@ const getPlugins = ({ type, typescript }: { readonly type: Type; readonly typesc
 
 export const createRules = ({
   type,
+  nodeVersion,
   fast = false,
 }: {
   readonly type: Type;
+  readonly nodeVersion?: string;
   readonly fast?: boolean;
   // tslint:disable-next-line no-any readonly-array
 }): any[] => {
@@ -68,7 +81,7 @@ export const createRules = ({
     loader: 'babel-loader',
     options: {
       configFile: false,
-      presets: getPresets({ type, typescript: false }),
+      presets: getPresets({ type, typescript: false, nodeVersion }),
       plugins: getPlugins({ type, typescript: false }),
       cacheDirectory: fast,
     },
@@ -84,7 +97,7 @@ export const createRules = ({
       babelOptions: useBabel
         ? {
             configFile: false,
-            presets: type === 'client-web' ? getPresets({ type, typescript: true }) : undefined,
+            presets: type === 'client-web' ? getPresets({ type, typescript: true, nodeVersion }) : undefined,
             plugins: getPlugins({ type, typescript: true }),
           }
         : undefined,

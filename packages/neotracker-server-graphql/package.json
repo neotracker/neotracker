@@ -1,11 +1,7 @@
 {
   "name": "@neotracker/server-graphql",
   "version": "0.0.1-alpha.0",
-  "keywords": [
-    "neo",
-    "blockchain",
-    "neotracker"
-  ],
+  "keywords": ["neo", "blockchain", "neotracker"],
   "description": "NEO Tracker graphql.",
   "repository": "https://github.com/neotracker/neotracker",
   "bugs": "https://github.com/neotracker/neotracker/issues",
@@ -30,7 +26,8 @@
     "iterall": "^1.2.2",
     "lodash": "^4.17.10",
     "objection": "^1.2.3",
-    "relay-runtime": "^1.6.0",
+    "relay-compiler": "^1.6.2",
+    "relay-runtime": "^1.6.2",
     "rxjs": "^6.2.2",
     "safe-stable-stringify": "^1.0.1",
     "uuid": "^3.2.1",

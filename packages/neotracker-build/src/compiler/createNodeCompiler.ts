@@ -16,6 +16,7 @@ export const createNodeCompiler = ({
   isCI,
   type = 'node',
   bin = false,
+  nodeVersion,
 }: {
   readonly title: string;
   readonly entryPath: string;
@@ -25,6 +26,7 @@ export const createNodeCompiler = ({
   readonly isCI: boolean;
   readonly type?: 'server-web' | 'node';
   readonly bin?: boolean;
+  readonly nodeVersion?: string;
 }): webpack.Compiler => {
   const webpackConfig: webpack.Configuration = {
     mode: dev ? 'development' : 'production',
@@ -73,7 +75,7 @@ metrics.setFactory(defaultMetrics);
           test: /\.css$/,
           loaders: ['css-loader/locals'],
         },
-      ].concat(createRules({ type })),
+      ].concat(createRules({ type, nodeVersion })),
     },
     resolve: {
       mainFields: ['module', 'main'],

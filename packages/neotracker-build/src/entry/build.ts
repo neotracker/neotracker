@@ -58,6 +58,9 @@ const createPackageJSON = async (pkgJSON: any) => {
       bin: {
         neotracker: 'bin/index.js',
       },
+      engines: {
+        node: '^8.11.4',
+      },
       dependencies: _.fromPairs(deps.filter(([key]) => !key.startsWith('@neo-one'))),
       peerDependencies: _.fromPairs(peerDeps),
       publishConfig: {
@@ -95,6 +98,7 @@ const run = async () => {
     type: 'server-web',
     buildVersion: 'dev',
     isCI: yargs.argv.ci,
+    nodeVersion: '8.11.4',
   });
 
   const [pkgJSON] = await Promise.all([
