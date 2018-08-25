@@ -59,7 +59,7 @@ const createPackageJSON = async (pkgJSON: any) => {
         neotracker: 'bin/index.js',
       },
       engines: {
-        node: '^8.11.4',
+        node: '>=8.11.4',
       },
       dependencies: _.fromPairs(deps.filter(([key]) => !key.startsWith('@neo-one'))),
       peerDependencies: _.fromPairs(peerDeps),
