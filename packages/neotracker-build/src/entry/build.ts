@@ -39,6 +39,37 @@ const getTransitiveDependencies = async (
   return Object.entries(mutableDeps);
 };
 
+const createBin = () => `#!/usr/bin/env node
+const execa = require('execa');
+const path = require('path');
+const semver = require('semver');
+
+let args = [];
+if (semver.satisfies(process.version, '8.x')) {
+  args = ['--harmony-async-iteration'];
+} else if (semver.satisfies(process.version, '9.x')) {
+  args = ['--harmony'];
+}
+
+const proc = execa('node', args.concat([path.resolve(__dirname, 'index.js')]).concat(process.argv.slice(2)), {
+  stdio: 'inherit',
+  env: {
+    NODE_NO_WARNINGS: '1',
+  },
+});
+process.on('SIGTERM', () => proc.kill('SIGTERM'));
+process.on('SIGINT', () => proc.kill('SIGINT'));
+process.on('SIGBREAK', () => proc.kill('SIGBREAK'));
+process.on('SIGHUP', () => proc.kill('SIGHUP'));
+proc.on('exit', (code, signal) => {
+  let exitCode = code;
+  if (exitCode === null) {
+    exitCode = signal === 'SIGINT' ? 0 : 1;
+  }
+  process.exit(exitCode);
+});
+`;
+
 // tslint:disable-next-line no-any
 const createPackageJSON = async (pkgJSON: any) => {
   const deps = await getTransitiveDependencies('@neotracker/core', 'any');
@@ -56,7 +87,8 @@ const createPackageJSON = async (pkgJSON: any) => {
       bugs: 'https://github.com/neotracker/neotracker/issues',
       keywords: ['neotracker'],
       bin: {
-        neotracker: 'bin/index.js',
+        neotracker: 'bin/neotracker',
+        'neotracker.js': 'bin/index.js',
       },
       engines: {
         node: '>=8.9.0',
@@ -114,6 +146,7 @@ const run = async () => {
   const outputPKGJSON = await createPackageJSON(pkgJSON);
   await Promise.all([
     fs.writeFile(path.resolve(outputPath, 'package.json'), outputPKGJSON),
+    fs.writeFile(path.resolve(outputPath, 'bin', 'neotracker'), createBin()),
     fs.move(path.resolve(dist, 'neotracker-client-web'), path.resolve(outputPath, 'dist', 'neotracker-client-web')),
     fs.move(
       path.resolve(dist, 'neotracker-client-web-next'),

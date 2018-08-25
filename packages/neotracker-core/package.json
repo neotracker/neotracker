@@ -1,6 +1,6 @@
 {
   "name": "@neotracker/core",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "NEO Tracker external api.",
   "main": "./src/index.ts",
   "dependencies": {
@@ -11,9 +11,11 @@
     "@neotracker/shared-utils": "0.0.1-alpha.0",
     "cross-fetch": "^2.2.2",
     "css.escape": "^1.5.1",
+    "execa": "^0.11.0",
     "lodash": "^4.17.10",
     "recompose": "^0.28.2",
     "rxjs": "^6.2.2",
+    "semver": "^5.5.1",
     "sqlite3": "^4.0.2",
     "yargs": "^12.0.1"
   },
