@@ -83,4 +83,8 @@ export const createWebpackConfig = (config: ExplorerConfig, staticOptions?: Stat
       },
     ],
   },
+  node: {
+    fs: 'empty',
+    path: 'empty',
+  },
 });
