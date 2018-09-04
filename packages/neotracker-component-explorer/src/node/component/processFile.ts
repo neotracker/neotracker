@@ -82,6 +82,11 @@ const processExportedSymbol = ({
 }): Result => {
   const declaration = tsUtils.symbol.getValueDeclaration(exp);
   if (declaration === undefined) {
+    const declarations = tsUtils.symbol.getDeclarations(exp);
+    if (declarations.length > 0) {
+      return EMPTY_RESULT;
+    }
+
     return errorResult(
       `Something went wrong. Could not find declaration for exported symbol "${exp.getName()}" in file ${filePath}`,
     );

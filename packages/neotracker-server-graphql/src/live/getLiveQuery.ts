@@ -7,6 +7,7 @@ import {
   buildExecutionContext,
   buildResolveInfo,
   collectFields,
+  execute,
   ExecutionContext,
   getFieldDef,
   getOperationRootType,
@@ -20,32 +21,60 @@ import { ObjMap } from 'graphql/jsutils/ObjMap';
 import { DocumentNode } from 'graphql/language/ast';
 import { GraphQLFieldResolver } from 'graphql/type/definition';
 import { GraphQLSchema } from 'graphql/type/schema';
-import { Observable } from 'rxjs';
+import { Observable, of as _of } from 'rxjs';
+
+interface ExecuteArgs {
+  readonly document: DocumentNode;
+  // tslint:disable-next-line no-any
+  readonly contextValue?: any;
+  // tslint:disable-next-line no-any
+  readonly variableValues?: ObjMap<any>;
+  readonly operationName?: string | undefined;
+}
 
 // tslint:disable-next-line no-any
-const isObservable = (value: any): value is Observable<any> => value.subscribe != undefined;
+const isObservable = (value: any): value is Observable<any> => value != undefined && value.subscribe != undefined;
 
-const getFieldLiveQuery = async (
-  exeContext: ExecutionContext,
-  schema: GraphQLSchema,
-  type: GraphQLObjectType,
-  responseName: string,
-  fieldNodes: ReadonlyArray<FieldNode>,
+const getFieldLiveQuery = async ({
+  exeContext,
+  schema,
+  type,
+  responseName,
+  fieldNodes,
+  createObservable,
+  rootValue,
+}: {
+  readonly exeContext: ExecutionContext;
+  readonly schema: GraphQLSchema;
   // tslint:disable-next-line no-any
-  rootValue?: any,
-): Promise<Observable<ExecutionResult>> =>
+  readonly type: GraphQLObjectType;
+  readonly responseName: string;
+  readonly fieldNodes: ReadonlyArray<FieldNode>;
+  readonly createObservable?: ExecuteArgs;
+  // tslint:disable-next-line no-any
+  readonly rootValue?: any;
+  // tslint:disable-next-line no-any
+}): Promise<Observable<ExecutionResult>> =>
   new Promise<Observable<ExecutionResult>>((resolve, reject) => {
     invariant(fieldNodes.length === 1, 'Expected a single field node.');
     const fieldNode = fieldNodes[0];
-    const fieldDef = getFieldDef(schema, type, fieldNode.name.value);
+    const name = fieldNode.name.value;
+
+    const fieldDef = getFieldDef(schema, type, name);
     if (fieldDef == undefined) {
       throw new Error('This live query is not defined by the schema.');
     }
 
     // Call the `subscribe()` resolver or the default resolver to produce an
     // AsyncIterable yielding raw payloads.
-    // tslint:disable-next-line no-any
-    const resolveFn = (fieldDef as any).live === undefined ? exeContext.fieldResolver : (fieldDef as any).live;
+    const resolveFn =
+      // tslint:disable-next-line no-any
+      (fieldDef as any).live === undefined
+        ? fieldDef.resolve === undefined
+          ? exeContext.fieldResolver
+          : fieldDef.resolve
+        : // tslint:disable-next-line no-any
+          (fieldDef as any).live;
 
     const path = addPath(undefined, responseName);
 
@@ -66,7 +95,21 @@ const getFieldLiveQuery = async (
         }
 
         if (!isObservable(subscription)) {
-          reject(new Error(`Subscription must return Async Iterable. Received: ` + `${String(subscription)}`));
+          if (createObservable !== undefined) {
+            const result = execute(
+              schema,
+              createObservable.document,
+              rootValue,
+              createObservable.contextValue,
+              createObservable.variableValues,
+              createObservable.operationName,
+              resolveFn,
+            ) as ExecutionResult;
+
+            resolve(_of(result));
+          } else {
+            reject(new Error(`Subscription must return Async Iterable. Received: ` + `${String(subscription)}`));
+          }
         }
 
         resolve(subscription);
@@ -75,19 +118,29 @@ const getFieldLiveQuery = async (
   });
 
 // Adapted from graphql-js createSourceEventStream
-export const getLiveQuery = async (
-  schema: GraphQLSchema,
-  document: DocumentNode,
+export const getLiveQuery = async ({
+  schema,
+  document,
+  rootValue,
+  contextValue,
+  variableValues,
+  operationName,
+  fieldResolver,
+  createObservable = false,
+}: {
+  readonly schema: GraphQLSchema;
+  readonly document: DocumentNode;
   // tslint:disable-next-line no-any
-  rootValue?: any,
+  readonly rootValue?: any;
   // tslint:disable-next-line no-any
-  contextValue?: any,
+  readonly contextValue?: any;
   // tslint:disable-next-line no-any
-  variableValues?: ObjMap<any>,
-  operationName?: string | undefined,
+  readonly variableValues?: ObjMap<any>;
+  readonly operationName?: string | undefined;
   // tslint:disable-next-line no-any
-  fieldResolver?: GraphQLFieldResolver<any, any> | undefined,
-): Promise<ReadonlyArray<[string, Observable<ExecutionResult>]>> => {
+  readonly fieldResolver?: GraphQLFieldResolver<any, any> | undefined;
+  readonly createObservable?: boolean;
+}): Promise<ReadonlyArray<[string, Observable<ExecutionResult>]>> => {
   // If arguments are missing or incorrectly typed, this is an internal
   // developer mistake which should throw an early error.
   assertValidExecutionArguments(schema, document, variableValues);
@@ -117,19 +170,26 @@ export const getLiveQuery = async (
     // tslint:disable-next-line:no-null-keyword
     Object.create(null),
   );
-
   const responseNames = Object.keys(fields);
+
+  const executeArgs = {
+    document,
+    contextValue,
+    variableValues,
+    operationName,
+  };
 
   return Promise.all(
     responseNames.map<Promise<[string, Observable<ExecutionResult>]>>(async (responseName) => {
-      const fieldLiveQuery$ = await getFieldLiveQuery(
-        executionContext,
+      const fieldLiveQuery$ = await getFieldLiveQuery({
+        exeContext: executionContext,
         schema,
         type,
         responseName,
-        fields[responseName],
+        fieldNodes: fields[responseName],
+        createObservable: createObservable ? executeArgs : undefined,
         rootValue,
-      );
+      });
 
       return [responseName, fieldLiveQuery$];
     }),

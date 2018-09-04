@@ -324,7 +324,13 @@ export class LiveServer {
       let liveQueries;
       try {
         liveQueries = await span.captureLog(
-          async () => getLiveQuery(this.schema, query, undefined, graphQLContext, message.query.variables),
+          async () =>
+            getLiveQuery({
+              schema: this.schema,
+              document: query,
+              contextValue: graphQLContext,
+              variableValues: message.query.variables,
+            }),
           { name: 'graphql_get_live_query', level: 'verbose', error: {} },
         );
       } catch (error) {

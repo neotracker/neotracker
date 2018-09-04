@@ -2,7 +2,6 @@ import { Proxy, ProxyProps } from '@neotracker/component-explorer';
 import { AppOptions } from '@neotracker/shared-utils';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
-import { SchemaLink } from 'apollo-link-schema';
 import fakerStatic from 'faker';
 import { addMockFunctionsToSchema, IMocks, makeExecutableSchema } from 'graphql-tools';
 import { buildClientSchema, printSchema } from 'graphql/utilities';
@@ -11,6 +10,7 @@ import * as React from 'react';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AppContext } from '../../../AppContext';
 import { AppContextProvider } from '../../../components';
+import { LiveSchemaLink } from './LiveSchemaLink';
 
 // tslint:disable-next-line no-require-imports no-var-requires
 const graphql = require('../../../../../neotracker-server-graphql/src/__generated__/schema.graphql.json');
@@ -90,7 +90,7 @@ export const createAppContextProxy = ({ mocks: defaultMocksIn }: AppContextProxy
       const appContext: AppContext = {
         apollo: new ApolloClient({
           cache: new InMemoryCache(),
-          link: new SchemaLink({ schema }),
+          link: new LiveSchemaLink({ schema }),
           ssrMode: true,
           queryDeduplication: false,
         }),
