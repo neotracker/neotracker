@@ -48,7 +48,7 @@ const isPullRequest = (data: any): data is PullRequest => data.pull_request !== 
 
 export const commands = (options: CommandsOptions) => {
   const COMMANDS: ReadonlyArray<Command> = [
-    new Command('test', async (butterfly, _args, data) => {
+    new Command('test', async (butterfly, args, data) => {
       if (isIssueComment(data)) {
         const contexts = new Set(options.test.circleCIContexts);
 
@@ -60,11 +60,21 @@ export const commands = (options: CommandsOptions) => {
         });
 
         const statusesReversed = _.reverse(statuses);
-        const contextLastStatuses = options.test.circleCIContexts.map((context) => {
-          const status = statusesReversed.find((stat) => stat.context === context);
+        const argContexts = args.split(' ').filter((argContext) => argContext !== '');
 
-          return { status, context };
-        });
+        const contextLastStatuses = options.test.circleCIContexts
+          .filter((context) => {
+            if (args.length === 0) {
+              return true;
+            }
+
+            return argContexts.some((argContext) => context.endsWith(argContext));
+          })
+          .map((context) => {
+            const status = statusesReversed.find((stat) => stat.context === context);
+
+            return { status, context };
+          });
 
         await Promise.all(
           contextLastStatuses.map(async ({ status, context }) => {
