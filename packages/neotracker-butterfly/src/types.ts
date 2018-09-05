@@ -5,8 +5,6 @@ import { createGithub } from './github';
 // tslint:disable-next-line no-any no-unused readonly-array
 type PromiseReturnType<T> = T extends (...args: any[]) => Promise<infer R> ? R : never;
 
-export type Github = PromiseReturnType<typeof createGithub>;
-
 export interface Logger {
   readonly verbose: (message: string) => void;
   readonly info: (message: string) => void;
@@ -25,14 +23,17 @@ export interface Butterfly {
   };
   readonly git: {
     readonly resetToHead: () => Promise<void>;
-    readonly changedFiles: () => Promise<ReadonlyArray<string>>;
+    readonly getChangedFiles: () => Promise<ReadonlyArray<string>>;
+  };
+  readonly util: {
+    readonly removeFiles: (fileList: ReadonlyArray<string>) => Promise<void>;
+    readonly getFiles: () => Promise<ReadonlyArray<string>>;
   };
 }
 
 export interface PullRequest {
   readonly body: string;
 }
-
 export interface ButterflyWebhook extends Butterfly {
   readonly circleci: PromiseReturnType<typeof createCircleCI>;
   readonly github: PromiseReturnType<typeof createGithub>;
