@@ -14,7 +14,7 @@ aliases:
 
   - &yarn
     |
-      yarn install --non-interactive --cache-folder ~/.cache/yarn --frozen-lockfile
+      yarn install --non-interactive --cache-folder ~/.cache/yarn
 
   - &defaults
     docker:
