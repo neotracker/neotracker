@@ -183,7 +183,7 @@ export const createScraper$ = ({
         };
       },
     ),
-    mergeScanLatest(async (_acc, context: Context) => {
+    mergeScanLatest<Context, Context>(async (_acc, context: Context) => {
       const contractModels = await ContractModel.query(context.db)
         .context(context.makeQueryContext(rootMonitor))
         .where('type', NEP5_CONTRACT_TYPE);
@@ -209,7 +209,7 @@ export const createScraper$ = ({
         nep5Contracts: _.fromPairs(nep5ContractPairs),
       };
     }),
-    mergeScanLatest(async (_acc, context: Context) => {
+    mergeScanLatest<Context, Context>(async (_acc, context: Context) => {
       // tslint:disable-next-line no-loop-statement
       for (const [name, migration] of migrations) {
         const execute = await context.migrationHandler.shouldExecute(name);

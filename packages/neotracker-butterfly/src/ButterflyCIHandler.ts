@@ -212,11 +212,10 @@ ${error.stack}
     rawDetails,
   }: CheckAnnotation): Github.ChecksUpdateParamsOutputAnnotations {
     return {
-      filename: fileName,
-      blob_href: `https://github.com/${this.owner}/${this.repo}/blob/${this.sha}/${fileName}`,
+      path: fileName,
       start_line: startLine,
       end_line: endLine,
-      warning_level: warningLevel,
+      annotation_level: warningLevel,
       message,
       title,
       raw_details: rawDetails,

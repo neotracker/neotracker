@@ -176,13 +176,13 @@ describe('Query', () => {
     const newFixtureData = {
       appContext: {
         apollo: {
-          Block: resolveWithIntervalLoop(blockReturns, 25),
+          Block: resolveWithIntervalLoop(blockReturns, 49),
         },
       },
     };
     setFixtureData(newFixtureData);
 
-    await new Promise<void>((resolve) => setTimeout(resolve, 26));
+    await new Promise<void>((resolve) => setTimeout(resolve, 50));
 
     expect(
       getWrapper()
@@ -190,7 +190,7 @@ describe('Query', () => {
         .substr(0, 5),
     ).toEqual('hash1');
 
-    await new Promise<void>((resolve) => setTimeout(resolve, 26));
+    await new Promise<void>((resolve) => setTimeout(resolve, 50));
 
     expect(
       getWrapper()
@@ -198,7 +198,7 @@ describe('Query', () => {
         .substr(0, 5),
     ).toEqual('hash2');
 
-    await new Promise<void>((resolve) => setTimeout(resolve, 26));
+    await new Promise<void>((resolve) => setTimeout(resolve, 50));
 
     expect(
       getWrapper()
@@ -206,7 +206,7 @@ describe('Query', () => {
         .substr(0, 5),
     ).toEqual('hash3');
 
-    await new Promise<void>((resolve) => setTimeout(resolve, 26));
+    await new Promise<void>((resolve) => setTimeout(resolve, 50));
 
     expect(
       getWrapper()

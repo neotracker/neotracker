@@ -8,6 +8,7 @@ import { from } from 'rxjs';
 
 setObservableConfig({
   fromESObservable: from,
-});
+  // tslint:disable-next-line no-any
+} as any);
 
 metrics.setFactory(collectingMetrics);

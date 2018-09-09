@@ -270,7 +270,8 @@ export const createRootLoader$ = ({
     combineLatest(db$, options$).pipe(map(([db, options]) => createRootLoader(db, options, monitor))),
     pubsub.observable$(PROCESSED_NEXT_INDEX).pipe(startWith(0)),
   ).pipe(
-    scan((prevRootLoader: RootLoader, [nextRootLoader]: [RootLoader]) => {
+    // tslint:disable-next-line no-any
+    scan((prevRootLoader: RootLoader, [nextRootLoader]: [RootLoader, any]) => {
       if (prevRootLoader === nextRootLoader) {
         nextRootLoader.reset();
       }

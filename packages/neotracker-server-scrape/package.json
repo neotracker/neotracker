@@ -12,8 +12,8 @@
   "license": "MIT",
   "main": "./src/index.ts",
   "dependencies": {
-    "@neo-one/client": "^1.0.0-alpha.91",
-    "@neo-one/monitor": "^1.0.0-alpha.55",
+    "@neo-one/client": "^1.0.0-alpha.101",
+    "@neo-one/monitor": "^1.0.0-alpha.59",
     "@neotracker/server-db": "^0.0.1-alpha.0",
     "@neotracker/shared-utils": "^0.0.1-alpha.0",
     "bignumber.js": "^7.2.0",
@@ -21,8 +21,8 @@
     "knex": "^0.15.2",
     "lodash": "^4.17.10",
     "lru-cache": "^4.1.1",
-    "objection": "^1.2.3",
-    "rxjs": "^6.2.2"
+    "objection": "^1.2.6",
+    "rxjs": "^6.3.2"
   },
   "devDependencies": {
     "@neotracker/server-test": "^0.0.1-alpha.0"

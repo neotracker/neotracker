@@ -1,5 +1,5 @@
 {
-  "extends": ["tslint:all", "tslint-react", "tslint-config-prettier", "tslint-plugin-graphql"],
+  "extends": ["tslint:all", "tslint-react", "tslint-config-prettier"],
   "rulesDirectory": [
     "tslint-microsoft-contrib",
     "./node_modules/tslint-immutable/rules",
@@ -119,14 +119,6 @@
     "no-map-without-usage": true,
     "rxjs-finnish": true,
     "rxjs-no-ignored-error": true,
-    "graphql": [
-      true,
-      {
-        "env": "apollo",
-        "schemaJsonFilepath": "./packages/neotracker-server-graphql/src/__generated__/schema.graphql.json",
-        "tagName": "gql"
-      }
-    ],
     "jsx-boolean-value": false,
     "jsx-no-lambda": false
   }

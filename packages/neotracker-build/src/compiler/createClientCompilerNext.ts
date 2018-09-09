@@ -3,6 +3,7 @@ import * as appRootDir from 'app-root-dir';
 import AssetsWebpackPlugin from 'assets-webpack-plugin';
 // @ts-ignore
 import BrotliPlugin from 'brotli-webpack-plugin';
+// @ts-ignore
 import CompressionPlugin from 'compression-webpack-plugin';
 import * as fs from 'fs-extra';
 // @ts-ignore
@@ -57,7 +58,7 @@ export const createClientCompilerNext = ({
       dev
         ? undefined
         : new CompressionPlugin({
-            asset: '[path].gz[query]',
+            filename: '[path].gz[query]',
             algorithm: 'gzip',
             test: /\.(js|css|html|svg)$/,
             threshold: 1024,

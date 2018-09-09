@@ -10,7 +10,7 @@ import {
   subscribeProcessedNextIndex,
 } from '@neotracker/server-db';
 import { LiveServer, QueryMap, schema, startRootCalls$ } from '@neotracker/server-graphql';
-import { finalizeServer, handleServer, resolveRootPath } from '@neotracker/server-utils';
+import { finalizeServer, handleServer, HandleServerResult, resolveRootPath } from '@neotracker/server-utils';
 import {
   context,
   onError as createOnError,
@@ -186,71 +186,80 @@ export const createServer$ = ({
   const graphqlNextMiddleware = graphql({ next: true });
 
   const app$ = combineLatest(
-    combineLatest(rootLoader$, queryMap$).pipe(
-      map(([rootLoader, queryMap]) => setRootLoader({ rootLoader, queryMap })),
-    ),
-    mapDistinct$((_) => _.options.appOptions.maintenance).pipe(
-      map((maintenance) => healthCheck({ options: { maintenance } })),
-    ),
-    mapDistinct$((_) => _.options.toobusy).pipe(map((options) => toobusy({ options }))),
-    mapDistinct$((_) => _.options.rateLimit).pipe(map((options) => ratelimit({ options }))),
-    mapDistinct$((_) => _.options.security).pipe(map((options) => security({ options }))),
-    mapDistinct$((_) => _.options.clientAssets).pipe(map((options) => clientAssets({ options }))),
-    mapDistinct$((_) => _.options.clientAssetsNext).pipe(map((options) => clientAssetsNext({ options }))),
-    mapDistinct$((_) => _.options.publicAssets).pipe(map((options) => publicAssets({ options }))),
-    mapDistinct$((_) => _.options.rootAssets).pipe(map((options) => rootAssets({ options }))),
-    mapDistinct$((_) => _.options.domain).pipe(map((domain) => sitemap({ domain }))),
-    mapDistinct$((_) => _.options.rpcURL).pipe(map((rpcURL) => nodeRPC({ rpcURL }))),
-    mapDistinct$((_) => _.options.reportURL).pipe(map((reportURL) => report({ reportURL }))),
     combineLatest(
-      mapDistinct$(({ addHeadElements = noOpAddHeadElements }) => addHeadElements),
-      mapDistinct$(({ addBodyElements = noOpAddBodyElements }) => addBodyElements),
-      mapDistinct$((_) => _.options.react),
-      mapDistinct$((_) => _.options.reactApp),
-      mapDistinct$((_) => _.options.appOptions),
-      mapDistinct$((_) => _.options.serveNext),
-    ).pipe(
-      map(
-        ([addHeadElements, addBodyElements, react, reactAppOptions, appOptions, serveNext]) =>
-          serveNext
-            ? reactApp({
-                addHeadElements,
-                addBodyElements,
-                environment: environment.reactApp,
-                options: reactAppOptions,
-                network: environment.network,
-                appOptions,
-              })
-            : reactApplication({
-                monitor,
-                addHeadElements,
-                addBodyElements,
-                environment: environment.react,
-                options: react,
-                network: environment.network,
-                appOptions,
-              }),
+      combineLatest(rootLoader$, queryMap$).pipe(
+        map(([rootLoader, queryMap]) => setRootLoader({ rootLoader, queryMap })),
       ),
+      mapDistinct$((_) => _.options.appOptions.maintenance).pipe(
+        map((maintenance) => healthCheck({ options: { maintenance } })),
+      ),
+      mapDistinct$((_) => _.options.toobusy).pipe(map((options) => toobusy({ options }))),
+      mapDistinct$((_) => _.options.rateLimit).pipe(map((options) => ratelimit({ options }))),
+      mapDistinct$((_) => _.options.security).pipe(map((options) => security({ options }))),
+      mapDistinct$((_) => _.options.clientAssets).pipe(map((options) => clientAssets({ options }))),
     ),
-    mapDistinct$(({ addMiddleware = noOpAddMiddleware }) => addMiddleware),
-    defer(async () => LoadableExport.preloadAll()),
+    combineLatest(
+      mapDistinct$((_) => _.options.clientAssetsNext).pipe(map((options) => clientAssetsNext({ options }))),
+      mapDistinct$((_) => _.options.publicAssets).pipe(map((options) => publicAssets({ options }))),
+      mapDistinct$((_) => _.options.rootAssets).pipe(map((options) => rootAssets({ options }))),
+      mapDistinct$((_) => _.options.domain).pipe(map((domain) => sitemap({ domain }))),
+      mapDistinct$((_) => _.options.rpcURL).pipe(map((rpcURL) => nodeRPC({ rpcURL }))),
+      mapDistinct$((_) => _.options.reportURL).pipe(map((reportURL) => report({ reportURL }))),
+    ),
+    combineLatest(
+      combineLatest(
+        mapDistinct$(({ addHeadElements = noOpAddHeadElements }) => addHeadElements),
+        mapDistinct$(({ addBodyElements = noOpAddBodyElements }) => addBodyElements),
+        mapDistinct$((_) => _.options.react),
+        mapDistinct$((_) => _.options.reactApp),
+        mapDistinct$((_) => _.options.appOptions),
+        mapDistinct$((_) => _.options.serveNext),
+      ).pipe(
+        map(
+          ([addHeadElements, addBodyElements, react, reactAppOptions, appOptions, serveNext]) =>
+            serveNext
+              ? reactApp({
+                  addHeadElements,
+                  addBodyElements,
+                  environment: environment.reactApp,
+                  options: reactAppOptions,
+                  network: environment.network,
+                  appOptions,
+                })
+              : reactApplication({
+                  monitor,
+                  addHeadElements,
+                  addBodyElements,
+                  environment: environment.react,
+                  options: react,
+                  network: environment.network,
+                  appOptions,
+                }),
+        ),
+      ),
+      mapDistinct$(({ addMiddleware = noOpAddMiddleware }) => addMiddleware),
+      defer(async () => LoadableExport.preloadAll()),
+    ),
   ).pipe(
     map(
       ([
-        setRootLoaderMiddleware,
-        healthCheckMiddleware,
-        toobusyMiddleware,
-        ratelimitMiddleware,
-        securityMiddleware,
-        clientAssetsMiddleware,
-        clientAssetsNextMiddleware,
-        publicAssetsMiddleware,
-        rootAssetsMiddleware,
-        sitemapMiddleware,
-        nodeRPCMiddleware,
-        reportMiddleware,
-        reactApplicationMiddleware,
-        addMiddleware,
+        [
+          setRootLoaderMiddleware,
+          healthCheckMiddleware,
+          toobusyMiddleware,
+          ratelimitMiddleware,
+          securityMiddleware,
+          clientAssetsMiddleware,
+        ],
+        [
+          clientAssetsNextMiddleware,
+          publicAssetsMiddleware,
+          rootAssetsMiddleware,
+          sitemapMiddleware,
+          nodeRPCMiddleware,
+          reportMiddleware,
+        ],
+        [reactApplicationMiddleware, addMiddleware],
       ]) => {
         const app = new Application();
         app.proxy = true;
@@ -303,7 +312,7 @@ export const createServer$ = ({
   );
 
   const server$ = app$.pipe(
-    mergeScanLatest(
+    mergeScanLatest<Application, HandleServerResult<http.Server>>(
       (prevResult, app) =>
         defer(async () =>
           handleServer({
