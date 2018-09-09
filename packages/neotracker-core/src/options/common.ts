@@ -83,7 +83,7 @@ export const common = ({
         action: 'deny',
       },
       cspConfig: {
-        enabled: true,
+        enabled: false,
         directives: {
           childSrc: ["'self'"],
           defaultSrc: ["'self'"],
@@ -134,7 +134,7 @@ export const common = ({
         donateAddress: 'AKDVzYGLczmykdtRaejgvWeZrvdkVEvQ1X',
       },
       url: `http://127.0.0.1:${port}`,
-      rpcURL,
+      rpcURL: `http://127.0.0.1:${port}/rpc`,
       maintenance: false,
       disableWalletModify: false,
       // 3 minutes

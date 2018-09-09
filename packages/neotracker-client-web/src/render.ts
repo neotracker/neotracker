@@ -2,15 +2,12 @@ import { Monitor } from '@neo-one/monitor';
 import { labels, ua } from '@neotracker/shared-utils';
 // @ts-ignore
 import { configureStore } from '@neotracker/shared-web';
-import injectTapEventPlugin from 'react-tap-event-plugin';
 // @ts-ignore
 import RelayQueryResponseCache from 'relay-runtime/lib/RelayQueryResponseCache';
 import { createAppContext } from './createAppContext';
 import { renderApp } from './renderApp';
 
 export const render = ({ monitor }: { readonly monitor: Monitor }) => {
-  injectTapEventPlugin();
-
   const relayResponseCache = new RelayQueryResponseCache({
     size: 100,
     ttl: 60 * 60 * 1000, // 60 minutes

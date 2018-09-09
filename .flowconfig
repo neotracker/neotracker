@@ -11,7 +11,6 @@
 .*/node_modules/protobufjs/src/bower.json
 .*/node_modules/protobufjs/tests/data/invalid.json
 .*/node_modules/protobufjs/tests/data/invalid.json
-.*/node_modules/react-tap-event-plugin/src/TapEventPlugin.js
 .*/node_modules/material-ui/.*.js.flow
 
 [include]

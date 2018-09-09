@@ -371,7 +371,7 @@ export const doSendAsset = async ({
     const decimals = await nep5.getDecimals(readClient, asset);
     const contract = nep5.createNEP5SmartContract(
       client,
-      { [network]: { hash: asset } },
+      { [network]: { address: asset } },
       decimals,
     );
 

@@ -288,7 +288,6 @@ export const createServer$ = ({
           }),
           setRootLoaderMiddleware,
           healthCheckMiddleware,
-          cors,
           toobusyMiddleware,
           ratelimitMiddleware,
           securityMiddleware,
@@ -304,7 +303,7 @@ export const createServer$ = ({
           reactApplicationMiddleware,
         ]);
 
-        routeMiddleware({ app, middlewares });
+        routeMiddleware({ app, middlewares, cors });
 
         return app;
       },

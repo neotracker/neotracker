@@ -6,9 +6,11 @@ import { ServerMiddleware, ServerRoute } from './middleware';
 export const routeMiddleware = ({
   app,
   middlewares,
+  cors,
 }: {
   readonly app: Application;
   readonly middlewares: ReadonlyArray<ServerMiddleware | ServerRoute>;
+  readonly cors?: ServerMiddleware;
 }) => {
   const router = new Router();
   middlewares.forEach((middleware) => {
@@ -30,5 +32,8 @@ export const routeMiddleware = ({
   });
 
   app.use(router.routes());
+  if (cors !== undefined) {
+    app.use(cors.middleware);
+  }
   app.use(router.allowedMethods());
 };
