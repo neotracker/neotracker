@@ -108,39 +108,46 @@ const getContractAndAsset = async ({
   let asset: Partial<AssetModel> | undefined;
   let nep5Contract: ReadSmartContractAny | undefined;
   if (isNEP5) {
-    const decimals = await nep5.getDecimals(context.client, contract.address);
-    // tslint:disable-next-line no-any
-    nep5Contract = nep5.createNEP5ReadSmartContract(context.client, contract.address, decimals) as any;
-    if (nep5Contract === undefined) {
-      throw new Error('For TS');
+    try {
+      const decimals = await nep5.getDecimals(context.client, contract.address);
+      // tslint:disable-next-line no-any
+      nep5Contract = nep5.createNEP5ReadSmartContract(context.client, contract.address, decimals) as any;
+      if (nep5Contract === undefined) {
+        throw new Error('For TS');
+      }
+
+      const [name, symbol, totalSupply] = await Promise.all([
+        nep5Contract.name(monitor),
+        nep5Contract.symbol(monitor),
+        nep5Contract.totalSupply(monitor).catch(() => new BigNumber(0)),
+      ]);
+
+      asset = {
+        id: contractModel.id,
+        transaction_id: transaction.receipt.globalIndex.toString(),
+        transaction_hash: transaction.hash,
+        type: 'NEP5',
+        name_raw: JSON.stringify(name),
+        symbol,
+        amount: totalSupply.toString(),
+        precision: decimals,
+        // tslint:disable-next-line no-null-keyword
+        owner: null,
+        // tslint:disable-next-line no-null-keyword
+        admin_address_id: null,
+        block_time: blockTime,
+        issued: '0',
+        address_count: '0',
+        transfer_count: '0',
+        transaction_count: '0',
+        aggregate_block_id: -1,
+      };
+    } catch (error) {
+      monitor.logError({
+        name: 'scrape_process_nep5_asset_error',
+        error,
+      });
     }
-
-    const [name, symbol, totalSupply] = await Promise.all([
-      nep5Contract.name(monitor),
-      nep5Contract.symbol(monitor),
-      nep5Contract.totalSupply(monitor).catch(() => new BigNumber(0)),
-    ]);
-
-    asset = {
-      id: contractModel.id,
-      transaction_id: transaction.receipt.globalIndex.toString(),
-      transaction_hash: transaction.hash,
-      type: 'NEP5',
-      name_raw: JSON.stringify(name),
-      symbol,
-      amount: totalSupply.toString(),
-      precision: decimals,
-      // tslint:disable-next-line no-null-keyword
-      owner: null,
-      // tslint:disable-next-line no-null-keyword
-      admin_address_id: null,
-      block_time: blockTime,
-      issued: '0',
-      address_count: '0',
-      transfer_count: '0',
-      transaction_count: '0',
-      aggregate_block_id: -1,
-    };
   }
 
   return { asset, contract: contractModel, nep5Contract };
