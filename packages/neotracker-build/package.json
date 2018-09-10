@@ -22,7 +22,7 @@
     "@neo-one/node-esnext-esm": "^1.0.0-alpha.116",
     "@neo-one/node-neo-settings-esnext-esm": "^1.0.0-alpha.77",
     "@neo-one/utils-esnext-esm": "^1.0.0-alpha.64",
-    "@neotracker/core": "^1.0.9",
+    "@neotracker/core": "^1.0.10",
     "@neotracker/server-graphql": "^0.0.1-alpha.0",
     "@neotracker/server-utils": "^0.0.1-alpha.0",
     "@neotracker/server-web": "^0.0.1-alpha.0",
@@ -65,7 +65,5 @@
     "webpack-node-externals": "^1.7.2",
     "yargs": "^12.0.2"
   },
-  "sideEffects": [
-    "./src/entry/init.ts"
-  ]
+  "sideEffects": ["./src/entry/init.ts"]
 }
