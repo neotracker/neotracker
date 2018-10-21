@@ -192,7 +192,7 @@ export const createScraper$ = ({
         contractModels
           .filter((contractModel) => !context.blacklistNEP5Hashes.has(contractModel.id))
           .map<Promise<[string, ReadSmartContractAny]>>(async (contractModel) => {
-            const decimals = await nep5.getDecimals(context.client, add0x(contractModel.id));
+            const decimals = await nep5.getDecimals(context.client, add0x(contractModel.id)).catch(() => 8);
             const contract: ReadSmartContractAny = nep5.createNEP5ReadSmartContract(
               context.client,
               add0x(contractModel.id),
