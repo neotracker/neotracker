@@ -9,7 +9,6 @@ export interface ButterflyLocalHandlerOptions extends ButterflyOptions {
 export class ButterflyLocalHandler {
   private readonly butterfly: ButterflyOptions;
   private readonly checks: ReadonlyArray<Check>;
-
   public constructor({ checks, ...rest }: ButterflyLocalHandlerOptions) {
     this.butterfly = rest;
     this.checks = checks;
@@ -29,7 +28,6 @@ export class ButterflyLocalHandler {
 
     try {
       const result = await check.run(butterfly);
-      // tslint:disable-next-line: no-console
       butterfly.log.info(`Check ${name} conclusion: ${result.conclusion}
           title: ${result.title}
           summary: ${result.summary}
@@ -38,8 +36,7 @@ export class ButterflyLocalHandler {
 
       return result.conclusion === 'failure' ? 1 : 0;
     } catch (error) {
-      // tslint:disable-next-line: no-console
-      butterfly.log.error(`Unexpected error ocurred while running: ${name} failed\n${error.stack}`);
+      butterfly.log.info(`Unexpected error ocurred while running: ${name} failed\n${error.stack}`);
 
       return 1;
     }
