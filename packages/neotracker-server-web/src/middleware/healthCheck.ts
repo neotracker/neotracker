@@ -1,5 +1,4 @@
 import { isHealthyDB } from '@neotracker/server-db';
-import { getMonitor } from '@neotracker/server-utils-koa';
 // @ts-ignore
 import { routes } from '@neotracker/shared-web';
 import { Context } from 'koa';
@@ -17,9 +16,8 @@ export const healthCheck = ({ options }: { readonly options: Options }) => ({
     if (options.maintenance) {
       ctx.status = 200;
     } else {
-      const monitor = getMonitor(ctx);
       const rootLoader = getRootLoader(ctx);
-      const currentHealthy = await isHealthyDB(rootLoader.db, monitor);
+      const currentHealthy = await isHealthyDB(rootLoader.db);
       ctx.status = currentHealthy ? 200 : 500;
     }
   },

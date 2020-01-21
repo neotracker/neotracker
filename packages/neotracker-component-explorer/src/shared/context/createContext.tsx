@@ -64,19 +64,22 @@ export function createContext<E extends ReactElement, W extends Wrapper, Rendere
   };
 
   const mount = async () => {
-    unmount();
-    fixtureData = example.data === undefined ? {} : example.data;
+    await new Promise<void>((resolve) => {
+      unmount();
+      fixtureData = example.data === undefined ? {} : example.data;
 
-    ref = React.createRef<E>();
-    wrapper = renderer(
-      <Loader
-        proxies={proxies}
-        element={example.element(ref)}
-        data={fixtureData}
-        onUpdateFixtureData={updateFixtureData}
-      />,
-      rendererOptions,
-    );
+      ref = React.createRef<E>();
+      wrapper = renderer(
+        <Loader
+          proxies={proxies}
+          element={example.element(ref)}
+          data={fixtureData}
+          onUpdateFixtureData={updateFixtureData}
+        />,
+        rendererOptions,
+      );
+      resolve();
+    });
   };
 
   return {

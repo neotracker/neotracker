@@ -7,7 +7,6 @@
 
     "lib": ["dom", "esnext"],
     "paths": {
-      "@neotracker-internal/*": ["./neotracker-internal-*/src"],
       "@neotracker/*": ["./neotracker-*/src"],
       "*": ["../@types/*"]
     },

@@ -61,6 +61,6 @@ const enhance: HOC<*, *> = compose(
   pure,
 );
 
-export default (enhance(PaperWalletLabeled): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  PaperWalletLabeled,
+): React.ComponentType<ExternalProps>);

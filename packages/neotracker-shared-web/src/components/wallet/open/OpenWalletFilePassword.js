@@ -120,7 +120,7 @@ function OpenWalletFilePassword({
         type="file"
         onChange={onUploadFile}
       />
-      <Button variant="raised" color="primary" onClick={onClickUploadFile}>
+      <Button variant="contained" color="primary" onClick={onClickUploadFile}>
         <Typography className={classes.buttonText} variant="body1">
           SELECT WALLET FILE
         </Typography>
@@ -238,6 +238,6 @@ const enhance: HOC<*, *> = compose(
   pure,
 );
 
-export default (enhance(OpenWalletFilePassword): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  OpenWalletFilePassword,
+): React.ComponentType<ExternalProps>);

@@ -51,6 +51,6 @@ const enhance: HOC<*, *> = compose(
   }): $FlowFixMe),
 );
 
-export default (enhance(NewWalletSaveKeystore): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  NewWalletSaveKeystore,
+): React.ComponentType<ExternalProps>);

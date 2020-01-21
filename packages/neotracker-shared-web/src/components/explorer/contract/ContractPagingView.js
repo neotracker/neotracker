@@ -70,6 +70,6 @@ const enhance: HOC<*, *> = compose(
   pure,
 );
 
-export default (enhance(ContractPagingView): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  ContractPagingView,
+): React.ComponentType<ExternalProps>);

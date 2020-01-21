@@ -1,4 +1,4 @@
-import { Monitor } from '@neo-one/monitor';
+import { createChild, serverLogger } from '@neotracker/logger';
 import { AssetToTransaction as AssetToTransactionModel } from '@neotracker/server-db';
 import _ from 'lodash';
 import { Context } from '../types';
@@ -15,39 +15,33 @@ export interface AssetToTransactionRevert {
   readonly transactionIDs: ReadonlyArray<string>;
 }
 
+const serverScrapeLogger = createChild(serverLogger, { component: 'scrape' });
+
 export class AssetToTransactionUpdater extends SameContextDBUpdater<AssetToTransactionSave, AssetToTransactionRevert> {
-  public async save(context: Context, monitor: Monitor, { transactions }: AssetToTransactionSave): Promise<void> {
-    return monitor.captureSpanLog(
-      async (span) => {
-        const data = _.flatMap(transactions, ({ assetIDs, transactionID }) =>
-          [...new Set(assetIDs)].map((assetID) => ({
-            id1: assetID,
-            id2: transactionID,
-          })),
-        );
-        await Promise.all(
-          _.chunk(data, context.chunkSize).map(async (chunk) => {
-            await AssetToTransactionModel.insertAll(context.db, context.makeQueryContext(span), chunk);
-          }),
-        );
-      },
-      { name: 'neotracker_scrape_save_asset_to_transaction', level: 'verbose', error: {} },
+  public async save(context: Context, { transactions }: AssetToTransactionSave): Promise<void> {
+    serverScrapeLogger.info({ title: 'neotracker_scrape_save_asset_to_transaction' });
+    const data = _.flatMap(transactions, ({ assetIDs, transactionID }) =>
+      [...new Set(assetIDs)].map((assetID) => ({
+        id1: assetID,
+        id2: transactionID,
+      })),
+    );
+    await Promise.all(
+      _.chunk(data, context.chunkSize).map(async (chunk) => {
+        await AssetToTransactionModel.insertAll(context.db, context.makeQueryContext(), chunk);
+      }),
     );
   }
 
-  public async revert(context: Context, monitor: Monitor, { transactionIDs }: AssetToTransactionRevert): Promise<void> {
-    return monitor.captureSpan(
-      async (span) => {
-        await Promise.all(
-          _.chunk(transactionIDs, context.chunkSize).map((chunk) =>
-            AssetToTransactionModel.query(context.db)
-              .context(context.makeQueryContext(span))
-              .delete()
-              .whereIn('id2', chunk),
-          ),
-        );
-      },
-      { name: 'neotracker_scrape_revert_asset_to_transaction' },
+  public async revert(context: Context, { transactionIDs }: AssetToTransactionRevert): Promise<void> {
+    serverScrapeLogger.info({ title: 'neotracker_scrape_revert_asset_to_transaction' });
+    await Promise.all(
+      _.chunk(transactionIDs, context.chunkSize).map((chunk) =>
+        AssetToTransactionModel.query(context.db)
+          .context(context.makeQueryContext())
+          .delete()
+          .whereIn('id2', chunk),
+      ),
     );
   }
 }

@@ -1,5 +1,5 @@
 // tslint:disable no-any
-import Github, { ListForRefResponseCheckRunsItem } from '@octokit/rest';
+import Github, { ChecksListForRefResponseCheckRunsItem } from '@octokit/rest';
 import { ButterflyWebhookOptions, createButterflyWebhook } from './createButterflyWebhook';
 import { Butterfly, ButterflyWebhook } from './types';
 
@@ -138,7 +138,7 @@ ${error.stack}
     const checkRun = await this.getCheckRun(butterfly, name);
     await butterfly.github.api.checks.update({
       ...update,
-      check_run_id: `${checkRun.id}`,
+      check_run_id: checkRun.id,
       name,
       owner: this.owner,
       repo: this.repo,
@@ -154,7 +154,7 @@ ${error.stack}
     });
 
     const checkRun = checkRunResponse.data.check_runs[checkRunResponse.data.check_runs.length - 1] as
-      | ListForRefResponseCheckRunsItem
+      | ChecksListForRefResponseCheckRunsItem
       | undefined;
     if (checkRun === undefined) {
       throw new Error(`Could not find existing check run for ${name}`);

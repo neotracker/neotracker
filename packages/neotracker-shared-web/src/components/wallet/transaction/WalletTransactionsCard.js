@@ -1,7 +1,7 @@
 /* @flow */
 import { type HOC, compose, pure } from 'recompose';
 import * as React from 'react';
-import type { UserAccount } from '@neo-one/client';
+import type { UserAccount } from '@neo-one/client-common';
 
 import { graphql } from 'react-relay';
 
@@ -91,6 +91,6 @@ const enhance: HOC<*, *> = compose(
   pure,
 );
 
-export default (enhance(WalletTransactionsCard): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  WalletTransactionsCard,
+): React.ComponentType<ExternalProps>);

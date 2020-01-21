@@ -20,13 +20,13 @@ interface MemoizedMapMap {
 // tslint:disable-next-line readonly-keyword
 const mutableMemoized$: { [key: string]: MemoizedMapMap } = {};
 export function liveMemoized<TSource>(
-  observable$: ((
+  observable$: (
     rootValue: TSource,
     // tslint:disable-next-line no-any
     args: { readonly [key: string]: any },
     context: GraphQLContext,
     info: GraphQLResolveInfo,
-  ) => Observable<ExecutionResult>),
+  ) => Observable<ExecutionResult>,
 ): GraphQLLiveResolver<TSource> {
   return (
     rootValue: TSource,
@@ -53,7 +53,7 @@ export function liveMemoized<TSource>(
       mutableMemoized$[context.queryID][key][responseName] = observable$(rootValue, args, context, info).pipe(
         catchError((error) =>
           _of({
-            errors: [formatError(context.getMonitor(info), 'graphql_live_memoized_error', error)],
+            errors: [formatError('graphql_live_memoized_error', error)],
           }),
         ),
         finalize(() => {

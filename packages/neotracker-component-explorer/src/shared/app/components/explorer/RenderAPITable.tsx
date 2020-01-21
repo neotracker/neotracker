@@ -1,5 +1,6 @@
+// tslint:disable-next-line
+// TODO: reakit fix me
 import React from 'react';
-import { Block, Code, Heading, Paragraph, Table } from 'reakit';
 import { SectionConfig } from '../../../../types';
 import { SectionContentWrapper } from './SectionContentWrapper';
 import { TableWrapper } from './TableWrapper';
@@ -19,18 +20,18 @@ export const RenderAPITable = ({ section, ...props }: Props) => {
     return null;
   }
 
-  const { renderAPI } = component;
+  // const { renderAPI } = component;
 
   return (
-    <Block {...props}>
-      <SectionContentWrapper column>
-        <Heading as="h2">API</Heading>
-        <Paragraph>
-          Props passed to <Code>children</Code>.
-        </Paragraph>
+    <div {...props}>
+      <SectionContentWrapper>
+        <h2>API</h2>
+        <p>
+          Props passed to <code>children</code>.
+        </p>
       </SectionContentWrapper>
       <TableWrapper>
-        <Table>
+        {/* <Table>
           <Table.Head>
             <Table.Row>
               <Table.Cell header>Name</Table.Cell>
@@ -53,8 +54,8 @@ export const RenderAPITable = ({ section, ...props }: Props) => {
               </Table.Row>
             ))}
           </Table.Body>
-        </Table>
+        </Table> */}
       </TableWrapper>
-    </Block>
+    </div>
   );
 };

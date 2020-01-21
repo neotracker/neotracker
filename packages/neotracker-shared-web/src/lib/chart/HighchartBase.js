@@ -61,7 +61,6 @@ type Props = {|
   ...InternalProps,
 |};
 class HighchartBase extends React.Component<Props, void> {
-  props: Props;
   chart: any;
 
   renderChart(config: Object) {
@@ -115,6 +114,6 @@ class HighchartBase extends React.Component<Props, void> {
   }
 }
 
-export default (withStyles(styles)(HighchartBase): React.ComponentType<
-  ExternalProps,
->);
+export default (withStyles(styles)(
+  HighchartBase,
+): React.ComponentType<ExternalProps>);

@@ -76,7 +76,7 @@ function SearchField({
       <Button
         className={classes.button}
         color="primary"
-        variant="raised"
+        variant="contained"
         onClick={onSearch}
       >
         <Typography className={classes.search} variant="body1">

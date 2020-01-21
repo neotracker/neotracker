@@ -149,6 +149,6 @@ const enhance: HOC<*, *> = compose(
   pure,
 );
 
-export default (enhance(AddressTransactionPagingView): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  AddressTransactionPagingView,
+): React.ComponentType<ExternalProps>);

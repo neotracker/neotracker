@@ -36,7 +36,8 @@ export const mergeOnGreen = async (
     prsSet.map(async (issueNumber) => {
       const issue = await api.issues.get({ owner, repo, number: issueNumber });
 
-      const labels = issue.data.labels === undefined ? [] : issue.data.labels;
+      // tslint:disable-next-line no-any
+      const labels = (issue.data.labels as any) === undefined ? [] : issue.data.labels;
 
       const mergeLabel = labels.find((l: Label['label']) => l.name === LABEL_NAME);
       if (!mergeLabel) {

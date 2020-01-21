@@ -8,9 +8,11 @@ import {
   withStateHandlers,
 } from 'recompose';
 import * as React from 'react';
-import type { LockedLocalWallet } from '@neo-one/client';
+import type { LockedWallet } from '@neo-one/client-core';
 
 import classNames from 'classnames';
+// $FlowFixMe
+import { webLogger } from '@neotracker/logger';
 // $FlowFixMe
 import { sanitizeError } from '@neotracker/shared-utils';
 import { withRouter } from 'react-router-dom';
@@ -69,7 +71,7 @@ const styles = (theme: Theme) => ({
 });
 
 type ExternalProps = {|
-  wallet: LockedLocalWallet,
+  wallet: LockedWallet,
   forward?: boolean,
   className?: string,
 |};
@@ -109,7 +111,7 @@ function UnlockWallet({
           label="Enter Password"
         />
         <Button
-          variant="raised"
+          variant="contained"
           color="primary"
           disabled={loading}
           onClick={onSubmit}
@@ -172,20 +174,13 @@ const enhance: HOC<*, *> = compose(
     }) => () => {
       const appContext = ((appContextIn: $FlowFixMe): AppContext);
       onLoading();
-      appContext.monitor
-        .captureLog(
-          () =>
-            walletAPI.unlockWallet({
-              appContext,
-              id: wallet.account.id,
-              password,
-            }),
-          {
-            name: 'neotracker_wallet_unlock_keystore',
-            level: 'verbose',
-            error: {},
-          },
-        )
+      webLogger.info({ title: 'neotracker_wallet_unlock_keystore' });
+      walletAPI
+        .unlockWallet({
+          appContext,
+          id: wallet.userAccount.id,
+          password,
+        })
         .then(() => {
           onDone();
           if (forward) {
@@ -193,6 +188,7 @@ const enhance: HOC<*, *> = compose(
           }
         })
         .catch((error) => {
+          webLogger.error({ title: 'neotracker_wallet_unlock_keystore' });
           onError(error);
         });
     },

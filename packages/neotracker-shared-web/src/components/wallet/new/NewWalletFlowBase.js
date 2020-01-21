@@ -8,7 +8,7 @@ import {
 } from 'recompose';
 import * as React from 'react';
 
-import { createPrivateKey, privateKeyToAddress } from '@neo-one/client';
+import { createPrivateKey, privateKeyToAddress } from '@neo-one/client-common';
 import { withRouter } from 'react-router-dom';
 
 import { CreateKeystoreView } from '../keystore';
@@ -65,7 +65,7 @@ function NewWalletFlow({
   onContinueKeystore,
   onContinuePrivateKey,
   stage,
-}: Props): ?React.Element<any> {
+}: Props): React.Element<any> | null {
   switch (stage.type) {
     case 'password':
       return (

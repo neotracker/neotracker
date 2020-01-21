@@ -1,4 +1,4 @@
-import { NetworkType } from '@neo-one/client';
+import { NetworkType } from '@neo-one/client-common';
 import { AppOptions, utils } from '@neotracker/shared-utils';
 import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import * as React from 'react';
@@ -19,9 +19,9 @@ function stylesheetTag(stylesheetFilePath: string) {
 }
 
 // tslint:disable-next-line no-any
-export type AddHeadElements = ((nonce: string) => ReadonlyArray<React.ReactElement<any>>);
+export type AddHeadElements = (nonce: string) => ReadonlyArray<React.ReactElement>;
 // tslint:disable-next-line no-any
-export type AddBodyElements = (() => ReadonlyArray<React.ReactElement<any>>);
+export type AddBodyElements = () => ReadonlyArray<React.ReactElement>;
 
 interface Props {
   readonly css: ReadonlyArray<string>;

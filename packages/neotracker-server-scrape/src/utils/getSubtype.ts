@@ -1,4 +1,4 @@
-import { ConfirmedTransaction } from '@neo-one/client';
+import { ConfirmedTransaction } from '@neo-one/client-full';
 import {
   SUBTYPE_CLAIM,
   SUBTYPE_ENROLLMENT,

@@ -17,7 +17,11 @@ type Props = {|
   ...ExternalProps,
   ...InternalProps,
 |};
-function AdUnit({ appOptions, children, className }: Props): ?React.Element<*> {
+function AdUnit({
+  appOptions,
+  children,
+  className,
+}: Props): React.Element<*> | null {
   if (appOptions.bsaEnabled) {
     return <div className={className}>{children}</div>;
   }

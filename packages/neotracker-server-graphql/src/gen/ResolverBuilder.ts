@@ -1,5 +1,7 @@
 // tslint:disable no-any no-object-mutation no-loop-statement
-import { metrics } from '@neo-one/monitor';
+import { AggregationType, globalStats, MeasureUnit } from '@neo-one/client-switch';
+import { labelsToTags } from '@neo-one/utils';
+import { createChild, serverLogger } from '@neotracker/logger';
 import { Base, BaseModel } from '@neotracker/server-db';
 import { CodedError } from '@neotracker/server-utils';
 import { Connection, fromGlobalID, toGlobalID } from '@neotracker/shared-graphql';
@@ -24,15 +26,29 @@ import {
 } from '../utils';
 import { getInterfaceName, getRootEdgeName, getTypeName } from './namer';
 
-const GRAPHQL_EXECUTE_FIELD_DURATION_SECONDS = metrics.createHistogram({
-  name: 'graphql_execute_field_duration_seconds',
-  labelNames: [labels.GRAPHQL_PATH],
-});
+const requestSec = globalStats.createMeasureInt64('requests/duration', MeasureUnit.SEC);
+const requestErrors = globalStats.createMeasureInt64('requests/failures', MeasureUnit.UNIT);
 
-const GRAPHQL_EXECUTE_FIELD_FAILURES_TOTAL = metrics.createCounter({
-  name: 'graphql_execute_field_failures_total',
-  labelNames: [labels.GRAPHQL_PATH],
-});
+const GRAPHQL_EXECUTE_FIELD_DURATION_SECONDS = globalStats.createView(
+  'graphql_execute_field_duration_seconds',
+  requestSec,
+  AggregationType.DISTRIBUTION,
+  labelsToTags([labels.GRAPHQL_PATH]),
+  'distribution of graphql request durations',
+  [1, 2, 5, 7.5, 10, 12.5, 15, 17.5, 20],
+);
+globalStats.registerView(GRAPHQL_EXECUTE_FIELD_DURATION_SECONDS);
+
+const GRAPHQL_EXECUTE_FIELD_FAILURES_TOTAL = globalStats.createView(
+  'graphql_execute_field_failures_total',
+  requestErrors,
+  AggregationType.COUNT,
+  labelsToTags([labels.GRAPHQL_PATH]),
+  'total graphql execute field failures',
+);
+globalStats.registerView(GRAPHQL_EXECUTE_FIELD_FAILURES_TOTAL);
+
+const serverGQLLogger = createChild(serverLogger, { component: 'graphql' });
 
 function wrapFieldResolver(
   _type: string,
@@ -40,33 +56,33 @@ function wrapFieldResolver(
   resolver: GraphQLFieldResolver<any, GraphQLContext>,
 ): GraphQLFieldResolver<any, GraphQLContext> {
   return async (...args: any[]) => {
-    const context = (args.length === 3 ? args[1] : args[2]) as GraphQLContext;
+    const startTime = Date.now();
     const info = (args.length === 3 ? args[2] : args[3]) as GraphQLResolveInfo;
-    const span = context.getMonitor(info);
-
-    return span
-      .withLabels({
-        [labels.GRAPHQL_PATH]: info.path.key,
-      })
-      .captureSpanLog(
-        (currentSpan) => {
-          context.spans[String(info.path.key)] = currentSpan;
-
-          // @ts-ignore
-          return resolver(...args);
-        },
+    const logInfo = {
+      title: 'graphql_execute_field',
+      [labels.GRAPHQL_PATH]: info.path.key,
+    };
+    try {
+      serverGQLLogger.info({ ...logInfo });
+      globalStats.record([
         {
-          name: 'graphql_execute_field',
-          level: { log: 'debug', span: 'info' },
-          metric: {
-            total: GRAPHQL_EXECUTE_FIELD_DURATION_SECONDS,
-            error: GRAPHQL_EXECUTE_FIELD_FAILURES_TOTAL,
-          },
-
-          error: {},
-          trace: true,
+          measure: requestSec,
+          value: Date.now() - startTime,
         },
-      );
+      ]);
+
+      // @ts-ignore
+      return resolver(...args);
+    } catch (error) {
+      serverGQLLogger.error({ ...logInfo });
+      globalStats.record([
+        {
+          measure: requestErrors,
+          value: 1,
+        },
+      ]);
+      throw error;
+    }
   };
 }
 
@@ -90,13 +106,13 @@ const resolveNode = async (
   _obj: any,
   { id }: { readonly id: string },
   context: GraphQLContext,
-  info: GraphQLResolveInfo,
+  _info: GraphQLResolveInfo,
 ) => {
   const { type: typeName, id: modelID } = fromGlobalID(id);
   const modelLoaderName = camelCase(typeName);
   const loader = context.rootLoader.loaders[modelLoaderName] as DataLoader<any, any> | undefined;
   if (loader !== undefined) {
-    return loader.load({ id: modelID, monitor: context.getMonitor(info) });
+    return loader.load({ id: modelID });
   }
 
   throw new CodedError(CodedError.NOT_FOUND_ERROR);
@@ -187,7 +203,7 @@ export class ResolverBuilder {
     const wrappedResolvers: any = {};
     for (const [type, fieldResolvers] of Object.entries(allResolvers)) {
       wrappedResolvers[type] = {};
-      for (const [field, fieldResolver] of Object.entries(fieldResolvers)) {
+      for (const [field, fieldResolver] of Object.entries(fieldResolvers as object)) {
         wrappedResolvers[type][field] = wrapResolver(type, field, fieldResolver);
       }
     }
@@ -295,7 +311,7 @@ export class ResolverBuilder {
       const thisModel = edge === undefined ? model : edge.model;
       const builder =
         edge === undefined ? model.query(context.rootLoader.db) : obj.$relatedQuery(edge.name, context.rootLoader.db);
-      builder.context(context.rootLoader.makeQueryContext(context.getMonitor(info)));
+      builder.context(context.rootLoader.makeQueryContext());
 
       const args = argsIn;
 
@@ -324,9 +340,9 @@ export class ResolverBuilder {
     readonly edge: {
       readonly name: string;
       readonly model: typeof BaseModel;
-      readonly makeGraphQLResolver?: ((
+      readonly makeGraphQLResolver?: (
         resolveEdge: GraphQLFieldResolver<any, GraphQLContext>,
-      ) => GraphQLFieldResolver<any, GraphQLContext>);
+      ) => GraphQLFieldResolver<any, GraphQLContext>;
     };
   }): GraphQLFieldResolver<any, GraphQLContext> {
     const resolveEdge = async (obj: any, _args: any, context: GraphQLContext, info: GraphQLResolveInfo) => {
@@ -336,7 +352,6 @@ export class ResolverBuilder {
 
       const edgeSchema = obj.constructor.modelSchema.edges[edge.name];
       const { relation } = edgeSchema;
-      const monitor = context.getMonitor(info);
       if (relation.relation === Model.HasOneRelation || relation.relation === Model.BelongsToOneRelation) {
         const fromFieldName = relation.join.from.split('.')[1];
         const field = obj[fromFieldName];
@@ -344,14 +359,12 @@ export class ResolverBuilder {
           return undefined;
         }
 
-        return obj
-          .getLoaderByEdge(context.rootLoader.makeQueryContext(monitor), edge.name)
-          .load({ id: field, monitor });
+        return obj.getLoaderByEdge(context.rootLoader.makeQueryContext(), edge.name).load({ id: field });
       }
 
       const builder = obj
         .$relatedQuery(edge.name, context.rootLoader.db)
-        .context(context.rootLoader.makeQueryContext(monitor));
+        .context(context.rootLoader.makeQueryContext());
       const fields = Object.values(parseFieldsFromInfo(info))[0];
       const eager = buildEager(fields, edge.model);
       if (eager) {
@@ -371,7 +384,7 @@ export class ResolverBuilder {
     builder: QueryBuilder<any>,
     args: any,
     fields: any,
-    info: GraphQLResolveInfo,
+    _info: GraphQLResolveInfo,
     edge?: {
       readonly name: string;
       readonly model: typeof Base;
@@ -380,8 +393,6 @@ export class ResolverBuilder {
     if (fields.edges == undefined) {
       return {};
     }
-
-    const monitor = context.getMonitor(info);
 
     if (edge !== undefined && _.isEmpty(args)) {
       const edgeSchema = obj.constructor.modelSchema.edges[edge.name];
@@ -393,8 +404,8 @@ export class ResolverBuilder {
           return {};
         }
         const results: any[] = await obj
-          .getLoaderByEdge(context.rootLoader.makeQueryContext(context.getMonitor(info)), edge.name)
-          .load({ id: field, monitor });
+          .getLoaderByEdge(context.rootLoader.makeQueryContext(), edge.name)
+          .load({ id: field });
 
         return {
           edges: results.map((result, idx) => ({

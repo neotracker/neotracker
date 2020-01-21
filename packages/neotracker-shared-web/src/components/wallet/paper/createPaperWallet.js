@@ -3,6 +3,8 @@
 import { ClientError } from '@neotracker/shared-utils';
 import { JssProvider, SheetsRegistry } from 'react-jss';
 import * as React from 'react';
+// $FlowFixMe
+import { webLogger } from '@neotracker/logger';
 
 import createGenerateClassName from '@material-ui/core/styles/createGenerateClassName';
 import { create } from 'jss';
@@ -90,11 +92,10 @@ export default ({
   appContext: AppContext,
 |}) => {
   try {
-    appContext.monitor.captureLog(
-      () => createPaperWallet({ privateKey, address, theme, appContext }),
-      { name: 'neotracker_wallet_create_paper_wallet', level: 'verbose' },
-    );
+    webLogger.info({ title: 'neotracker_wallet_create_paper_wallet' });
+    createPaperWallet({ privateKey, address, theme, appContext });
   } catch (error) {
+    webLogger.error({ title: 'neotracker_wallet_create_paper_wallet' });
     showSnackbarError({
       error:
         error instanceof ClientError

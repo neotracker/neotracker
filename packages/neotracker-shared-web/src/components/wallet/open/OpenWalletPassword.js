@@ -179,6 +179,6 @@ const enhance: HOC<*, *> = compose(
   pure,
 );
 
-export default (enhance(OpenWalletPassword): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  OpenWalletPassword,
+): React.ComponentType<ExternalProps>);

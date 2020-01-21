@@ -29,7 +29,8 @@ const parseCode = ({ code }: { readonly code: string }): string => {
     return code;
   }
   const firstExpression: { start: number; end: number } | undefined = _.find(
-    ast.body.reverse(),
+    // tslint:disable-next-line no-any
+    (ast as any).body.reverse(),
     (line) => line.type === 'ExpressionStatement' || line.type === 'BlockStatement',
   );
   if (!firstExpression) {

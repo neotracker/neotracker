@@ -21,7 +21,7 @@ function toobusyMiddleware({ options }: { readonly options: Options }) {
   const whitelistedUserAgents = new RegExp(options.whitelistedUserAgents);
   configureTooBusy(options);
 
-  return simpleMiddleware('toobusy', async (ctx: Context, next: (() => Promise<void>)) => {
+  return simpleMiddleware('toobusy', async (ctx: Context, next: () => Promise<void>) => {
     const userAgent = ctx.request.headers['user-agent'];
     if (toobusy_js() && userAgents.test(userAgent) && options.enabled && !whitelistedUserAgents.test(userAgent)) {
       ctx.status = 503;

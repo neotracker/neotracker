@@ -39,20 +39,27 @@ export class HotCompilerServer implements HotServer {
   }
 
   public async start(): Promise<void> {
-    const { compiler } = this;
+    await new Promise<void>((resolve, reject) => {
+      try {
+        const { compiler } = this;
 
-    compiler.hooks.compile.tap('HotCompilerServer', () => {
-      this.mutableCompiling = true;
-    });
+        compiler.hooks.compile.tap('HotCompilerServer', () => {
+          this.mutableCompiling = true;
+        });
 
-    compiler.hooks.done.tapPromise('done', async (stats) => {
-      this.mutableCompiling = false;
-      if (!this.mutableDisposing && !stats.hasErrors()) {
-        await this.startServer();
+        compiler.hooks.done.tapPromise('done', async (stats) => {
+          this.mutableCompiling = false;
+          if (!this.mutableDisposing && !stats.hasErrors()) {
+            await this.startServer();
+          }
+        });
+
+        this.mutableWatcher = compiler.watch({}, () => undefined);
+      } catch (error) {
+        reject(error);
       }
+      resolve();
     });
-
-    this.mutableWatcher = compiler.watch({}, () => undefined);
   }
 
   public async startServer(): Promise<void> {
@@ -90,6 +97,7 @@ export class HotCompilerServer implements HotServer {
     });
 
     newServer.on('close', () => {
+      // tslint:disable-next-line: strict-comparisons
       if (this.mutableServer === newServer) {
         this.mutableServer = undefined;
       }
@@ -100,22 +108,24 @@ export class HotCompilerServer implements HotServer {
       level: 'info',
       message: 'Server running with latest changes.',
     });
-
-    newServer.stdout.on('data', (data) =>
-      log({
-        title: this.title,
-        level: 'info',
-        message: data.toString().trim(),
-      }),
-    );
-
-    newServer.stderr.on('data', (data) => {
-      logError({
-        title: this.title,
-        message: 'Error in server execution.',
-        errorMessage: data.toString().trim(),
+    if (newServer.stdout !== null) {
+      newServer.stdout.on('data', (data) =>
+        log({
+          title: this.title,
+          level: 'info',
+          message: data.toString().trim(),
+        }),
+      );
+    }
+    if (newServer.stderr !== null) {
+      newServer.stderr.on('data', (data) => {
+        logError({
+          title: this.title,
+          message: 'Error in server execution.',
+          errorMessage: data.toString().trim(),
+        });
       });
-    });
+    }
     this.mutableServer = newServer;
     this.mutableStarting = false;
   }

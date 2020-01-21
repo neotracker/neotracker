@@ -59,7 +59,7 @@ function Block({ props, error, retry, className }: Props): React.Element<any> {
 
 const mapPropsToVariables = ({ match }) => ({
   hash: match.params.blockHash,
-  index: match.params.blockIndex,
+  index: Number(match.params.blockIndex),
 });
 export default (queryRenderer(
   graphql`

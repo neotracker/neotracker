@@ -1,24 +1,24 @@
+import { NetworkType } from '@neo-one/client-common';
 import {
   Client,
   LocalKeyStore,
   LocalMemoryStore,
   LocalStringStore,
   LocalUserAccountProvider,
-  NEOONEDataProvider,
   NEOONEProvider,
-  NetworkType,
-  ReadClient,
-} from '@neo-one/client';
-import { Monitor } from '@neo-one/monitor';
+} from '@neo-one/client-core';
+// tslint:disable-next-line:ban-ts-ignore
 // @ts-ignore
 import { AppContext, AppOptions, observeQuery, routes } from '@neotracker/shared-web';
 import FileSaver from 'file-saver';
 import localforage from 'localforage';
+// tslint:disable-next-line:ban-ts-ignore
 // @ts-ignore
 import RelayQueryResponseCache from 'relay-runtime/lib/RelayQueryResponseCache';
 import { concat, of as _of } from 'rxjs';
 import { distinctUntilChanged, map, publishReplay, refCount } from 'rxjs/operators';
 import SeamlessImmutable from 'seamless-immutable';
+// tslint:disable-next-line:ban-ts-ignore
 // @ts-ignore
 import { createAppContextAppOptionsQuery } from './createAppContextAppOptionsQuery';
 import { makeRelayEnvironment } from './relay';
@@ -28,7 +28,7 @@ export const createAppContext = ({
   css,
   nonce,
   options,
-  monitor,
+  labels,
   userAgent,
   relayResponseCache,
   records,
@@ -37,7 +37,7 @@ export const createAppContext = ({
   readonly css: ReadonlyArray<string>;
   readonly nonce: string | undefined;
   readonly options: AppOptions;
-  readonly monitor: Monitor;
+  readonly labels: Record<string, string>;
   readonly userAgent: IUAParser.IResult;
   readonly relayResponseCache: RelayQueryResponseCache;
   // tslint:disable-next-line no-any
@@ -45,7 +45,7 @@ export const createAppContext = ({
 }): AppContext => {
   const environment = makeRelayEnvironment({
     endpoint: routes.GRAPHQL,
-    monitor,
+    labels,
     relayResponseCache,
     records,
   });
@@ -54,7 +54,6 @@ export const createAppContext = ({
   const options$ = concat(
     _of(options),
     observeQuery({
-      monitor,
       environment,
       taggedNode: createAppContextAppOptionsQuery,
     }).pipe(
@@ -83,43 +82,40 @@ export const createAppContext = ({
 
   const client = new Client({
     memory: new LocalUserAccountProvider({
-      keystore: new LocalKeyStore({
-        store: new LocalMemoryStore(),
-      }),
+      keystore: new LocalKeyStore(new LocalMemoryStore()),
       provider,
     }),
     localStorage: new LocalUserAccountProvider({
-      keystore: new LocalKeyStore({
-        store: new LocalStringStore({
-          type: 'localStorage',
-          storage: {
-            setItem: async (key, value) => {
-              await storage.setItem(key, value);
-            },
-            // tslint:disable-next-line no-unnecessary-type-assertion no-useless-cast
-            getItem: async (key) => storage.getItem(key) as Promise<string>,
-            removeItem: async (key) => {
-              await storage.removeItem(key);
-            },
-            getAllKeys: async () => storage.keys(),
+      keystore: new LocalKeyStore(
+        new LocalStringStore({
+          setItem: async (key, value) => {
+            await storage.setItem(key, value);
           },
+          getItem: async (key) =>
+            storage.getItem(key).then((value) => {
+              // tslint:disable-next-line:no-any
+              const parsed = JSON.parse(value as any);
+
+              return JSON.stringify({
+                ...parsed,
+                userAccount: parsed.userAccount === undefined ? parsed.account : parsed.userAccount,
+              });
+              // tslint:disable-next-line no-unnecessary-type-assertion no-useless-cast
+            }) as Promise<string>,
+          removeItem: async (key) => {
+            await storage.removeItem(key);
+          },
+          getAllKeys: async () => storage.keys(),
         }),
-      }),
+      ),
 
       provider,
     }),
   });
 
-  const dataProvider = new NEOONEDataProvider({
-    network,
-    rpcURL: options.rpcURL,
-  });
-
-  const readClient = new ReadClient(dataProvider);
   options$.subscribe({
     next: (nextOptions) => {
       provider.addNetwork({ network, rpcURL: nextOptions.rpcURL });
-      dataProvider.setRPCURL(nextOptions.rpcURL);
     },
   });
 
@@ -129,9 +125,7 @@ export const createAppContext = ({
     css,
     nonce,
     options$,
-    monitor,
     client,
-    readClient,
     userAgent,
     fileSaver: FileSaver,
   };

@@ -6,8 +6,9 @@ import { ConstExportInterfaceProps } from './ConstExportInterfaceProps';
 const foo = 'foo';
 
 // tslint:disable-next-line export-name
-export const examples: [CTExample<typeof ConstExportInterfaceProps>] = [
+export const examples: readonly[CTExample<typeof ConstExportInterfaceProps>] = [
   {
-    element: () => <ConstExportInterfaceProps foo={foo} />,
+    // tslint:disable-next-line: no-any
+    element: () => <ConstExportInterfaceProps foo={foo} /> as any,
   },
-];
+] as const;

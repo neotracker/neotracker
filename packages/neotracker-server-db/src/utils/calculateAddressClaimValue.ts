@@ -9,11 +9,11 @@ import { calculateClaimValue } from './calculateClaimValue';
 export const calculateAddressClaimValue = async (
   address: Address,
   context: GraphQLContext,
-  info: GraphQLResolveInfo,
+  _info: GraphQLResolveInfo,
 ): Promise<string> => {
   const [unclaimed, currentHeight] = await Promise.all([
     TransactionInputOutput.query(context.rootLoader.db)
-      .context(context.rootLoader.makeQueryContext(context.getMonitor(info)))
+      .context(context.rootLoader.makeQueryContext())
       .where('address_id', address.id)
       .where('asset_id', NEO_ASSET_ID)
       .whereNull('claim_transaction_id'),
@@ -26,12 +26,13 @@ export const calculateAddressClaimValue = async (
     .reduce((acc, value) => acc.plus(new BigNumber(value)), numbers.ZERO);
   const nullClaimValue = await calculateClaimValue({
     rootLoader: context.rootLoader,
-    monitor: context.getMonitor(info),
-    coins: unclaimed.filter((tio) => tio.claim_value == undefined).map((tio) => ({
-      value: new BigNumber(tio.value),
-      startHeight: tio.output_block_id,
-      endHeight: currentHeight,
-    })),
+    coins: unclaimed
+      .filter((tio) => tio.claim_value == undefined)
+      .map((tio) => ({
+        value: new BigNumber(tio.value),
+        startHeight: tio.output_block_id,
+        endHeight: currentHeight,
+      })),
   });
 
   return nonNullClaimValue.plus(nullClaimValue).toFixed(8);

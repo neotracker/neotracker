@@ -37,12 +37,18 @@ type State = {
 };
 
 const selectClaim = (state: State) => state.claim;
-export const selectClaiming = createSelector(selectClaim, _selectClaiming);
+export const selectClaiming = createSelector(
+  selectClaim,
+  _selectClaiming,
+);
 export const selectClaimProgress = createSelector(
   selectClaim,
   _selectClaimProgress,
 );
-export const selectClaimError = createSelector(selectClaim, _selectClaimError);
+export const selectClaimError = createSelector(
+  selectClaim,
+  _selectClaimError,
+);
 export const selectClaimSpendConfirmHash = createSelector(
   selectClaim,
   _selectClaimSpendConfirmHash,
@@ -59,7 +65,10 @@ export const selectSnackbarProps = createSelector(
 );
 
 const selectTimer = (state: State) => state.timer;
-export const selectTimerState = createSelector(selectTimer, _selectTimerState);
+export const selectTimerState = createSelector(
+  selectTimer,
+  _selectTimerState,
+);
 
 const selectWallet = (state: State) => state.wallet;
 export const selectConfirmTransaction = createSelector(

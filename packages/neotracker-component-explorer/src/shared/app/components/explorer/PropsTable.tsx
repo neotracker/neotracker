@@ -1,27 +1,28 @@
-// tslint:disable no-any
-import _ from 'lodash';
+// tslint:disable
+// TODO: reakit fix me
+// import _ from 'lodash';
 import * as React from 'react';
 // tslint:disable-next-line no-submodule-imports
-import { MdArrowDownward as ArrowDownIcon, MdArrowUpward as ArrowUpIcon } from 'react-icons/md';
-import { Base, Block, Button, Code, Heading, Hidden, styled, Table } from 'reakit';
+// import { MdArrowDownward as ArrowDownIcon, MdArrowUpward as ArrowUpIcon } from 'react-icons/md';
+import styled from 'styled-components';
 import { SectionConfig } from '../../../../types';
-import { findSectionPropInfo } from '../../utils';
+// import { findSectionPropInfo } from '../../utils';
 import { WithRenderConfig } from '../render';
-import { Icon } from './Icon';
-import { TableWrapper } from './TableWrapper';
+// import { Icon } from './Icon';
+// import { TableWrapper } from './TableWrapper';
 
-const DataCell = styled(Base)`
-  display: table-cell;
-  border: inherit;
-  padding: 4px 8px;
-  vertical-align: middle;
-`;
-const HeaderCell = styled(DataCell)`
-  font-weight: bold;
-  background-color: rgba(0, 0, 0, 0.05);
-`;
+// const DataCell = styled.div`
+//   display: table-cell;
+//   border: inherit;
+//   padding: 4px 8px;
+//   vertical-align: middle;
+// `;
+// const HeaderCell = styled(DataCell)`
+//   font-weight: bold;
+//   background-color: rgba(0, 0, 0, 0.05);
+// `;
 
-const StyledHeading = styled(Heading)`
+const StyledHeading = styled.h1`
   margin-bottom: 20px;
 
   @media (max-width: 768px) {
@@ -30,17 +31,17 @@ const StyledHeading = styled(Heading)`
   }
 `;
 
-const NameCell = styled(DataCell)`
-  color: ${({ theme }) => theme.identifier};
-`;
+// const NameCell = styled(DataCell)`
+//   color: ${({ theme }) => theme.identifier};
+// `;
 
-const TypeCell = styled(DataCell)`
-  color: ${({ theme }) => theme.type};
-`;
+// const TypeCell = styled(DataCell)`
+//   color: ${({ theme }) => theme.type};
+// `;
 
-const RequiredCell = styled(DataCell)`
-  color: ${({ theme }) => theme.grayLight};
-`;
+// const RequiredCell = styled(DataCell)`
+//   color: ${({ theme }) => theme.grayLight};
+// `;
 
 export const PropsTable = ({ section }: { readonly section: SectionConfig }) => {
   if (section.type !== 'component') {
@@ -51,14 +52,14 @@ export const PropsTable = ({ section }: { readonly section: SectionConfig }) => 
   return (
     <WithRenderConfig>
       {({ sections }) => {
-        const propInfo = _.reverse(
-          Object.entries(findSectionPropInfo(sections, section)).filter(([, value]) => !_.isEmpty(value)),
-        );
+        // const propInfo = _.reverse(
+        //   Object.entries(findSectionPropInfo(sections, section)).filter(([, value]) => !_.isEmpty(value)),
+        // );
 
         return (
-          <Block>
+          <div>
             <StyledHeading as="h2">Props</StyledHeading>
-            {propInfo.map(([compName, info], i) => (
+            {/* {propInfo.map(([compName, info], i) => (
               <Hidden.Container key={`${section.name}${compName}`} initialState={{ visible: i === 0 }}>
                 {({ visible, toggle }: any) => (
                   <>
@@ -97,8 +98,8 @@ export const PropsTable = ({ section }: { readonly section: SectionConfig }) => 
                   </>
                 )}
               </Hidden.Container>
-            ))}
-          </Block>
+            ))} */}
+          </div>
         );
       }}
     </WithRenderConfig>

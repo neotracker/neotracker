@@ -1,19 +1,15 @@
 import createGenerateClassName from '@material-ui/core/styles/createGenerateClassName';
+import { NetworkType } from '@neo-one/client-common';
 import {
   Client,
   LocalKeyStore,
   LocalMemoryStore,
   LocalUserAccountProvider,
-  NEOONEDataProvider,
   NEOONEProvider,
-  NetworkType,
-  ReadClient,
-} from '@neo-one/client';
-import { Monitor } from '@neo-one/monitor';
+} from '@neo-one/client-core';
 import { RootLoader } from '@neotracker/server-db';
 import { makeRelayEnvironment, QueryMap, RelaySSRQueryCache, schema } from '@neotracker/server-graphql';
 import { CodedError, resolveRootPath } from '@neotracker/server-utils';
-import { getMonitor } from '@neotracker/server-utils-koa';
 import {
   App,
   AppOptions,
@@ -30,6 +26,7 @@ import { create } from 'jss';
 import preset from 'jss-preset-default';
 import { Context } from 'koa';
 import compose from 'koa-compose';
+// tslint:disable-next-line: match-default-export-name
 import compress from 'koa-compress';
 import * as React from 'react';
 import { renderToString } from 'react-dom/server';
@@ -45,25 +42,19 @@ import { AddBodyElements, AddHeadElements } from '../reactApp';
 import { makeServerHTML } from './makeServerHTML';
 
 const provider = new LocalUserAccountProvider({
-  keystore: new LocalKeyStore({
-    store: new LocalMemoryStore(),
-  }),
-
+  keystore: new LocalKeyStore(new LocalMemoryStore()),
   provider: new NEOONEProvider(),
 });
 
 const client = new Client({
   memory: provider,
   localStorage: new LocalUserAccountProvider({
-    keystore: new LocalKeyStore({
-      store: new LocalMemoryStore('localStorage'),
-    }),
-
+    keystore: new LocalKeyStore(new LocalMemoryStore()),
     provider: new NEOONEProvider(),
   }),
 });
 
-const renderAppShell = (monitor: Monitor, network: NetworkType, appOptions: AppOptions) => {
+const renderAppShell = (network: NetworkType, appOptions: AppOptions) => {
   const store = configureStore(false);
   const theme = createTheme();
   const sheetsRegistry = new SheetsRegistry();
@@ -81,7 +72,6 @@ const renderAppShell = (monitor: Monitor, network: NetworkType, appOptions: AppO
                 css: [],
                 nonce: '1234',
                 options$: _of(appOptions),
-                monitor,
                 network,
                 client,
                 userAgent: {},
@@ -112,7 +102,6 @@ const renderApp = async ({
   rootLoader,
   css,
   nonce,
-  monitor,
   userAgent,
   network,
   appOptions,
@@ -124,7 +113,6 @@ const renderApp = async ({
   readonly rootLoader: RootLoader;
   readonly css: ReadonlyArray<string>;
   readonly nonce: string;
-  readonly monitor: Monitor;
   readonly userAgent: IUAParser.IResult;
   readonly network: NetworkType;
   readonly appOptions: AppOptions;
@@ -132,7 +120,6 @@ const renderApp = async ({
 }) => {
   const relaySSRQueryCache = new RelaySSRQueryCache();
   const relayEnvironment = makeRelayEnvironment({
-    monitor,
     rootLoader,
     schema: schema(),
     relaySSRQueryCache,
@@ -149,13 +136,6 @@ const renderApp = async ({
   // @ts-ignore
   jss.options.createGenerateClassName = createGenerateClassName; // tslint:disable-line no-object-mutation
 
-  const readClient = new ReadClient(
-    new NEOONEDataProvider({
-      network,
-      rpcURL: appOptions.rpcURL,
-    }),
-  );
-
   const app = (
     <JssProvider registry={sheetsRegistry} jss={jss}>
       <ThemeProvider theme={theme} sheetsManager={new Map()}>
@@ -168,10 +148,8 @@ const renderApp = async ({
                 css,
                 nonce,
                 options$: _of(appOptions),
-                monitor,
                 network,
                 client,
-                readClient,
                 userAgent,
                 fileSaver: {
                   saveAs: () => {
@@ -223,7 +201,6 @@ export interface Options {
 
 // tslint:disable-next-line export-name
 export const reactApplication = ({
-  monitor: baseMonitor,
   addHeadElements,
   addBodyElements,
   environment,
@@ -231,7 +208,6 @@ export const reactApplication = ({
   network,
   appOptions,
 }: {
-  readonly monitor: Monitor;
   readonly addHeadElements: AddHeadElements;
   readonly addBodyElements: AddBodyElements;
   readonly environment: Environment;
@@ -240,7 +216,7 @@ export const reactApplication = ({
   readonly appOptions: AppOptions;
 }) => {
   const userAgents = new RegExp(options.ssr.userAgents);
-  const appShellResult = renderAppShell(baseMonitor, network, appOptions);
+  const appShellResult = renderAppShell(network, appOptions);
   const asset = getAssets(options.clientAssetsPath);
 
   return {
@@ -253,7 +229,6 @@ export const reactApplication = ({
       async (ctx: Context): Promise<void> => {
         const nonce = getNonce(ctx);
         const rootLoader = getRootLoader(ctx);
-        const monitor = getMonitor(ctx);
         const userAgent = getUserAgent(ctx);
 
         const match = matchRoutes(routeConfigs, ctx.request.path);
@@ -263,10 +238,6 @@ export const reactApplication = ({
         }
 
         const missed = match[0].route.path === undefined;
-        const routePath = match[0].route.path;
-        if (routePath !== undefined) {
-          monitor.setLabels({ [monitor.labels.HTTP_PATH]: routePath });
-        }
 
         const isSSR = options.ssr.enabled && userAgents.test(userAgent.ua);
         const { reactAppString, reactHelmet, relay, records, styles } = await (isSSR
@@ -276,7 +247,6 @@ export const reactApplication = ({
               rootLoader,
               css: [asset.css],
               nonce,
-              monitor,
               userAgent,
               network,
               appOptions,

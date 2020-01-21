@@ -11,7 +11,7 @@ import {
   RawAction,
   RawInvocationData,
   RawInvocationResult,
-} from '@neo-one/client';
+} from '@neo-one/client-full';
 import { utils } from '@neotracker/shared-utils';
 
 export const normalizeHash = (hash: string): string => {
@@ -119,6 +119,12 @@ const normalizeContractParameter = (contractParameter: ContractParameter): Contr
     case 'Void':
       return {
         type: 'Void',
+      };
+
+    case 'Map':
+      return {
+        type: 'Map',
+        value: contractParameter.value,
       };
 
     default:
@@ -232,6 +238,7 @@ const normalizeInvocationData = (data: RawInvocationData): RawInvocationData => 
   deletedContractAddresses: data.deletedContractAddresses,
   migratedContractAddresses: data.migratedContractAddresses,
   actions: data.actions.map(normalizeAction),
+  storageChanges: data.storageChanges,
 });
 
 const normalizeTransaction = (transaction: ConfirmedTransaction): ConfirmedTransaction => {

@@ -1,4 +1,3 @@
-import { Monitor } from '@neo-one/monitor';
 import ApolloClient, { ApolloError, FetchPolicy, NetworkStatus, OperationVariables } from 'apollo-client';
 import { DocumentNode } from 'graphql';
 import { Observable, Observer } from 'rxjs';
@@ -36,7 +35,6 @@ export type QueryResult<TData, TVariables = OperationVariables> =
   | UnresolvedQueryResult<TData, TVariables>;
 
 export interface ObserveQueryOptions<TVariables> {
-  readonly monitor: Monitor;
   // tslint:disable-next-line no-any
   readonly apollo: ApolloClient<any>;
   readonly query: DocumentNode;
@@ -46,14 +44,13 @@ export interface ObserveQueryOptions<TVariables> {
 }
 
 export const observeQuery = <TData, TVariables = OperationVariables>({
-  monitor,
   apollo,
   query,
   variables,
-  fetchPolicy = 'cache-and-network',
+  fetchPolicy = 'cache-first',
   notifyOnNetworkStatusChange = false,
 }: ObserveQueryOptions<TVariables>): Observable<QueryResult<TData, TVariables>> =>
-  Observable.create((observer: Observer<QueryResult<TData, TVariables>>) => {
+  new Observable((observer: Observer<QueryResult<TData, TVariables>>) => {
     const queryObservable$ = apollo.watchQuery<TData>({
       query,
       variables,
@@ -61,7 +58,7 @@ export const observeQuery = <TData, TVariables = OperationVariables>({
       errorPolicy: 'all',
       fetchResults: true,
       notifyOnNetworkStatusChange,
-      context: { monitor },
+      context: {},
     });
 
     const next = () => {
@@ -103,22 +100,19 @@ export const observeQuery = <TData, TVariables = OperationVariables>({
     };
     const resubscribe = () => {
       unsubscribe();
-      const lastError = queryObservable$.getLastError();
-      const lastResult = queryObservable$.getLastResult();
       // If lastError is set, the observable will immediately
       // send it, causing the stream to terminate on initialization.
       // We clear everything here and restore it afterward to
       // make sure the new subscription sticks.
       queryObservable$.resetLastResults();
       subscribe();
-      Object.assign(queryObservable$, { lastError, lastResult });
     };
     const subscribe = () => {
       subscription = queryObservable$.subscribe({
         next: () => {
           next();
         },
-        error: (error) => {
+        error: (error: Error) => {
           resubscribe();
 
           // If it has graphQLErrors it's an ApolloError and is already captured as data.

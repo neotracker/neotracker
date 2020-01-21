@@ -7,7 +7,7 @@ module.exports = ({ path }) => ({
         plugins: ['babel-plugin-jest-hoist'],
         sourceMaps: 'inline',
       },
-      tsConfigFile: 'tsconfig.jest.json',
+      tsConfig: 'tsconfig.jest.json',
     },
   },
   moduleFileExtensions: ['js', 'jsx', 'json', 'node', 'ts', 'tsx'],
@@ -19,6 +19,5 @@ module.exports = ({ path }) => ({
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
   },
-  setupTestFrameworkScriptFile:
-    './packages/neotracker-server-test/src/jest/setup.js',
+  setupFilesAfterEnv: ['./packages/neotracker-server-test/src/jest/setup.js'],
 });

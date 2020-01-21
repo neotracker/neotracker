@@ -40,7 +40,7 @@ function PrintPaperWalletButton({
   return (
     <Button
       className={className}
-      variant="raised"
+      variant="contained"
       color="primary"
       onClick={onPrintPaperWallet}
     >
@@ -85,6 +85,6 @@ const enhance: HOC<*, *> = compose(
   pure,
 );
 
-export default (enhance(PrintPaperWalletButton): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  PrintPaperWalletButton,
+): React.ComponentType<ExternalProps>);

@@ -54,3 +54,7 @@ reports
 
 # Storybook
 .out
+
+# neo-one
+.neo-one
+node

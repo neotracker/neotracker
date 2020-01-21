@@ -14,6 +14,8 @@ import {
 } from 'recompose';
 // $FlowFixMe
 import { labels } from '@neotracker/shared-utils';
+// $FlowFixMe
+import { webLogger } from '@neotracker/logger';
 import { withRouter } from 'react-router';
 
 import Address from './pages/Address';
@@ -231,11 +233,11 @@ const enhance: HOC<*, *> = hoistStatics(
     }),
     lifecycle({
       componentDidCatch(error, info) {
-        (this.props.appContext: AppContext).monitor
-          .withData({
-            [labels.COMPONENT_STACK]: info.componentStack,
-          })
-          .logError({ name: 'client_uncaught_react_error', error });
+        webLogger.info({
+          title: 'client_uncaught_react_error',
+          error: error.message,
+          [labels.COMPONENT_STACK]: info.componentStack,
+        });
         this.props.onError();
       },
     }),

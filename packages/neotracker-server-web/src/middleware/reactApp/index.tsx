@@ -3,14 +3,10 @@ import {
   LocalKeyStore,
   LocalMemoryStore,
   LocalUserAccountProvider,
-  NEOONEDataProvider,
   NEOONEProvider,
-  ReadClient,
-} from '@neo-one/client';
-import { Monitor } from '@neo-one/monitor';
+} from '@neo-one/client-core';
 import { SchemaLink } from '@neotracker/server-graphql';
 import { CodedError, resolveRootPath } from '@neotracker/server-utils';
-import { getMonitor } from '@neotracker/server-utils-koa';
 import { QueryDeduplicator } from '@neotracker/shared-graphql';
 import { AppOptions, NetworkType } from '@neotracker/shared-utils';
 import { App, ROUTE_CONFIGS, RouteQueryClass } from '@neotracker/shared-web-next';
@@ -19,6 +15,7 @@ import { ApolloClient } from 'apollo-client';
 import * as fs from 'fs';
 import { Context } from 'koa';
 import compose from 'koa-compose';
+// tslint:disable-next-line: match-default-export-name
 import compress from 'koa-compress';
 import * as React from 'react';
 import { renderToString } from 'react-dom/server';
@@ -38,18 +35,14 @@ export { AddBodyElements, AddHeadElements };
 const getStats = (statsPath: string) => JSON.parse(fs.readFileSync(resolveRootPath(statsPath), 'utf8'));
 
 const provider = new LocalUserAccountProvider({
-  keystore: new LocalKeyStore({
-    store: new LocalMemoryStore(),
-  }),
+  keystore: new LocalKeyStore(new LocalMemoryStore()),
   provider: new NEOONEProvider(),
 });
 
 const client = new Client({
   memory: provider,
   localStorage: new LocalUserAccountProvider({
-    keystore: new LocalKeyStore({
-      store: new LocalMemoryStore('localStorage'),
-    }),
+    keystore: new LocalKeyStore(new LocalMemoryStore()),
     provider: new NEOONEProvider(),
   }),
 });
@@ -60,7 +53,6 @@ const renderApp = async ({
   location,
   stats,
   nonce,
-  monitor,
   userAgent,
   network,
   appOptions,
@@ -73,7 +65,6 @@ const renderApp = async ({
   // tslint:disable-next-line no-any
   readonly stats: any;
   readonly nonce: string;
-  readonly monitor: Monitor;
   readonly userAgent: IUAParser.IResult;
   readonly network: NetworkType;
   readonly appOptions: AppOptions;
@@ -86,12 +77,6 @@ const renderApp = async ({
     queryDeduplication: false,
   });
 
-  const readClient = new ReadClient(
-    new NEOONEDataProvider({
-      network,
-      rpcURL: appOptions.rpcURL,
-    }),
-  );
   // tslint:disable-next-line no-any
   const context: any = {};
   const mutableModules: string[] = [];
@@ -102,10 +87,8 @@ const renderApp = async ({
     css,
     nonce,
     options$: new BehaviorSubject(appOptions),
-    monitor,
     network,
     client,
-    readClient,
     userAgent,
     fileSaver: {
       saveAs: () => {
@@ -181,7 +164,6 @@ export const reactApp = ({
       compress(),
       async (ctx: Context): Promise<void> => {
         const nonce = getNonce(ctx);
-        const monitor = getMonitor(ctx);
         const userAgent = getUserAgent(ctx);
         const queryDeduplicator = getQueryDeduplicator(ctx);
         const css: ReadonlyArray<string> = [];
@@ -193,22 +175,17 @@ export const reactApp = ({
           throw new CodedError(CodedError.PROGRAMMING_ERROR);
         }
 
-        const { bundles, reactAppString, reactHelmet, apolloState, styles, routePath, missed } = await renderApp({
+        const { bundles, reactAppString, reactHelmet, apolloState, styles, missed } = await renderApp({
           match: match[0],
           css,
           location: ctx.request.url,
           stats,
           nonce,
-          monitor,
           userAgent,
           network,
           appOptions,
           queryDeduplicator,
         });
-
-        if (routePath !== undefined) {
-          monitor.setLabels({ [monitor.labels.HTTP_PATH]: routePath });
-        }
 
         const bundlePaths = [
           ...new Set(

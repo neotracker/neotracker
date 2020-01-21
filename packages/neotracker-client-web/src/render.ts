@@ -1,4 +1,3 @@
-import { Monitor } from '@neo-one/monitor';
 import { labels, ua } from '@neotracker/shared-utils';
 // @ts-ignore
 import { configureStore } from '@neotracker/shared-web';
@@ -7,7 +6,7 @@ import RelayQueryResponseCache from 'relay-runtime/lib/RelayQueryResponseCache';
 import { createAppContext } from './createAppContext';
 import { renderApp } from './renderApp';
 
-export const render = ({ monitor }: { readonly monitor: Monitor }) => {
+export const render = () => {
   const relayResponseCache = new RelayQueryResponseCache({
     size: 100,
     ttl: 60 * 60 * 1000, // 60 minutes
@@ -17,7 +16,7 @@ export const render = ({ monitor }: { readonly monitor: Monitor }) => {
   const currentWindow = window as any;
   if (currentWindow.__RELAY_DATA__) {
     Object.entries(currentWindow.__RELAY_DATA__).forEach(([cacheID, variablesToResponse]) => {
-      Object.entries(variablesToResponse).forEach(([variablesSerialized, response]) => {
+      Object.entries(variablesToResponse as object).forEach(([variablesSerialized, response]) => {
         relayResponseCache.set(cacheID, JSON.parse(variablesSerialized), response);
       });
     });
@@ -32,10 +31,10 @@ export const render = ({ monitor }: { readonly monitor: Monitor }) => {
     userAgent,
     relayResponseCache,
     records: currentWindow.__RELAY_RECORDS__,
-    monitor: monitor.withLabels({
+    labels: {
       ...ua.convertLabels(userAgent),
       [labels.APP_VERSION]: currentWindow.__APP_VERSION__,
-    }),
+    },
   });
 
   const store = configureStore(true);

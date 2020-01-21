@@ -1,5 +1,14 @@
-import { NEOONEDataProvider, nep5, NetworkType, ReadClient, ReadSmartContractAny } from '@neo-one/client';
-import { Monitor } from '@neo-one/monitor';
+import {
+  Client,
+  LocalKeyStore,
+  LocalMemoryStore,
+  LocalUserAccountProvider,
+  NEOONEDataProvider,
+  NEOONEProvider,
+  nep5,
+  NetworkType,
+  ReadClient,
+} from '@neo-one/client-full';
 import {
   Block as BlockModel,
   Contract as ContractModel,
@@ -46,18 +55,14 @@ export interface Options {
 }
 
 export const createScraper$ = ({
-  monitor: monitorIn,
   environment,
   options$,
 }: {
-  readonly monitor: Monitor;
   readonly environment: Environment;
   readonly options$: Observable<Options>;
 }): Observable<boolean> => {
-  const rootMonitor = monitorIn.at('scrape');
   const rootLoader$ = createRootLoader$({
     db$: createFromEnvironment$({
-      monitor: rootMonitor,
       environment: environment.db,
       options$: options$.pipe(
         map((options) => options.db),
@@ -68,7 +73,6 @@ export const createScraper$ = ({
       map((options) => options.rootLoader),
       distinctUntilChanged(),
     ),
-    monitor: rootMonitor,
   }).pipe(
     publishReplay(1),
     refCount(),
@@ -89,6 +93,26 @@ export const createScraper$ = ({
     publishReplay(1),
     refCount(),
   );
+  const fullClient$ = options$.pipe(
+    map((options) => options.rpcURL),
+    distinctUntilChanged(),
+    map(
+      (rpcURL) =>
+        new Client({
+          memory: new LocalUserAccountProvider({
+            keystore: new LocalKeyStore(new LocalMemoryStore()),
+            provider: new NEOONEProvider([
+              new NEOONEDataProvider({
+                network: environment.network,
+                rpcURL,
+              }),
+            ]),
+          }),
+        }),
+    ),
+    publishReplay(1),
+    refCount(),
+  );
 
   const processedIndexPubSub$ = options$.pipe(
     map((options) => options.pubSub),
@@ -102,12 +126,11 @@ export const createScraper$ = ({
       return createProcessedNextIndexPubSub({
         options: pubSubOptions,
         environment: environment.pubSub,
-        monitor: rootMonitor,
       });
     }),
   );
 
-  const scrape$ = combineLatest(
+  const scrape$ = combineLatest([
     client$,
     rootLoader$,
     options$.pipe(
@@ -122,7 +145,7 @@ export const createScraper$ = ({
       map((options) => options.repairNEP5LatencySeconds),
       distinctUntilChanged(),
     ),
-    combineLatest(
+    combineLatest([
       options$.pipe(
         map((options) => options.chunkSize),
         distinctUntilChanged(),
@@ -132,8 +155,9 @@ export const createScraper$ = ({
         map((options) => options.blacklistNEP5Hashes),
         distinctUntilChanged(),
       ),
-    ),
-  ).pipe(
+      fullClient$,
+    ]),
+  ]).pipe(
     map(
       ([
         client,
@@ -141,7 +165,7 @@ export const createScraper$ = ({
         migrationEnabled,
         repairNEP5BlockFrequency,
         repairNEP5LatencySeconds,
-        [chunkSize = 1000, processedIndexPubSub, blacklistNEP5Hashes],
+        [chunkSize = 1000, processedIndexPubSub, blacklistNEP5Hashes, fullClient],
       ]): Context => {
         const makeQueryContext = rootLoader.makeAllPowerfulQueryContext;
         const { db } = rootLoader;
@@ -149,20 +173,21 @@ export const createScraper$ = ({
         return {
           db,
           makeQueryContext,
+          fullClient,
           client,
           prevBlockData: undefined,
           currentHeight: undefined,
           systemFee: new WriteCache({
             db,
-            fetch: async (index: number, monitor) =>
+            fetch: async (index: number) =>
               BlockModel.query(rootLoader.db)
-                .context(makeQueryContext(monitor))
+                .context(makeQueryContext())
                 .where('id', index)
                 .first()
                 .then((result) => (result === undefined ? undefined : new BigNumber(result.aggregated_system_fee))),
             create: async ({ value }: SystemFeeSave) => Promise.resolve(new BigNumber(value)),
-            revert: async (_index: number, _monitor) => {
-              // do nothing
+            revert: async (_index: number) => {
+              await Promise.resolve();
             },
             getKey: (index: number) => `${index}`,
             getKeyFromSave: ({ index }: SystemFeeSave) => index,
@@ -172,7 +197,6 @@ export const createScraper$ = ({
           migrationHandler: new MigrationHandler({
             enabled: migrationEnabled,
             db,
-            monitor: rootMonitor,
             makeQueryContext,
           }),
           blacklistNEP5Hashes: new Set(blacklistNEP5Hashes),
@@ -180,25 +204,27 @@ export const createScraper$ = ({
           repairNEP5LatencySeconds,
           chunkSize,
           processedIndexPubSub,
+          network: environment.network,
         };
       },
     ),
     mergeScanLatest<Context, Context>(async (_acc, context: Context) => {
       const contractModels = await ContractModel.query(context.db)
-        .context(context.makeQueryContext(rootMonitor))
+        .context(context.makeQueryContext())
         .where('type', NEP5_CONTRACT_TYPE);
 
       const nep5ContractPairs = await Promise.all(
         contractModels
           .filter((contractModel) => !context.blacklistNEP5Hashes.has(contractModel.id))
-          .map<Promise<[string, ReadSmartContractAny]>>(async (contractModel) => {
-            const decimals = await nep5.getDecimals(context.client, add0x(contractModel.id)).catch(() => 8);
-            const contract: ReadSmartContractAny = nep5.createNEP5ReadSmartContract(
-              context.client,
-              add0x(contractModel.id),
-              decimals,
-              // tslint:disable-next-line no-any
-            ) as any;
+          .map<Promise<[string, nep5.NEP5SmartContract]>>(async (contractModel) => {
+            const contractAddress = add0x(contractModel.id);
+            const networks = {
+              [environment.network]: {
+                address: contractAddress,
+              },
+            };
+            const decimals = await nep5.getDecimals(context.fullClient, networks, environment.network).catch(() => 8);
+            const contract = nep5.createNEP5SmartContract(context.fullClient, networks, decimals);
 
             return [contractModel.id, contract];
           }),
@@ -214,17 +240,17 @@ export const createScraper$ = ({
       for (const [name, migration] of migrations) {
         const execute = await context.migrationHandler.shouldExecute(name);
         if (execute) {
-          await migration(context, rootMonitor, name);
+          await migration(context, name);
           await context.migrationHandler.onComplete(name);
         }
       }
 
       return context;
     }),
-    switchMap((context: Context) => run$(context, rootMonitor, new BlockUpdater())),
+    switchMap((context: Context) => run$(context, new BlockUpdater())),
   );
 
-  return combineLatest(rootLoader$, concat(_of(undefined), scrape$)).pipe(
-    switchMap(([rootLoader]) => timer(0, 5000).pipe(switchMap(async () => isHealthyDB(rootLoader.db, rootMonitor)))),
+  return combineLatest([rootLoader$, concat(_of(undefined), scrape$)]).pipe(
+    switchMap(([rootLoader]) => timer(0, 5000).pipe(switchMap(async () => isHealthyDB(rootLoader.db)))),
   );
 };

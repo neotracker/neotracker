@@ -12,7 +12,8 @@ export const routeMiddleware = ({
   readonly middlewares: ReadonlyArray<ServerMiddleware | ServerRoute>;
   readonly cors?: ServerMiddleware;
 }) => {
-  const router = new Router();
+  // tslint:disable-next-line: no-any
+  const router = new Router<any, {}>();
   middlewares.forEach((middleware) => {
     if (middleware.type === 'route') {
       switch (middleware.method) {

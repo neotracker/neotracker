@@ -1,12 +1,9 @@
-import { Monitor } from '@neo-one/monitor';
 import BigNumber from 'bignumber.js';
 import { RootLoader } from '../loader';
 import { Block } from '../models';
 import { calculateClaimValueBase } from './calculateClaimValueBase';
 
-const createGetSystemFee = (rootLoader: RootLoader, monitor: Monitor) => async (
-  indexIn: number,
-): Promise<BigNumber> => {
+const createGetSystemFee = (rootLoader: RootLoader) => async (indexIn: number): Promise<BigNumber> => {
   let block: Block | undefined;
   let index = indexIn;
   // tslint:disable-next-line no-loop-statement
@@ -14,7 +11,6 @@ const createGetSystemFee = (rootLoader: RootLoader, monitor: Monitor) => async (
     // eslint-disable-next-line
     block = (await rootLoader.loaders.block.load({
       id: index,
-      monitor,
     })) as Block | undefined;
 
     if (block === undefined) {
@@ -34,11 +30,9 @@ const createGetSystemFee = (rootLoader: RootLoader, monitor: Monitor) => async (
 //       fee
 export const calculateClaimValue = async ({
   rootLoader,
-  monitor,
   coins,
 }: {
   readonly rootLoader: RootLoader;
-  readonly monitor: Monitor;
   readonly coins: ReadonlyArray<{
     readonly value: BigNumber;
     readonly startHeight: number;
@@ -46,6 +40,6 @@ export const calculateClaimValue = async ({
   }>;
 }): Promise<BigNumber> =>
   calculateClaimValueBase({
-    getSystemFee: createGetSystemFee(rootLoader, monitor),
+    getSystemFee: createGetSystemFee(rootLoader),
     coins,
   });

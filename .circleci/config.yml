@@ -18,7 +18,7 @@ aliases:
 
   - &defaults
     docker:
-      - image: neotracker/circleci-test-10.9.0:1
+      - image: neotracker/circleci-test-10.16.3
         environment:
           TERM: xterm
         user: postgres
@@ -44,18 +44,18 @@ aliases:
       - run:
           name: Typescript
           command: yarn tsc
-      - run:
-          name: Flow
-          command: yarn flow
+      # - run:
+      #     name: Flow
+      #     command: yarn flow
       - run:
           name: Lint
           command: yarn lint
-      - run:
-          name: Unit
-          command: yarn test:unit-ci
-      - run:
-          name: Browser
-          command: yarn test:browser-ci
+      # - run:
+      #     name: Unit
+      #     command: yarn test:unit-ci
+      # - run:
+      #     name: Browser
+      #     command: yarn test:browser-ci
       - run:
           name: E2E
           command: yarn test:e2e-ci

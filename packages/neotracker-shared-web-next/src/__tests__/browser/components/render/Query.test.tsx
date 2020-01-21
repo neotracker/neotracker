@@ -135,7 +135,7 @@ describe('Query', () => {
         .substr(0, 5),
     ).toEqual('hash1');
 
-    await new Promise<void>((resolve) => setTimeout(resolve, 220));
+    await new Promise<void>((resolve) => setTimeout(resolve, 240));
 
     expect(
       getWrapper()
@@ -143,7 +143,7 @@ describe('Query', () => {
         .substr(0, 5),
     ).toEqual('hash2');
 
-    await new Promise<void>((resolve) => setTimeout(resolve, 260));
+    await new Promise<void>((resolve) => setTimeout(resolve, 360));
 
     expect(
       getWrapper()
@@ -151,7 +151,7 @@ describe('Query', () => {
         .substr(0, 5),
     ).toEqual('hash3');
 
-    await new Promise<void>((resolve) => setTimeout(resolve, 280));
+    await new Promise<void>((resolve) => setTimeout(resolve, 480));
 
     expect(
       getWrapper()

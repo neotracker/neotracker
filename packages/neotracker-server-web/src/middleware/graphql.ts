@@ -1,12 +1,15 @@
+import { Labels } from '@neo-one/utils';
+import { serverLogger } from '@neotracker/logger';
 import { createQueryDeduplicator, schema } from '@neotracker/server-graphql';
 import { CodedError, HTTPError } from '@neotracker/server-utils';
-import { bodyParser, getMonitor } from '@neotracker/server-utils-koa';
+import { bodyParser } from '@neotracker/server-utils-koa';
 import { sanitizeError } from '@neotracker/shared-utils';
 // @ts-ignore
 import { routes } from '@neotracker/shared-web';
 import { routes as routesNext } from '@neotracker/shared-web-next';
 import { Context } from 'koa';
 import compose from 'koa-compose';
+// tslint:disable-next-line: match-default-export-name
 import compress from 'koa-compress';
 import { getQueryMap, getRootLoader } from './common';
 
@@ -34,57 +37,42 @@ export const graphql = ({ next }: { readonly next: boolean }) => {
         }
 
         const rootLoader = getRootLoader(ctx);
-        const monitor = getMonitor(ctx);
         const queryMap = getQueryMap(ctx);
-        const queryDeduplicator = createQueryDeduplicator(monitor, schema(), queryMap, rootLoader);
+        const queryDeduplicator = createQueryDeduplicator(schema(), queryMap, rootLoader);
 
-        const result = await monitor
-          .withLabels({
-            [monitor.labels.HTTP_PATH]: path,
-            [monitor.labels.RPC_TYPE]: 'graphql',
-          })
-          .captureSpanLog(
-            async (span) =>
-              Promise.all(
-                // tslint:disable-next-line no-any
-                fields.map(async (queryIn: any) =>
-                  span
-                    .captureSpanLog(
-                      async (innerSpan) => {
-                        const query = queryIn;
-                        if (
-                          query == undefined ||
-                          typeof query !== 'object' ||
-                          query.id == undefined ||
-                          typeof query.id !== 'string' ||
-                          query.variables == undefined ||
-                          typeof query.variables !== 'object'
-                        ) {
-                          throw new CodedError(CodedError.PROGRAMMING_ERROR);
-                        }
+        const logInfo = {
+          [Labels.HTTP_PATH]: path,
+          [Labels.RPC_TYPE]: 'graphql',
+        };
+        serverLogger.info({ title: 'http_server_graphql_batch_request', ...logInfo });
+        const result = await Promise.all(
+          // tslint:disable-next-line no-any
+          fields.map(async (queryIn: any) => {
+            serverLogger.info({ title: 'http_server_graphql_request', ...logInfo });
+            const query = queryIn;
+            if (
+              query == undefined ||
+              typeof query !== 'object' ||
+              query.id == undefined ||
+              typeof query.id !== 'string' ||
+              query.variables == undefined ||
+              typeof query.variables !== 'object'
+            ) {
+              throw new CodedError(CodedError.PROGRAMMING_ERROR);
+            }
 
-                        return queryDeduplicator.execute({
-                          id: query.id,
-                          variables: query.variables,
-                          monitor: innerSpan,
-                        });
-                      },
-                      {
-                        name: 'http_server_graphql_request',
-                        level: { log: 'verbose', span: 'info' },
-                      },
-                    )
-                    .catch((error) => ({
-                      errors: [{ message: sanitizeError(error).message }],
-                    })),
-                ),
-              ),
+            return queryDeduplicator
+              .execute({
+                id: query.id,
+                variables: query.variables,
+              })
+              .catch((error: Error) => {
+                serverLogger.error({ title: 'http_server_graphql_request', ...logInfo, error: error.message });
 
-            {
-              name: 'http_server_graphql_batch_request',
-              level: { log: 'verbose', span: 'info' },
-            },
-          );
+                return { errors: [{ message: sanitizeError(error).message }] };
+              });
+          }),
+        );
 
         ctx.type = 'application/json';
         ctx.body = JSON.stringify(result);

@@ -12,6 +12,7 @@
     "exclude": ["./packages/*/package.json", "./package.json", "./packages/*/src/**/__generated__/**/*"]
   },
   "rules": {
+    "ban-ts-ignore": false,
     "cyclomatic-complexity": false,
     "no-unused-variable": false,
     "no-duplicate-variable": false,
@@ -72,8 +73,13 @@
     "variable-name": [true, "allow-pascal-case", "ban-keywords", "check-format", "allow-leading-underscore"],
     "export-name": true,
     "no-control-regex": true,
+    "invalid-void": false,
+    "no-null-undefined-union": false,
+    "strict-comparisons": false,
+    "strict-string-expressions": false,
+    "static-this": false,
     "no-empty-line-after-opening-brace": true,
-    "no-increment-decrement": true,
+    "increment-decrement": true,
     "no-invalid-regexp": true,
     "no-regex-spaces": true,
     "no-single-line-block-comment": false,

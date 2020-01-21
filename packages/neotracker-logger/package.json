@@ -1,0 +1,16 @@
+{
+  "name": "@neotracker/logger",
+  "version": "1.0.0",
+  "keywords": ["neo", "blockchain", "neotracker"],
+  "description": "NEO Tracker logger functions.",
+  "repository": "https://github.com/neotracker/neotracker",
+  "bugs": "https://github.com/neotracker/neotracker/issues",
+  "license": "MIT",
+  "main": "./src/index.ts",
+  "dependencies": {
+    "@types/pino": "^5.8.10",
+    "pino": "^5.13.2",
+    "pino-pretty": "^3.2.1"
+  },
+  "sideEffects": false
+}

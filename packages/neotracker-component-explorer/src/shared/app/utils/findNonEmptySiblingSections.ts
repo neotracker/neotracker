@@ -2,6 +2,7 @@ import { SectionConfig } from '../../../types';
 import { flattenSections } from './flattenSections';
 import { hasContent } from './hasContent';
 
+// tslint:disable-next-line: export-name
 export const findNonEmptySiblingSection = (
   sections: ReadonlyArray<SectionConfig>,
   name: string,

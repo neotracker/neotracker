@@ -5,6 +5,7 @@ module.exports = {
   snapshotSerializers: ['enzyme-to-json/serializer'],
   testEnvironment:
     './packages/neotracker-server-test/src/jest/BrowserEnvironment.js',
-  setupTestFrameworkScriptFile:
+  setupFilesAfterEnv: [
     './packages/neotracker-server-test/src/jest/setupBrowser.js',
+  ],
 };

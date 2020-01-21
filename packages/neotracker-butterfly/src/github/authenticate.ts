@@ -38,7 +38,7 @@ export const authenticate = async ({
 
   if (installationID !== undefined) {
     const installationTokenResponse = await api.apps.createInstallationToken({
-      installation_id: `${installationID}`,
+      installation_id: installationID,
     });
 
     api.authenticate({ type: 'app', token: installationTokenResponse.data.token });

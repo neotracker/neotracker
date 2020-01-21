@@ -10,12 +10,13 @@ import { logError } from '../logError';
 import { setupProcessListeners } from '../setupProcessListeners';
 
 const title = 'build';
-yargs.describe('ci', 'Running as part of continuous integration').default('ci', false);
+const { argv } = yargs.describe('ci', 'Running as part of continuous integration').default('ci', false);
 
 const NEOTRACKER = '@neotracker/';
 const getTransitiveDependencies = async (
   pkgName: string,
   version: string,
+  // tslint:disable-next-line: readonly-array
 ): Promise<ReadonlyArray<[string, string]>> => {
   const fileName = pkgName.startsWith(NEOTRACKER) ? `neotracker-${pkgName.slice(NEOTRACKER.length)}` : undefined;
   if (fileName === undefined) {
@@ -57,10 +58,10 @@ const proc = execa('node', args.concat([path.resolve(__dirname, 'index.js')]).co
     NODE_NO_WARNINGS: '1',
   },
 });
-process.on('SIGTERM', () => proc.kill('SIGTERM'));
-process.on('SIGINT', () => proc.kill('SIGINT'));
-process.on('SIGBREAK', () => proc.kill('SIGBREAK'));
-process.on('SIGHUP', () => proc.kill('SIGHUP'));
+process.on('SIGTERM', () => proc.cancel('SIGTERM'));
+process.on('SIGINT', () => proc.cancel('SIGINT'));
+process.on('SIGBREAK', () => proc.cancel('SIGBREAK'));
+process.on('SIGHUP', () => proc.cancel('SIGHUP'));
 proc.on('exit', (code, signal) => {
   let exitCode = code;
   if (exitCode === null) {
@@ -73,7 +74,6 @@ proc.on('exit', (code, signal) => {
 // tslint:disable-next-line no-any
 const createPackageJSON = async (pkgJSON: any) => {
   const deps = await getTransitiveDependencies('@neotracker/core', 'any');
-  const peerDeps = deps.filter(([key]) => key.startsWith('@neo-one'));
 
   return stringify(
     {
@@ -93,8 +93,7 @@ const createPackageJSON = async (pkgJSON: any) => {
       engines: {
         node: '>=8.9.0',
       },
-      dependencies: _.fromPairs(deps.filter(([key]) => !key.startsWith('@neo-one'))),
-      peerDependencies: _.fromPairs(peerDeps),
+      dependencies: _.fromPairs(deps.filter(([key]) => !key.startsWith('@types'))),
       publishConfig: {
         access: 'public',
       },
@@ -114,12 +113,12 @@ const run = async () => {
   const clientCompiler = createClientCompiler({
     dev: false,
     buildVersion: 'production',
-    isCI: yargs.argv.ci,
+    isCI: argv.ci,
   });
   const clientCompilerNext = createClientCompilerNext({
     dev: false,
     buildVersion: 'production',
-    isCI: yargs.argv.ci,
+    isCI: argv.ci,
   });
   const serverCompiler = createNodeCompiler({
     dev: false,
@@ -129,7 +128,7 @@ const run = async () => {
     outputPath: path.join('dist', 'neotracker-core', 'bin'),
     type: 'server-web',
     buildVersion: 'dev',
-    isCI: yargs.argv.ci,
+    isCI: argv.ci,
     nodeVersion: '8.9.0',
   });
 

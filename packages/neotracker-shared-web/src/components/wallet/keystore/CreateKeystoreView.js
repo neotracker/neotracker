@@ -2,7 +2,7 @@
 import * as React from 'react';
 
 import classNames from 'classnames';
-import { encryptNEP2 } from '@neo-one/client';
+import { encryptNEP2 } from '@neo-one/client-common';
 import {
   type HOC,
   compose,
@@ -13,9 +13,10 @@ import {
   withState,
 } from 'recompose';
 // $FlowFixMe
+import { webLogger } from '@neotracker/logger';
+// $FlowFixMe
 import { sanitizeError } from '@neotracker/shared-utils';
 
-import type { AppContext } from '../../../AppContext';
 import { type Theme } from '../../../styles/createTheme';
 import {
   Button,
@@ -148,26 +149,14 @@ const enhance: HOC<*, *> = compose(
       const password = event.target.value;
       setState((prevState) => ({ ...prevState, password, error: null }));
     },
-    onSubmit: ({
-      privateKey,
-      password,
-      onCreate,
-      setState,
-      appContext: appContextIn,
-    }) => () => {
+    onSubmit: ({ privateKey, password, onCreate, setState }) => () => {
       setState((prevState) => ({
         ...prevState,
         loading: true,
         error: null,
       }));
-
-      const appContext = ((appContextIn: $FlowFixMe): AppContext);
-      appContext.monitor
-        .captureLog(() => encryptNEP2({ password, privateKey }), {
-          name: 'neotracker_wallet_create_keystore',
-          level: 'verbose',
-          error: {},
-        })
+      webLogger.info({ title: 'neotracker_wallet_create_keystore' });
+      encryptNEP2({ password, privateKey })
         .then((nep2) => {
           setState((prevState) => ({
             ...prevState,
@@ -176,6 +165,7 @@ const enhance: HOC<*, *> = compose(
           onCreate(password, nep2);
         })
         .catch((error) => {
+          webLogger.error({ title: 'neotracker_wallet_create_keystore' });
           setState((prevState) => ({
             ...prevState,
             loading: false,
@@ -190,6 +180,6 @@ const enhance: HOC<*, *> = compose(
   pure,
 );
 
-export default (enhance(CreateKeystoreView): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  CreateKeystoreView,
+): React.ComponentType<ExternalProps>);

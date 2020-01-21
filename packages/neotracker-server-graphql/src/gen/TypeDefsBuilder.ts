@@ -47,13 +47,15 @@ export class TypeDefsBuilder {
   }
 
   public build(): ReadonlyArray<string> {
-    let typeDefs = this.models.filter((model) => model.modelSchema.exposeGraphQLType).reduce<any>(
-      (typeDefsAcc, model) => ({
-        ...typeDefsAcc,
-        ...this.makeTypeDefs(model),
-      }),
-      {},
-    );
+    let typeDefs = this.models
+      .filter((model) => model.modelSchema.exposeGraphQLType)
+      .reduce<any>(
+        (typeDefsAcc, model) => ({
+          ...typeDefsAcc,
+          ...this.makeTypeDefs(model),
+        }),
+        {},
+      );
 
     const queryFields = ['node(id: ID!): Node', 'nodes(ids: [ID!]!): [Node]!'];
     const rootCallFieldNames = new Set(this.roots.map((rootCall) => rootCall.fieldName));
@@ -316,7 +318,7 @@ export class TypeDefsBuilder {
     };
   }
 
-  public makeFields(model: typeof Base): [{ [fieldName: string]: string }, TypeDefs] {
+  public makeFields(model: typeof Base): readonly [{ [fieldName: string]: string }, TypeDefs] {
     let typeDefs = {};
     const graphqlFields = Object.entries(model.modelSchema.fields)
       // tslint:disable-next-line no-unused
@@ -329,12 +331,12 @@ export class TypeDefsBuilder {
         return fields;
       }, {});
 
-    return [graphqlFields, typeDefs];
+    return [graphqlFields, typeDefs] as const;
   }
 
-  public getFieldType(field: Field): [string, TypeDefs] {
+  public getFieldType(field: Field): readonly [string, TypeDefs] {
     if (field.type.type === 'custom') {
-      return [field.type.graphqlType, field.type.typeDefs === undefined ? {} : field.type.typeDefs];
+      return [field.type.graphqlType, field.type.typeDefs === undefined ? {} : field.type.typeDefs] as const;
     }
     let graphqlType = getGraphQLType(field.type);
     if ((field.type as any).plural) {
@@ -344,7 +346,7 @@ export class TypeDefsBuilder {
       graphqlType = `${graphqlType}!`;
     }
 
-    return [graphqlType, {}];
+    return [graphqlType, {}] as const;
   }
 
   public makeEdges(model: typeof Base): ReadonlyArray<GraphQLEdge> {

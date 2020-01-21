@@ -27,8 +27,12 @@ export const runCypress = async ({
     extendEnv: false,
   });
 
-  proc.stdout.pipe(process.stdout);
-  proc.stderr.pipe(process.stderr);
+  if (proc.stdout !== null) {
+    proc.stdout.pipe(process.stdout);
+  }
+  if (proc.stderr !== null) {
+    proc.stderr.pipe(process.stderr);
+  }
 
   await proc;
 };

@@ -1,4 +1,4 @@
-import appRootDir from 'app-root-dir';
+import * as appRootDir from 'app-root-dir';
 import execa from 'execa';
 import * as fs from 'fs-extra';
 import path from 'path';
@@ -69,12 +69,16 @@ export const createButterfly = async ({ log = DEFAULT_LOGGER }: ButterflyOptions
       reject: false,
     });
 
-    proc.stdout.on('data', (value) => {
-      log.verbose(value instanceof Buffer ? value.toString('utf8') : value);
-    });
-    proc.stderr.on('data', (value) => {
-      log.error(value instanceof Buffer ? value.toString('utf8') : value);
-    });
+    if (proc.stdout !== null) {
+      proc.stdout.on('data', (value) => {
+        log.verbose(value instanceof Buffer ? value.toString('utf8') : value);
+      });
+    }
+    if (proc.stderr !== null) {
+      proc.stderr.on('data', (value) => {
+        log.error(value instanceof Buffer ? value.toString('utf8') : value);
+      });
+    }
 
     return proc;
   };
@@ -91,11 +95,7 @@ export const createButterfly = async ({ log = DEFAULT_LOGGER }: ButterflyOptions
   };
 
   const removeFiles = async (fileList: ReadonlyArray<string>): Promise<void> => {
-    fileList.forEach(
-      async (file: string): Promise<void> => {
-        await fs.remove(file);
-      },
-    );
+    await Promise.all(fileList.map(async (file: string) => fs.remove(file)));
   };
 
   const util = {

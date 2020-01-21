@@ -74,6 +74,6 @@ const enhance: HOC<*, *> = compose(
   pure,
 );
 
-export default (enhance(TransferPagingView): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  TransferPagingView,
+): React.ComponentType<ExternalProps>);

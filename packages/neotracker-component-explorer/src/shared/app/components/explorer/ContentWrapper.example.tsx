@@ -3,9 +3,9 @@ import { ComponentProps, PExample } from '../../../../types';
 import { ContentWrapper } from './ContentWrapper';
 
 // tslint:disable-next-line export-name
-export const examples: [
+export const examples: readonly [
   PExample<ComponentProps<typeof ContentWrapper>>,
-  PExample<ComponentProps<typeof ContentWrapper>>
+  PExample<ComponentProps<typeof ContentWrapper>>,
 ] = [
   {
     element: () => <ContentWrapper>Hello World</ContentWrapper>,
@@ -18,4 +18,4 @@ export const examples: [
       return <ContentWrapper>{goodnight}</ContentWrapper>;
     },
   },
-];
+] as const;

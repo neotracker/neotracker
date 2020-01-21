@@ -1,5 +1,4 @@
-import { ConfirmedTransaction, Input, Output } from '@neo-one/client';
-import { Monitor } from '@neo-one/monitor';
+import { ConfirmedTransaction, Input, Output } from '@neo-one/client-full';
 import { Block, TransactionInputOutput, TYPE_INPUT } from '@neotracker/server-db';
 import BigNumber from 'bignumber.js';
 import Knex from 'knex';
@@ -65,13 +64,13 @@ const getSecondaryInputs = () => ({
   block: data.createBlock({ index: 2 }, transactionsSecondary),
 });
 
-const initiateTest = async (db: Knex, monitor: Monitor) => {
+const initiateTest = async (db: Knex) => {
   const context = makeContext({ db });
 
   await Promise.all(
     vinOptionsInit.map(async (inOut) => {
       await TransactionInputOutput.query(db)
-        .context(context.makeQueryContext(monitor))
+        .context(context.makeQueryContext())
         .insert(
           data.createTransactionInputOutput({
             id: TransactionInputOutput.makeID({
@@ -94,23 +93,23 @@ const initiateTest = async (db: Knex, monitor: Monitor) => {
 
   const references = await Promise.all([
     Block.query(db)
-      .context(context.makeQueryContext(monitor))
+      .context(context.makeQueryContext())
       .insertAndFetch(data.createBlockModel({ id: 1 })),
     Block.query(db)
-      .context(context.makeQueryContext(monitor))
+      .context(context.makeQueryContext())
       .insertAndFetch(data.createBlockModel({ id: 2 })),
   ]);
 
   return { references };
 };
 
-const secondaryInit = async (db: Knex, monitor: Monitor) => {
+const secondaryInit = async (db: Knex) => {
   const context = makeContext({ db });
 
   await Promise.all(
     vinOptionsSecondary.map(async (inOut) => {
       await TransactionInputOutput.query(db)
-        .context(context.makeQueryContext(monitor))
+        .context(context.makeQueryContext())
         .insert(
           data.createTransactionInputOutput({
             id: TransactionInputOutput.makeID({

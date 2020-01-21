@@ -7,22 +7,22 @@ import { convertExecutionResult } from '../createQueryDeduplicator';
 import { GraphQLContext } from '../GraphQLContext';
 import { liveMemoized } from './liveMemoized';
 import { getFieldEntryKey, resolveField } from './utils';
-export type MapFn<In, Out> = ((
+export type MapFn<In, Out> = (
   value: In,
   // tslint:disable-next-line no-any
   args: { readonly [key: string]: any },
   context: GraphQLContext,
   info: GraphQLResolveInfo,
-) => Promise<Out>);
+) => Promise<Out>;
 
 export function liveExecuteField<TSource>(
-  observable: ((
+  observable: (
     rootValue: TSource,
     // tslint:disable-next-line no-any
     args: { readonly [key: string]: any },
     context: GraphQLContext,
     info: GraphQLResolveInfo,
-  ) => Observable<{}>),
+  ) => Observable<{}>,
 ): GraphQLLiveResolver<TSource> {
   // tslint:disable-next-line no-any
   return liveMemoized((rootValue: TSource, args: { [key: string]: any }, context, info) =>
@@ -53,7 +53,7 @@ export function liveExecuteField<TSource>(
 
         response = { ...response, errors: executionContext.errors };
 
-        return convertExecutionResult(response, context.getMonitor(info));
+        return convertExecutionResult(response);
       }),
     ),
   );

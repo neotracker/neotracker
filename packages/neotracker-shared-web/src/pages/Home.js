@@ -183,7 +183,7 @@ function Home({
       <Button
         className={classes.viewMoreButton}
         size="small"
-        variant="raised"
+        variant="contained"
         color="primary"
       >
         <Typography className={classes.viewMoreText} variant="body1">

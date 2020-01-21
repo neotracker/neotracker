@@ -1,13 +1,11 @@
 // tslint:disable
 import { GraphQLError, locatedError } from 'graphql/error';
 import {
-  addPath,
   buildResolveInfo,
   collectFields,
   ExecutionContext,
   getFieldDef,
   resolveFieldValueOrError,
-  responsePathAsArray,
 } from 'graphql/execution/execute';
 // @ts-ignore
 import invariant from 'graphql/jsutils/invariant';
@@ -21,6 +19,7 @@ import isPromise from 'graphql/jsutils/isPromise';
 import { MaybePromise } from 'graphql/jsutils/MaybePromise';
 // @ts-ignore
 import memoize3 from 'graphql/jsutils/memoize3';
+import { addPath, Path, pathToArray } from 'graphql/jsutils/Path';
 // @ts-ignore
 import { ObjMap } from 'graphql/jsutils/ObjMap';
 import { DocumentNode, FieldNode } from 'graphql/language/ast';
@@ -39,7 +38,6 @@ import {
   GraphQLFieldResolver,
   GraphQLLeafType,
   GraphQLResolveInfo,
-  ResponsePath,
 } from 'graphql/type/definition';
 import { GraphQLSchema } from 'graphql/type/schema';
 import { forEach, isCollection } from 'iterall';
@@ -112,7 +110,7 @@ export function resolveField(
   parentType: GraphQLObjectType,
   source: any,
   fieldNodes: ReadonlyArray<FieldNode>,
-  path: ResponsePath,
+  path: Path,
 ): any {
   const fieldNode = fieldNodes[0];
   const fieldName = fieldNode.name.value;
@@ -141,7 +139,7 @@ function executeFields(
   exeContext: ExecutionContext,
   parentType: GraphQLObjectType,
   sourceValue: any,
-  path: ResponsePath | void,
+  path: Path | void,
   fields: ObjMap<ReadonlyArray<FieldNode>>,
 ): MaybePromise<ObjMap<{}>> {
   let containsPromise = false;
@@ -187,7 +185,7 @@ function completeValueWithLocatedError(
   returnType: GraphQLOutputType,
   fieldNodes: ReadonlyArray<FieldNode>,
   info: GraphQLResolveInfo,
-  path: ResponsePath,
+  path: Path,
   result: any,
 ): any {
   try {
@@ -195,12 +193,12 @@ function completeValueWithLocatedError(
 
     if (isPromise(completed)) {
       return completed.then(null, (error: any) =>
-        Promise.reject(locatedError(asErrorInstance(error), fieldNodes, responsePathAsArray(path))),
+        Promise.reject(locatedError(asErrorInstance(error), fieldNodes, pathToArray(path))),
       );
     }
     return completed;
   } catch (error) {
-    throw locatedError(asErrorInstance(error), fieldNodes, responsePathAsArray(path));
+    throw locatedError(asErrorInstance(error), fieldNodes, pathToArray(path));
   }
 }
 
@@ -211,7 +209,7 @@ function completeValueCatchingError(
   returnType: GraphQLOutputType,
   fieldNodes: ReadonlyArray<FieldNode>,
   info: GraphQLResolveInfo,
-  path: ResponsePath,
+  path: Path,
   result: any,
 ): any {
   // If the field type is non-nullable, then it is resolved without any
@@ -270,7 +268,7 @@ function completeValue(
   returnType: GraphQLOutputType,
   fieldNodes: ReadonlyArray<FieldNode>,
   info: GraphQLResolveInfo,
-  path: ResponsePath,
+  path: Path,
   result: any,
 ): any {
   // If result is a Promise, apply-lift over completeValue.
@@ -335,7 +333,7 @@ function completeListValue(
   returnType: GraphQLList<GraphQLOutputType>,
   fieldNodes: ReadonlyArray<FieldNode>,
   info: GraphQLResolveInfo,
-  path: ResponsePath,
+  path: Path,
   result: any,
 ): any {
   invariant(
@@ -385,11 +383,11 @@ function completeAbstractValue(
   returnType: GraphQLAbstractType,
   fieldNodes: ReadonlyArray<FieldNode>,
   info: GraphQLResolveInfo,
-  path: ResponsePath,
+  path: Path,
   result: any,
 ): any {
   const runtimeType = returnType.resolveType
-    ? returnType.resolveType(result, exeContext.contextValue, info)
+    ? returnType.resolveType(result, exeContext.contextValue, info, returnType)
     : defaultResolveTypeFn(result, exeContext.contextValue, info, returnType);
 
   if (isPromise(runtimeType)) {
@@ -465,7 +463,7 @@ function completeObjectValue(
   returnType: GraphQLObjectType,
   fieldNodes: ReadonlyArray<FieldNode>,
   info: GraphQLResolveInfo,
-  path: ResponsePath,
+  path: Path,
   result: any,
 ): any {
   // If there is an isTypeOf predicate function, call it with the
@@ -504,7 +502,7 @@ function collectAndExecuteSubfields(
   returnType: GraphQLObjectType,
   fieldNodes: ReadonlyArray<FieldNode>,
   info: GraphQLResolveInfo,
-  path: ResponsePath,
+  path: Path,
   result: any,
 ): any {
   // Collect sub-fields to execute to complete this value.

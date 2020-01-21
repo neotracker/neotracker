@@ -1,12 +1,10 @@
 // tslint:disable no-any
-import { Monitor } from '@neo-one/monitor';
 import { RootLoader } from '../loader';
 import { Base } from './Base';
 
 export interface QueryContext {
   readonly type: 'normal';
   readonly rootLoader: RootLoader;
-  readonly monitor: Monitor;
   readonly isAllPowerful: boolean;
 }
 
@@ -22,11 +20,9 @@ async function verifyCanView(model: any, context: QueryContext): Promise<any> {
 
 export function makeQueryContext({
   rootLoader,
-  monitor,
   isAllPowerful,
 }: {
-  readonly rootLoader: (() => RootLoader);
-  readonly monitor: Monitor;
+  readonly rootLoader: () => RootLoader;
   readonly isAllPowerful?: boolean;
 }): QueryContext {
   const queryContext = {
@@ -34,7 +30,6 @@ export function makeQueryContext({
     get rootLoader() {
       return rootLoader();
     },
-    monitor,
     isAllPowerful: !!isAllPowerful,
     // tslint:disable-next-line no-unused
     runBefore: (__: any, queryBuilder: any) => {
@@ -67,15 +62,13 @@ export function makeQueryContext({
 }
 export interface AllPowerfulQueryContext {
   readonly type: 'allPowerful';
-  readonly monitor: Monitor;
   readonly isAllPowerful: boolean;
 }
 
-export function makeAllPowerfulQueryContext(monitor: Monitor): AllPowerfulQueryContext {
+export function makeAllPowerfulQueryContext(): AllPowerfulQueryContext {
   return {
     type: 'allPowerful',
     isAllPowerful: true,
-    monitor,
     // @ts-ignore
     runBefore: (__, queryBuilder) => {
       queryBuilder.options({ queryContext: queryBuilder.context() });

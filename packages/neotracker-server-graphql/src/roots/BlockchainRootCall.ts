@@ -15,7 +15,7 @@ export class BlockchainRootCall extends RootCall {
     _context: GraphQLContext,
     _info: GraphQLResolveInfo,
   ): Promise<any> {
-    throw new CodedError(CodedError.PROGRAMMING_ERROR);
+    await Promise.reject(new CodedError(CodedError.PROGRAMMING_ERROR));
   }
   // tslint:enable no-any
 

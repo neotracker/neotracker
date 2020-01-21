@@ -19,8 +19,12 @@ const execute = async (force = false) => {
 
   try {
     const proc = execa('yarn', ['generate-gql-types']);
-    proc.stdout.pipe(process.stdout);
-    proc.stderr.pipe(process.stderr);
+    if (proc.stdout !== null) {
+      proc.stdout.pipe(process.stdout);
+    }
+    if (proc.stderr !== null) {
+      proc.stderr.pipe(process.stderr);
+    }
 
     await proc;
   } catch {

@@ -203,6 +203,6 @@ const enhance: HOC<*, *> = compose(
   pure,
 );
 
-export default (enhance(TransactionInputOutputTable): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  TransactionInputOutputTable,
+): React.ComponentType<ExternalProps>);

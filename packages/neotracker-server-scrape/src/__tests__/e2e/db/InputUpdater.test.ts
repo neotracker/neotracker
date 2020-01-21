@@ -1,4 +1,3 @@
-import { Monitor } from '@neo-one/monitor';
 import { TransactionInputOutput } from '@neotracker/server-db';
 import Knex from 'knex';
 import { InputRevert, InputSave, InputUpdater } from '../../../db/InputUpdater';
@@ -25,13 +24,13 @@ const inputOptions: ReadonlyArray<{
   },
 ];
 
-const initiateTest = async (db: Knex, monitor: Monitor) => {
+const initiateTest = async (db: Knex) => {
   const context = makeContext({ db });
 
   const references = await Promise.all(
     inputOptions.map((input) =>
       TransactionInputOutput.query(db)
-        .context(context.makeQueryContext(monitor))
+        .context(context.makeQueryContext())
         .insertAndFetch(
           data.createTransactionInputOutput({
             id: input.id,

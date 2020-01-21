@@ -67,17 +67,16 @@ function ActionTable({
 }: Props): React.Element<*> {
   const content = (
     <div className={classes.contentRoot}>
-      {actions.map(
-        (action) =>
-          action.type === 'Log' ? (
-            <LogItem key={getID(action.id)} action={action} />
-          ) : (
-            <NotificationItem
-              key={getID(action.id)}
-              action={action}
-              addressHash={addressHash}
-            />
-          ),
+      {actions.map((action) =>
+        action.type === 'Log' ? (
+          <LogItem key={getID(action.id)} action={action} />
+        ) : (
+          <NotificationItem
+            key={getID(action.id)}
+            action={action}
+            addressHash={addressHash}
+          />
+        ),
       )}
     </div>
   );

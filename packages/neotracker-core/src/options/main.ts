@@ -1,14 +1,23 @@
+import { DBClient } from '@neotracker/server-db';
 import { AssetsConfiguration, common } from './common';
 import { mainRPCURL } from './utils';
 
 export const main = ({
   port,
   dbFileName,
+  dbUser,
+  dbPassword,
+  dbClient,
+  dbConnectionString,
   configuration,
   rpcURL = mainRPCURL,
 }: {
   readonly port: number;
   readonly dbFileName: string;
+  readonly dbUser?: string;
+  readonly dbPassword?: string;
+  readonly dbClient?: DBClient;
+  readonly dbConnectionString?: string;
   readonly configuration: AssetsConfiguration;
   readonly rpcURL?: string;
 }) =>
@@ -28,5 +37,9 @@ export const main = ({
       '6d36b38af912ca107f55a5daedc650054f7e4f75',
     ],
     dbFileName,
+    dbUser,
+    dbPassword,
+    dbClient,
+    dbConnectionString,
     configuration,
   });

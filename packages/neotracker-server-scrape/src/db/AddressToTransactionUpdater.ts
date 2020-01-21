@@ -1,4 +1,4 @@
-import { Monitor } from '@neo-one/monitor';
+import { createChild, serverLogger } from '@neotracker/logger';
 import { AddressToTransaction as AddressToTransactionModel } from '@neotracker/server-db';
 import _ from 'lodash';
 import { Context } from '../types';
@@ -15,46 +15,36 @@ export interface AddressToTransactionRevert {
   readonly transactionIDs: ReadonlyArray<string>;
 }
 
+const serverScrapeLogger = createChild(serverLogger, { component: 'scrape' });
+
 export class AddressToTransactionUpdater extends SameContextDBUpdater<
   AddressToTransactionSave,
   AddressToTransactionRevert
 > {
-  public async save(context: Context, monitor: Monitor, { transactions }: AddressToTransactionSave): Promise<void> {
-    return monitor.captureSpanLog(
-      async (span) => {
-        const data = _.flatMap(transactions, ({ addressIDs, transactionID }) =>
-          [...new Set(addressIDs)].map((addressID) => ({
-            id1: addressID,
-            id2: transactionID,
-          })),
-        );
-        await Promise.all(
-          _.chunk(data, context.chunkSize).map(async (chunk) => {
-            await AddressToTransactionModel.insertAll(context.db, context.makeQueryContext(span), chunk);
-          }),
-        );
-      },
-      { name: 'neotracker_scrape_save_address_to_transaction', level: 'verbose', error: {} },
+  public async save(context: Context, { transactions }: AddressToTransactionSave): Promise<void> {
+    serverScrapeLogger.info({ title: 'neotracker_scrape_save_address_to_transaction' });
+    const data = _.flatMap(transactions, ({ addressIDs, transactionID }) =>
+      [...new Set(addressIDs)].map((addressID) => ({
+        id1: addressID,
+        id2: transactionID,
+      })),
+    );
+    await Promise.all(
+      _.chunk(data, context.chunkSize).map(async (chunk) => {
+        await AddressToTransactionModel.insertAll(context.db, context.makeQueryContext(), chunk);
+      }),
     );
   }
 
-  public async revert(
-    context: Context,
-    monitor: Monitor,
-    { transactionIDs }: AddressToTransactionRevert,
-  ): Promise<void> {
-    return monitor.captureSpan(
-      async (span) => {
-        await Promise.all(
-          _.chunk(transactionIDs, context.chunkSize).map((chunk) =>
-            AddressToTransactionModel.query(context.db)
-              .context(context.makeQueryContext(span))
-              .delete()
-              .whereIn('id2', chunk),
-          ),
-        );
-      },
-      { name: 'neotracker_scrape_revert_address_to_transaction' },
+  public async revert(context: Context, { transactionIDs }: AddressToTransactionRevert): Promise<void> {
+    serverScrapeLogger.info({ title: 'neotracker_scrape_revert_address_to_transaction' });
+    await Promise.all(
+      _.chunk(transactionIDs, context.chunkSize).map((chunk) =>
+        AddressToTransactionModel.query(context.db)
+          .context(context.makeQueryContext())
+          .delete()
+          .whereIn('id2', chunk),
+      ),
     );
   }
 }

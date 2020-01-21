@@ -15,49 +15,31 @@ import { type TransactionHeaderBackground_transaction } from './__generated__/Tr
 
 export const styles = (theme: Theme) => ({
   contract: {
-    borderLeft: `2px solid ${
-      theme.custom.transactionColors.contract.backgroundColor
-    }`,
+    borderLeft: `2px solid ${theme.custom.transactionColors.contract.backgroundColor}`,
   },
   miner: {
-    borderLeft: `2px solid ${
-      theme.custom.transactionColors.miner.backgroundColor
-    }`,
+    borderLeft: `2px solid ${theme.custom.transactionColors.miner.backgroundColor}`,
   },
   issue: {
-    borderLeft: `2px solid ${
-      theme.custom.transactionColors.issue.backgroundColor
-    }`,
+    borderLeft: `2px solid ${theme.custom.transactionColors.issue.backgroundColor}`,
   },
   claim: {
-    borderLeft: `2px solid ${
-      theme.custom.transactionColors.claim.backgroundColor
-    }`,
+    borderLeft: `2px solid ${theme.custom.transactionColors.claim.backgroundColor}`,
   },
   enrollment: {
-    borderLeft: `2px solid ${
-      theme.custom.transactionColors.enrollment.backgroundColor
-    }`,
+    borderLeft: `2px solid ${theme.custom.transactionColors.enrollment.backgroundColor}`,
   },
   register: {
-    borderLeft: `2px solid ${
-      theme.custom.transactionColors.register.backgroundColor
-    }`,
+    borderLeft: `2px solid ${theme.custom.transactionColors.register.backgroundColor}`,
   },
   publish: {
-    borderLeft: `2px solid ${
-      theme.custom.transactionColors.publish.backgroundColor
-    }`,
+    borderLeft: `2px solid ${theme.custom.transactionColors.publish.backgroundColor}`,
   },
   invocation: {
-    borderLeft: `2px solid ${
-      theme.custom.transactionColors.invocation.backgroundColor
-    }`,
+    borderLeft: `2px solid ${theme.custom.transactionColors.invocation.backgroundColor}`,
   },
   state: {
-    borderLeft: `2px solid ${
-      theme.custom.transactionColors.state.backgroundColor
-    }`,
+    borderLeft: `2px solid ${theme.custom.transactionColors.state.backgroundColor}`,
   },
   contractBG: {
     backgroundColor: theme.custom.transactionColors.contract.backgroundColor,
@@ -223,6 +205,6 @@ const enhance: HOC<*, *> = compose(
   pure,
 );
 
-export default (enhance(TransactionHeaderBackground): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  TransactionHeaderBackground,
+): React.ComponentType<ExternalProps>);

@@ -1,5 +1,4 @@
-import { ConfirmedTransaction, Input } from '@neo-one/client';
-import { Monitor } from '@neo-one/monitor';
+import { ConfirmedTransaction, Input } from '@neo-one/client-full';
 import { TransactionInputOutput as TransactionInputOutputModel, TYPE_INPUT } from '@neotracker/server-db';
 import _ from 'lodash';
 import { Context, TransactionData } from '../types';
@@ -96,12 +95,10 @@ function mapReferences(
 }
 
 export async function getTransactionDataForClient({
-  monitor,
   context,
   blockIndex,
   transactions,
 }: {
-  readonly monitor: Monitor;
   readonly context: Context;
   readonly blockIndex: number;
   readonly transactions: ReadonlyArray<{
@@ -134,7 +131,7 @@ export async function getTransactionDataForClient({
   }
 
   const references = await TransactionInputOutputModel.query(context.db)
-    .context(context.makeQueryContext(monitor))
+    .context(context.makeQueryContext())
     .whereIn('id', ids);
   const referencesMap = references.reduce<ReferencesMap>((acc, reference) => {
     let inputOutputs = acc[reference.output_transaction_hash];

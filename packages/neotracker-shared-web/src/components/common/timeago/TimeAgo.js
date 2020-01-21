@@ -20,6 +20,8 @@ type InternalProps = {||};
 type Props = {
   ...ExternalProps,
   ...InternalProps,
+  state: ?any,
+  dispatch: ?any,
 };
 function TimeAgo({
   time,

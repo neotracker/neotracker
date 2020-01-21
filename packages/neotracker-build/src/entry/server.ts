@@ -1,7 +1,6 @@
 // tslint:disable no-import-side-effect no-let ordered-imports
 import './init';
-import { DefaultMonitor } from '@neo-one/monitor';
-import { createConsoleLogger, getOptions, NEOTracker } from '@neotracker/core';
+import { getOptions, NEOTracker } from '@neotracker/core';
 import { BehaviorSubject } from 'rxjs';
 import * as path from 'path';
 import * as appRootDir from 'app-root-dir';
@@ -13,13 +12,23 @@ const dbFileName =
   process.env.NEOTRACKER_DB_FILE === undefined
     ? path.resolve(appRootDir.get(), 'db.sqlite')
     : process.env.NEOTRACKER_DB_FILE;
-const network = process.env.NEOTRACKER_NETWORK === undefined ? 'priv' : (process.env.NEOTRACKER_NETWORK as NetworkType);
+const dbHost = process.env.NEOTRACKER_DB_HOST === undefined ? 'localhost' : process.env.NEOTRACKER_DB_HOST;
+const dbPort = process.env.NEOTRACKER_DB_PORT === undefined ? 5432 : parseInt(process.env.NEOTRACKER_DB_PORT, 10);
+const dbUser = process.env.NEOTRACKER_DB_USER;
+const dbPassword = process.env.NEOTRACKER_DB_PASSWORD;
+const dbClient = process.env.NEOTRACKER_DB_CLIENT === 'pg' ? 'pg' : 'sqlite3';
+const database = process.env.NEOTRACKER_DB === undefined ? 'neotracker_priv' : process.env.NEOTRACKER_DB;
+const neotrackerNetwork =
+  process.env.NEOTRACKER_NETWORK === undefined ? 'priv' : (process.env.NEOTRACKER_NETWORK as NetworkType);
+const resetDB = process.env.NEOTRACKER_RESET_DB === undefined ? false : process.env.NEOTRACKER_RESET_DB === 'true';
+const type =
+  process.env.NEOTRACKER_TYPE === undefined ? 'all' : (process.env.NEOTRACKER_TYPE as 'all' | 'web' | 'scrape');
 let rpcURL: string | undefined;
-switch (network) {
+switch (neotrackerNetwork) {
   case 'priv':
     rpcURL = process.env.NEOTRACKER_RPC_URL;
     if (rpcURL === undefined) {
-      rpcURL = 'http://localhost:40200/rpc';
+      rpcURL = 'http://localhost:9040/rpc';
     }
     break;
   case 'main':
@@ -28,19 +37,22 @@ switch (network) {
   default:
     rpcURL = 'https://testnet.neotracker.io/rpc';
 }
-const { options } = getOptions({
-  network,
+const { options, network } = getOptions({
+  network: neotrackerNetwork,
+  rpcURL,
   port,
   dbFileName,
+  dbUser,
+  dbPassword,
+  dbClient,
+  database,
   configuration,
-  rpcURL,
 });
 const options$ = new BehaviorSubject(options);
-const monitor = DefaultMonitor.create({
-  service: 'web_server',
-  logger: createConsoleLogger(),
-});
-const db = {};
+const db = {
+  host: dbHost,
+  port: dbPort,
+};
 const environment = {
   server: {
     react: {
@@ -58,18 +70,19 @@ const environment = {
     network,
   },
   scrape: {
-    db: {},
+    db,
     network,
     pubSub: {},
   },
   start: {
     metricsPort: 1341,
+    resetDB,
   },
 };
 
 const neotracker = new NEOTracker({
   options$,
-  monitor,
   environment,
+  type,
 });
 neotracker.start();

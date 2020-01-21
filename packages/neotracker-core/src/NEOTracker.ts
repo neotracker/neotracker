@@ -1,13 +1,14 @@
-import { Monitor } from '@neo-one/monitor';
-import { createFromEnvironment, createTables } from '@neotracker/server-db';
+import { coreLogger, getFinalLogger } from '@neotracker/logger';
+import { createFromEnvironment, createTables, dropTables } from '@neotracker/server-db';
 import { createScraper$, ScrapeEnvironment, ScrapeOptions } from '@neotracker/server-scrape';
 import { createServer$, ServerEnvironment, ServerOptions } from '@neotracker/server-web';
 import { finalize } from '@neotracker/shared-utils';
-import { concat, defer, merge, Observable, Subscription } from 'rxjs';
+import { concat, defer, merge, Observable, of as _of, Subscription } from 'rxjs';
 import { distinctUntilChanged, map, take } from 'rxjs/operators';
 
 export interface StartEnvironment {
   readonly metricsPort: number;
+  readonly resetDB: boolean;
 }
 
 export interface Environment {
@@ -24,80 +25,83 @@ export interface Options {
 export interface NEOTrackerOptions {
   readonly options$: Observable<Options>;
   readonly environment: Environment;
-  readonly monitor: Monitor;
+  readonly type: 'all' | 'web' | 'scrape';
 }
 
 export class NEOTracker {
   private readonly options$: Observable<Options>;
   private readonly environment: Environment;
-  private readonly monitor: Monitor;
+  private readonly type: 'all' | 'web' | 'scrape';
   private mutableShutdownInitiated = false;
   private mutableSubscription: Subscription | undefined;
 
-  public constructor({ options$, environment, monitor }: NEOTrackerOptions) {
+  public constructor({ options$, environment, type }: NEOTrackerOptions) {
     this.options$ = options$;
     this.environment = environment;
-    this.monitor = monitor;
+    this.type = type;
   }
 
   public start(): void {
     process.on('uncaughtException', (error) => {
-      this.monitor.logError({ name: 'service_uncaught_rejection', error });
+      coreLogger.error({ title: 'service_uncaught_rejection', error: error.message });
       this.shutdown(1);
     });
 
-    process.on('unhandledRejection', (error) => {
-      this.monitor.logError({ name: 'service_unhandled_rejection', error });
+    process.on('unhandledRejection', () => {
+      coreLogger.error({ title: 'service_unhandled_rejection' });
     });
 
     process.on('SIGINT', () => {
-      this.monitor.log({ name: 'service_sigint' });
+      coreLogger.info({ title: 'service_sigint' });
       this.shutdown(0);
     });
 
     process.on('SIGTERM', () => {
-      this.monitor.log({ name: 'service_sigterm' });
+      coreLogger.info({ title: 'service_sigterm' });
       this.shutdown(0);
     });
 
-    this.monitor.log({ name: 'service_start' });
-    this.monitor.serveMetrics(this.environment.start.metricsPort);
+    coreLogger.info({ title: 'service_start' });
 
-    const server$ = createServer$({
-      monitor: this.monitor,
-      environment: this.environment.server,
-      createOptions$: this.options$.pipe(
-        map((options) => ({ options: options.server })),
-        distinctUntilChanged(),
-      ),
-    });
+    const server$ =
+      this.type === 'scrape'
+        ? _of([])
+        : createServer$({
+            environment: this.environment.server,
+            createOptions$: this.options$.pipe(
+              map((options) => ({ options: options.server })),
+              distinctUntilChanged(),
+            ),
+          });
 
-    const scrape$ = createScraper$({
-      monitor: this.monitor,
-      environment: this.environment.scrape,
-      options$: this.options$.pipe(
-        map((options) => options.scrape),
-        distinctUntilChanged(),
-      ),
-    });
+    const scrape$ =
+      this.type === 'web'
+        ? _of([])
+        : createScraper$({
+            environment: this.environment.scrape,
+            options$: this.options$.pipe(
+              map((options) => options.scrape),
+              distinctUntilChanged(),
+            ),
+          });
 
     this.mutableSubscription = concat(
       defer(async () => {
         const options = await this.options$.pipe(take(1)).toPromise();
+        if (this.environment.start.resetDB) {
+          await dropTables(createFromEnvironment(this.environment.scrape.db, options.scrape.db));
+        }
 
-        await createTables(
-          createFromEnvironment(this.monitor, this.environment.scrape.db, options.scrape.db),
-          this.monitor,
-        );
+        await createTables(createFromEnvironment(this.environment.scrape.db, options.scrape.db));
       }),
       merge(server$, scrape$),
     ).subscribe({
       complete: () => {
-        this.monitor.log({ name: 'service_unexpected_complete' });
+        coreLogger.info({ title: 'service_unexpected_complete' });
         this.shutdown(1);
       },
       error: (error: Error) => {
-        this.monitor.logError({ name: 'service_unexpected_complete', error });
+        coreLogger.error({ title: 'service_unexpected_complete', error: error.message });
         this.shutdown(1);
       },
     });
@@ -108,6 +112,7 @@ export class NEOTracker {
   }
 
   private shutdown(exitCode: number): void {
+    const finalLogger = getFinalLogger(coreLogger);
     if (!this.mutableShutdownInitiated) {
       this.mutableShutdownInitiated = true;
       if (this.mutableSubscription !== undefined) {
@@ -117,12 +122,12 @@ export class NEOTracker {
       finalize
         .wait()
         .then(() => {
-          this.monitor.log({ name: 'server_shutdown' });
-          this.monitor.close(() => process.exit(exitCode));
+          finalLogger.info({ title: 'server_shutdown' }, 'shutting down');
+          process.exit(exitCode);
         })
         .catch((error) => {
-          this.monitor.logError({ name: 'server_shutdown_error', error });
-          this.monitor.close(() => process.exit(1));
+          finalLogger.error({ title: 'server_shutdown_error', error: error.message }, 'error, shutting down');
+          process.exit(1);
         });
     }
   }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Redirect, RouteComponentProps } from 'react-router';
-import { Base, Block, Heading, styled } from 'reakit';
+import styled from 'styled-components';
 import { assertNever } from '../../../utils';
 import { findNonEmptySiblingSection, findSectionByLocation, getSectionContent, getSectionURL } from '../../utils';
 import { WithCodeRevision, WithRenderConfig } from '../render';
@@ -11,11 +11,11 @@ import { PropsTable } from './PropsTable';
 import { RenderAPITable } from './RenderAPITable';
 import { SectionUses } from './SectionUses';
 
-const Name = styled(Heading)`
+const Name = styled.h1`
   margin-right: auto;
 `;
 
-const Wrapper = styled(Block)`
+const Wrapper = styled.div`
   @media (max-width: 768px) {
     margin-left: -8px;
     margin-right: -8px;
@@ -23,13 +23,13 @@ const Wrapper = styled(Block)`
   }
 `;
 
-const Content = styled(Block)`
+const Content = styled.div`
   border-top: 1px solid ${({ theme }) => theme.grayLightest};
   margin-top: 1em;
   padding-top: 1em;
 `;
 
-const PathLink = styled(Base.as('a'))`
+const PathLink = styled.a`
   font-family: monospace;
   font-size: 13px;
   color: ${({ theme }) => theme.grayLight};

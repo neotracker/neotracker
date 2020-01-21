@@ -1,13 +1,10 @@
 // tslint:disable
-import { Monitor } from '@neo-one/monitor';
 import Knex from 'knex';
 import { Block as BlockModel } from '@neotracker/server-db';
-import { Database, getDBData, getMonitor, startDB } from '@neotracker/server-test';
+import { Database, getDBData, startDB } from '@neotracker/server-test';
 import { data, makeContext } from '../../data';
 import { BlockUpdater } from '../../../db';
 import { Context } from '../../../types';
-
-const monitor = getMonitor();
 
 const getInputs = () =>
   data.createBlock({
@@ -21,13 +18,9 @@ const getSecondBlock = () =>
     index: 1,
   });
 
-const getReversions = async (references: {
-  readonly db: Knex;
-  readonly context: Context;
-  readonly monitor: Monitor;
-}) => {
+const getReversions = async (references: { readonly db: Knex; readonly context: Context }) => {
   const result = await BlockModel.query(references.db)
-    .context(references.context.makeQueryContext(references.monitor))
+    .context(references.context.makeQueryContext())
     .where('id', 1)
     .first();
 
@@ -55,7 +48,7 @@ describe(`Block Updater`, () => {
   test(`Block Updater: handles insert/save`, async () => {
     const updater = new BlockUpdater();
 
-    context = await updater.save(context, monitor, getInputs());
+    context = await updater.save(context, getInputs());
     const dbCheck = await getDBData(db);
 
     expect(dbCheck).toMatchSnapshot();
@@ -64,10 +57,10 @@ describe(`Block Updater`, () => {
   test(`Block Updater: handles duplicate inserts/saves`, async () => {
     const updater = new BlockUpdater();
 
-    context = await updater.save(context, monitor, getInputs());
+    context = await updater.save(context, getInputs());
     const dbStart = await getDBData(db);
 
-    context = await updater.save(context, monitor, getInputs());
+    context = await updater.save(context, getInputs());
     const dbFinal = await getDBData(db);
 
     expect(dbStart).toMatchSnapshot();
@@ -77,19 +70,19 @@ describe(`Block Updater`, () => {
   test(`Block Updater: handles reverting inputs/saves`, async () => {
     // @ts-ignore
     context.systemFee.revert = jest.fn(() => Promise.resolve());
-    context.client.getBlock = jest.fn(() => Promise.resolve());
+    context.client.getBlock = jest.fn(() => Promise.resolve(getInputs()));
     const updater = new BlockUpdater();
 
-    context = await updater.save(context, monitor, getInputs());
+    context = await updater.save(context, getInputs());
     const dbNext = await getDBData(db);
 
     data.nextBlock();
-    context = await updater.save(context, monitor, getSecondBlock());
+    context = await updater.save(context, getSecondBlock());
     const dbInter = await getDBData(db);
 
-    const revert = await getReversions({ db, context, monitor });
+    const revert = await getReversions({ db, context });
     if (revert !== undefined) {
-      context = await updater.revert(context, monitor, revert);
+      context = await updater.revert(context, revert);
     }
     const dbFinal = await getDBData(db);
 

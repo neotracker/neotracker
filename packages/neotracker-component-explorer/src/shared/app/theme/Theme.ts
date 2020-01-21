@@ -1,3 +1,4 @@
+// tslint:disable no-any
 import { css as styledCss, ThemedCssFunction } from 'styled-components';
 
 export interface Theme {
@@ -70,7 +71,7 @@ export const theme: Theme = {
   `,
 
   Link: css`
-    color: ${({ theme: t }) => t.pinkDark};
+    color: ${({ theme: t }: any) => t.pinkDark};
     font-weight: 600;
   `,
 

@@ -2,7 +2,7 @@
 // $FlowFixMe
 import { NEO_ASSET_HASH, sanitizeError } from '@neotracker/shared-utils';
 import * as React from 'react';
-import { type UserAccount, addressToScriptHash } from '@neo-one/client';
+import type { UserAccount, addressToScriptHash } from '@neo-one/client-common';
 
 import classNames from 'classnames';
 import {
@@ -116,17 +116,19 @@ function SendTransaction({
           id="select-asset"
           label={null}
           helperText="Select Asset"
-          options={coins.map((coin) => coin.asset).map((asset) => ({
-            id: getID(asset.id),
-            text: getName(asset.symbol, getID(asset.id)),
-            asset,
-          }))}
+          options={coins
+            .map((coin) => coin.asset)
+            .map((asset) => ({
+              id: getID(asset.id),
+              text: getName(asset.symbol, getID(asset.id)),
+              asset,
+            }))}
           selectedID={selectedAssetHash}
           onSelect={onSelect}
         />
         <Button
           className={classes.marginLeft}
-          variant="raised"
+          variant="contained"
           color="primary"
           disabled={toAddressValidation != null || amountValidation != null}
           onClick={onConfirmSend}

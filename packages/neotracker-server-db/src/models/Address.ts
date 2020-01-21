@@ -96,7 +96,6 @@ export class Address extends BlockchainModel<string> {
           context.rootLoader.loaders.asset.load({
             // tslint:disable-next-line no-any
             id: GAS_ASSET_ID as any,
-            monitor: context.getMonitor(info),
           }),
           calculateAddressClaimValue(obj, context, info),
         ]);

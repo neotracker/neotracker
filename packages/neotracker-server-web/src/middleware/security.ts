@@ -56,7 +56,7 @@ export const security = ({ options }: { readonly options: Options }) => {
           // Must be at least 18 weeks to be approved by Google
           maxAge: 10886400,
           // Must be enabled to be approved by Google
-          includeSubdomains: true,
+          includeSubDomains: true,
           preload: true,
         }),
 

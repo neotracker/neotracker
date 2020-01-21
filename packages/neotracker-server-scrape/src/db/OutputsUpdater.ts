@@ -1,4 +1,4 @@
-import { Monitor } from '@neo-one/monitor';
+import { createChild, serverLogger } from '@neotracker/logger';
 import { TransactionInputOutput as TransactionInputOutputModel } from '@neotracker/server-db';
 import _ from 'lodash';
 import { Context } from '../types';
@@ -14,35 +14,28 @@ export interface OutputsRevert {
   readonly outputIDs: ReadonlyArray<string>;
 }
 
-export class OutputsUpdater extends SameContextDBUpdater<OutputsSave, OutputsRevert> {
-  public async save(context: Context, monitor: Monitor, { transactions }: OutputsSave): Promise<void> {
-    return monitor.captureSpanLog(
-      async (span) => {
-        const allOutputs = _.flatMap(transactions.map(({ outputs }) => outputs));
+const serverScrapeLogger = createChild(serverLogger, { component: 'scrape' });
 
-        await Promise.all(
-          _.chunk(allOutputs, context.chunkSize).map(async (chunk) => {
-            await TransactionInputOutputModel.insertAll(context.db, context.makeQueryContext(span), chunk);
-          }),
-        );
-      },
-      { name: 'neotracker_scrape_save_outputs', level: 'verbose', error: {} },
+export class OutputsUpdater extends SameContextDBUpdater<OutputsSave, OutputsRevert> {
+  public async save(context: Context, { transactions }: OutputsSave): Promise<void> {
+    serverScrapeLogger.info({ title: 'neotracker_scrape_save_outputs' });
+    const allOutputs = _.flatMap(transactions.map(({ outputs }) => outputs));
+    await Promise.all(
+      _.chunk(allOutputs, context.chunkSize).map(async (chunk) => {
+        await TransactionInputOutputModel.insertAll(context.db, context.makeQueryContext(), chunk);
+      }),
     );
   }
 
-  public async revert(context: Context, monitor: Monitor, { outputIDs }: OutputsRevert): Promise<void> {
-    return monitor.captureSpan(
-      async (span) => {
-        await Promise.all(
-          _.chunk(outputIDs, context.chunkSize).map(async (chunk) => {
-            await TransactionInputOutputModel.query(context.db)
-              .context(context.makeQueryContext(span))
-              .whereIn('id', chunk)
-              .delete();
-          }),
-        );
-      },
-      { name: 'neotracker_scrape_revert_outputs' },
+  public async revert(context: Context, { outputIDs }: OutputsRevert): Promise<void> {
+    serverScrapeLogger.info({ title: 'neotracker_scrape_revert_outputs' });
+    await Promise.all(
+      _.chunk(outputIDs, context.chunkSize).map(async (chunk) => {
+        await TransactionInputOutputModel.query(context.db)
+          .context(context.makeQueryContext())
+          .whereIn('id', chunk)
+          .delete();
+      }),
     );
   }
 }

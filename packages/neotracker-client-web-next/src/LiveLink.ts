@@ -1,4 +1,4 @@
-import { Monitor } from '@neo-one/monitor';
+import { clientLogger } from '@neotracker/logger';
 import { QueryDeduplicator } from '@neotracker/shared-graphql';
 import { ApolloLink, FetchResult, Observable, Operation } from 'apollo-link';
 import { defer, interval } from 'rxjs';
@@ -31,19 +31,18 @@ export class LiveLink extends ApolloLink {
   private readonly liveClient: LiveClient | undefined;
   private readonly queryDeduplicator: QueryDeduplicator;
 
-  public constructor({ endpoint, monitor: monitorIn }: { readonly endpoint: string; readonly monitor: Monitor }) {
-    const monitor = monitorIn.at('graphql_live_link');
+  public constructor({ endpoint, labels }: { readonly endpoint: string; readonly labels: Record<string, string> }) {
     super();
     try {
       this.liveClient = new LiveClient({
         endpoint: getWebsocketEndpoint(endpoint),
-        monitor,
+        labels,
       });
     } catch (error) {
-      monitor.logError({ name: 'graphql_create_live_client_error', error });
+      clientLogger.error({ title: 'graphql_create_live_client_error', error: error.message });
     }
 
-    this.queryDeduplicator = createQueryDeduplicator({ endpoint, monitor });
+    this.queryDeduplicator = createQueryDeduplicator({ endpoint, labels });
   }
 
   // tslint:disable-next-line rxjs-finnish
@@ -56,20 +55,17 @@ export class LiveLink extends ApolloLink {
     const { variables } = operation;
     // tslint:disable-next-line no-any
     const id: string = (operation.query as any).id;
-    const { monitor } = operation.getContext();
     if (definition.operation === 'mutation') {
       return new Observable((subscriber) =>
         // tslint:disable-next-line no-any
-        defer(async () => this.queryDeduplicator.execute({ id, variables, monitor })).subscribe(subscriber as any),
+        defer(async () => this.queryDeduplicator.execute({ id, variables })).subscribe(subscriber as any),
       );
     }
 
     const result$ =
       this.liveClient === undefined
-        ? interval(POLLING_TIME_MS).pipe(
-            switchMap(async () => this.queryDeduplicator.execute({ id, variables, monitor })),
-          )
-        : this.liveClient.request$({ id, variables }, monitor);
+        ? interval(POLLING_TIME_MS).pipe(switchMap(async () => this.queryDeduplicator.execute({ id, variables })))
+        : this.liveClient.request$({ id, variables });
 
     // tslint:disable-next-line no-any
     return new Observable((subscriber) => result$.subscribe(subscriber as any));

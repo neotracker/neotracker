@@ -1,5 +1,4 @@
 // tslint:disable variable-name
-import { Monitor } from '@neo-one/monitor';
 import { CodedError } from '@neotracker/server-utils';
 import { lcFirst } from 'change-case';
 import DataLoader from 'dataloader';
@@ -25,7 +24,7 @@ export class BaseModel<TID extends ID = ID> extends Base {
 
   public static getDataLoader<TID extends ID>(
     context: QueryContext,
-  ): DataLoader<{ readonly id: TID; readonly monitor: Monitor }, BaseModel<TID> | undefined> {
+  ): DataLoader<{ readonly id: TID }, BaseModel<TID> | undefined> {
     const modelName = `${lcFirst(this.modelSchema.name)}`;
 
     return context.rootLoader.loaders[modelName];
@@ -34,7 +33,7 @@ export class BaseModel<TID extends ID = ID> extends Base {
   public static getDataLoaderByField<TID extends ID>(
     context: QueryContext,
     fieldName: string,
-  ): DataLoader<{ readonly id: TID; readonly monitor: Monitor }, BaseModel<TID> | undefined> {
+  ): DataLoader<{ readonly id: TID }, BaseModel<TID> | undefined> {
     const modelName = lcFirst(this.modelSchema.name);
 
     return context.rootLoader.loadersByField[modelName][fieldName];
@@ -43,7 +42,7 @@ export class BaseModel<TID extends ID = ID> extends Base {
   public static getDataLoaderByEdge<TID extends ID>(
     context: QueryContext,
     edgeName: string,
-  ): DataLoader<{ readonly id: TID; readonly monitor: Monitor }, BaseModel<TID> | undefined> {
+  ): DataLoader<{ readonly id: TID }, BaseModel<TID> | undefined> {
     const modelName = `${lcFirst(this.modelSchema.name)}`;
 
     return context.rootLoader.loadersByEdge[modelName][edgeName];
@@ -99,30 +98,30 @@ export class BaseModel<TID extends ID = ID> extends Base {
   public readonly id!: TID;
 
   public async afterGet(context: QueryContext): Promise<void> {
-    this.getLoader(context).prime({ id: this.id, monitor: context.monitor }, this);
+    this.getLoader(context).prime({ id: this.id }, this);
+    await Promise.resolve();
   }
 
   public async clearCache(context: QueryContext): Promise<void> {
-    this.getLoader(context).clear({ id: this.id, monitor: context.monitor });
+    this.getLoader(context).clear({ id: this.id });
+    await Promise.resolve();
   }
 
-  public getLoader(
-    context: QueryContext,
-  ): DataLoader<{ readonly id: TID; readonly monitor: Monitor }, BaseModel<TID> | undefined> {
+  public getLoader(context: QueryContext): DataLoader<{ readonly id: TID }, BaseModel<TID> | undefined> {
     return (this.constructor as typeof BaseModel).getDataLoader<TID>(context);
   }
 
   public getLoaderByField(
     context: QueryContext,
     fieldName: string,
-  ): DataLoader<{ readonly id: TID; readonly monitor: Monitor }, BaseModel<TID> | undefined> {
+  ): DataLoader<{ readonly id: TID }, BaseModel<TID> | undefined> {
     return (this.constructor as typeof BaseModel).getDataLoaderByField(context, fieldName);
   }
 
   public getLoaderByEdge(
     context: QueryContext,
     edgeName: string,
-  ): DataLoader<{ readonly id: TID; readonly monitor: Monitor }, BaseModel<TID> | undefined> {
+  ): DataLoader<{ readonly id: TID }, BaseModel<TID> | undefined> {
     return (this.constructor as typeof BaseModel).getDataLoaderByEdge<TID>(context, edgeName);
   }
 }

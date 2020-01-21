@@ -19,6 +19,6 @@ function GenericLoadingPage({ className }: Props): React.Element<*> {
 
 const enhance: HOC<*, *> = compose(pure);
 
-export default (enhance(GenericLoadingPage): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  GenericLoadingPage,
+): React.ComponentType<ExternalProps>);

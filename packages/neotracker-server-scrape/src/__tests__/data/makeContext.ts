@@ -1,4 +1,3 @@
-import { Monitor } from '@neo-one/monitor';
 import { createRootLoader, makeQueryContext as makeQueryContextInternal, PubSub } from '@neotracker/server-db';
 import Knex from 'knex';
 import { EMPTY } from 'rxjs';
@@ -23,10 +22,9 @@ const createPubSubMock = (): PubSub<any> => ({
   value$: EMPTY,
 });
 
-const createMakeQueryContext = (db: Knex) => (monitor: Monitor) =>
+const createMakeQueryContext = (db: Knex) => () =>
   makeQueryContextInternal({
-    monitor,
-    rootLoader: () => createRootLoader(db, { cacheSize: 1000, cacheEnabled: true }, monitor),
+    rootLoader: () => createRootLoader(db, { cacheSize: 1000, cacheEnabled: true }),
     isAllPowerful: true,
   });
 
@@ -34,6 +32,11 @@ export const makeContext = ({
   db,
   makeQueryContext = createMakeQueryContext(db),
   client = {
+    getBlock: jest.fn(async () => Promise.reject(new Error('Not Implemented'))),
+    smartContract: jest.fn(async () => Promise.reject(new Error('Not Implemented'))),
+    // tslint:disable-next-line no-any
+  } as any,
+  fullClient = {
     getBlock: jest.fn(async () => Promise.reject(new Error('Not Implemented'))),
     smartContract: jest.fn(async () => Promise.reject(new Error('Not Implemented'))),
     // tslint:disable-next-line no-any
@@ -49,11 +52,13 @@ export const makeContext = ({
   blacklistNEP5Hashes = new Set<string>(),
   repairNEP5BlockFrequency = 300,
   repairNEP5LatencySeconds = 15,
+  network = 'main',
 }: Partial<Context> & { readonly db: Context['db'] }): Context => ({
   db,
   makeQueryContext,
   migrationHandler,
   client,
+  fullClient,
   prevBlockData,
   currentHeight,
   systemFee,
@@ -63,4 +68,5 @@ export const makeContext = ({
   blacklistNEP5Hashes,
   repairNEP5BlockFrequency,
   repairNEP5LatencySeconds,
+  network,
 });

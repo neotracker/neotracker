@@ -1,4 +1,3 @@
-import { Monitor } from '@neo-one/monitor';
 import { pubsub as globalPubSub } from '@neotracker/server-utils';
 import { Observable, Observer } from 'rxjs';
 import { share } from 'rxjs/operators';
@@ -9,9 +8,7 @@ let pubSub: PubSub<{ readonly index: number }> | undefined;
 export const createProcessedNextIndexPubSub = ({
   options,
   environment,
-  monitor,
 }: {
-  readonly monitor: Monitor;
   readonly options: PubSubOptions;
   readonly environment: PubSubEnvironment;
 }): PubSub<{ readonly index: number }> => {
@@ -19,7 +16,6 @@ export const createProcessedNextIndexPubSub = ({
     pubSub = createPubSub<{ readonly index: number }>({
       options,
       environment,
-      monitor: monitor.at('subscribe_processed_next_index'),
       channel: PROCESSED_NEXT_INDEX,
     });
   }
@@ -30,14 +26,12 @@ export const createProcessedNextIndexPubSub = ({
 export const subscribeProcessedNextIndex = ({
   options,
   environment,
-  monitor,
 }: {
-  readonly monitor: Monitor;
   readonly options: PubSubOptions;
   readonly environment: PubSubEnvironment;
 }): Observable<{ readonly index: number }> =>
-  Observable.create((observer: Observer<{ readonly index: number }>) => {
-    const pubsub = createProcessedNextIndexPubSub({ options, environment, monitor });
+  new Observable((observer: Observer<{ readonly index: number }>) => {
+    const pubsub = createProcessedNextIndexPubSub({ options, environment });
     const subscription = pubsub.value$.subscribe({
       next: (payload) => {
         globalPubSub.publish(PROCESSED_NEXT_INDEX, payload);

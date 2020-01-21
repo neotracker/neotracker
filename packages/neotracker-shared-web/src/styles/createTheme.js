@@ -31,11 +31,10 @@ const titleDownMDNoHorizontalPad = {
   paddingBottom: 16,
   paddingTop: 16,
 };
-const titleDownMD = Object.assign(
-  {},
-  titleDownMDNoHorizontalPad,
-  containerDownMDPad,
-);
+const titleDownMD = {
+  ...titleDownMDNoHorizontalPad,
+  ...containerDownMDPad,
+};
 const containerUpMDPad = {
   paddingLeft: 24,
   paddingRight: 24,
@@ -45,7 +44,10 @@ const titleUpMDNoHorizontalPad = {
   paddingBottom: 24,
   paddingTop: 24,
 };
-const titleUpMD = Object.assign({}, titleUpMDNoHorizontalPad, containerUpMDPad);
+const titleUpMD = {
+  ...titleUpMDNoHorizontalPad,
+  ...containerUpMDPad,
+};
 
 export default () => {
   const theme = createMuiTheme({

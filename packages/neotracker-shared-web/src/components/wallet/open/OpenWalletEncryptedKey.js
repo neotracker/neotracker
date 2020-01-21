@@ -10,10 +10,10 @@ import {
 import * as React from 'react';
 
 import classNames from 'classnames';
+// $FlowFixMe
+import { webLogger } from '@neotracker/logger';
+import { privateKeyToAddress, wifToPrivateKey } from '@neo-one/client-common';
 
-import { privateKeyToAddress, wifToPrivateKey } from '@neo-one/client';
-
-import type { AppContext } from '../../../AppContext';
 import OpenWalletPassword from './OpenWalletPassword';
 // eslint-disable-next-line
 import OpenWalletPrivateKey from './OpenWalletPrivateKey';
@@ -182,20 +182,13 @@ const enhance: HOC<*, *> = compose(
         }));
       }
     },
-    onOpen: ({ appContext: appContextIn }) => () => {
-      const appContext = ((appContextIn: $FlowFixMe): AppContext);
-      appContext.monitor.log({
-        name: 'neotracker_wallet_open_encrypted_key',
-        level: 'verbose',
-        error: {},
-      });
+    onOpen: () => () => {
+      webLogger.info({ title: 'neotracker_wallet_open_encrypted_key' });
     },
-    onOpenError: ({ appContext: appContextIn }) => (error) => {
-      const appContext = ((appContextIn: $FlowFixMe): AppContext);
-      appContext.monitor.log({
-        name: 'neotracker_wallet_open_encrypted_key',
-        level: 'verbose',
-        error: { error },
+    onOpenError: () => (error) => {
+      webLogger.error({
+        title: 'neotracker_wallet_open_encrypted_key',
+        error: error.message,
       });
     },
   }),
@@ -203,6 +196,6 @@ const enhance: HOC<*, *> = compose(
   pure,
 );
 
-export default (enhance(OpenWalletEncryptedKey): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  OpenWalletEncryptedKey,
+): React.ComponentType<ExternalProps>);

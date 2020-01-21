@@ -1,19 +1,15 @@
-// tslint:disable no-any
+// tslint:disable
+// TODO: reakit fix me
 import React from 'react';
 // tslint:disable-next-line no-submodule-imports
-import { GoPencil as PencilIcon } from 'react-icons/go';
-import { Block, Button, Group, styled, Tabs } from 'reakit';
+// import { GoPencil as PencilIcon } from 'react-icons/go';
+import styled from 'styled-components';
 import { EvalInContext } from '../../../../types';
 import { WithRenderConfig, WithState } from '../render';
-import { Editor } from './Editor';
+// import { Editor } from './Editor';
 import { Preview } from './Preview';
 
-const Wrapper = styled(Block)`
-  position: relative;
-  .CodeMirror-line:first-child {
-    margin-right: 90px;
-  }
-  ${Tabs} {
+/* ${Tabs} {
     position: absolute;
     top: 8px;
     right: 8px;
@@ -31,14 +27,20 @@ const Wrapper = styled(Block)`
         background-color: transparent;
       }
     }
+  } */
+const Wrapper = styled.div`
+  position: relative;
+
+  .CodeMirror-line:first-child {
+    margin-right: 90px;
   }
 `;
 
-const StyledPencilIcon = styled(PencilIcon)`
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
+// const StyledPencilIcon = styled(PencilIcon)`
+//   @media (max-width: 768px) {
+//     display: none;
+//   }
+// `;
 
 interface Props {
   readonly code: string;
@@ -60,7 +62,7 @@ export const Playground = ({ code, fixtureCode, evalInContext, exampleTemplate, 
               exampleTemplate={exampleTemplate}
               proxies={proxies}
             />
-            <Tabs.Container>
+            {/* <Tabs.Container>
               {(tabs: any) => (
                 <Wrapper>
                   <Tabs as={Group}>
@@ -79,7 +81,7 @@ export const Playground = ({ code, fixtureCode, evalInContext, exampleTemplate, 
                   </Tabs.Panel>
                 </Wrapper>
               )}
-            </Tabs.Container>
+            </Tabs.Container> */}
           </Wrapper>
         )}
       </WithState>

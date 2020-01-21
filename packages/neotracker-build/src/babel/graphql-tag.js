@@ -1,4 +1,5 @@
 /* eslint-disable */
+require('ts-node/register/transpile-only');
 const {
   isIdentifier,
   isMemberExpression,

@@ -4,7 +4,6 @@ import type {
   OperationSelector,
   SelectorStoreUpdater,
 } from 'relay-runtime/lib/RelayStoreTypes';
-import type { Monitor } from '@neo-one/monitor';
 import type RelayObservable from 'relay-runtime/lib/RelayObservable';
 import type { ExecutePayload } from 'relay-runtime/lib/RelayNetworkTypes';
 
@@ -17,13 +16,11 @@ import normalizePayload from './normalizePayload';
 export default ({
   environment,
   operation,
-  monitor,
   cacheConfig,
   updater,
 }: {|
   environment: Environment,
   operation: OperationSelector,
-  monitor: Monitor,
   cacheConfig?: ?Object,
   updater?: ?SelectorStoreUpdater,
 |}): RelayObservable<ExecutePayload> => {
@@ -32,7 +29,6 @@ export default ({
     .getNetwork()
     .execute(operation.node, operation.variables, {
       ...(cacheConfig || {}),
-      monitor,
     })
     .do({
       next: (executePayload) => {

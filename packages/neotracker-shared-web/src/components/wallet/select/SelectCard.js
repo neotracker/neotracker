@@ -2,7 +2,10 @@
 import { type HOC, compose, getContext, pure, withHandlers } from 'recompose';
 import { Link as RRLink } from 'react-router-dom';
 import * as React from 'react';
-import type { LocalWallet, UserAccount } from '@neo-one/client';
+// $FlowFixMe
+import { webLogger } from '@neotracker/logger';
+import type { UserAccount } from '@neo-one/client-common';
+import type { LocalWallet } from '@neo-one/client-core';
 
 import classNames from 'classnames';
 import { graphql } from 'react-relay';
@@ -169,7 +172,7 @@ function SelectCard({
         className={classNames({
           [classes.buttonMargin]: path == null,
         })}
-        variant="raised"
+        variant="contained"
         color="primary"
         onClick={onClick}
       >
@@ -278,20 +281,14 @@ const enhance: HOC<*, *> = compose(
       option: ?{ account: UserAccount },
     ) => {
       const appContext = ((appContextIn: $FlowFixMe): AppContext);
-      appContext.monitor
-        .captureLog(
-          () =>
-            walletAPI.selectAccount({
-              appContext,
-              id: option == null ? undefined : option.account.id,
-            }),
-          {
-            name: 'neotracker_wallet_select_account',
-            level: 'verbose',
-            error: {},
-          },
-        )
+      webLogger.info({ title: 'neotracker_wallet_select_account' });
+      walletAPI
+        .selectAccount({
+          appContext,
+          id: option == null ? undefined : option.account.id,
+        })
         .catch((error) => {
+          webLogger.error({ title: 'neotracker_wallet_select_account' });
           showSnackbarError(error);
         });
     },

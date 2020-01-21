@@ -8,8 +8,9 @@ function foo() {
 }
 
 // tslint:disable-next-line export-name
-export const examples: [CExample<ClassExportInlineProps<string>>] = [
+export const examples: readonly[CExample<ClassExportInlineProps<string>>] = [
   {
-    element: () => <ClassExportInlineProps foo={foo()} />,
+    // tslint:disable-next-line: no-any
+    element: () => <ClassExportInlineProps foo={foo()} /> as any,
   },
-];
+] as const;

@@ -8,7 +8,8 @@ interface Props {
   readonly codeRevision: number;
 }
 
-const Router = process.env.COMPONENT_EXPLORER_ROUTER === 'memory' ? MemoryRouter : BrowserRouter;
+// tslint:disable-next-line no-any
+const Router: any = process.env.COMPONENT_EXPLORER_ROUTER === 'memory' ? MemoryRouter : BrowserRouter;
 
 export const App = (props: Props) => (
   <Router>

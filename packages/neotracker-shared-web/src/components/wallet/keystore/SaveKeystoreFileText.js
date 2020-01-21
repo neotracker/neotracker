@@ -36,6 +36,6 @@ function SaveKeystoreFileText({
 
 const enhance: HOC<*, *> = compose(pure);
 
-export default (enhance(SaveKeystoreFileText): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  SaveKeystoreFileText,
+): React.ComponentType<ExternalProps>);

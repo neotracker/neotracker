@@ -1,7 +1,7 @@
 import { simpleMiddleware } from '@neotracker/server-utils-koa';
 import { Context } from 'koa';
 // @ts-ignore
-import koaRatelimit from 'koa-ratelimit-lru';
+import rateLimit from 'koa-ratelimit-lru';
 
 export interface Options {
   readonly enabled: boolean;
@@ -13,9 +13,9 @@ export interface Options {
 }
 
 export const ratelimit = ({ options }: { readonly options: Options }) => {
-  const ratelimitInstance = koaRatelimit(options.config);
+  const ratelimitInstance = rateLimit(options.config);
 
-  return simpleMiddleware('ratelimit', async (ctx: Context, next: (() => Promise<void>)) => {
+  return simpleMiddleware('ratelimit', async (ctx: Context, next: () => Promise<void>) => {
     if (options.enabled) {
       await ratelimitInstance(ctx, next);
     } else {

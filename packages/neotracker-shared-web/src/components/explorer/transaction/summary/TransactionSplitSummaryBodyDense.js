@@ -91,6 +91,6 @@ const enhance: HOC<*, *> = compose(
   pure,
 );
 
-export default (enhance(TransactionSplitSummaryBodyDense): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  TransactionSplitSummaryBodyDense,
+): React.ComponentType<ExternalProps>);

@@ -1,6 +1,5 @@
 // tslint:disable no-console
-import { Monitor } from '@neo-one/monitor';
-import { Database, getDBData, getMonitor, startDB } from '@neotracker/server-test';
+import { Database, getDBData, startDB } from '@neotracker/server-test';
 import Knex from 'knex';
 import { DBUpdater } from '../../db/DBUpdater';
 import { SameContextDBUpdater } from '../../db/SameContextDBUpdater';
@@ -8,16 +7,10 @@ import { Context } from '../../types';
 import { nextBlock } from './data';
 import { makeContext } from './makeContext';
 
-const monitor = getMonitor();
-
 export interface UpdaterUtilTestOptions<Save, Revert, References> {
   readonly name: string;
-  readonly initiateTest?: (
-    db: Knex,
-    monitor: Monitor,
-    context?: Context,
-  ) => Promise<{ readonly references: References }>;
-  readonly secondaryInit?: (db: Knex, monitor: Monitor, context?: Context) => Promise<void>;
+  readonly initiateTest?: (db: Knex, context?: Context) => Promise<{ readonly references: References }>;
+  readonly secondaryInit?: (db: Knex, context?: Context) => Promise<void>;
   readonly createUpdater: () => SameContextDBUpdater<Save, Revert> | DBUpdater<Save, Revert>;
   readonly getInputs: (references: References) => Save;
   readonly getSecondaryInputs?: (references: References) => Save;
@@ -42,7 +35,7 @@ export const updaterUnitTest = <Save, Revert, References>(args: UpdaterUtilTestO
       db = database.knex;
       context = makeContext({ db });
       if (args.initiateTest !== undefined) {
-        ({ references } = await args.initiateTest(db, monitor));
+        ({ references } = await args.initiateTest(db));
       }
     });
 
@@ -50,9 +43,9 @@ export const updaterUnitTest = <Save, Revert, References>(args: UpdaterUtilTestO
       const updater = args.createUpdater();
 
       if (updater instanceof DBUpdater) {
-        context = await updater.save(context, monitor, args.getInputs(references));
+        context = await updater.save(context, args.getInputs(references));
       } else {
-        await updater.save(context, monitor, args.getInputs(references));
+        await updater.save(context, args.getInputs(references));
       }
       const dbCheck = await getDBData(db);
 
@@ -63,16 +56,16 @@ export const updaterUnitTest = <Save, Revert, References>(args: UpdaterUtilTestO
       const updater = args.createUpdater();
 
       if (updater instanceof DBUpdater) {
-        context = await updater.save(context, monitor, args.getInputs(references));
+        context = await updater.save(context, args.getInputs(references));
       } else {
-        await updater.save(context, monitor, args.getInputs(references));
+        await updater.save(context, args.getInputs(references));
       }
       const dbStart = await getDBData(db);
 
       if (updater instanceof DBUpdater) {
-        context = await updater.save(context, monitor, args.getInputs(references));
+        context = await updater.save(context, args.getInputs(references));
       } else {
-        await updater.save(context, monitor, args.getInputs(references));
+        await updater.save(context, args.getInputs(references));
       }
       const dbFinal = await getDBData(db);
 
@@ -84,9 +77,9 @@ export const updaterUnitTest = <Save, Revert, References>(args: UpdaterUtilTestO
       const updater = args.createUpdater();
 
       if (updater instanceof DBUpdater) {
-        context = await updater.save(context, monitor, args.getInputs(references));
+        context = await updater.save(context, args.getInputs(references));
       } else {
-        await updater.save(context, monitor, args.getInputs(references));
+        await updater.save(context, args.getInputs(references));
       }
 
       const dbInit = await getDBData(db);
@@ -94,23 +87,23 @@ export const updaterUnitTest = <Save, Revert, References>(args: UpdaterUtilTestO
       nextBlock();
 
       if (args.secondaryInit) {
-        await args.secondaryInit(db, monitor);
+        await args.secondaryInit(db);
       }
 
       if (args.getSecondaryInputs !== undefined) {
         if (updater instanceof DBUpdater) {
-          context = await updater.save(context, monitor, args.getSecondaryInputs(references));
+          context = await updater.save(context, args.getSecondaryInputs(references));
         } else {
-          await updater.save(context, monitor, args.getSecondaryInputs(references));
+          await updater.save(context, args.getSecondaryInputs(references));
         }
       }
 
       const dbSecondary = await getDBData(db);
 
       if (updater instanceof DBUpdater) {
-        context = await updater.revert(context, monitor, args.getReversions(references));
+        context = await updater.revert(context, args.getReversions(references));
       } else {
-        await updater.revert(context, monitor, args.getReversions(references));
+        await updater.revert(context, args.getReversions(references));
       }
       const dbFinal = await getDBData(db);
 

@@ -1,37 +1,50 @@
-import { addressToScriptHash, ReadSmartContractAny } from '@neo-one/client';
-import { metrics, Monitor } from '@neo-one/monitor';
+import { addressToScriptHash, nep5 } from '@neo-one/client-full';
+import { AggregationType, globalStats, MeasureUnit } from '@neo-one/client-switch';
+import { createChild, serverLogger } from '@neotracker/logger';
 import { Asset as AssetModel, Coin as CoinModel } from '@neotracker/server-db';
 import { labels } from '@neotracker/shared-utils';
 import { Context } from './types';
 
-const NEOTRACKER_NEGATIVE_COIN_TOTAL = metrics.createCounter({
-  name: 'neotracker_scrape_negative_coin_total',
-});
+const coinTotal = globalStats.createMeasureInt64('scrape/coin_total', MeasureUnit.UNIT);
 
-const fetchNegativeCoins = async (context: Context, monitor: Monitor) =>
+const NEOTRACKER_NEGATIVE_COIN_TOTAL = globalStats.createView(
+  'neotracker_scrape_negative_coin_total',
+  coinTotal,
+  AggregationType.COUNT,
+  [],
+  'total negative coin count',
+);
+globalStats.registerView(NEOTRACKER_NEGATIVE_COIN_TOTAL);
+
+const serverScrapeLogger = createChild(serverLogger, { component: 'scrape' });
+
+const fetchNegativeCoins = async (context: Context) =>
   CoinModel.query(context.db)
-    .context(context.makeQueryContext(monitor))
+    .context(context.makeQueryContext())
     .where('value', '<', 0);
 
-const updateCoin = async (context: Context, monitor: Monitor, contract: ReadSmartContractAny, coin: CoinModel) => {
-  NEOTRACKER_NEGATIVE_COIN_TOTAL.inc();
-  const balance = await contract.balanceOf(addressToScriptHash(coin.address_id), monitor);
+const updateCoin = async (context: Context, contract: nep5.NEP5SmartContract, coin: CoinModel) => {
+  globalStats.record([
+    {
+      measure: coinTotal,
+      value: 1,
+    },
+  ]);
+  const balance = await contract.balanceOf(addressToScriptHash(coin.address_id));
 
   await coin
     .$query(context.db)
-    .context(context.makeQueryContext(monitor))
+    .context(context.makeQueryContext())
     .patch({ value: balance.toString() });
 };
 
-const repairAssetSupply = async (
-  context: Context,
-  monitor: Monitor,
-  assetHash: string,
-  contract: ReadSmartContractAny,
-) => {
-  let issued;
+const repairAssetSupply = async (context: Context, assetHash: string, contract: nep5.NEP5SmartContract) => {
   try {
-    issued = await contract.totalSupply(monitor);
+    const issued = await contract.totalSupply();
+    await AssetModel.query(context.db)
+      .context(context.makeQueryContext())
+      .patch({ issued: issued.toString() })
+      .where('id', assetHash);
   } catch (error) {
     if (error.message.includes('Expected one of ["Integer","ByteArray"] ContractParameterTypes')) {
       return;
@@ -39,34 +52,26 @@ const repairAssetSupply = async (
 
     throw error;
   }
-  await AssetModel.query(context.db)
-    .context(context.makeQueryContext(monitor))
-    .patch({ issued: issued.toString() })
-    .where('id', assetHash);
 };
 
-const updateCoins = async (context: Context, monitor: Monitor, assetHash: string, coins: ReadonlyArray<CoinModel>) => {
+const updateCoins = async (context: Context, assetHash: string, coins: ReadonlyArray<CoinModel>) => {
   const contract = context.nep5Contracts[assetHash];
   if (contract !== undefined) {
-    monitor
-      .withData({
-        [labels.SCRAPE_REPAIR_NEP5_COINS]: coins.length,
-        [labels.SCRAPE_REPAIR_NEP5_ASSET]: assetHash,
-      })
-      .log({
-        name: 'neotracker_scrape_repair_nep5_coins',
-        level: 'verbose',
-      });
+    serverScrapeLogger.info({
+      title: 'neotracker_scrape_repair_nep5_coins',
+      [labels.SCRAPE_REPAIR_NEP5_COINS]: coins.length,
+      [labels.SCRAPE_REPAIR_NEP5_ASSET]: assetHash,
+    });
 
     if (coins.length > 0) {
-      await repairAssetSupply(context, monitor, assetHash, contract);
+      await repairAssetSupply(context, assetHash, contract);
     }
-    await Promise.all(coins.map(async (coin) => updateCoin(context, monitor, contract, coin)));
+    await Promise.all(coins.map(async (coin) => updateCoin(context, contract, coin)));
   }
 };
 
-const repairCoins = async (context: Context, monitor: Monitor) => {
-  const coins = await fetchNegativeCoins(context, monitor);
+const repairCoins = async (context: Context) => {
+  const coins = await fetchNegativeCoins(context);
 
   // tslint:disable-next-line readonly-array
   const assetToCoins = coins.reduce<{ [K in string]: CoinModel[] }>((mutableAcc, coin) => {
@@ -80,23 +85,20 @@ const repairCoins = async (context: Context, monitor: Monitor) => {
   }, {});
 
   await Promise.all(
-    Object.entries(assetToCoins).map(async ([asset, assetCoins]) => updateCoins(context, monitor, asset, assetCoins)),
+    Object.entries(assetToCoins).map(async ([asset, assetCoins]) => updateCoins(context, asset, assetCoins)),
   );
 };
 
-const repair = async (context: Context, monitor: Monitor) => {
-  await repairCoins(context, monitor);
+const repair = async (context: Context) => {
+  await repairCoins(context);
 };
 
-export const repairNEP5 = async (context: Context, monitorIn: Monitor) => {
-  const monitor = monitorIn.at('repair_nep5');
+export const repairNEP5 = async (context: Context) => {
   try {
-    await monitor.captureSpanLog(async (span) => repair(context, span), {
-      name: 'neotracker_scrape_repair_nep5',
-      level: { log: 'verbose', span: 'info' },
-      error: {},
-    });
+    serverScrapeLogger.info({ title: 'neotracker_scrape_repair_nep5' });
+    await repair(context);
   } catch {
+    serverScrapeLogger.error({ title: 'neotracker_scrape_repair_nep5' });
     // do nothing
   }
 };

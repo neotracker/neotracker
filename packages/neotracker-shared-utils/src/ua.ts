@@ -1,5 +1,4 @@
 // tslint:disable
-import { Labels } from '@neo-one/monitor';
 import { labels } from './labels';
 
 const getVersionPrecision = (version: string) => version.split('.').length;
@@ -57,18 +56,18 @@ const checkVersion = (versionA: string, comparison: Comparison, versionB: string
   }
 };
 
-const convertLabels = (ua: IUAParser.IResult): Labels => ({
-  [labels.UA]: ua.ua,
-  [labels.UA_BROWSER_NAME]: ua.browser.name,
-  [labels.UA_BROWSER_VERSION]: ua.browser.version,
-  [labels.UA_DEVICE_MODEL]: ua.device.model,
-  [labels.UA_DEVICE_TYPE]: ua.device.type,
-  [labels.UA_DEVICE_VENDOR]: ua.device.vendor,
-  [labels.UA_ENGINE_NAME]: ua.engine.name,
-  [labels.UA_ENGINE_VERSION]: ua.engine.version,
-  [labels.UA_OS_NAME]: ua.os.name,
-  [labels.UA_OS_VERSION]: ua.os.version,
-  [labels.UA_CPU_ARCHITECTURE]: ua.cpu.architecture,
+const convertLabels = (uaIn: IUAParser.IResult): Record<string, string | undefined> => ({
+  [labels.UA]: uaIn.ua,
+  [labels.UA_BROWSER_NAME]: uaIn.browser.name,
+  [labels.UA_BROWSER_VERSION]: uaIn.browser.version,
+  [labels.UA_DEVICE_MODEL]: uaIn.device.model,
+  [labels.UA_DEVICE_TYPE]: uaIn.device.type,
+  [labels.UA_DEVICE_VENDOR]: uaIn.device.vendor,
+  [labels.UA_ENGINE_NAME]: uaIn.engine.name,
+  [labels.UA_ENGINE_VERSION]: uaIn.engine.version,
+  [labels.UA_OS_NAME]: uaIn.os.name,
+  [labels.UA_OS_VERSION]: uaIn.os.version,
+  [labels.UA_CPU_ARCHITECTURE]: uaIn.cpu.architecture,
 });
 
 export const ua = {

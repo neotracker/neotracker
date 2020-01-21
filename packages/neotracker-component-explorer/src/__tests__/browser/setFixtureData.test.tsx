@@ -1,7 +1,11 @@
 import * as React from 'react';
-import { Blockquote } from 'reakit';
+import styled from 'styled-components';
 import { createTestContext } from '../../shared/test/createTestContext';
 import { PExample } from '../../types';
+
+const Blockquote = styled.blockquote`
+  /* nothing for now */
+`;
 
 interface BlockquoteProps {
   readonly children: React.ReactNode;
@@ -10,7 +14,8 @@ interface BlockquoteProps {
 const defaultFixtureData = { oldFixtureData: 'old' };
 const example: PExample<BlockquoteProps> = {
   component: Blockquote,
-  element: () => <Blockquote> TEST </Blockquote>,
+  // tslint:disable-next-line: no-any
+  element: () => <Blockquote> TEST </Blockquote> as any,
   data: defaultFixtureData,
 };
 

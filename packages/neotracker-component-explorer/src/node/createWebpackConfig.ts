@@ -1,3 +1,4 @@
+import * as appRootDir from 'app-root-dir';
 // @ts-ignore
 import MiniHtmlWebpackPlugin from 'mini-html-webpack-plugin';
 import * as path from 'path';
@@ -56,20 +57,35 @@ export const createWebpackConfig = (config: ExplorerConfig, staticOptions?: Stat
     rules: [
       {
         test: /\.tsx?$/,
-        use: {
-          loader: 'awesome-typescript-loader',
-          options: {
-            useTranspileModule: true,
-            transpileOnly: true,
-            useBabel: true,
-            babelOptions: {
+        use: [
+          {
+            loader: 'cache-loader',
+            options: {
+              cacheDirectory: path.resolve(appRootDir.get(), 'node_modules', '.ce-cache'),
+            },
+          },
+          'thread-loader',
+          {
+            loader: 'babel-loader',
+            options: {
               configFile: false,
               plugins: ['babel-plugin-styled-components'],
+              cacheDirectory: path.resolve(appRootDir.get(), 'node_modules', '.ce-ts-babel-cache'),
             },
-            useCache: true,
-            configFileName: 'tsconfig/tsconfig.es2018.esm.json',
           },
-        },
+          {
+            loader: 'ts-loader',
+            options: {
+              transpileOnly: true,
+              happyPackMode: true,
+              context: appRootDir.get(),
+              configFile: path.resolve(appRootDir.get(), 'tsconfig.static.json'),
+              onlyCompileBundledFiles: true,
+              experimentalFileCaching: true,
+              experimentalWatchApi: true,
+            },
+          },
+        ],
       },
       {
         test: /\.css$/,

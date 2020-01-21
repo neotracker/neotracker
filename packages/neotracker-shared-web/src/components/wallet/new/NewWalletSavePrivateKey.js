@@ -8,7 +8,7 @@ import {
 } from 'recompose';
 import * as React from 'react';
 
-import { privateKeyToWIF } from '@neo-one/client';
+import { privateKeyToWIF } from '@neo-one/client-common';
 
 import { CopyField } from '../common';
 import { PrintPaperWalletButton } from '../paper';
@@ -115,6 +115,6 @@ const enhance: HOC<*, *> = compose(
   withStyles(styles),
 );
 
-export default (enhance(NewWalletSavePrivateKey): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  NewWalletSavePrivateKey,
+): React.ComponentType<ExternalProps>);

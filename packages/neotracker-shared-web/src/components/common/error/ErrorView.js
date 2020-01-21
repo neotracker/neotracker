@@ -76,7 +76,7 @@ function ErrorView({
         <Button
           className={classes.reloadButton}
           onClick={retry}
-          variant="raised"
+          variant="contained"
           color="primary"
         >
           <Typography className={classes.buttonText} variant="body1">

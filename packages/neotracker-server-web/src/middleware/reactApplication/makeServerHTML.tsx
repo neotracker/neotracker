@@ -1,4 +1,4 @@
-import { NetworkType } from '@neo-one/client';
+import { NetworkType } from '@neo-one/client-common';
 import { utils } from '@neotracker/shared-utils';
 // @ts-ignore
 import { AppOptions } from '@neotracker/shared-web';
@@ -19,9 +19,9 @@ interface Props {
   readonly nonce: string;
   readonly reactAppString: string;
   // tslint:disable-next-line no-any
-  readonly relay?: (() => any);
+  readonly relay?: () => any;
   // tslint:disable-next-line no-any
-  readonly records?: (() => any);
+  readonly records?: () => any;
   readonly styles?: string;
   readonly userAgent: IUAParser.IResult;
   readonly network: NetworkType;

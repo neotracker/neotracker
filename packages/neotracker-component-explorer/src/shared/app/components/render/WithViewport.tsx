@@ -1,5 +1,5 @@
+import { Container } from 'constate';
 import * as React from 'react';
-import { Container } from 'reakit';
 
 // tslint:disable-next-line strict-type-predicates
 const getWindow = () => (typeof window === 'undefined' ? { innerHeight: 1024, innerWidth: 1024 } : window);

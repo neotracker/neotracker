@@ -16,19 +16,18 @@ export class BlockRootCall extends BlockchainRootCall {
     _obj: any,
     { hash, index }: { readonly [key: string]: any },
     context: GraphQLContext,
-    info: GraphQLResolveInfo,
+    _info: GraphQLResolveInfo,
   ): Promise<any> => {
     // tslint:enable no-any
     if (hash == undefined && index == undefined) {
       throw new CodedError(CodedError.PROGRAMMING_ERROR);
     }
 
-    const monitor = context.getMonitor(info);
     // Important it's in this order for the Search page
     if (index != undefined) {
-      return context.rootLoader.loaders.block.load({ id: index, monitor });
+      return context.rootLoader.loaders.block.load({ id: index });
     }
 
-    return context.rootLoader.blockHashLoader.load({ id: hash, monitor });
+    return context.rootLoader.blockHashLoader.load({ id: hash });
   };
 }

@@ -1,14 +1,12 @@
 /* @flow */
 import type { Environment } from 'relay-runtime';
+import type { NetworkType } from '@neo-one/client-common';
 import type {
-  NetworkType,
   Client,
   LocalKeyStore,
   LocalUserAccountProvider,
   NEOONEProvider,
-  ReadClient,
-} from '@neo-one/client';
-import type { Monitor } from '@neo-one/monitor';
+} from '@neo-one/client-core';
 import type { Observable } from 'rxjs';
 
 export type AppOptions = {|
@@ -38,12 +36,10 @@ export type AppContext = {|
   css: Array<string>,
   nonce: ?string,
   options$: Observable<AppOptions>,
-  monitor: Monitor,
   client: Client<{
     localStorage: LocalUserAccountProvider<LocalKeyStore, NEOONEProvider>,
     memory: LocalUserAccountProvider<LocalKeyStore, NEOONEProvider>,
   }>,
-  readClient: ReadClient<any>,
   network: NetworkType,
   userAgent: $FlowFixMe,
   fileSaver: {|

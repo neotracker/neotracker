@@ -1,23 +1,24 @@
 {
   "name": "@neotracker/core",
-  "version": "1.0.11",
+  "version": "1.3.1",
   "description": "NEO Tracker external api.",
   "main": "./src/index.ts",
   "dependencies": {
-    "@neo-one/monitor": "^1.0.0-alpha.59",
+    "@neotracker/logger": "^1.0.0",
     "@neotracker/server-db": "0.0.1-alpha.0",
     "@neotracker/server-scrape": "0.0.1-alpha.0",
     "@neotracker/server-web": "0.0.1-alpha.0",
     "@neotracker/shared-utils": "0.0.1-alpha.0",
-    "cross-fetch": "^2.2.2",
+    "cross-fetch": "^3.0.0",
     "css.escape": "^1.5.1",
-    "execa": "^1.0.0",
-    "lodash": "^4.17.10",
+    "execa": "^3.2.0",
+    "lodash": "^4.17.11",
     "recompose": "^0.30.0",
-    "rxjs": "^6.3.2",
-    "semver": "^5.5.1",
-    "sqlite3": "^4.0.2",
-    "yargs": "^12.0.2"
+    "rc": "^1.2.8",
+    "rxjs": "^6.3.3",
+    "semver": "^5.6.0",
+    "source-map-support": "^0.5.16",
+    "sqlite3": "4.0.4"
   },
   "sideEffects": ["./src/bin/init.ts"]
 }

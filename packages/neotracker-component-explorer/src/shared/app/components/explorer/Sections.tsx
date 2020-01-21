@@ -1,6 +1,6 @@
 import React from 'react';
 import { Redirect, Route, RouteComponentProps } from 'react-router';
-import { styled } from 'reakit';
+import styled from 'styled-components';
 import { flattenSections, getSectionURL, hasContent } from '../../utils';
 import { CoreLayout } from '../layouts';
 import { WithRenderConfig } from '../render';
@@ -34,7 +34,7 @@ const StyledMenu = styled(Menu)`
   }
 `;
 
-export const Sections = ({ location, match }: RouteComponentProps<{}>) => (
+export const Sections = ({ location, match }: RouteComponentProps) => (
   <WithRenderConfig>
     {({ sections }) => {
       const section = sections.find((s) => s.slug === getSlug(location.pathname));

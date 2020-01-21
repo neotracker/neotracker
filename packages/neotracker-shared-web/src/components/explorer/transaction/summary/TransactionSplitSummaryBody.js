@@ -50,6 +50,6 @@ function TransactionSplitSummaryBody({
 
 const enhance: HOC<*, *> = compose(pure);
 
-export default (enhance(TransactionSplitSummaryBody): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  TransactionSplitSummaryBody,
+): React.ComponentType<ExternalProps>);

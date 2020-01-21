@@ -1,4 +1,3 @@
-import { Monitor } from '@neo-one/monitor';
 import Knex from 'knex';
 import { createTable, dropTable, ModelSchema } from './lib';
 import { models } from './models';
@@ -12,10 +11,10 @@ export const modelSchemas = () =>
     {},
   );
 
-export const createTables = async (db: Knex, monitor: Monitor) => {
-  await Promise.all(models().map(async (model) => createTable(db, monitor, model.modelSchema, modelSchemas())));
+export const createTables = async (db: Knex) => {
+  await Promise.all(models().map(async (model) => createTable(db, model.modelSchema, modelSchemas())));
 };
 
-export const dropTables = async (db: Knex, monitor: Monitor, checkEmpty = false) => {
-  await Promise.all(models().map(async (model) => dropTable(db, monitor, model.modelSchema, checkEmpty)));
+export const dropTables = async (db: Knex, checkEmpty = false) => {
+  await Promise.all(models().map(async (model) => dropTable(db, model.modelSchema, checkEmpty)));
 };
