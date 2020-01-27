@@ -13,7 +13,7 @@
     "@neotracker/server-db": "^0.0.1-alpha.0",
     "@neotracker/shared-utils": "^0.0.1-alpha.0",
     "bignumber.js": "^9.0.0",
-    "knex": "^0.15.2",
+    "knex": "^0.20.8",
     "lodash": "^4.17.11"
   },
   "sideEffects": false
