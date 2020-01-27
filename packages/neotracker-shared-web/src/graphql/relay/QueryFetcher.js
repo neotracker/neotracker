@@ -1,5 +1,4 @@
 /* @flow */
-import type { Monitor } from '@neo-one/monitor';
 import type {
   CacheConfig,
   Disposable,
@@ -10,7 +9,8 @@ import type {
 
 // $FlowFixMe
 import { labels } from '@neotracker/shared-utils';
-
+// $FlowFixMe
+import { webLogger } from '@neotracker/logger';
 import executeOperation from './executeOperation';
 
 const NETWORK_ONLY = 'NETWORK_ONLY';
@@ -28,7 +28,6 @@ export type FetchOptions = {
   environment: IEnvironment,
   onDataChange: ({ error?: Error, snapshot?: Snapshot }) => void,
   operation: OperationSelector,
-  monitor: Monitor,
 };
 
 export default class QueryFetcher {
@@ -54,14 +53,10 @@ export default class QueryFetcher {
     const queryID = fetchOptions.operation.node.id;
     this._fetchOptions = {
       ...fetchOptions,
-      monitor: fetchOptions.monitor
-        .at('query_fetcher')
-        .withLabels({
-          [labels.GRAPHQL_QUERY]: queryID,
-        })
-        .withData({
-          [labels.GRAPHQL_VARIABLES]: fetchOptions.operation.variables,
-        }),
+      labelsIn: {
+        [labels.GRAPHQL_QUERY]: queryID,
+        [labels.GRAPHQL_VARIABLES]: fetchOptions.operation.variables,
+      },
     };
 
     const {
@@ -70,7 +65,7 @@ export default class QueryFetcher {
       environment,
       onDataChange,
       operation,
-      monitor,
+      labelsIn,
     } = this._fetchOptions;
     const { createOperationSelector } = environment.unstable_internal;
     const nextReferences = [];
@@ -87,22 +82,22 @@ export default class QueryFetcher {
       this._onQueryDataAvailable({ notifyFirstResult: false });
     }
 
-    let span = monitor.startSpan({
-      name: 'execute_operation_first_full_response',
-    });
-
     const logPayload = (err?: ?Error) => {
-      (span || monitor).log({
-        name: 'relay_execute_operation',
-        level: 'verbose',
-        error: { error: err },
-      });
+      if (!err) {
+        webLogger.info({ title: 'relay_execute_operation', ...labelsIn });
+      }
+      if (err) {
+        webLogger.error({
+          title: 'relay_execute_operation',
+          error: { error: err },
+          ...labelsIn,
+        });
+      }
     };
 
     const request = executeOperation({
       environment,
       operation,
-      monitor,
       cacheConfig,
     })
       .finally(() => {
@@ -125,19 +120,12 @@ export default class QueryFetcher {
           this._onQueryDataAvailable({
             notifyFirstResult: fetchHasReturned,
             onFulfilled: () => {
-              if (span != null) {
-                span.end();
-                span = null;
-              }
+              logPayload();
             },
           });
         },
         error: (err) => {
-          logPayload();
-          if (span != null) {
-            span.end(true);
-            span = null;
-          }
+          logPayload(err);
 
           // We may have partially fulfilled the request, so let the next request
           // or the unmount dispose of the references.

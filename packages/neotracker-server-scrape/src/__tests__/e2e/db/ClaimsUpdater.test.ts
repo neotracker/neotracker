@@ -1,4 +1,3 @@
-import { Monitor } from '@neo-one/monitor';
 import { SUBTYPE_CLAIM, TransactionInputOutput } from '@neotracker/server-db';
 import Knex from 'knex';
 import { ClaimsRevert, ClaimsSave, ClaimsSaveSingle, ClaimsUpdater } from '../../../db/ClaimsUpdater';
@@ -38,14 +37,14 @@ const inputOptions: ReadonlyArray<{
   },
 ];
 
-const initiateTest = async (db: Knex, monitor: Monitor) => {
+const initiateTest = async (db: Knex) => {
   const context = makeContext({ db });
 
   const references = await Promise.all(
     inputOptions.map(async (input) => ({
       claims: [
         await TransactionInputOutput.query(db)
-          .context(context.makeQueryContext(monitor))
+          .context(context.makeQueryContext())
           .insertAndFetch(
             data.createTransactionInputOutput({
               id: input.transactionID,

@@ -1,4 +1,5 @@
 # NEO Tracker
+
 [![CircleCI](https://circleci.com/gh/neotracker/neotracker.svg?style=shield)](https://circleci.com/gh/neotracker/neotracker) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](.github/CONTRIBUTING.md)
 
 NEO Tracker is a NEO blockchain explorer and wallet.
@@ -13,42 +14,63 @@ The following instructions for how to setup your development environment for NEO
 
 ### Requirements
 
- - [Postgres 10.3](https://www.postgresql.org/download/)
- - [Node 10.9.0](https://github.com/creationix/nvm)
- - [NEO•ONE](https://neo-one.io/)
-
-### Setup Postgres
-
-We will use the `$PGDATA` environment variable in the following examples. You may set this variable with `export PGDATA=<directory to store database>` if it's not set. For example, on Mac you can use the default data directory with `export PGDATA=/usr/local/var/postgres`
-
-  - `initdb $PGDATA` (initialize the data directory)
-  - `pg_ctl -D $PGDATA start` (start postgres)
-  - `createdb neotracker_priv` (create the database for NEO Tracker)
+- [Node 10.16.0](https://github.com/creationix/nvm)
+- [NEO•ONE](https://neo-one.io/)
 
 ### Start a NEO•ONE private network
 
 NEO Tracker is best developed against a private network, which we can setup easily with NEO•ONE.
 
-  - `yarn global add @neo-one/cli` (install NEO•ONE)
-  - `neo-one create network priv` (create the private network)
-  - `neo-one bootstrap --network priv` (bootstrap the private network with test data)
+- `yarn install` (install dependencies, including `@neo-one/cli`)
+- `yarn neo-one start network` (starts a private network)
 
-By default, NEO•ONE will create a private network with the RPC url `http://localhost:40200/rpc`, but in case it's different on your setup, you can look it up with `neo-one describe network priv` for use in the next step.
+By default, NEO•ONE will create a private network with the RPC url `http://localhost:9040/rpc`, but this can be configured in a [NEO•ONE configuration file](https://neo-one.io/docs/config-options). Note for this purpose, only the `network` option is relevant.
 
 ### Start NEO Tracker
 
-  - `yarn install` (install dependencies)
-  - `yarn develop:scrape` (start the scraper which populates postgres with blockchain data)
-  - `yarn develop:web` (start the webserver on http://localhost:1340)
+- `yarn install` (install dependencies)
+- `yarn develop` (starts a watched instance of NEO Tracker for development)
 
-In both of the above commands, prefix with `NEOTRACKER_RPC_URL=<rpc_url>` where `rpc_url` is the one you found with `neo-one describe network priv` if it's different from the default. E.g. `NEOTRACKER_RPC_URL=http://localhost:40200/rpc yarn develop:scrape`.
+By default, `yarn develop` sets up a [SQLite](https://www.sqlite.org/index.html) database in the neotracker root directory. If you'd prefer to work with [Postgres 10.3](https://www.postgresql.org/download/), this and other options can be configured in a `.neotrackerrc` file. See below for the full list of configurable options.
+
+### Setup Postgres
+
+If you'd like to use [Postgres 10.3](https://www.postgresql.org/download/), here are some instructions for getting started.
+
+We will use the `$PGDATA` environment variable in the following examples. You may set this variable with `export PGDATA=<directory to store database>` if it's not set. For example, on Mac you can use the default data directory with `export PGDATA=/usr/local/var/postgres`
+
+- `initdb $PGDATA` (initialize the data directory)
+- `pg_ctl -D $PGDATA start` (start postgres)
+- `createdb neotracker_priv` (create the database for NEO Tracker)
+
+To connect this database with neotracker, in the `.neotrackerrc` file, set `dbClient` to `pg` and `dbPort` to the port the postgres server was started on (defaults to 5432).
 
 ### General Tips
 
-  - List wallets on the private network using `neo-one get wallet --network priv`. Grab the private key for a wallet to use for testing with `neo-one describe wallet <wallet_name> --network priv`.
-  - Start from a clean slate by deleting the NEO•ONE network and dropping the postgres tables
-    - `neo-one delete network priv` (delete the NEO•ONE private network)
-    - `yarn develop:drop-tables` (drop the NEO Tracker tables)
+- To reset the local database, simply run `yarn develop --resetDB`.
+
+### Options
+
+The full list of configurable options in the `.neotrackerrc` file. These can be added to the file or passed in as cli arguments.
+
+```js
+{
+  "type": "all", Components to run: "all" | "scrape" | "web"
+  "port": 1340, // Port the website will be on
+  "network": "priv", // NEO network to run on
+  "ci": false, // Running as part of continuous integration
+  "prod": false, // Compile for production
+  "nodeRpcUrl": "http://localhost:9040/rpc", // NEO•ONE Node RPC URL
+  "dbClient": "sqlite3", // Database Client - "sqlite3" or "pg"
+  "dbFileName": "db.sqlite", // Database file - only for SQLite
+  "dbHost": "localhost", // Database host - only for Postgres
+  "dbPort": 5432, // Database port - only for Postgres
+  "dbUser": undefined, // Database username - only for Postgres
+  "dbPassword": undefined, // Database password - only for Postgres
+  "database": "neotracker_prv", // Database name
+  "resetDB": false // Resets database
+}
+```
 
 ## License
 

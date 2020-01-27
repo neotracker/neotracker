@@ -1,6 +1,6 @@
 /* @flow */
 import type BigNumber from 'bignumber.js';
-import type { UserAccountID } from '@neo-one/client';
+import type { UserAccountID } from '@neo-one/client-common';
 
 import { createAction, handleActions } from 'redux-actions';
 

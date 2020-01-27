@@ -9,7 +9,6 @@ import {
   type Snapshot,
   type Variables,
 } from 'react-relay';
-import type { Monitor } from '@neo-one/monitor';
 import * as React from 'react';
 
 import _ from 'lodash';
@@ -42,7 +41,6 @@ type Props = {
   render: (renderProps: RenderProps, lastProps: ?Object) => React.Node,
   variables: ?Variables,
   skipNullVariables: boolean,
-  monitor: Monitor,
 };
 
 type State = {
@@ -120,7 +118,6 @@ function fetchQueryAndComputeStateFromProps(
           environment,
           onDataChange: retryCallbacks.handleDataChange,
           operation,
-          monitor: props.monitor,
         });
         if (!snapshot) {
           return {
@@ -189,7 +186,6 @@ const getState = (prevState: Object, state: Object): Object => {
 class ReactRelayQueryRenderer extends React.Component<Props, State> {
   _relayContext: RelayContext;
 
-  props: Props;
   state: State;
 
   constructor(props: Props, context: Object) {
@@ -276,6 +272,7 @@ class ReactRelayQueryRenderer extends React.Component<Props, State> {
   shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
     return (
       nextProps.render !== this.props.render ||
+      // eslint-disable-next-line react/prop-types
       nextState.renderProps !== this.state.renderProps
     );
   }
@@ -367,7 +364,6 @@ export default (query: GraphQLTaggedNode, configIn?: Config): HOC<*, *> => {
               )}
               skipNullVariables={skipNullVariables}
               cacheConfig={config.cacheConfig}
-              monitor={this.props.appContext.monitor}
             />
           );
         }
@@ -387,7 +383,6 @@ export default (query: GraphQLTaggedNode, configIn?: Config): HOC<*, *> => {
           )}
           skipNullVariables={skipNullVariables}
           cacheConfig={config.cacheConfig}
-          monitor={props.appContext.monitor}
         />
       );
     }

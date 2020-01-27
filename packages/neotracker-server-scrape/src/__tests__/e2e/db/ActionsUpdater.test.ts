@@ -1,12 +1,10 @@
-import { RawAction } from '@neo-one/client';
-import { Database, getDBData, getMonitor, startDB } from '@neotracker/server-test';
+import { RawAction } from '@neo-one/client-full';
+import { Database, getDBData, startDB } from '@neotracker/server-test';
 import BigNumber from 'bignumber.js';
 import Knex from 'knex';
 import { ActionsUpdater } from '../../../db/ActionsUpdater';
 import { normalizeAction } from '../../../normalizeBlock';
 import { data, makeContext } from '../../data';
-
-const monitor = getMonitor();
 
 const createAction = (actionIn: RawAction, transactionID: string) => {
   const action = normalizeAction(actionIn);
@@ -36,7 +34,7 @@ describe('ActionsUpdater', () => {
     const context = makeContext({ db });
     const updater = new ActionsUpdater();
 
-    await updater.save(context, monitor, {
+    await updater.save(context, {
       actions: [
         createAction(data.createRawLog({ index: 0, globalIndex: new BigNumber(0) }), '0'),
         createAction(data.createRawNotification({ index: 1, globalIndex: new BigNumber(1) }), '0'),
@@ -55,11 +53,11 @@ describe('ActionsUpdater', () => {
       createAction(data.createRawNotification({ index: 1, globalIndex: new BigNumber(1) }), '0'),
     ];
 
-    await updater.save(context, monitor, { actions });
+    await updater.save(context, { actions });
 
     const dbData = await getDBData(db);
 
-    await updater.save(context, monitor, { actions });
+    await updater.save(context, { actions });
 
     const finalDBData = await getDBData(db);
     expect(dbData).toEqual(finalDBData);
@@ -69,7 +67,7 @@ describe('ActionsUpdater', () => {
     const context = makeContext({ db });
     const updater = new ActionsUpdater();
 
-    await updater.save(context, monitor, {
+    await updater.save(context, {
       actions: [
         createAction(data.createRawLog({ index: 0, globalIndex: new BigNumber(0) }), '0'),
         createAction(data.createRawNotification({ index: 1, globalIndex: new BigNumber(1) }), '0'),
@@ -79,7 +77,7 @@ describe('ActionsUpdater', () => {
     data.nextBlock();
     const dbData = await getDBData(db);
 
-    await updater.save(context, monitor, {
+    await updater.save(context, {
       actions: [
         createAction(data.createRawLog({ index: 0, globalIndex: new BigNumber(2) }), '1'),
         createAction(data.createRawNotification({ index: 1, globalIndex: new BigNumber(3) }), '1'),
@@ -89,7 +87,7 @@ describe('ActionsUpdater', () => {
     const nextDBData = await getDBData(db);
     expect(nextDBData).toMatchSnapshot();
 
-    await updater.revert(context, monitor, { transactionIDs: ['1'] });
+    await updater.revert(context, { transactionIDs: ['1'] });
 
     const finalDBData = await getDBData(db);
     expect(dbData).toEqual(finalDBData);

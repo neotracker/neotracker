@@ -1,19 +1,20 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Grid, Link, List, styled } from 'reakit';
+import styled from 'styled-components';
 import { SectionConfig } from '../../../../types';
 import { findSectionUses, getSectionURL } from '../../utils';
 import { WithRenderConfig } from '../render';
 import { SectionContentWrapper } from './SectionContentWrapper';
 
-const Wrapper = styled(Grid.as(SectionContentWrapper))`
+const Wrapper = styled(SectionContentWrapper)`
+  display: grid;
   grid-auto-flow: column;
   grid-gap: 5px;
   justify-content: start;
   white-space: nowrap;
 `;
 
-const Sections = styled(List)`
+const Sections = styled.ul`
   display: grid;
   grid-auto-flow: column;
   grid-gap: 5px;
@@ -46,11 +47,9 @@ export const SectionUses = ({ usedBy, section, ...props }: Props) => {
             {label}
             <Sections>
               {uses.map((s) => (
-                <List.Item key={s.name}>
-                  <Link as={RouterLink} to={getSectionURL(sections, s.name)}>
-                    {s.name}
-                  </Link>
-                </List.Item>
+                <li key={s.name}>
+                  <RouterLink to={getSectionURL(sections, s.name)}>{s.name}</RouterLink>
+                </li>
               ))}
             </Sections>
           </Wrapper>

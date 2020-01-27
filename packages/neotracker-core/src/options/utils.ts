@@ -2,7 +2,7 @@ import { NetworkType } from '@neotracker/shared-utils';
 
 export const mainRPCURL = 'https://neotracker.io/rpc';
 export const testRPCURL = 'https://testnet.neotracker.io/rpc';
-export const privRPCURL = 'http://localhost:40200/rpc';
+export const privRPCURL = 'http://localhost:9040/rpc';
 
 export function getNetworkOptions<T>({
   network = 'priv',

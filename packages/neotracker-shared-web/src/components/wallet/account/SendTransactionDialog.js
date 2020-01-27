@@ -1,9 +1,11 @@
 /* @flow */
 import BigNumber from 'bignumber.js';
 // $FlowFixMe
+import { webLogger } from '@neotracker/logger';
+// $FlowFixMe
 import { ClientError } from '@neotracker/shared-utils';
 import * as React from 'react';
-import type { UserAccount } from '@neo-one/client';
+import type { UserAccount } from '@neo-one/client-common';
 
 import {
   type HOC,
@@ -140,7 +142,7 @@ function SendTransactionDialog({
             getID(confirmTransaction.asset.id),
           )}
         </Typography>
-        {' to address: '}
+        to address:
         <AddressLink
           addressHash={confirmTransaction.address}
           newTab
@@ -262,12 +264,10 @@ const enhance: HOC<*, *> = compose(
     },
   }),
   withHandlers({
-    onCancel: ({ appContext: appContextIn, onClose }) => () => {
-      const appContext = ((appContextIn: $FlowFixMe): AppContext);
+    onCancel: ({ onClose }) => () => {
       onClose();
-      appContext.monitor.log({
-        name: 'neotracker_wallet_send_transaction_cancel',
-        level: 'verbose',
+      webLogger.info({
+        title: 'neotracker_wallet_send_transaction_cancel',
       });
     },
     onConfirm: ({
@@ -283,23 +283,16 @@ const enhance: HOC<*, *> = compose(
         hash: null,
         error: null,
       }));
-      appContext.monitor
-        .captureLog(
-          () =>
-            walletAPI.doSendAsset({
-              appContext,
-              account: confirmTransaction.account.id,
-              toAddress: confirmTransaction.address,
-              amount: new BigNumber(confirmTransaction.amount),
-              assetType: confirmTransaction.asset.type,
-              assetHash: getID(confirmTransaction.asset.id),
-            }),
-          {
-            name: 'neotracker_wallet_send_transaction',
-            level: 'verbose',
-            error: {},
-          },
-        )
+      webLogger.info({ title: 'neotracker_wallet_send_transaction' });
+      walletAPI
+        .doSendAsset({
+          appContext,
+          account: confirmTransaction.account.id,
+          toAddress: confirmTransaction.address,
+          amount: new BigNumber(confirmTransaction.amount),
+          assetType: confirmTransaction.asset.type,
+          assetHash: getID(confirmTransaction.asset.id),
+        })
         .then((hash) => {
           setState((prevState) => ({
             ...prevState,
@@ -347,6 +340,6 @@ const enhance: HOC<*, *> = compose(
   pure,
 );
 
-export default (enhance(SendTransactionDialog): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  SendTransactionDialog,
+): React.ComponentType<ExternalProps>);

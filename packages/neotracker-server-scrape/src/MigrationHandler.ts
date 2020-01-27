@@ -1,4 +1,3 @@
-import { Monitor } from '@neo-one/monitor';
 import { createTables, makeAllPowerfulQueryContext, Migration, QueryContext } from '@neotracker/server-db';
 import Knex from 'knex';
 import { migrations } from './migrations';
@@ -6,25 +5,21 @@ import { migrations } from './migrations';
 export class MigrationHandler {
   private readonly enabled: boolean;
   private readonly db: Knex;
-  private readonly makeQueryContext: ((monitor: Monitor) => QueryContext);
-  private readonly monitor: Monitor;
+  private readonly makeQueryContext: () => QueryContext;
   private mutableTableCreated: boolean;
 
   public constructor({
     enabled,
     db,
     makeQueryContext,
-    monitor,
   }: {
     readonly enabled: boolean;
     readonly db: Knex;
-    readonly makeQueryContext: ((monitor: Monitor) => QueryContext);
-    readonly monitor: Monitor;
+    readonly makeQueryContext: () => QueryContext;
   }) {
     this.enabled = enabled;
     this.db = db;
     this.makeQueryContext = makeQueryContext;
-    this.monitor = monitor;
     this.mutableTableCreated = false;
   }
 
@@ -36,11 +31,9 @@ export class MigrationHandler {
     if (!this.mutableTableCreated) {
       const schema = this.db.schema;
       const { modelSchema } = Migration;
-      const exists = await schema
-        .queryContext(makeAllPowerfulQueryContext(this.monitor))
-        .hasTable(modelSchema.tableName);
+      const exists = await schema.queryContext(makeAllPowerfulQueryContext()).hasTable(modelSchema.tableName);
       if (!exists) {
-        await createTables(this.db, this.monitor);
+        await createTables(this.db);
       }
 
       const initMigration = await this.getMigration('initialization');
@@ -62,39 +55,39 @@ export class MigrationHandler {
     const migration = await this.getMigration(name);
     if (migration === undefined) {
       await Migration.query(this.db)
-        .context(this.makeQueryContext(this.monitor))
+        .context(this.makeQueryContext())
         .insert({ name, complete: true });
     } else {
       await migration
         .$query(this.db)
-        .context(this.makeQueryContext(this.monitor))
+        .context(this.makeQueryContext())
         .patch({ complete: true });
     }
   }
 
-  public async checkpoint(name: string, data: string, monitor: Monitor): Promise<void> {
-    const migration = await this.getMigration(name, monitor);
+  public async checkpoint(name: string, data: string): Promise<void> {
+    const migration = await this.getMigration(name);
     if (migration === undefined) {
       await Migration.query(this.db)
-        .context(this.makeQueryContext(monitor))
+        .context(this.makeQueryContext())
         .insert({ name, complete: false, data });
     } else {
       await migration
         .$query(this.db)
-        .context(this.makeQueryContext(monitor))
+        .context(this.makeQueryContext())
         .patch({ data });
     }
   }
 
-  public async getCheckpoint(name: string, monitor: Monitor): Promise<string | undefined> {
-    const migration = await this.getMigration(name, monitor);
+  public async getCheckpoint(name: string): Promise<string | undefined> {
+    const migration = await this.getMigration(name);
 
     return migration === undefined ? undefined : migration.data;
   }
 
-  private async getMigration(name: string, monitor: Monitor = this.monitor): Promise<Migration | undefined> {
+  private async getMigration(name: string): Promise<Migration | undefined> {
     return Migration.query(this.db)
-      .context(this.makeQueryContext(monitor))
+      .context(this.makeQueryContext())
       .where('name', name)
       .first();
   }

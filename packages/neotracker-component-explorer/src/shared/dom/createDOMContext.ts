@@ -1,11 +1,10 @@
-import * as React from 'react';
 import { Example, Proxy, ReactElement } from '../../types';
 import { createContext } from '../context';
 import { PropsProxy } from '../proxies';
 import { createDOMRenderer } from './createDOMRenderer';
 
 // tslint:disable-next-line no-any
-export interface CreateDOMContextOptions<E extends React.ReactElement<any>> {
+export interface CreateDOMContextOptions<E extends ReactElement> {
   readonly example: Example<E>;
   readonly container: Element;
   readonly proxies?: ReadonlyArray<Proxy>;

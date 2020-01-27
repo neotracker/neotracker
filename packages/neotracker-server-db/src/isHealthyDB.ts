@@ -1,24 +1,27 @@
 // tslint:disable no-let
-import { Monitor } from '@neo-one/monitor';
+import { createChild, serverLogger } from '@neotracker/logger';
 import Knex from 'knex';
 import { makeAllPowerfulQueryContext } from './lib';
 
+const serverDBLogger = createChild(serverLogger, { component: 'database' });
+
 let checkDBPromise: Promise<boolean> | undefined;
-const doCheckDB = async (db: Knex, monitor: Monitor) =>
-  monitor
-    .captureSpan(
-      async () => {
-        await db.raw('SELECT 1;').queryContext(makeAllPowerfulQueryContext(monitor));
+const doCheckDB = async (db: Knex) => {
+  try {
+    serverDBLogger.info({ title: 'service_check_db' });
+    await db.raw('SELECT 1;').queryContext(makeAllPowerfulQueryContext());
 
-        return true;
-      },
-      { name: 'service_check_db', level: 'verbose' },
-    )
-    .catch(() => false);
+    return true;
+  } catch (error) {
+    serverDBLogger.error({ title: 'service_check_db', error: error.message });
 
-const checkDB = async (db: Knex, monitor: Monitor) => {
+    return false;
+  }
+};
+
+const checkDB = async (db: Knex) => {
   if (checkDBPromise === undefined) {
-    checkDBPromise = doCheckDB(db, monitor).then(
+    checkDBPromise = doCheckDB(db).then(
       (res) => {
         checkDBPromise = undefined;
 
@@ -38,9 +41,9 @@ const checkDB = async (db: Knex, monitor: Monitor) => {
 const CHECK_TIME_MS = 4000;
 let lastCheck: number | undefined;
 let healthy: boolean | undefined;
-export const isHealthyDB = async (db: Knex, monitor: Monitor): Promise<boolean> => {
+export const isHealthyDB = async (db: Knex): Promise<boolean> => {
   if (lastCheck === undefined || healthy === undefined || Date.now() - lastCheck > CHECK_TIME_MS) {
-    healthy = await checkDB(db, monitor);
+    healthy = await checkDB(db);
     lastCheck = Date.now();
   }
 

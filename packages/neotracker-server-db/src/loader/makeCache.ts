@@ -1,4 +1,4 @@
-import LRU from 'lru-cache';
+import LRUCache from 'lru-cache';
 import { BaseModel } from '../lib';
 
 type Key = string | number;
@@ -17,7 +17,7 @@ export function makeCache<TModel extends typeof BaseModel, TValue extends TModel
   readonly modelClass: TModel;
   readonly cacheSize: number;
 }): Cache<TModel, TValue> {
-  const cache = new LRU<Key, Promise<TValue>>({ max: cacheSize });
+  const cache = new LRUCache<Key, Promise<TValue>>({ max: cacheSize });
 
   return {
     get(key): Promise<TValue> | undefined {

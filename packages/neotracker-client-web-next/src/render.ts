@@ -1,23 +1,22 @@
-import { Monitor } from '@neo-one/monitor';
-import { labels, ua } from '@neotracker/shared-utils';
+import { labels as utilLabels, ua } from '@neotracker/shared-utils';
 import { routes } from '@neotracker/shared-web-next';
 import { createApolloClient } from './createApolloClient';
 import { createAppContext } from './createAppContext';
 import { renderApp } from './renderApp';
 
-export const render = ({ monitor: monitorIn }: { readonly monitor: Monitor }) => {
+export const render = () => {
   // tslint:disable-next-line no-any
   const currentWindow = window as any;
 
   const userAgent = currentWindow.__USER_AGENT__;
-  const monitor = monitorIn.withLabels({
+  const labels = {
     ...ua.convertLabels(userAgent),
-    [labels.APP_VERSION]: currentWindow.__APP_VERSION__,
-  });
+    [utilLabels.APP_VERSION]: currentWindow.__APP_VERSION__,
+  };
   const appContext = createAppContext({
     apollo: createApolloClient({
       endpoint: routes.GRAPHQL,
-      monitor,
+      labels,
       apolloState: currentWindow.__APOLLO_STATE__,
     }),
     network: currentWindow.__NETWORK__,
@@ -25,7 +24,6 @@ export const render = ({ monitor: monitorIn }: { readonly monitor: Monitor }) =>
     nonce: currentWindow.__NONCE__,
     options: currentWindow.__OPTIONS__,
     userAgent,
-    monitor,
   });
 
   renderApp(appContext);

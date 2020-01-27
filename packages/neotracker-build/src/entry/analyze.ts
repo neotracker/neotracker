@@ -5,7 +5,7 @@ import { logError } from '../logError';
 import { setupProcessListeners } from '../setupProcessListeners';
 
 const title = 'analyze';
-yargs.describe('ci', 'Running as part of continuous integration').default('ci', false);
+const { argv } = yargs.describe('ci', 'Running as part of continuous integration').default('ci', false);
 
 const run = async () => {
   setupProcessListeners({ title, exit: (exitCode) => process.exit(exitCode) });
@@ -14,13 +14,13 @@ const run = async () => {
     dev: false,
     analyze: true,
     buildVersion: 'production',
-    isCI: yargs.argv.ci,
+    isCI: argv.ci,
   });
   const clientCompilerNext = createClientCompilerNext({
     dev: false,
     analyze: true,
     buildVersion: 'production',
-    isCI: yargs.argv.ci,
+    isCI: argv.ci,
   });
 
   await Promise.all([runCompiler({ compiler: clientCompiler }), runCompiler({ compiler: clientCompilerNext })]);

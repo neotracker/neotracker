@@ -1,18 +1,18 @@
 // @ts-ignore
 import pretty from 'pretty';
 import * as React from 'react';
-import { Block, styled } from 'reakit';
 import { interval, Subscription } from 'rxjs';
+import styled from 'styled-components';
 import { EvalInContext, Proxy } from '../../../../types';
 import { createDOMContext } from '../../../dom';
 import { compileComponent } from '../../utils';
 import { Editor } from './Editor';
 
-const FontSizeBlock = styled(Block)`
+const FontSizeBlock = styled.div`
   font-size: 14;
 `;
 
-const PreviewWrapper = styled(Block)`
+const PreviewWrapper = styled.div`
   padding: 16px;
   background-color: rgba(0, 0, 0, 0.05);
 `;

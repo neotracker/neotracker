@@ -1,15 +1,5 @@
-import { Span } from '@neo-one/monitor';
-import { HTTPError } from '@neotracker/server-utils';
-import { Context, Middleware } from 'koa';
+import { Middleware } from 'koa';
 
-export const getMonitor = (ctx: Context): Span => {
-  const { monitor } = ctx.state;
-  if (monitor == undefined) {
-    throw new HTTPError(500, HTTPError.PROGRAMMING_ERROR);
-  }
-
-  return monitor;
-};
 export interface ServerMiddleware {
   readonly type: 'middleware';
   readonly name: string;

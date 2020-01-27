@@ -152,6 +152,7 @@ export class Base extends Model {
 
   public async checkCanCreate(context: ObjectionQueryContext): Promise<void> {
     this.checkPermission(context, context.isAllPowerful);
+    await Promise.resolve();
   }
 
   // eslint-disable-next-line
@@ -161,30 +162,32 @@ export class Base extends Model {
 
   public async checkCanEdit(context: ObjectionQueryContext, _options: ModelOptions): Promise<void> {
     this.checkPermission(context, context.isAllPowerful);
+    await Promise.resolve();
   }
 
   public async checkCanDelete(context: ObjectionQueryContext): Promise<void> {
     this.checkPermission(context, context.isAllPowerful);
+    await Promise.resolve();
   }
 
   public async afterGet(_context: ObjectionQueryContext): Promise<void> {
-    // do nothing
+    await Promise.resolve();
   }
 
   public async clearCache(_context: ObjectionQueryContext): Promise<void> {
-    // do nothing
+    await Promise.resolve();
   }
 
   public async afterInsert(_context: ObjectionQueryContext): Promise<void> {
-    // do nothing
+    await Promise.resolve();
   }
 
   public async afterUpdate(_context: ObjectionQueryContext): Promise<void> {
-    // do nothing
+    await Promise.resolve();
   }
 
   public async afterDelete(_context: ObjectionQueryContext): Promise<void> {
-    // do nothing
+    await Promise.resolve();
   }
 
   public checkPermission(_context: ObjectionQueryContext, can: boolean): void {

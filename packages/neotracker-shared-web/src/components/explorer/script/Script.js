@@ -12,7 +12,7 @@ import {
   withPropsOnChange,
   withState,
 } from 'recompose';
-import { disassembleByteCode } from '@neo-one/client-core';
+import { disassembleByteCode } from '@neo-one/node-core';
 
 import { type Theme } from '../../../styles/createTheme';
 import { Button, Typography, withStyles } from '../../../lib/base';
@@ -136,7 +136,7 @@ function Script({
         {scriptElement}
       </pre>
       <div className={classes.footer}>
-        <Button color="primary" variant="raised" onClick={onClick}>
+        <Button color="primary" variant="contained" onClick={onClick}>
           <Typography variant="body1" className={classes.buttonText}>
             {buttonText}
           </Typography>

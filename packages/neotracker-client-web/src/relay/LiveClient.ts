@@ -1,7 +1,10 @@
-import { Carrier, metrics, Monitor, Span } from '@neo-one/monitor';
+import { AggregationType, globalStats, MeasureUnit } from '@neo-one/client-switch';
+import { Labels, labelsToTags } from '@neo-one/utils';
+import { clientLogger } from '@neotracker/logger';
 import { ClientMessage, ExecutionResult, GRAPHQL_WS, parseAndValidateServerMessage } from '@neotracker/shared-graphql';
 import { labels, sanitizeError, utils } from '@neotracker/shared-utils';
 import Backoff from 'backo2';
+import debug from 'debug';
 import _ from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
@@ -20,22 +23,35 @@ interface OperationOptions {
 
 interface Operation extends OperationOptions {
   readonly started: boolean;
-  readonly span?: Span;
 }
 
-const WEBSOCKET_CLIENT_FIRST_RESPONSE_DURATION_SECONDS = metrics.createHistogram({
-  name: 'graphql_client_first_response_duration_seconds',
-  labelNames: [labels.GRAPHQL_QUERY],
-});
+const requestSec = globalStats.createMeasureInt64('requests/duration', MeasureUnit.SEC);
+const requestErrors = globalStats.createMeasureInt64('requests/failures', MeasureUnit.UNIT);
 
-const WEBSOCKET_CLIENT_FIRST_RESPONSE_FAILURES_TOTAL = metrics.createCounter({
-  name: 'graphql_client_first_response_failures_total',
-  labelNames: [labels.GRAPHQL_QUERY],
-});
+const WEBSOCKET_CLIENT_FIRST_RESPONSE_DURATION_SECONDS = globalStats.createView(
+  'graphql_client_first_response_duration_seconds',
+  requestSec,
+  AggregationType.DISTRIBUTION,
+  labelsToTags([labels.GRAPHQL_QUERY]),
+  'distribution of the requests duration',
+  [1, 2, 5, 7.5, 10, 12.5, 15, 17.5, 20],
+);
+globalStats.registerView(WEBSOCKET_CLIENT_FIRST_RESPONSE_DURATION_SECONDS);
+
+const WEBSOCKET_CLIENT_FIRST_RESPONSE_FAILURES_TOTAL = globalStats.createView(
+  'graphql_client_first_response_failures_total',
+  requestErrors,
+  AggregationType.COUNT,
+  labelsToTags([labels.GRAPHQL_QUERY]),
+  'total request failures',
+);
+globalStats.registerView(WEBSOCKET_CLIENT_FIRST_RESPONSE_FAILURES_TOTAL);
+
+const logger = debug('NEOTRACKER:LiveClient');
 
 export class LiveClient {
   public readonly endpoint: string;
-  public readonly monitor: Monitor;
+  public readonly labels: Record<string, string>;
   // tslint:disable-next-line readonly-keyword
   public mutableOperations: { [id: string]: Operation };
   public mutableNextOperationID: number;
@@ -48,24 +64,22 @@ export class LiveClient {
   public mutableActiveListener: (() => void) | undefined;
   public mutableInactiveListener: (() => void) | undefined;
 
-  public constructor({ endpoint, monitor }: { readonly endpoint: string; readonly monitor: Monitor }) {
+  public constructor({
+    endpoint,
+    labels: labelsIn,
+  }: {
+    readonly endpoint: string;
+    readonly labels: Record<string, string>;
+  }) {
     this.endpoint = endpoint;
-    this.monitor = monitor
-      .at('live_client')
-      .withLabels({
-        [monitor.labels.SPAN_KIND]: 'client',
-        [monitor.labels.PEER_SERVICE]: 'graphql',
-      })
-      .withData({
-        [labels.WEBSOCKET_URL]: endpoint,
-      });
-
+    this.labels = labelsIn;
     this.mutableOperations = {};
     this.mutableNextOperationID = 0;
     this.mutableClosedByUser = false;
     this.mutableReconnecting = false;
     this.backoff = new Backoff({ jitter: 0.5 });
     // @ts-ignore
+    // tslint:disable-next-line strict-boolean-expressions
     this.wsImpl = window.WebSocket || window.MozWebSocket;
     // tslint:disable-next-line strict-type-predicates
     if (this.wsImpl == undefined) {
@@ -80,12 +94,14 @@ export class LiveClient {
     }
 
     let mutableClient;
+    const connectLabels = { title: 'websocket_client_create_websocket', ...this.labels };
     try {
-      mutableClient = this.monitor.captureLog(() => new this.wsImpl(this.endpoint, [GRAPHQL_WS]), {
-        name: 'websocket_client_create_websocket',
-        error: {},
-      });
-    } catch {
+      clientLogger.info({ ...connectLabels });
+      logger('%o', { level: 'debug', ...connectLabels });
+      mutableClient = new this.wsImpl(this.endpoint, [GRAPHQL_WS]);
+    } catch (error) {
+      clientLogger.error({ error: error.message, ...connectLabels });
+      logger('%o', { level: 'error', error: error.message, ...connectLabels });
       if (!this.mutableClosedByUser) {
         this.tryReconnect();
       }
@@ -95,19 +111,29 @@ export class LiveClient {
     this.mutableClient = mutableClient;
 
     mutableClient.onopen = () => {
-      this.monitor.log({ name: 'websocket_client_socket_open' });
+      const onOpenLabels = {
+        ...this.labels,
+        title: 'websocket_client_socket_open',
+        [Labels.SPAN_KIND]: 'client',
+        [Labels.PEER_SERVICE]: 'graphql',
+        [labels.WEBSOCKET_URL]: this.endpoint,
+      };
+      clientLogger.info({ ...onOpenLabels });
+      logger('%o', { level: 'debug', ...onOpenLabels });
 
       this.sendMessage({ type: 'GQL_CONNECTION_INIT' });
       Object.keys(this.mutableOperations).forEach((id) => this.start(id));
     };
 
     mutableClient.onclose = (event) => {
-      this.monitor
-        .withLabels({
-          [labels.WEBSOCKET_CLOSE_CODE]: event.code,
-          [labels.WEBSOCKET_CLOSE_REASON]: event.reason,
-        })
-        .log({ name: 'websocket_client_socket_closed' });
+      const onCloseLabels = {
+        ...this.labels,
+        title: 'websocket_client_socket_closed',
+        [labels.WEBSOCKET_CLOSE_CODE]: event.code,
+        [labels.WEBSOCKET_CLOSE_REASON]: event.reason,
+      };
+      clientLogger.info({ ...onCloseLabels });
+      logger('%o', { level: 'debug', ...onCloseLabels });
       this.mutableOperations = _.mapValues(this.mutableOperations, (operation) => ({
         id: operation.id,
         variables: operation.variables,
@@ -122,7 +148,9 @@ export class LiveClient {
     };
 
     mutableClient.onerror = () => {
-      this.monitor.log({ name: 'websocket_client_socket_error' });
+      const onErrLabels = { ...this.labels, title: 'websocket_client_socket_error' };
+      clientLogger.error({ ...onErrLabels });
+      logger('%o', { level: 'error', ...onErrLabels });
     };
 
     // tslint:disable-next-line no-any
@@ -156,14 +184,17 @@ export class LiveClient {
   }
 
   public tryReconnect() {
-    this.monitor.log({ name: 'websocket_client_socket_reconnect' });
+    const tryReconnectLabels = { ...this.labels, title: 'websocket_client_socket_reconnect' };
+    clientLogger.info({ ...tryReconnectLabels });
+    logger('%o', { level: 'debug', ...tryReconnectLabels });
     this.mutableReconnecting = true;
     this.clearTryReconnectTimeout();
     this.mutableTryReconnectTimeoutID = setTimeout(() => {
       if (Object.keys(this.mutableOperations).length > 0) {
         this.connect();
       }
-    }, this.backoff.duration());
+      // tslint:disable-next-line: no-any
+    }, this.backoff.duration()) as any;
   }
 
   public clearTryReconnectTimeout() {
@@ -181,18 +212,15 @@ export class LiveClient {
     return this.mutableClient.readyState;
   }
 
-  public request$(request: Request, monitor: Monitor): Observable<ExecutionResult> {
+  public request$(request: Request): Observable<ExecutionResult> {
     this.connect();
 
-    return Observable.create((observer: Observer<ExecutionResult>) => {
-      let id: string | undefined = this.executeOperation(
-        {
-          id: request.id,
-          variables: request.variables,
-          observer,
-        },
-        monitor,
-      );
+    return new Observable((observer: Observer<ExecutionResult>) => {
+      let id: string | undefined = this.executeOperation({
+        id: request.id,
+        variables: request.variables,
+        observer,
+      });
 
       return {
         unsubscribe: () => {
@@ -205,7 +233,7 @@ export class LiveClient {
     });
   }
 
-  public readonly executeOperation = (operation: OperationOptions, monitor: Monitor): string => {
+  public readonly executeOperation = (operation: OperationOptions): string => {
     const id = this.generateOperationID();
     this.mutableOperations[id] = {
       id: operation.id,
@@ -214,40 +242,37 @@ export class LiveClient {
       started: false,
     };
 
-    this.start(id, monitor);
+    this.start(id);
 
     return id;
   };
 
-  public start(id: string, monitor: Monitor = this.monitor): void {
+  public start(id: string): void {
+    const startTime = Date.now();
     const operation = this.mutableOperations[id] as Operation | undefined;
     if (operation !== undefined && this.status === this.wsImpl.OPEN) {
-      const span = monitor
-        .withLabels({
-          [labels.GRAPHQL_QUERY]: operation.id,
-        })
-        .withData({
-          [labels.GRAPHQL_VARIABLES]: JSON.stringify(operation.variables),
-        })
-        .startSpan({
-          name: 'graphql_client_first_response',
-          metric: {
-            total: WEBSOCKET_CLIENT_FIRST_RESPONSE_DURATION_SECONDS,
-            error: WEBSOCKET_CLIENT_FIRST_RESPONSE_FAILURES_TOTAL,
-          },
-        });
+      const startLabels = {
+        ...this.labels,
+        title: 'graphql_client_first_response',
+        [labels.GRAPHQL_QUERY]: operation.id,
+        [labels.GRAPHQL_VARIABLES]: JSON.stringify(operation.variables),
+      };
+      clientLogger.info({ ...startLabels });
+      logger('%o', { level: 'debug', ...startLabels });
+      globalStats.record([
+        {
+          measure: requestSec,
+          value: Date.now() - startTime,
+        },
+      ]);
 
       this.mutableOperations[id] = {
         id: operation.id,
         variables: operation.variables,
         observer: operation.observer,
         started: true,
-        span,
       };
 
-      // tslint:disable-next-line no-object-literal-type-assertion
-      const headers = {} as Carrier;
-      span.inject(span.formats.HTTP, headers);
       this.sendMessage(
         {
           type: 'GQL_START',
@@ -256,13 +281,9 @@ export class LiveClient {
             id: operation.id,
             variables: operation.variables,
           },
-
-          span: headers,
         },
-
         operation.observer,
         false,
-        span,
       );
     }
   }
@@ -294,32 +315,34 @@ export class LiveClient {
     });
   }
 
-  public sendMessage(
-    message: ClientMessage,
-    observer?: Observer<ExecutionResult>,
-    isRetry?: boolean,
-    monitor: Monitor = this.monitor,
-  ): void {
+  public sendMessage(message: ClientMessage, observer?: Observer<ExecutionResult>, isRetry?: boolean): void {
     // eslint-disable-next-line
     const client = this.mutableClient;
     if (client !== undefined && client.readyState === this.wsImpl.OPEN) {
+      const sendMessageLabels = {
+        ...this.labels,
+        title: 'websocket_client_socket_send',
+        [labels.WEBSOCKET_MESSAGE_TYPE]: message.type,
+      };
       try {
-        monitor
-          .withLabels({
-            [labels.WEBSOCKET_MESSAGE_TYPE]: message.type,
-          })
-          .captureLog(() => client.send(JSON.stringify(message)), {
-            name: 'websocket_client_socket_send',
-            error: {},
-            level: 'verbose',
-          });
+        clientLogger.info({ ...sendMessageLabels });
+        logger('%o', {
+          level: 'debug',
+          ...sendMessageLabels,
+        });
+        client.send(JSON.stringify(message));
       } catch (error) {
+        clientLogger.error({ ...sendMessageLabels });
+        logger('%o', {
+          level: 'error',
+          ...sendMessageLabels,
+        });
         if (isRetry) {
           if (observer !== undefined) {
             this.reportError(observer, error);
           }
         } else {
-          this.sendMessage(message, observer, true, monitor);
+          this.sendMessage(message, observer, true);
         }
       }
     }
@@ -331,39 +354,45 @@ export class LiveClient {
     try {
       message = parseAndValidateServerMessage(messageJSON);
     } catch (error) {
-      this.monitor
-        .withData({
-          [labels.WEBSOCKET_MESSAGEJSON]: messageJSON,
-        })
-        .logError({
-          name: 'websocket_client_server_message_parse_error',
-          error,
-        });
+      const receivedDataErrLabels = {
+        ...this.labels,
+        title: 'websocket_client_server_message_parse_error',
+        error: error.message,
+        [labels.WEBSOCKET_MESSAGEJSON]: messageJSON,
+      };
+      clientLogger.error({ ...receivedDataErrLabels });
+      logger('%o', {
+        level: 'error',
+        ...receivedDataErrLabels,
+      });
 
       return;
     }
 
-    this.monitor
-      .withLabels({
-        [labels.WEBSOCKET_MESSAGE_TYPE]: message.type,
-      })
-      .log({
-        name: 'websocket_client_message_received',
-        level: 'verbose',
-      });
+    const receivedDataLabels = {
+      title: 'websocket_client_message_received',
+      [labels.WEBSOCKET_MESSAGE_TYPE]: message.type,
+      ...this.labels,
+    };
+    clientLogger.info({ ...receivedDataLabels });
+    logger('%o', {
+      level: 'debug',
+      ...receivedDataLabels,
+    });
 
     const handleError = (id: string, msg: string, del?: boolean) => {
+      const handleErrLabels = {
+        ...this.labels,
+        title: 'websocket_client_message_received',
+      };
+      clientLogger.error({ ...handleErrLabels }, msg);
+      logger('%o', {
+        level: 'error',
+        ...handleErrLabels,
+        error: msg,
+      });
       const operation = this.mutableOperations[id] as Operation | undefined;
       if (operation !== undefined) {
-        if (operation.span !== undefined) {
-          operation.span.end(true);
-          this.mutableOperations[id] = {
-            id: operation.id,
-            variables: operation.variables,
-            observer: operation.observer,
-            started: operation.started,
-          };
-        }
         this.reportError(this.mutableOperations[id].observer, new Error(msg));
         if (del) {
           // tslint:disable-next-line no-dynamic-delete
@@ -389,15 +418,6 @@ export class LiveClient {
       case 'GQL_DATA':
         if ((this.mutableOperations[message.id] as Operation | undefined) !== undefined) {
           const operation = this.mutableOperations[message.id];
-          if (operation.span !== undefined) {
-            operation.span.end();
-            this.mutableOperations[message.id] = {
-              id: operation.id,
-              variables: operation.variables,
-              observer: operation.observer,
-              started: operation.started,
-            };
-          }
           operation.observer.next(message.value);
         }
         break;

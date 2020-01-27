@@ -1,5 +1,4 @@
 import * as appRootDir from 'app-root-dir';
-import { TsConfigPathsPlugin } from 'awesome-typescript-loader';
 import * as path from 'path';
 import webpack from 'webpack';
 import webpackNodeExternals from 'webpack-node-externals';
@@ -60,10 +59,7 @@ export const createNodeCompiler = ({
       new webpack.BannerPlugin({
         banner: `${
           bin ? '#!/usr/bin/env node\n' : ''
-        }require('source-map-support').install({ handleUncaughtExceptions: false, environment: 'node' });
-const { defaultMetrics, metrics } = require('@neo-one/monitor');
-metrics.setFactory(defaultMetrics);
-`,
+        }require('source-map-support').install({ handleUncaughtExceptions: false, environment: 'node' });`,
         raw: true,
         entryOnly: true,
       }),
@@ -80,7 +76,6 @@ metrics.setFactory(defaultMetrics);
     resolve: {
       mainFields: ['module', 'main'],
       extensions: ['.js', '.json', '.jsx', '.css', '.ts', '.tsx'],
-      plugins: [new TsConfigPathsPlugin()],
     },
     parallelism: 16,
     optimization: {

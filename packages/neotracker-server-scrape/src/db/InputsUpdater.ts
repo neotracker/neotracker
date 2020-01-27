@@ -1,4 +1,4 @@
-import { Monitor } from '@neo-one/monitor';
+import { createChild, serverLogger } from '@neotracker/logger';
 import { TransactionInputOutput as TransactionInputOutputModel } from '@neotracker/server-db';
 import _ from 'lodash';
 import { Context } from '../types';
@@ -21,6 +21,8 @@ export interface InputsUpdaters {
   readonly input: InputUpdater;
 }
 
+const serverScrapeLogger = createChild(serverLogger, { component: 'scrape' });
+
 export class InputsUpdater extends SameContextDBUpdater<InputsSave, InputsRevert> {
   private readonly updaters: InputsUpdaters;
 
@@ -33,29 +35,19 @@ export class InputsUpdater extends SameContextDBUpdater<InputsSave, InputsRevert
     this.updaters = updaters;
   }
 
-  public async save(context: Context, monitor: Monitor, { transactions, blockIndex }: InputsSave): Promise<void> {
-    return monitor.captureSpanLog(
-      async (span) => {
-        await Promise.all(
-          _.flatMap(transactions, ({ inputs, transactionID, transactionHash }) =>
-            inputs.map(async (reference) =>
-              this.updaters.input.save(context, span, { reference, transactionID, transactionHash, blockIndex }),
-            ),
-          ),
-        );
-      },
-      { name: 'neotracker_scrape_save_inputs', level: 'verbose', error: {} },
+  public async save(context: Context, { transactions, blockIndex }: InputsSave): Promise<void> {
+    serverScrapeLogger.info({ title: 'neotracker_scrape_save_inputs' });
+    await Promise.all(
+      _.flatMap(transactions, ({ inputs, transactionID, transactionHash }) =>
+        inputs.map(async (reference) =>
+          this.updaters.input.save(context, { reference, transactionID, transactionHash, blockIndex }),
+        ),
+      ),
     );
   }
 
-  public async revert(context: Context, monitor: Monitor, { references }: InputsRevert): Promise<void> {
-    return monitor.captureSpan(
-      async (span) => {
-        await Promise.all(
-          references.map(async (reference) => this.updaters.input.revert(context, span, { reference })),
-        );
-      },
-      { name: 'neotracker_scrape_revert_inputs' },
-    );
+  public async revert(context: Context, { references }: InputsRevert): Promise<void> {
+    serverScrapeLogger.info({ title: 'neotracker_scrape_revert_inputs' });
+    await Promise.all(references.map(async (reference) => this.updaters.input.revert(context, { reference })));
   }
 }

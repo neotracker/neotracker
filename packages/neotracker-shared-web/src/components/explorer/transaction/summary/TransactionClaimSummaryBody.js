@@ -32,7 +32,7 @@ function TransactionClaimSummaryBody({
   addressHash,
   dense,
   className,
-}: Props): ?React.Element<*> {
+}: Props): React.Element<*> | null {
   // TODO: Fix no claims/outputs
   const input = (
     <TransactionClaimPagingTable
@@ -69,6 +69,6 @@ const enhance: HOC<*, *> = compose(
   pure,
 );
 
-export default (enhance(TransactionClaimSummaryBody): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  TransactionClaimSummaryBody,
+): React.ComponentType<ExternalProps>);

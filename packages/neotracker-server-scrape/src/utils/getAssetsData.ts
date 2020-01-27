@@ -1,4 +1,3 @@
-import { Monitor } from '@neo-one/monitor';
 import { Coin as CoinModel, SUBTYPE_CLAIM, SUBTYPE_ISSUE, SUBTYPE_REWARD } from '@neotracker/server-db';
 import { GAS_ASSET_ID, utils } from '@neotracker/shared-utils';
 import BigNumber from 'bignumber.js';
@@ -78,14 +77,12 @@ const getAssetOutputIssued = (outputs: ReadonlyArray<Output>): { readonly [asset
 };
 
 export const getAssetsData = async ({
-  monitor,
   context,
   transactions,
   blockIndex,
   fees,
   negated = false,
 }: {
-  readonly monitor: Monitor;
   readonly context: Context;
   readonly transactions: ReadonlyArray<TransactionData>;
   readonly blockIndex: number;
@@ -115,7 +112,7 @@ export const getAssetsData = async ({
   const coinModels = await Promise.all(
     _.chunk(coinData, context.chunkSize).map(async (chunk) =>
       CoinModel.query(context.db)
-        .context(context.makeQueryContext(monitor))
+        .context(context.makeQueryContext())
         .whereIn('id', chunk.map(({ addressHash, assetHash }) => CoinModel.makeID({ addressHash, assetHash }))),
     ),
   ).then((result) => _.flatMap(result));

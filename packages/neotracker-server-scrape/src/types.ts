@@ -1,13 +1,13 @@
 import {
   Asset,
+  Client,
   ConfirmedTransaction,
   Contract,
   NEOONEDataProvider,
+  nep5,
   RawAction,
   ReadClient,
-  ReadSmartContractAny,
-} from '@neo-one/client';
-import { Monitor } from '@neo-one/monitor';
+} from '@neo-one/client-full';
 import {
   Action as ActionModel,
   Coin as CoinModel,
@@ -66,14 +66,16 @@ export interface BlockData {
 }
 export interface Context {
   readonly db: Knex;
-  readonly makeQueryContext: ((monitor: Monitor) => QueryContext);
+  readonly network: string;
+  readonly makeQueryContext: () => QueryContext;
   readonly prevBlockData: BlockData | undefined;
   readonly currentHeight: number | undefined;
   readonly systemFee: IWriteCache<number, BigNumber, SystemFeeSave, number>;
-  readonly nep5Contracts: { readonly [K in string]?: ReadSmartContractAny };
+  readonly nep5Contracts: { readonly [K in string]?: nep5.NEP5SmartContract };
   readonly chunkSize: number;
   readonly processedIndexPubSub: PubSub<{ readonly index: number }>;
   readonly client: ReadClient<NEOONEDataProvider>;
+  readonly fullClient: Client;
   readonly migrationHandler: MigrationHandler;
   readonly blacklistNEP5Hashes: Set<string>;
   readonly repairNEP5BlockFrequency: number;

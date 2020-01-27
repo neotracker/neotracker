@@ -1,6 +1,6 @@
 /* @flow */
 import * as React from 'react';
-import type { UserAccount } from '@neo-one/client';
+import type { UserAccount } from '@neo-one/client-common';
 
 import classNames from 'classnames';
 import { type HOC, compose, pure } from 'recompose';

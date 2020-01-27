@@ -3,7 +3,7 @@ import * as React from 'react';
 
 import classNames from 'classnames';
 import { type HOC, compose, pure } from 'recompose';
-import { privateKeyToWIF } from '@neo-one/client';
+import { privateKeyToWIF } from '@neo-one/client-common';
 
 import { type Theme } from '../../../styles/createTheme';
 import { QRCode } from '../../../lib/qr';
@@ -128,6 +128,6 @@ const enhance: HOC<*, *> = compose(
   pure,
 );
 
-export default (enhance(PaperWalletContent): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  PaperWalletContent,
+): React.ComponentType<ExternalProps>);

@@ -1,25 +1,24 @@
 import { Context } from 'koa';
-// @ts-ignore
-import sm from 'sitemap';
+import createSitemap, { EnumChangefreq } from 'sitemap';
 
-const createSitemap = (domain: string) =>
-  sm.createSitemap({
+const createNewSitemap = (domain: string) =>
+  createSitemap({
     hostname: `https://${domain}`,
     cacheTime: 600000,
     urls: [
-      { url: '/', changefreq: 'hourly', priority: 1.0 },
-      { url: '/wallet', changefreq: 'weekly', prioriy: 0.9 },
-      { url: '/wallet/faq', changefreq: 'weekly', prioriy: 0.8 },
-      { url: '/browse/block/1', changefreq: 'hourly', prioriy: 0.7 },
-      { url: '/browse/tx/1', changefreq: 'hourly', prioriy: 0.7 },
-      { url: '/browse/address/1', changefreq: 'hourly', prioriy: 0.7 },
-      { url: '/browse/asset/1', changefreq: 'weekly', prioriy: 0.7 },
-      { url: '/browse/contract/1', changefreq: 'weekly', prioriy: 0.7 },
+      { url: '/', changefreq: EnumChangefreq.HOURLY, priority: 1.0 },
+      { url: '/wallet', changefreq: EnumChangefreq.WEEKLY, priority: 0.9 },
+      { url: '/wallet/faq', changefreq: EnumChangefreq.WEEKLY, priority: 0.8 },
+      { url: '/browse/block/1', changefreq: EnumChangefreq.HOURLY, priority: 0.7 },
+      { url: '/browse/tx/1', changefreq: EnumChangefreq.HOURLY, priority: 0.7 },
+      { url: '/browse/address/1', changefreq: EnumChangefreq.HOURLY, priority: 0.7 },
+      { url: '/browse/asset/1', changefreq: EnumChangefreq.WEEKLY, priority: 0.7 },
+      { url: '/browse/contract/1', changefreq: EnumChangefreq.WEEKLY, priority: 0.7 },
     ],
   });
 
 export const sitemap = ({ domain }: { readonly domain: string }) => {
-  const generatedSitemap = createSitemap(domain);
+  const generatedSitemap = createNewSitemap(domain);
 
   return {
     type: 'route',
@@ -27,9 +26,12 @@ export const sitemap = ({ domain }: { readonly domain: string }) => {
     name: 'sitemap',
     path: '/sitemap.xml',
     middleware: async (ctx: Context) => {
-      ctx.set('Content-Type', 'application/xml');
-      ctx.status = 200;
-      ctx.body = generatedSitemap.toString();
+      await new Promise<void>((resolve) => {
+        ctx.set('Content-Type', 'application/xml');
+        ctx.status = 200;
+        ctx.body = generatedSitemap.toString();
+        resolve();
+      });
     },
   };
 };

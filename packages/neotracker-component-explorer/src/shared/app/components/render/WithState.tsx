@@ -1,6 +1,6 @@
 // tslint:disable no-any
+import { Container } from 'constate';
 import React from 'react';
-import { Container } from 'reakit';
 
 function setState<State>(state: Partial<State>) {
   return (props: any) => {

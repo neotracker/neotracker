@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 import { type HOC, compose, pure } from 'recompose';
 import Helmet from 'react-helmet';
-import type { LocalWallet } from '@neo-one/client';
+import type { LocalWallet } from '@neo-one/client-core';
 import * as React from 'react';
 import { Redirect } from 'react-router-dom';
 

@@ -1,11 +1,11 @@
 import gql from 'graphql-tag';
 import * as React from 'react';
-import { Box, styled } from 'reakit';
+import styled from 'styled-components';
 import { AppContext } from '../AppContext';
 import { makeQuery } from '../components';
 import { HomeQuery as HomeQueryData } from './__generated__/HomeQuery';
 
-const ErrorBox = styled(Box)`
+const ErrorBox = styled.div`
   background-color: red;
   color: black;
   width: 00;
@@ -31,8 +31,8 @@ export function Home() {
     <HomeQuery>
       {({ data, error }) => {
         if (data.first !== undefined || data.second !== undefined) {
-          const first = data.first == undefined ? undefined : <Box>{data.first.hash}</Box>;
-          const second = data.second == undefined ? undefined : <Box>{data.second.hash}</Box>;
+          const first = data.first == undefined ? undefined : <div>{data.first.hash}</div>;
+          const second = data.second == undefined ? undefined : <div>{data.second.hash}</div>;
 
           return (
             <>
@@ -46,7 +46,7 @@ export function Home() {
           return <ErrorBox>Error!</ErrorBox>;
         }
 
-        return <Box>Loading...</Box>;
+        return <div>Loading...</div>;
       }}
     </HomeQuery>
   );

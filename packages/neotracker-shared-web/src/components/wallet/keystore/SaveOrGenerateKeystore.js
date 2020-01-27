@@ -1,7 +1,7 @@
 /* @flow */
 import { type HOC, compose, pure, withPropsOnChange } from 'recompose';
 import * as React from 'react';
-import type { LocalWallet } from '@neo-one/client';
+import type { LocalWallet } from '@neo-one/client-core';
 
 import { api as walletAPI } from '../../../wallet';
 
@@ -40,12 +40,12 @@ function SaveOrGenerateKeystore({
 const enhance: HOC<*, *> = compose(
   (withPropsOnChange(['wallet'], ({ wallet }: {| wallet: LocalWallet |}) => ({
     filename: walletAPI.createKeystoreFilename({
-      address: wallet.account.id.address,
+      address: wallet.userAccount.id.address,
     }),
   })): $FlowFixMe),
   pure,
 );
 
-export default (enhance(SaveOrGenerateKeystore): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  SaveOrGenerateKeystore,
+): React.ComponentType<ExternalProps>);

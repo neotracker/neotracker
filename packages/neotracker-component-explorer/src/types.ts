@@ -4,7 +4,7 @@ import * as React from 'react';
 export const REPLACE_ME = '__REPLACE_ME__';
 export const REPLACE_DATA_ME = '__REPLACE_DATA_ME__';
 
-export type ReactElement = React.ReactElement<any>;
+export type ReactElement = React.ReactElement;
 export type Props<E extends ReactElement> = E extends React.ReactElement<infer P> ? P : never;
 export interface Example<E extends ReactElement = ReactElement> {
   readonly component?: React.ComponentType<any>;
@@ -171,8 +171,9 @@ export interface LoaderRenderConfig {
   readonly proxies: ReadonlyArray<Proxy>;
 }
 
-export type ComponentProps<C extends React.ComponentType<any> | React.Component<any>> = C extends React.ComponentType<
-  infer P
->
-  ? P
-  : C extends React.Component<infer P1> ? P1 : never;
+// tslint:disable-next-line
+export type ComponentProps<C extends React.ComponentType<any> | React.Component<any>> = any;
+
+// export type ComponentProps<C extends React.ComponentType<any> | React.Component<any>> = C extends React.SFC<infer P>
+//   ? P
+//   : C extends React.ComponentClass<infer P2> ? P2 : C extends React.Component<infer P1> ? P1 : never;

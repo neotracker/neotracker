@@ -1,7 +1,11 @@
-import { metrics } from '@neo-one/monitor';
+import { AggregationType, globalStats, MeasureUnit } from '@neo-one/client-switch';
 
-// Note: Remove disable once more metrics have been added
-// tslint:disable-next-line export-name
-export const NEOTRACKER_SESSION = metrics.createCounter({
-  name: 'neotracker_session',
-});
+export const sessionCounter = globalStats.createMeasureInt64('neotracker/sessions', MeasureUnit.UNIT);
+export const NEOTRACKER_SESSION = globalStats.createView(
+  'neotracker_session',
+  sessionCounter,
+  AggregationType.COUNT,
+  [],
+  'count of total neotracker sessions',
+);
+globalStats.registerView(NEOTRACKER_SESSION);

@@ -54,7 +54,7 @@ function TransactionSummaryBody({
   dense,
   className,
   classes,
-}: Props): ?React.Element<any> {
+}: Props): React.Element<any> | null {
   const rootClassName = classNames(classes.root, className);
   // $FlowFixMe
   const type = (transaction.type: TransactionType);
@@ -144,6 +144,6 @@ const enhance: HOC<*, *> = compose(
   pure,
 );
 
-export default (enhance(TransactionSummaryBody): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  TransactionSummaryBody,
+): React.ComponentType<ExternalProps>);

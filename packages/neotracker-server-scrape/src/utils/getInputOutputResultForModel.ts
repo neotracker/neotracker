@@ -1,4 +1,3 @@
-import { Monitor } from '@neo-one/monitor';
 import {
   Asset as AssetModel,
   Transaction as TransactionModel,
@@ -12,7 +11,6 @@ import { EMPTY_INPUT_OUTPUT_RESULT, reduceInputOutputResults } from './reduceInp
 
 export async function getInputOutputResultForModel({
   context,
-  monitor,
   transactionModel,
   inputs,
   outputs,
@@ -20,7 +18,6 @@ export async function getInputOutputResultForModel({
   actionDatas,
 }: {
   readonly context: Context;
-  readonly monitor: Monitor;
   readonly transactionModel: TransactionModel;
   readonly inputs: ReadonlyArray<TransactionInputOutputModel>;
   readonly outputs: ReadonlyArray<TransactionInputOutputModel>;
@@ -73,7 +70,7 @@ export async function getInputOutputResultForModel({
   if (transactionModel.type === 'RegisterTransaction' || transactionModel.type === 'InvocationTransaction') {
     const asset = await transactionModel
       .$relatedQuery<AssetModel>('asset', context.db)
-      .context(context.makeQueryContext(monitor))
+      .context(context.makeQueryContext())
       .first();
     if (asset !== undefined) {
       assetsResult = {

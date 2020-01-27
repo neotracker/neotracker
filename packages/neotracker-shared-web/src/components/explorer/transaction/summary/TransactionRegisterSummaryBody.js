@@ -74,6 +74,6 @@ const enhance: HOC<*, *> = compose(
   pure,
 );
 
-export default (enhance(TransactionRegisterSummaryBody): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  TransactionRegisterSummaryBody,
+): React.ComponentType<ExternalProps>);

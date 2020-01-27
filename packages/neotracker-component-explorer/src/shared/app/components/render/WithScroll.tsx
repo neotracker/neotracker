@@ -1,5 +1,5 @@
+import { Container } from 'constate';
 import React from 'react';
-import { Container } from 'reakit';
 
 // tslint:disable-next-line strict-type-predicates
 const getWindow = () => (typeof window === 'undefined' ? { scrollY: 0, scrollX: 0 } : window);

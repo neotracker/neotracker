@@ -1,4 +1,4 @@
-import { ConfirmedTransaction } from '@neo-one/client';
+import { ConfirmedTransaction } from '@neo-one/client-full';
 import { TransactionInputOutput as TransactionInputOutputModel } from '@neotracker/server-db';
 import BigNumber from 'bignumber.js';
 import _ from 'lodash';

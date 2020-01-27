@@ -1,10 +1,11 @@
 /* @flow */
 import { type HOC, compose, getContext, pure, withHandlers } from 'recompose';
 import * as React from 'react';
+// $FlowFixMe
+import { webLogger } from '@neotracker/logger';
 
 import _ from 'lodash';
 
-import type { AppContext } from '../../../AppContext';
 import { api as walletAPI } from '../../../wallet';
 import OpenWalletFilePassword from './OpenWalletFilePassword';
 
@@ -95,11 +96,10 @@ const enhance: HOC<*, *> = compose(
   getContext({ appContext: () => null }),
   (withHandlers({
     read: () => (reader, file) => reader.readAsText(file),
-    onUploadFileError: ({ appContext: appContextIn }) => (error) => {
-      const appContext = ((appContextIn: $FlowFixMe): AppContext);
-      appContext.monitor.logError({
+    onUploadFileError: () => (error) => {
+      webLogger.error({
         name: 'neotracker_wallet_open_keystore_upload_file_error',
-        error,
+        error: error.message,
       });
     },
     extractWallet: () => (readerResultIn: string | Buffer) => {
@@ -127,26 +127,19 @@ const enhance: HOC<*, *> = compose(
         wallet: walletAPI.extractKeystore({ text: readerResult }),
       };
     },
-    onOpen: ({ appContext: appContextIn }) => () => {
-      const appContext = ((appContextIn: $FlowFixMe): AppContext);
-      appContext.monitor.log({
-        name: 'neotracker_wallet_open_keystore',
-        level: 'verbose',
-        error: {},
-      });
+    onOpen: () => () => {
+      webLogger.info({ title: 'neotracker_wallet_open_keystore' });
     },
-    onOpenError: ({ appContext: appContextIn }) => (error) => {
-      const appContext = ((appContextIn: $FlowFixMe): AppContext);
-      appContext.monitor.log({
-        name: 'neotracker_wallet_open_keystore',
-        level: 'verbose',
-        error: { error },
+    onOpenError: () => (error) => {
+      webLogger.error({
+        title: 'neotracker_wallet_open_keystore',
+        error: error.message,
       });
     },
   }): $FlowFixMe),
   pure,
 );
 
-export default (enhance(OpenWalletKeystore): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  OpenWalletKeystore,
+): React.ComponentType<ExternalProps>);

@@ -28,9 +28,7 @@ export class CircleCI {
     readonly jobNumber: number;
   }): Promise<JobSummary> {
     const response = await fetch(
-      `https://circleci.com/api/v1.1/project/${vcs}/${username}/${project}/${jobNumber}/retry?circle-token=${
-        this.token
-      }`,
+      `https://circleci.com/api/v1.1/project/${vcs}/${username}/${project}/${jobNumber}/retry?circle-token=${this.token}`,
       {
         method: 'POST',
       },

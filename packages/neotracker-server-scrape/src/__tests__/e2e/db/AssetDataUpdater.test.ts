@@ -1,4 +1,3 @@
-import { Monitor } from '@neo-one/monitor';
 import { Asset } from '@neotracker/server-db';
 import BigNumber from 'bignumber.js';
 import Knex from 'knex';
@@ -25,13 +24,13 @@ const inputOptions: ReadonlyArray<Partial<Asset> & Pick<Asset, 'id'>> = [
   },
 ];
 
-const initiateTest = async (db: Knex, monitor: Monitor) => {
+const initiateTest = async (db: Knex) => {
   const context = makeContext({ db });
 
   const references = await Promise.all(
     inputOptions.map((input) =>
       Asset.query(db)
-        .context(context.makeQueryContext(monitor))
+        .context(context.makeQueryContext())
         .insertAndFetch(
           data.createAsset({
             ...input,

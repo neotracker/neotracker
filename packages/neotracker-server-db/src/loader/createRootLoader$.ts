@@ -1,13 +1,10 @@
 // tslint:disable prefer-switch
-import { Monitor } from '@neo-one/monitor';
-import { pubsub } from '@neotracker/server-utils';
 import { lcFirst } from 'change-case';
 import DataLoader from 'dataloader';
 import Knex from 'knex';
 import { Model } from 'objection';
 import { combineLatest, Observable } from 'rxjs';
-import { distinctUntilChanged, map, scan, startWith } from 'rxjs/operators';
-import { PROCESSED_NEXT_INDEX } from '../createPubSub';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { BaseModel, makeQueryContext as makeQueryContextBase, QueryContext } from '../lib';
 import { Block, loaderModels as models, ProcessedIndex, Transaction } from '../models';
 import { makeCache } from './makeCache';
@@ -29,14 +26,14 @@ const getLoaderOptions = (options: Options, model: typeof BaseModel) =>
       }
     : { cache: false };
 
-const makeMaxIndexFetcher = (db: Knex, monitor: Monitor, makeQueryContext: ((monitor: Monitor) => QueryContext)) => {
+const makeMaxIndexFetcher = (db: Knex, makeQueryContext: () => QueryContext) => {
   let maxIndex: number | undefined;
 
   return {
     async get(): Promise<number> {
       if (maxIndex === undefined) {
         maxIndex = await ProcessedIndex.query(db)
-          .context(makeQueryContext(monitor))
+          .context(makeQueryContext())
           .max('index')
           .first()
           .then((result) => {
@@ -53,7 +50,7 @@ const makeMaxIndexFetcher = (db: Knex, monitor: Monitor, makeQueryContext: ((mon
           .then(Number);
       }
 
-      return maxIndex;
+      return maxIndex as number;
     },
     reset(): void {
       maxIndex = undefined;
@@ -79,24 +76,19 @@ interface LoadersByEdgeMutable {
 const createLoaders = ({
   db,
   options,
-  monitor,
   makeQueryContext,
 }: {
   readonly db: Knex;
   readonly options: Options;
-  readonly monitor: Monitor;
-  readonly makeQueryContext: ((monitor: Monitor) => QueryContext);
+  readonly makeQueryContext: () => QueryContext;
 }): {
   readonly loaders: Loaders;
   readonly loadersByField: LoadersByField;
   readonly loadersByEdge: LoadersByEdge;
-  readonly blockHashLoader: DataLoader<{ readonly id: string; readonly monitor: Monitor }, Block | undefined>;
-  readonly transactionHashLoader: DataLoader<
-    { readonly id: string; readonly monitor: Monitor },
-    Transaction | undefined
-  >;
+  readonly blockHashLoader: DataLoader<{ readonly id: string }, Block | undefined>;
+  readonly transactionHashLoader: DataLoader<{ readonly id: string }, Transaction | undefined>;
 
-  readonly maxIndexFetcher: { readonly get: (() => Promise<number>); readonly reset: (() => void) };
+  readonly maxIndexFetcher: { readonly get: () => Promise<number>; readonly reset: () => void };
 } => {
   const mutableLoaders: LoadersMutable = {};
   const mutableLoadersByField: LoadersByFieldMutable = {};
@@ -147,11 +139,14 @@ const createLoaders = ({
     Object.entries(model.modelSchema.edges === undefined ? {} : model.modelSchema.edges).forEach(
       ([edgeName, edgeType]) => {
         if (
+          // tslint:disable-next-line: strict-comparisons
           edgeType.relation.relation === Model.HasOneRelation ||
+          // tslint:disable-next-line: strict-comparisons
           edgeType.relation.relation === Model.BelongsToOneRelation ||
+          // tslint:disable-next-line: strict-comparisons
           edgeType.relation.relation === Model.HasManyRelation
         ) {
-          // tslint:disable-next-line no-any
+          // tslint:disable-next-line no-any no-unnecessary-type-assertion
           const modelClass: typeof BaseModel = edgeType.relation.modelClass as any;
           // @ts-ignore
           const result = edgeType.relation.join.to.split('.');
@@ -161,8 +156,12 @@ const createLoaders = ({
             db,
             modelClass,
             fieldName,
+            // tslint:disable-next-line: strict-comparisons
             plural: edgeType.relation.relation === Model.HasManyRelation,
-            filter: edgeType.relation.filter,
+            filter:
+              typeof edgeType.relation.filter === 'object' || typeof edgeType.relation.filter === 'string'
+                ? undefined
+                : edgeType.relation.filter,
             makeQueryContext,
             options: getLoaderOptions(options, modelClass),
           });
@@ -207,7 +206,7 @@ const createLoaders = ({
     }),
   );
 
-  const maxIndexFetcher = makeMaxIndexFetcher(db, monitor, makeQueryContext);
+  const maxIndexFetcher = makeMaxIndexFetcher(db, makeQueryContext);
 
   return {
     loaders: mutableLoaders,
@@ -219,14 +218,13 @@ const createLoaders = ({
   };
 };
 
-export const createRootLoader = (db: Knex, options: Options, rootMonitor: Monitor) => {
+export const createRootLoader = (db: Knex, options: Options) => {
   let rootLoader: RootLoader;
   const getRootLoader = () => rootLoader;
-  const makeQueryContext = (monitor: Monitor) =>
+  const makeQueryContext = () =>
     makeQueryContextBase({
       rootLoader: getRootLoader,
       isAllPowerful: false,
-      monitor,
     });
 
   const {
@@ -236,15 +234,14 @@ export const createRootLoader = (db: Knex, options: Options, rootMonitor: Monito
     blockHashLoader,
     transactionHashLoader,
     maxIndexFetcher,
-  } = createLoaders({ db, options, monitor: rootMonitor, makeQueryContext });
+  } = createLoaders({ db, options, makeQueryContext });
   rootLoader = new RootLoader({
     db,
     makeQueryContext,
-    makeAllPowerfulQueryContext: (monitor) =>
+    makeAllPowerfulQueryContext: () =>
       makeQueryContextBase({
         rootLoader: getRootLoader,
         isAllPowerful: true,
-        monitor,
       }),
     loaders,
     loadersByField,
@@ -260,23 +257,10 @@ export const createRootLoader = (db: Knex, options: Options, rootMonitor: Monito
 export const createRootLoader$ = ({
   db$,
   options$,
-  monitor,
 }: {
   readonly db$: Observable<Knex>;
   readonly options$: Observable<Options>;
-  readonly monitor: Monitor;
 }): Observable<RootLoader> =>
-  combineLatest(
-    combineLatest(db$, options$).pipe(map(([db, options]) => createRootLoader(db, options, monitor))),
-    pubsub.observable$(PROCESSED_NEXT_INDEX).pipe(startWith(0)),
-  ).pipe(
-    // tslint:disable-next-line no-any
-    scan((prevRootLoader: RootLoader, [nextRootLoader]: [RootLoader, any]) => {
-      if (prevRootLoader === nextRootLoader) {
-        nextRootLoader.reset();
-      }
-
-      return nextRootLoader;
-    }, undefined),
-    distinctUntilChanged(),
-  );
+  combineLatest([db$, options$])
+    .pipe(map(([db, options]) => createRootLoader(db, options)))
+    .pipe(distinctUntilChanged());

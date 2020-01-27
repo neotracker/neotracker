@@ -14,17 +14,17 @@ export const utils = (api: Github) => ({
     repo: string;
     // tslint:disable-next-line:no-any
   }): Promise<ReadonlyArray<any>> => {
-    const commitsResponse = await api.pullRequests.getCommits({
+    const commitsResponse = await api.pullRequests.listCommits({
       number: issueNumber,
       owner,
       repo,
     });
     const commit = commitsResponse.data[commitsResponse.data.length - 1];
-    if (commit.sha === undefined) {
+    if ((commit.sha as string | undefined) === undefined) {
       return [];
     }
 
-    const statusesResponse = await api.repos.getStatuses({
+    const statusesResponse = await api.repos.listStatusesForRef({
       ref: commit.sha,
       owner,
       repo,

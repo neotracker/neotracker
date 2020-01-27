@@ -1,10 +1,10 @@
-import * as React from 'react';
-import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
-
 // @ts-ignore
 import { App, AppContext, createTheme, ThemeProvider } from '@neotracker/shared-web';
+import * as React from 'react';
+// @ts-ignore
 import { hydrate, render, unmountComponentAtNode } from 'react-dom';
+import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 
 // tslint:disable-next-line no-let no-any
 let container: any;

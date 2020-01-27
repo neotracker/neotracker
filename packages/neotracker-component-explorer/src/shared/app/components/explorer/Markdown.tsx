@@ -4,11 +4,11 @@ import React from 'react';
 // tslint:disable-next-line no-submodule-imports
 import { MdOpenInNew as OpenInNewIcon } from 'react-icons/md';
 import { Link as RouterLink } from 'react-router-dom';
-import { Code, Heading, Link, List, Paragraph, styled } from 'reakit';
+import styled from 'styled-components';
 import { Blockquote } from './Blockquote';
 import { Editor } from './Editor';
 
-const StyledParagraph = styled(Paragraph)`
+const StyledParagraph = styled.p`
   line-height: 1.5;
 
   @media (max-width: 768px) {
@@ -16,13 +16,13 @@ const StyledParagraph = styled(Paragraph)`
   }
 `;
 
-const StyledHeading = styled(Heading)`
+const StyledHeading = styled.h1`
   @media (max-width: 768px) {
     padding: 0 16px;
   }
 `;
 
-const StyledList = styled(List)`
+const StyledList = styled.ol`
   list-style: initial;
   padding-left: 2em;
 
@@ -35,14 +35,14 @@ const StyledList = styled(List)`
 const Anchor = ({ href, ...props }: any) => {
   if (/^(http|www)/.test(href)) {
     return (
-      <Link href={href} target="_blank" {...props}>
+      <a href={href} target="_blank" {...props}>
         {props.children}
         <OpenInNewIcon />
-      </Link>
+      </a>
     );
   }
 
-  return <Link as={RouterLink} to={href} {...props} />;
+  return <a as={RouterLink} to={href} {...props} />;
 };
 
 // tslint:disable-next-line no-any
@@ -50,23 +50,24 @@ const CodeBlock = ({ children }: any) => (
   <Editor readOnly code={unescape(children.props.children.replace(/<[^>]+>/g, ''))} />
 );
 
-// tslint:disable-next-line no-any
-const asComponent = (component: React.ComponentType<any>, as: string) => ({ component, props: { as } });
+const StyledCode = styled.code`
+  /* empty for now */
+`;
 
 const overrides = {
   p: StyledParagraph,
   a: Anchor,
   ul: StyledList,
-  code: Code,
+  code: StyledCode,
   pre: CodeBlock,
   blockquote: Blockquote,
-  ol: asComponent(List, 'ol'),
-  h1: asComponent(StyledHeading, 'h1'),
-  h2: asComponent(StyledHeading, 'h2'),
-  h3: asComponent(StyledHeading, 'h3'),
-  h4: asComponent(StyledHeading, 'h4'),
-  h5: asComponent(StyledHeading, 'h5'),
-  h6: asComponent(StyledHeading, 'h6'),
+  ol: StyledList,
+  h1: StyledHeading.withComponent('h1'),
+  h2: StyledHeading.withComponent('h2'),
+  h3: StyledHeading.withComponent('h3'),
+  h4: StyledHeading.withComponent('h4'),
+  h5: StyledHeading.withComponent('h5'),
+  h6: StyledHeading.withComponent('h6'),
 };
 
 export const Markdown = ({ text }: { readonly text: string }) => compiler(text, { overrides, forceBlock: true });

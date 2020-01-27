@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Helmet from 'react-helmet';
-import { Base } from 'reakit';
 import styled, { ThemeProvider } from 'styled-components';
 import { AppContext } from './AppContext';
 import { AppContextProvider, WithAppOptions, WithRouter } from './components';
@@ -8,7 +7,7 @@ import { createTheme } from './theme';
 
 const theme = createTheme();
 
-const Root = styled(Base)`
+const Root = styled.div`
   height: 100%;
 `;
 

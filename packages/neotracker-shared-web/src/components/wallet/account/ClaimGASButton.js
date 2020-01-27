@@ -1,6 +1,6 @@
 /* @flow */
 import * as React from 'react';
-import type { UserAccount } from '@neo-one/client';
+import type { UserAccount } from '@neo-one/client-common';
 
 import classNames from 'classnames';
 import { type HOC, compose, getContext, pure, withHandlers } from 'recompose';
@@ -60,7 +60,7 @@ function ClaimGASButton({
         className={classes.button}
         disabled={claiming}
         onClick={onClaimGas}
-        variant="raised"
+        variant="contained"
         color="primary"
       >
         <Typography className={classes.buttonText} variant="body1">

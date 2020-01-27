@@ -78,8 +78,8 @@ export namespace Files {
 
   export interface Response
     extends ResponseBase<{
-        readonly files: ReadonlyArray<string>;
-      }> {
+      readonly files: ReadonlyArray<string>;
+    }> {
     readonly type: MessageType.Files;
   }
 }

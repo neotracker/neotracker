@@ -40,7 +40,7 @@ function GenerateKeystore({
       replace={!!replace}
       to={routes.WALLET_CREATE_KEYSTORE}
     >
-      <Button className={className} variant="raised" color="primary">
+      <Button className={className} variant="contained" color="primary">
         <Typography className={classes.buttonText} variant="body1">
           CREATE KEYSTORE
         </Typography>

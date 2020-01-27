@@ -1,9 +1,9 @@
 import React from 'react';
-import { Flex, styled } from 'reakit';
-import { ComponentProps } from '../../../../types';
+import styled from 'styled-components';
 import { Footer, Header } from '../explorer';
 
-const Wrapper = styled(Flex)`
+const Wrapper = styled.div`
+  display: flex;
   flex-direction: column;
   background-color: white;
   color: ${({ theme }) => theme.black};
@@ -20,7 +20,8 @@ const StyledHeader = styled(Header)`
   box-shadow: 0 0 1px rgba(0, 0, 0, 0.25);
 `;
 
-const Content = styled(Flex)`
+const Content = styled.div`
+  display: flex;
   position: relative;
   flex-direction: column;
   align-items: center;
@@ -32,10 +33,7 @@ const StyledFooter = styled(Footer)`
   margin-top: auto;
 `;
 
-export const CoreLayout = ({
-  children,
-  ...props
-}: { readonly children: React.ReactNode } & ComponentProps<typeof Flex>) => (
+export const CoreLayout = ({ children, ...props }: { readonly children: React.ReactNode }) => (
   <Wrapper {...props}>
     <StyledHeader />
     <Content>{children}</Content>

@@ -1,12 +1,5 @@
-import {
-  addressToScriptHash,
-  ConfirmedTransaction,
-  Contract,
-  nep5,
-  ReadSmartContractAny,
-  RegisterTransaction,
-} from '@neo-one/client';
-import { Monitor } from '@neo-one/monitor';
+import { addressToScriptHash, ConfirmedTransaction, Contract, nep5, RegisterTransaction } from '@neo-one/client-full';
+import { createChild, serverLogger } from '@neotracker/logger';
 import {
   Asset as AssetModel,
   Contract as ContractModel,
@@ -18,6 +11,8 @@ import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import { Context } from '../types';
 import { strip0x } from './strip0x';
+
+const serverScrapeLogger = createChild(serverLogger, { component: 'scrape' });
 
 const getAsset = (transaction: ConfirmedTransaction, blockTime: number): Partial<AssetModel> | undefined => {
   // tslint:disable-next-line deprecation
@@ -68,14 +63,12 @@ const checkIsNEP5 = async (context: Context, contract: Contract) => {
 };
 
 const getContractAndAsset = async ({
-  monitor,
   context,
   transaction,
   contract,
   blockIndex,
   blockTime,
 }: {
-  readonly monitor: Monitor;
   readonly context: Context;
   readonly transaction: ConfirmedTransaction;
   readonly contract: Contract;
@@ -84,7 +77,7 @@ const getContractAndAsset = async ({
 }): Promise<{
   readonly asset: Partial<AssetModel> | undefined;
   readonly contract: Partial<ContractModel> & { readonly id: string };
-  readonly nep5Contract: ReadSmartContractAny | undefined;
+  readonly nep5Contract: nep5.NEP5SmartContract | undefined;
 }> => {
   const isNEP5 = await checkIsNEP5(context, contract);
 
@@ -106,20 +99,22 @@ const getContractAndAsset = async ({
     type: isNEP5 ? NEP5_CONTRACT_TYPE : UNKNOWN_CONTRACT_TYPE,
   };
   let asset: Partial<AssetModel> | undefined;
-  let nep5Contract: ReadSmartContractAny | undefined;
+  let nep5Contract: nep5.NEP5SmartContract | undefined;
   if (isNEP5) {
     try {
-      const decimals = await nep5.getDecimals(context.client, contract.address);
+      const networks = {
+        [context.network]: {
+          address: contract.address,
+        },
+      };
+      const decimals = await nep5.getDecimals(context.fullClient, networks, context.network);
       // tslint:disable-next-line no-any
-      nep5Contract = nep5.createNEP5ReadSmartContract(context.client, contract.address, decimals) as any;
-      if (nep5Contract === undefined) {
-        throw new Error('For TS');
-      }
+      nep5Contract = nep5.createNEP5SmartContract(context.fullClient, networks, decimals);
 
       const [name, symbol, totalSupply] = await Promise.all([
-        nep5Contract.name(monitor),
-        nep5Contract.symbol(monitor),
-        nep5Contract.totalSupply(monitor).catch(() => new BigNumber(0)),
+        nep5Contract.name(),
+        nep5Contract.symbol(),
+        nep5Contract.totalSupply().catch(() => new BigNumber(0)),
       ]);
 
       asset = {
@@ -143,10 +138,7 @@ const getContractAndAsset = async ({
         aggregate_block_id: -1,
       };
     } catch (error) {
-      monitor.logError({
-        name: 'scrape_process_nep5_asset_error',
-        error,
-      });
+      serverScrapeLogger.error({ title: 'scrape_process_nep5_asset_error', error: error.message });
     }
   }
 
@@ -154,13 +146,11 @@ const getContractAndAsset = async ({
 };
 
 const getContracts = async ({
-  monitor,
   context,
   transaction,
   blockIndex,
   blockTime,
 }: {
-  readonly monitor: Monitor;
   readonly context: Context;
   readonly transaction: ConfirmedTransaction;
   readonly blockIndex: number;
@@ -168,7 +158,7 @@ const getContracts = async ({
 }): Promise<{
   readonly assets: ReadonlyArray<Partial<AssetModel>>;
   readonly contracts: ReadonlyArray<Partial<ContractModel>>;
-  readonly nep5Contracts: ReadonlyArray<{ readonly contractID: string; readonly nep5Contract: ReadSmartContractAny }>;
+  readonly nep5Contracts: ReadonlyArray<{ readonly contractID: string; readonly nep5Contract: nep5.NEP5SmartContract }>;
 }> => {
   let contracts: ReadonlyArray<Contract> = [];
   if (transaction.type === 'InvocationTransaction') {
@@ -180,31 +170,26 @@ const getContracts = async ({
   }
 
   const results = await Promise.all(
-    contracts.map(async (contract) =>
-      getContractAndAsset({ monitor, context, transaction, contract, blockIndex, blockTime }),
-    ),
+    contracts.map(async (contract) => getContractAndAsset({ context, transaction, contract, blockIndex, blockTime })),
   );
 
   return {
     assets: results.map(({ asset }) => asset).filter(utils.notNull),
     contracts: results.map(({ contract }) => contract),
     nep5Contracts: results
-      .map(
-        ({ contract, nep5Contract }) =>
-          nep5Contract === undefined ? undefined : { contractID: contract.id, nep5Contract },
+      .map(({ contract, nep5Contract }) =>
+        nep5Contract === undefined ? undefined : { contractID: contract.id, nep5Contract },
       )
       .filter(utils.notNull),
   };
 };
 
 export const getAssetsAndContractsForClient = async ({
-  monitor,
   context,
   transactions,
   blockIndex,
   blockTime,
 }: {
-  readonly monitor: Monitor;
   readonly context: Context;
   readonly transactions: ReadonlyArray<{
     readonly transaction: ConfirmedTransaction;
@@ -219,7 +204,7 @@ export const getAssetsAndContractsForClient = async ({
 }> => {
   const assets = transactions.map(({ transaction }) => getAsset(transaction, blockTime)).filter(utils.notNull);
   const results = await Promise.all(
-    transactions.map(async ({ transaction }) => getContracts({ monitor, context, transaction, blockIndex, blockTime })),
+    transactions.map(async ({ transaction }) => getContracts({ context, transaction, blockIndex, blockTime })),
   );
 
   return {

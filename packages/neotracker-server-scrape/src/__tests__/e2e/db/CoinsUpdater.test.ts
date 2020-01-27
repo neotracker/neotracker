@@ -1,4 +1,3 @@
-import { Monitor } from '@neo-one/monitor';
 import { Coin as CoinModel } from '@neotracker/server-db';
 import Knex from 'knex';
 import { CoinsSave, CoinsUpdater } from '../../../db/CoinsUpdater';
@@ -6,12 +5,12 @@ import { CoinModelChange } from '../../../types';
 import { data, makeContext } from '../../data';
 import { updaterUnitTest, UpdaterUtilTestOptions } from '../../data/updaterTestUtil';
 
-const initiateTest = async (db: Knex, monitor: Monitor) => {
+const initiateTest = async (db: Knex) => {
   const context = makeContext({ db });
 
   const references = await Promise.all([
     CoinModel.query(db)
-      .context(context.makeQueryContext(monitor))
+      .context(context.makeQueryContext())
       .insertAndFetch(data.createCoin({ id: '1'.repeat(8) })),
   ]);
 

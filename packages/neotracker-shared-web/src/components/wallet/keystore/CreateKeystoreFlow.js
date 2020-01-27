@@ -1,8 +1,11 @@
 /* @flow */
-import type { UnlockedLocalWallet } from '@neo-one/client';
+import type { UnlockedWallet } from '@neo-one/client-core';
+import { globalStats } from '@neo-one/client-switch';
 import * as React from 'react';
 
 import { type HOC, compose, getContext, pure, withHandlers } from 'recompose';
+// $FlowFixMe
+import { webLogger } from '@neotracker/logger';
 // $FlowFixMe
 import { labels } from '@neotracker/shared-utils';
 import { withRouter } from 'react-router-dom';
@@ -12,11 +15,16 @@ import { NewWalletFlowBase } from '../new';
 
 import { addShowSnackbarError } from '../../../utils';
 import { api as walletAPI } from '../../../wallet';
-import * as metrics from '../../../metrics';
+import {
+  passwordFailures,
+  passwordsTotal,
+  privateKeyTotal,
+  totalKeystores,
+} from '../../../metrics';
 import * as routes from '../../../routes';
 
 type ExternalProps = {|
-  wallet: UnlockedLocalWallet,
+  wallet: UnlockedWallet,
   className?: string,
 |};
 type InternalProps = {|
@@ -34,7 +42,7 @@ function NewWalletFlow({
   onCreateKeystore,
   onContinueKeystore,
   onContinuePrivateKey,
-}: Props): ?React.Element<any> {
+}: Props): React.Element<any> | null {
   return (
     <NewWalletFlowBase
       className={className}
@@ -59,60 +67,58 @@ const enhance: HOC<*, *> = compose(
     }) => async (password: string) => {
       const appContext = ((appContextIn: $FlowFixMe): AppContext);
       try {
-        await appContext.monitor
-          .withLabels({
-            [labels.CREATE_KEYSTORE_NEW]: false,
-          })
-          .captureLog(
-            () =>
-              walletAPI.convertAccount({
-                appContext,
-                wallet,
-                password,
-              }),
-            {
-              name: 'neotracker_wallet_new_flow_password',
-              level: 'verbose',
-              error: {
-                metric:
-                  metrics.NEOTRACKER_WALLET_NEW_FLOW_PASSWORD_FAILURES_TOTAL,
-              },
-              metric: metrics.NEOTRACKER_WALLET_NEW_FLOW_PASSWORD_TOTAL,
-            },
-          );
+        webLogger.info({
+          title: 'neotracker_wallet_new_flow_password',
+          [labels.CREATE_KEYSTORE_NEW]: false,
+        });
+        globalStats.record([
+          {
+            measure: passwordsTotal,
+            value: 1,
+          },
+        ]);
+        await walletAPI.convertAccount({
+          appContext,
+          wallet,
+          password,
+        });
       } catch (error) {
+        webLogger.error({
+          title: 'neotracker_wallet_new_flow_password',
+          [labels.CREATE_KEYSTORE_NEW]: false,
+        });
+        globalStats.record([
+          {
+            measure: passwordFailures,
+            value: 1,
+          },
+        ]);
         showSnackbarError(error);
       }
     },
-    onContinueKeystore: ({ appContext: appContextIn }) => () => {
-      const appContext = ((appContextIn: $FlowFixMe): AppContext);
-      appContext.monitor
-        .withLabels({
-          [labels.CREATE_KEYSTORE_NEW]: false,
-        })
-        .log({
-          name: 'neotracker_wallet_new_flow_keystore',
-          error: {
-            metric: metrics.NEOTRACKER_WALLET_NEW_FLOW_KEYSTORE_FAILURES_TOTAL,
-          },
-          metric: metrics.NEOTRACKER_WALLET_NEW_FLOW_KEYSTORE_TOTAL,
-        });
+    onContinueKeystore: () => () => {
+      webLogger.info({
+        title: 'neotracker_wallet_new_flow_keystore',
+        [labels.CREATE_KEYSTORE_NEW]: false,
+      });
+      globalStats.record([
+        {
+          measure: totalKeystores,
+          value: 1,
+        },
+      ]);
     },
-    onContinuePrivateKey: ({ appContext: appContextIn, history }) => () => {
-      const appContext = ((appContextIn: $FlowFixMe): AppContext);
-      appContext.monitor
-        .withLabels({
-          [labels.CREATE_KEYSTORE_NEW]: false,
-        })
-        .log({
-          name: 'neotracker_wallet_new_flow_private_key',
-          level: 'verbose',
-          error: {
-            metric:
-              metrics.NEOTRACKER_WALLET_NEW_FLOW_PRIVATE_KEY_FAILURES_TOTAL,
-          },
-          metric: metrics.NEOTRACKER_WALLET_NEW_FLOW_PRIVATE_KEY_TOTAL,
-        });
+    onContinuePrivateKey: ({ history }) => () => {
+      webLogger.info({
+        title: 'neotracker_wallet_new_flow_private_key',
+        [labels.CREATE_KEYSTORE_NEW]: false,
+      });
+      globalStats.record([
+        {
+          measure: privateKeyTotal,
+          value: 1,
+        },
+      ]);
       history.replace(routes.WALLET_HOME);
     },
   }),

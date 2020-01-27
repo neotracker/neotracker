@@ -1,7 +1,8 @@
-import { Monitor } from '@neo-one/monitor';
+import { createChild, serverLogger } from '@neotracker/logger';
 import { Client, Notification } from 'pg';
 import { Observable, Observer, Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
+import { DBClient } from './db';
 
 export const PROCESSED_NEXT_INDEX = 'processed_next_index';
 
@@ -13,12 +14,14 @@ export interface PubSub<T> {
 
 export interface PubSubOptions {
   readonly db?: {
-    readonly client?: 'pg' | 'sqlite3';
-    readonly connection?: {
-      readonly user?: string;
-      readonly database?: string;
-      readonly password?: string;
-    };
+    readonly client?: DBClient;
+    readonly connection?:
+      | string
+      | {
+          readonly user?: string;
+          readonly database?: string;
+          readonly password?: string;
+        };
   };
   readonly maxAttempts?: number;
   readonly reconnectTimeMS?: number;
@@ -28,13 +31,13 @@ export interface PubSubEnvironment {
   readonly port?: number;
 }
 
+const serverDBLogger = createChild(serverLogger, { component: 'database' });
+
 const createPGPubSub = <T>({
   options,
   channel,
   environment,
-  monitor,
 }: {
-  readonly monitor: Monitor;
   readonly channel: string;
   readonly options: PubSubOptions;
   readonly environment: PubSubEnvironment;
@@ -42,10 +45,20 @@ const createPGPubSub = <T>({
   const { maxAttempts = 5, reconnectTimeMS = 5000 } = options;
 
   let connected = false;
+  const db = options.db !== undefined ? options.db : {};
+  const clientOptions =
+    typeof db.connection === 'string'
+      ? {
+          connectionString: db.connection,
+        }
+      : db.connection === undefined
+      ? {}
+      : db.connection;
+
   const createClient = () =>
     new Client({
       ...environment,
-      ...(options.db === undefined || options.db.connection === undefined ? {} : options.db.connection),
+      ...clientOptions,
     });
 
   let client = createClient();
@@ -70,7 +83,7 @@ const createPGPubSub = <T>({
       currentClient.removeAllListeners();
       await currentClient.end();
     } catch (error) {
-      monitor.logError({ name: 'pg_pubsub_close_error', error });
+      serverDBLogger.error({ title: 'pg_pubsub_close_error', error: error.message });
     }
   };
 
@@ -84,7 +97,7 @@ const createPGPubSub = <T>({
       });
   };
 
-  const value$ = Observable.create((observer: Observer<T>) => {
+  const value$ = new Observable((observer: Observer<T>) => {
     const listener = (data: Notification) => {
       observer.next(data.payload === undefined ? undefined : JSON.parse(data.payload));
     };
@@ -100,16 +113,16 @@ const createPGPubSub = <T>({
 
         client.on('notification', listener);
         client.on('error', (error) => {
-          monitor.logError({ name: 'pg_pubsub_client_error', error });
+          serverDBLogger.error({ title: 'pg_pubsub_client_error', error: error.message });
           doListen();
         });
         client.on('end', () => {
-          monitor.logError({ name: 'pg_pubsub_client_end_error', error: new Error('Unexpected end') });
+          serverDBLogger.error({ title: 'pg_pubsub_client_end_error', error: new Error('Unexpected end') });
           doListen();
         });
         attempts = 0;
       } catch (error) {
-        monitor.logError({ name: 'pg_pubsub_error', error });
+        serverDBLogger.error({ title: 'pg_pubsub_error', error: error.message });
         if (attempts >= maxAttempts) {
           throw error;
         }
@@ -151,22 +164,23 @@ export const createPubSub = <T>({
   options,
   channel,
   environment,
-  monitor,
 }: {
-  readonly monitor: Monitor;
   readonly channel: string;
   readonly options: PubSubOptions;
   readonly environment: PubSubEnvironment;
 }): PubSub<T> => {
   if (options.db !== undefined && options.db.client === 'pg') {
-    return createPGPubSub({ options, channel, environment, monitor });
+    return createPGPubSub({ options, channel, environment });
   }
 
   const subject$ = new Subject<T>();
 
   return {
     next: async (value: T) => {
-      subject$.next(value);
+      await new Promise<void>((resolve) => {
+        subject$.next(value);
+        resolve();
+      });
     },
     value$: subject$,
     close: () => {

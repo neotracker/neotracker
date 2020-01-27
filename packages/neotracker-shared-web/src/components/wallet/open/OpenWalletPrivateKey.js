@@ -11,7 +11,9 @@ import { Link } from 'react-router-dom';
 import * as React from 'react';
 
 import classNames from 'classnames';
-import { privateKeyToAddress, wifToPrivateKey } from '@neo-one/client';
+import { privateKeyToAddress, wifToPrivateKey } from '@neo-one/client-common';
+// $FlowFixMe
+import { webLogger } from '@neotracker/logger';
 // $FlowFixMe
 import { sanitizeError } from '@neotracker/shared-utils';
 
@@ -82,7 +84,7 @@ function OpenWalletPrivateKey({
       <div className={classNames(classes.submitArea, classes.unlockedArea)}>
         <GenerateKeystore className={classes.generateKeystore} replace />
         <Link className={classes.link} replace to={routes.WALLET_HOME}>
-          <Button variant="raised" color="primary">
+          <Button variant="contained" color="primary">
             <Typography className={classes.buttonText} variant="body1">
               GO TO WALLET
             </Typography>
@@ -161,9 +163,9 @@ const enhance: HOC<*, *> = compose(
     }) => () => {
       const appContext = ((appContextIn: $FlowFixMe): AppContext);
       const logError = (error: Error) => {
-        appContext.monitor.logError({
-          name: 'neotracker_wallet_open_private_key_error',
-          error,
+        webLogger.error({
+          title: 'neotracker_wallet_open_private_key_error',
+          error: error.message,
         });
       };
 
@@ -226,16 +228,13 @@ const enhance: HOC<*, *> = compose(
           logError(error);
           onError(sanitizeError(error).clientMessage);
         });
-      appContext.monitor.log({
-        name: 'neotracker_wallet_open_private_key',
-        level: 'verbose',
-      });
+      webLogger.info({ title: 'neotracker_wallet_open_private_key' });
     },
   }),
   withStyles(styles),
   pure,
 );
 
-export default (enhance(OpenWalletPrivateKey): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  OpenWalletPrivateKey,
+): React.ComponentType<ExternalProps>);

@@ -1,8 +1,7 @@
 import { ExecutionResult } from '@neotracker/shared-graphql';
-import { FieldNode, GraphQLObjectType } from 'graphql';
+import { FieldNode, getOperationRootType, GraphQLObjectType } from 'graphql';
 import { locatedError } from 'graphql/error/locatedError';
 import {
-  addPath,
   assertValidExecutionArguments,
   buildExecutionContext,
   buildResolveInfo,
@@ -10,14 +9,13 @@ import {
   execute,
   ExecutionContext,
   getFieldDef,
-  getOperationRootType,
   resolveFieldValueOrError,
-  responsePathAsArray,
 } from 'graphql/execution/execute';
 // @ts-ignore
 import invariant from 'graphql/jsutils/invariant';
 // @ts-ignore
 import { ObjMap } from 'graphql/jsutils/ObjMap';
+import { addPath, pathToArray } from 'graphql/jsutils/Path';
 import { DocumentNode } from 'graphql/language/ast';
 import { GraphQLFieldResolver } from 'graphql/type/definition';
 import { GraphQLSchema } from 'graphql/type/schema';
@@ -89,7 +87,7 @@ const getFieldLiveQuery = async ({
         // Reject with a located GraphQLError if subscription source fails
         // to resolve.
         if (subscription instanceof Error) {
-          const error = locatedError(subscription, fieldNodes, responsePathAsArray(path));
+          const error = locatedError(subscription, fieldNodes, pathToArray(path));
 
           reject(error);
         }
@@ -140,7 +138,7 @@ export const getLiveQuery = async ({
   // tslint:disable-next-line no-any
   readonly fieldResolver?: GraphQLFieldResolver<any, any> | undefined;
   readonly createObservable?: boolean;
-}): Promise<ReadonlyArray<[string, Observable<ExecutionResult>]>> => {
+}): Promise<ReadonlyArray<readonly [string, Observable<ExecutionResult>]>> => {
   // If arguments are missing or incorrectly typed, this is an internal
   // developer mistake which should throw an early error.
   assertValidExecutionArguments(schema, document, variableValues);
@@ -180,7 +178,7 @@ export const getLiveQuery = async ({
   };
 
   return Promise.all(
-    responseNames.map<Promise<[string, Observable<ExecutionResult>]>>(async (responseName) => {
+    responseNames.map<Promise<readonly [string, Observable<ExecutionResult>]>>(async (responseName) => {
       const fieldLiveQuery$ = await getFieldLiveQuery({
         exeContext: executionContext,
         schema,
@@ -191,7 +189,7 @@ export const getLiveQuery = async ({
         rootValue,
       });
 
-      return [responseName, fieldLiveQuery$];
+      return [responseName, fieldLiveQuery$] as const;
     }),
   );
 };

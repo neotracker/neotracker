@@ -6,7 +6,7 @@ export const setupProcessListeners = ({
   exit,
 }: {
   readonly title: string;
-  readonly exit: ((exitCode: number) => Promise<void> | void);
+  readonly exit: (exitCode: number) => Promise<void> | void;
 }) => {
   process.on('uncaughtException', (error) => {
     logError({
@@ -18,11 +18,10 @@ export const setupProcessListeners = ({
     exit(1);
   });
 
-  process.on('unhandledRejection', (error) => {
+  process.on('unhandledRejection', () => {
     logError({
       title,
       message: 'Unhandled Rejection',
-      error,
     });
   });
 

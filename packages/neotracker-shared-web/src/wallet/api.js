@@ -1,4 +1,6 @@
 /* @flow */
+// $FlowFixMe
+import { webLogger } from '@neotracker/logger';
 import {
   NEO_ASSET_HASH_0X,
   ClientError,
@@ -7,14 +9,13 @@ import {
   // $FlowFixMe
 } from '@neotracker/shared-utils';
 import BigNumber from 'bignumber.js';
+import { type UnlockedWallet, nep5 } from '@neo-one/client-core';
 import {
   type PrivateKeyString,
-  type UnlockedLocalWallet,
   type UserAccountID,
-  nep5,
-  privateKeyToAddress,
   isNEP2 as clientIsNEP2,
-} from '@neo-one/client';
+  privateKeyToAddress,
+} from '@neo-one/client-common';
 
 import { combineLatest, of as _of } from 'rxjs';
 import { compose, getContext, mapPropsStream } from 'recompose';
@@ -53,29 +54,29 @@ const doConvertAccount = async ({
   password,
 }: {|
   appContext: AppContext,
-  wallet: UnlockedLocalWallet,
+  wallet: UnlockedWallet,
   password: string,
 |}): Promise<void> => {
   const { localStorage, memory } = client.providers;
   const { account, privateKey } = wallet;
 
-  await memory.keystore.deleteAccount(account.id);
+  await memory.keystore.deleteUserAccount(account.id);
   try {
-    await localStorage.keystore.addAccount({
+    await localStorage.keystore.addUserAccount({
       network: account.id.network,
       name: account.name,
       privateKey,
       password,
     });
-    await client.selectAccount(account.id);
+    await client.selectUserAccount(account.id);
   } catch (error) {
     try {
-      await memory.keystore.addAccount({
+      await memory.keystore.addUserAccount({
         network: account.id.network,
         name: account.name,
         privateKey,
       });
-      await client.selectAccount(account.id);
+      await client.selectUserAccount(account.id);
     } catch (err) {
       // ignore errors
     }
@@ -85,7 +86,7 @@ const doConvertAccount = async ({
 
 export const convertAccount = async (input: {|
   appContext: AppContext,
-  wallet: UnlockedLocalWallet,
+  wallet: UnlockedWallet,
   password: string,
 |}): Promise<void> => {
   try {
@@ -244,7 +245,7 @@ export const unlockWalletDeprecated = async ({
     password,
   });
   const { client, network } = appContext;
-  await client.providers.localStorage.keystore.addAccount({
+  await client.providers.localStorage.keystore.addUserAccount({
     network,
     name: wallet.name,
     privateKey,
@@ -364,16 +365,17 @@ export const doSendAsset = async ({
   assetHash: string,
 |}) => {
   const asset = add0x(assetHashIn);
-  const { client, readClient, network } = appContext;
+  const { client, network } = appContext;
   const transactionOptions = { from: account };
 
   if (assetType === 'NEP5') {
-    const decimals = await nep5.getDecimals(readClient, asset);
-    const contract = nep5.createNEP5SmartContract(
-      client,
-      { [network]: { address: asset } },
-      decimals,
-    );
+    const networks = {
+      [network]: {
+        address: asset,
+      },
+    };
+    const decimals = await nep5.getDecimals(client, networks, network);
+    const contract = nep5.createNEP5SmartContract(client, networks, decimals);
 
     const result = await contract.transfer(
       account.address,
@@ -409,7 +411,7 @@ export type ClaimAllGASProgress =
   | {| type: 'claim-gas-confirmed' |}
   | {| type: 'claim-gas-skip' |};
 
-export const claimAllGAS = ({
+export const claimAllGAS = async ({
   appContext,
   account: accountID,
   onProgress,
@@ -417,95 +419,86 @@ export const claimAllGAS = ({
   appContext: AppContext,
   account: UserAccountID,
   onProgress?: (progress: ClaimAllGASProgress) => void,
-}) =>
-  appContext.monitor
-    .withData({
-      [labels.NEO_ADDRESS]: accountID.address,
-    })
-    .captureSpanLog(
-      async (span) => {
-        const callOnProgress = (progress: ClaimAllGASProgress) => {
-          if (onProgress) {
-            onProgress(progress);
-          }
-        };
+}) => {
+  webLogger.info({
+    title: 'neotracker_wallet_claim_all_gas',
+    [labels.NEO_ADDRESS]: accountID.address,
+  });
+  const callOnProgress = (progress: ClaimAllGASProgress) => {
+    if (onProgress) {
+      onProgress(progress);
+    }
+  };
 
-        const { client, readClient } = appContext;
-        const transactionOptions = { from: accountID, monitor: span };
+  const { client, network } = appContext;
+  const transactionOptions = { from: accountID };
 
-        callOnProgress({ type: 'fetch-unspent-sending' });
-        const [account, appOptions] = await Promise.all([
-          readClient.getAccount(accountID.address, span),
-          appContext.options$.pipe(take(1)).toPromise(),
-        ]);
-        const neoBalance = account.balances[NEO_ASSET_HASH_0X] || numbers.ZERO;
-        callOnProgress({ type: 'fetch-unspent-done' });
+  callOnProgress({ type: 'fetch-unspent-sending' });
+  const [account, appOptions] = await Promise.all([
+    client.getAccount({ network, address: accountID.address }),
+    appContext.options$.pipe(take(1)).toPromise(),
+  ]);
+  const neoBalance = account.balances[NEO_ASSET_HASH_0X] || numbers.ZERO;
+  callOnProgress({ type: 'fetch-unspent-done' });
 
-        if (neoBalance.gt(numbers.ZERO)) {
-          callOnProgress({ type: 'spend-all-sending' });
-          const result = await client.transfer(
-            neoBalance,
-            NEO_ASSET_HASH_0X,
-            account.address,
-            transactionOptions,
-          );
-          callOnProgress({
-            type: 'spend-all-confirming',
-            hash: strip0x(result.transaction.hash),
-          });
-          await result.confirmed({
-            timeoutMS: appOptions.confirmLimitMS,
-            monitor: span,
-          });
-          callOnProgress({ type: 'spend-all-confirmed' });
-        } else {
-          callOnProgress({ type: 'spend-all-skip' });
-        }
-
-        try {
-          callOnProgress({ type: 'claim-gas-sending' });
-          const result = await client.claim(transactionOptions);
-          callOnProgress({
-            type: 'claim-gas-confirming',
-            hash: strip0x(result.transaction.hash),
-          });
-          await result.confirmed({
-            timeoutMS: appOptions.confirmLimitMS,
-            monitor: span,
-          });
-          callOnProgress({ type: 'claim-gas-confirmed' });
-        } catch (error) {
-          if (error.code === 'NOTHING_TO_CLAIM') {
-            callOnProgress({ type: 'claim-gas-skip' });
-          } else {
-            throw error;
-          }
-        }
-      },
-      { name: 'neotracker_wallet_claim_all_gas' },
+  if (neoBalance.gt(numbers.ZERO)) {
+    callOnProgress({ type: 'spend-all-sending' });
+    const result = await client.transfer(
+      neoBalance,
+      NEO_ASSET_HASH_0X,
+      account.address,
+      transactionOptions,
     );
+    callOnProgress({
+      type: 'spend-all-confirming',
+      hash: strip0x(result.transaction.hash),
+    });
+    await result.confirmed({
+      timeoutMS: appOptions.confirmLimitMS,
+    });
+    callOnProgress({ type: 'spend-all-confirmed' });
+  } else {
+    callOnProgress({ type: 'spend-all-skip' });
+  }
+
+  try {
+    callOnProgress({ type: 'claim-gas-sending' });
+    const result = await client.claim(transactionOptions);
+    callOnProgress({
+      type: 'claim-gas-confirming',
+      hash: strip0x(result.transaction.hash),
+    });
+    await result.confirmed({
+      timeoutMS: appOptions.confirmLimitMS,
+    });
+    callOnProgress({ type: 'claim-gas-confirmed' });
+  } catch (error) {
+    if (error.code === 'NOTHING_TO_CLAIM') {
+      callOnProgress({ type: 'claim-gas-skip' });
+    } else {
+      throw error;
+    }
+  }
+};
 
 export const mapCurrentLocalWallet = compose(
-  getContext({ appContext: () => null }),
+  getContext<*, *>({ appContext: () => null }),
   mapPropsStream((props$) =>
     props$.pipe(
       switchMap((props) => {
         const { client } = (props.appContext: AppContext);
-        return client.currentAccount$.pipe(
+        return client.currentUserAccount$.pipe(
           switchMap((account) => {
             let wallet$ = _of(null);
             if (account != null) {
-              if (account.type === 'memory') {
-                wallet$ = client.providers.memory.keystore.getWallet$(
-                  account.id,
-                );
-              }
-
-              if (account.type === 'localStorage') {
-                wallet$ = client.providers.localStorage.keystore.getWallet$(
-                  account.id,
-                );
-              }
+              wallet$ = combineLatest(
+                client.providers.memory.keystore.getWallet$(account.id),
+                client.providers.localStorage.keystore.getWallet$(account.id),
+              ).pipe(
+                map(([walletA, walletB]) =>
+                  walletA == null ? walletB : walletA,
+                ),
+              );
             }
 
             return combineLatest(_of(account), wallet$);
@@ -522,12 +515,12 @@ export const mapCurrentLocalWallet = compose(
 );
 
 export const mapAccounts = compose(
-  getContext({ appContext: () => null }),
+  getContext<*, *>({ appContext: () => null }),
   mapPropsStream((props$) =>
     props$.pipe(
       switchMap((props) => {
         const { client } = (props.appContext: AppContext);
-        return client.accounts$.pipe(
+        return client.userAccounts$.pipe(
           map((accounts) => ({
             ...props,
             accounts,
@@ -546,7 +539,7 @@ export const selectAccount = async ({
   id?: UserAccountID,
 |}): Promise<void> => {
   const { client } = appContext;
-  await client.selectAccount(id);
+  await client.selectUserAccount(id);
 };
 
 export const unlockWallet = async ({
@@ -570,7 +563,7 @@ export const updateName = async ({
   id: UserAccountID,
   name: string,
 |}): Promise<void> => {
-  await client.updateAccountName({ id, name });
+  await client.updateUserAccountName({ id, name });
 };
 
 export const deleteAccount = async ({
@@ -580,10 +573,10 @@ export const deleteAccount = async ({
   appContext: AppContext,
   id: UserAccountID,
 |}): Promise<void> => {
-  await client.deleteAccount(id);
-  const accounts = client.getAccounts();
+  await client.deleteUserAccount(id);
+  const accounts = client.getUserAccounts();
   const [account] = accounts;
-  await client.selectAccount(account == null ? undefined : account.id);
+  await client.selectUserAccount(account == null ? undefined : account.id);
 };
 
 export const addAccount = async ({
@@ -597,13 +590,13 @@ export const addAccount = async ({
   password: string,
   nep2?: string,
 |}): Promise<void> => {
-  const wallet = await client.providers.localStorage.keystore.addAccount({
+  const wallet = await client.providers.localStorage.keystore.addUserAccount({
     network,
     privateKey,
     password,
     nep2,
   });
-  await client.selectAccount(wallet.account.id);
+  await client.selectUserAccount(wallet.userAccount.id);
 };
 
 export const addNEP2Account = async ({
@@ -617,13 +610,13 @@ export const addNEP2Account = async ({
   password?: string,
   address?: string,
 |}): Promise<void> => {
-  const wallet = await client.providers.localStorage.keystore.addAccount({
+  const wallet = await client.providers.localStorage.keystore.addUserAccount({
     network,
     nep2,
     password,
     address,
   });
-  await client.selectAccount(wallet.account.id);
+  await client.selectUserAccount(wallet.userAccount.id);
 };
 
 export const addPrivateKeyAccount = async ({
@@ -633,11 +626,11 @@ export const addPrivateKeyAccount = async ({
   appContext: AppContext,
   privateKey: string,
 |}): Promise<void> => {
-  const wallet = await client.providers.memory.keystore.addAccount({
+  const wallet = await client.providers.memory.keystore.addUserAccount({
     network,
     privateKey,
   });
-  await client.selectAccount(wallet.account.id);
+  await client.selectUserAccount(wallet.userAccount.id);
 };
 
 export const isNEP2 = (value: string | Buffer) =>

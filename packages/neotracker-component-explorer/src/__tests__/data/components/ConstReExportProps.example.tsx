@@ -4,13 +4,14 @@ import * as React from 'react';
 import { ContextProvider, WithContext } from './ConstReExportProps';
 
 // tslint:disable-next-line export-name
-export const examples: [CTExample<typeof ContextProvider>] = [
+export const examples: readonly [CTExample<typeof ContextProvider>] = [
   {
     component: WithContext,
     element: () => {
       const value = <WithContext>{({ foo }) => <div>{foo}</div>}</WithContext>;
 
-      return <ContextProvider value={{ foo: 'foo' }}>{value}</ContextProvider>;
+      // tslint:disable-next-line: no-any
+      return <ContextProvider value={{ foo: 'foo' }}>{value}</ContextProvider> as any;
     },
   },
-];
+] as const;

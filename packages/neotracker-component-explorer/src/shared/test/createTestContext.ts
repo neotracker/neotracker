@@ -6,8 +6,7 @@ import { createContext } from '../context';
 import { LoaderOptions } from '../context/Loader';
 import { AutoMockPropsProxy } from '../proxies';
 
-// tslint:disable-next-line no-any
-export interface CreateTestContextOptions<E extends React.ReactElement<any>> {
+export interface CreateTestContextOptions<E extends React.ReactElement> {
   readonly example: Example<E>;
   readonly proxies?: ReadonlyArray<Proxy>;
   readonly rendererOptions?: MountRendererProps;

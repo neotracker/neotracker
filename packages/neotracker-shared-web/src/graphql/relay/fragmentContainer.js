@@ -15,7 +15,7 @@ if (process.env.BUILD_FLAG_IS_SERVER) {
       fragmentSpec[key] = getFragment(fragment);
     }
     return compose(
-      getContext({ relay: () => null }),
+      getContext<*, *>({ relay: () => null }),
       withProps((props) => {
         const selectors = getSelectorsFromObject(
           props.relay,

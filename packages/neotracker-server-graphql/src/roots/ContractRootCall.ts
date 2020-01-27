@@ -13,11 +13,10 @@ export class ContractRootCall extends BlockchainRootCall {
     _obj: any,
     { hash }: { readonly [key: string]: any },
     context: GraphQLContext,
-    info: GraphQLResolveInfo,
+    _info: GraphQLResolveInfo,
   ): Promise<any> =>
     // tslint:enable no-any
     context.rootLoader.loaders.contract.load({
       id: hash,
-      monitor: context.getMonitor(info),
     });
 }

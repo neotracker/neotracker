@@ -8,6 +8,7 @@ interface WithThemeProps {
 interface Props extends WithThemeProps {
   readonly theme: Theme;
 }
+// tslint:disable-next-line: no-null-undefined-union
 const WithThemeComponent = ({ children, theme }: Props) => children(theme);
 
 export type WithTheme = React.ComponentType<WithThemeProps>;

@@ -1,5 +1,5 @@
 /* @flow */
-import { type Transaction } from '@neo-one/client';
+import { type Transaction } from '@neo-one/client-common';
 
 export default (type: $PropertyType<Transaction, 'type'>) => {
   let icon;

@@ -1,6 +1,6 @@
 import { RootLoader } from '@neotracker/server-db';
 import { createQueryDeduplicator, QueryMap, schema } from '@neotracker/server-graphql';
-import { getMonitor, simpleMiddleware } from '@neotracker/server-utils-koa';
+import { simpleMiddleware } from '@neotracker/server-utils-koa';
 import { Context } from 'koa';
 
 export const setRootLoader = ({
@@ -10,10 +10,10 @@ export const setRootLoader = ({
   readonly rootLoader: RootLoader;
   readonly queryMap: QueryMap;
 }) =>
-  simpleMiddleware('context', async (ctx: Context, next: (() => Promise<void>)) => {
+  simpleMiddleware('context', async (ctx: Context, next: () => Promise<void>) => {
     ctx.state.rootLoader = rootLoader;
     ctx.state.queryMap = queryMap;
-    ctx.state.queryDeduplicator = createQueryDeduplicator(getMonitor(ctx), schema(), queryMap, rootLoader);
+    ctx.state.queryDeduplicator = createQueryDeduplicator(schema(), queryMap, rootLoader);
 
     await next();
   });

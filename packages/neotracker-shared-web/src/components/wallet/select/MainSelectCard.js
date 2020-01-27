@@ -1,7 +1,8 @@
 /* @flow */
 import { type HOC, compose, getContext, pure } from 'recompose';
 import * as React from 'react';
-import type { LocalWallet, UserAccount } from '@neo-one/client';
+import type { UserAccount } from '@neo-one/client-common';
+import type { LocalWallet } from '@neo-one/client-core';
 
 import { graphql } from 'react-relay';
 

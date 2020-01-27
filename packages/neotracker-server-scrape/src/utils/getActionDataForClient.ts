@@ -1,4 +1,4 @@
-import { addressToScriptHash, RawAction } from '@neo-one/client';
+import { addressToScriptHash, RawAction } from '@neo-one/client-full';
 import { utils } from '@neotracker/shared-utils';
 import BigNumber from 'bignumber.js';
 import { ActionData, Context } from '../types';

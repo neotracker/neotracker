@@ -1,4 +1,3 @@
-import { Monitor } from '@neo-one/monitor';
 import {
   Action as ActionModel,
   Block as BlockModel,
@@ -11,43 +10,38 @@ import { getActionDataForModel } from './getActionDataForModel';
 import { getInputOutputResultForModel } from './getInputOutputResultForModel';
 
 export async function getTransactionDataForModel({
-  monitor,
   context,
   blockModel,
 }: {
-  readonly monitor: Monitor;
   readonly context: Context;
   readonly blockModel: BlockModel;
 }): Promise<ReadonlyArray<TransactionModelData>> {
   const transactions = await blockModel
     .$relatedQuery<TransactionModel>('transactions', context.db)
-    .context(context.makeQueryContext(monitor));
+    .context(context.makeQueryContext());
 
   return Promise.all(
     transactions.map(async (transactionModel) => {
       const [inputs, outputs, claims, actions, contracts] = await Promise.all([
         transactionModel
           .$relatedQuery<TransactionInputOutputModel>('inputs', context.db)
-          .context(context.makeQueryContext(monitor)),
+          .context(context.makeQueryContext()),
         transactionModel
           .$relatedQuery<TransactionInputOutputModel>('outputs', context.db)
-          .context(context.makeQueryContext(monitor)),
+          .context(context.makeQueryContext()),
         transactionModel
           .$relatedQuery<TransactionInputOutputModel>('claims', context.db)
-          .context(context.makeQueryContext(monitor)),
-        transactionModel.$relatedQuery<ActionModel>('actions', context.db).context(context.makeQueryContext(monitor)),
-        transactionModel
-          .$relatedQuery<ContractModel>('contracts', context.db)
-          .context(context.makeQueryContext(monitor)),
+          .context(context.makeQueryContext()),
+        transactionModel.$relatedQuery<ActionModel>('actions', context.db).context(context.makeQueryContext()),
+        transactionModel.$relatedQuery<ContractModel>('contracts', context.db).context(context.makeQueryContext()),
       ]);
 
       const actionDatas = await Promise.all(
-        actions.map(async (actionModel) => getActionDataForModel({ context, monitor, actionModel })),
+        actions.map(async (actionModel) => getActionDataForModel({ context, actionModel })),
       );
 
       const result = await getInputOutputResultForModel({
         context,
-        monitor,
         transactionModel,
         inputs,
         outputs,

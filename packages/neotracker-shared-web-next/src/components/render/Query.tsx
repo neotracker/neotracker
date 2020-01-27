@@ -34,15 +34,14 @@ interface GetObserveQueryOptions<TVariables> {
 }
 
 function getObserveQueryOptions<TVariables>({
-  appContext: { apollo, monitor },
+  appContext: { apollo },
   query,
   variables,
   notifyOnNetworkStatusChange = false,
-  fetchPolicy = 'cache-and-network',
+  fetchPolicy = 'cache-first',
 }: GetObserveQueryOptions<TVariables>): ObserveQueryOptions<TVariables> {
   return {
     apollo,
-    monitor,
     query,
     variables: variables as TVariables,
     fetchPolicy,
@@ -59,11 +58,13 @@ class QueryBase<TData, TVariables = OperationVariables> extends React.Component<
     this.mutableResult$ = observeQuery(getObserveQueryOptions(props));
   }
 
-  public componentWillReceiveProps(nextProps: Props<TData, TVariables>): void {
+  public UNSAFE_componentWillReceiveProps(nextProps: Props<TData, TVariables>): void {
     if (
+      // tslint:disable-next-line: strict-comparisons
       this.props.appContext.apollo !== nextProps.appContext.apollo ||
-      this.props.appContext.monitor !== nextProps.appContext.monitor ||
+      // tslint:disable-next-line: strict-comparisons
       this.props.query !== nextProps.query ||
+      // tslint:disable-next-line: strict-comparisons
       this.props.notifyOnNetworkStatusChange !== nextProps.notifyOnNetworkStatusChange ||
       !_.isEqual(this.props.variables, nextProps.variables)
     ) {

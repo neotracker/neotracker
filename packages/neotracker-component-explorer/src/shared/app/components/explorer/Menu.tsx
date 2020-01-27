@@ -1,28 +1,27 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Base, Grid, Input, Link, List, styled } from 'reakit';
+import styled from 'styled-components';
 import { ComponentProps, SectionConfig } from '../../../../types';
 import { MenuContainer } from './MenuContainer';
 
-const Wrapper = styled(Grid)`
+const Wrapper = styled.div`
+  display: 'grid';
   grid-gap: 16px;
 `;
 
-const ListItem = styled(Base.as('li'))`
+const ListItem = styled.li`
   /* stylelint-ignore-next-line */
 `;
 
-const MenuList = styled(List)<{ readonly alwaysVisible: boolean }>`
-  ${List} {
-    ${({ alwaysVisible }) => (alwaysVisible ? 'display: block !important' : '')};
-  }
+const MenuList = styled.ul<{ readonly alwaysVisible: boolean }>`
+  ${({ alwaysVisible }) => (alwaysVisible ? 'display: block' : '')};
 
   ${ListItem} {
     margin: 0;
   }
 `;
 
-const SectionLink = styled(Link)<{}>`
+const SectionLink = styled(NavLink)<{}>`
   display: block;
   line-height: 1.75;
   font-weight: 400;
@@ -48,10 +47,6 @@ const SectionLink = styled(Link)<{}>`
 
   & + ${MenuList} {
     display: none;
-  }
-
-  & + ${MenuList} & {
-    padding-left: 30px;
   }
 `;
 
@@ -87,7 +82,7 @@ export const Menu = ({ sections, showFilter, ...props }: Props) => (
       <MenuContainer sections={sections}>
         {({ filter, filtered }) => (
           <>
-            <Input
+            <input
               placeholder="Filter..."
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => filter(e.target.value)}
             />

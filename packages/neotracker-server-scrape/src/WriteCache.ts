@@ -1,15 +1,14 @@
-import { Monitor } from '@neo-one/monitor';
 import { isUniqueError } from '@neotracker/server-db';
 import { utils } from '@neotracker/shared-utils';
 import Knex from 'knex';
-import LRU from 'lru-cache';
+import LRUCache from 'lru-cache';
 import { Transaction } from 'objection';
 
-type Fetch<Key, Value> = ((key: Key, monitor: Monitor) => Promise<Value | undefined>);
-type Create<Save, Value> = ((save: Save, monitor: Monitor) => Promise<Value>);
-type GetKey<Key> = ((key: Key) => string);
-type GetKeyFrom<Key, Save> = ((save: Save) => Key);
-type Revert<RevertOptions> = (options: RevertOptions, monitor: Monitor, db?: Knex | Transaction) => Promise<void>;
+type Fetch<Key, Value> = (key: Key) => Promise<Value | undefined>;
+type Create<Save, Value> = (save: Save) => Promise<Value>;
+type GetKey<Key> = (key: Key) => string;
+type GetKeyFrom<Key, Save> = (save: Save) => Key;
+type Revert<RevertOptions> = (options: RevertOptions, db?: Knex | Transaction) => Promise<void>;
 export interface WriteCacheOptions<Key, Value, Save, RevertOptions> {
   readonly db: Knex;
   readonly fetch: Fetch<Key, Value>;
@@ -22,15 +21,15 @@ export interface WriteCacheOptions<Key, Value, Save, RevertOptions> {
 }
 
 export interface IWriteCache<Key, Value, Save, RevertOptions> {
-  readonly get: (key: Key, monitor: Monitor) => Promise<Value | undefined>;
-  readonly getThrows: (key: Key, monitor: Monitor) => Promise<Value>;
-  readonly save: (save: Save, monitor: Monitor) => Promise<Value>;
-  readonly revert: (options: RevertOptions, monitor: Monitor, db?: Knex | Transaction) => Promise<void>;
-  readonly refresh: (key: Key, monitor: Monitor) => void;
+  readonly get: (key: Key) => Promise<Value | undefined>;
+  readonly getThrows: (key: Key) => Promise<Value>;
+  readonly save: (save: Save) => Promise<Value>;
+  readonly revert: (options: RevertOptions, db?: Knex | Transaction) => Promise<void>;
+  readonly refresh: (key: Key) => void;
 }
 
 export class WriteCache<Key, Value, Save, RevertOptions> implements IWriteCache<Key, Value, Save, RevertOptions> {
-  private readonly cache: LRU.Cache<string, Promise<Value | undefined>>;
+  private readonly cache: LRUCache<string, Promise<Value | undefined>>;
   private readonly mutableSaveCache: { [K in string]?: Promise<Value> };
   private readonly db: Knex;
   private readonly fetch: Fetch<Key, Value>;
@@ -50,7 +49,7 @@ export class WriteCache<Key, Value, Save, RevertOptions> implements IWriteCache<
     revert,
     size,
   }: WriteCacheOptions<Key, Value, Save, RevertOptions>) {
-    this.cache = LRU(size === undefined ? 10000 : size);
+    this.cache = new LRUCache(size === undefined ? 10000 : size);
     this.mutableSaveCache = {};
     this.db = db;
     this.fetch = fetch;
@@ -61,14 +60,14 @@ export class WriteCache<Key, Value, Save, RevertOptions> implements IWriteCache<
     this.getKeyFromRevert = getKeyFromRevert;
   }
 
-  public async get(keyIn: Key, monitor: Monitor): Promise<Value | undefined> {
+  public async get(keyIn: Key): Promise<Value | undefined> {
     const key = this.getKey(keyIn);
 
     let result: Promise<Value | undefined> | undefined = this.mutableSaveCache[key];
     if (result === undefined) {
       result = this.cache.get(key);
       if (result === undefined) {
-        result = this.fetch(keyIn, monitor);
+        result = this.fetch(keyIn);
         this.cache.set(key, result);
       }
     }
@@ -76,19 +75,19 @@ export class WriteCache<Key, Value, Save, RevertOptions> implements IWriteCache<
     return result;
   }
 
-  public async getThrows(key: Key, monitor: Monitor): Promise<Value> {
-    return this.get(key, monitor).then(utils.nullthrows);
+  public async getThrows(key: Key): Promise<Value> {
+    return this.get(key).then(utils.nullthrows);
   }
 
-  public async save(save: Save, monitor: Monitor): Promise<Value> {
+  public async save(save: Save): Promise<Value> {
     const keyIn = this.getKeyFromSave(save);
     const key = this.getKey(keyIn);
 
-    return this.get(keyIn, monitor).then((result) => {
+    return this.get(keyIn).then((result) => {
       if (result === undefined) {
         let saveResult = this.mutableSaveCache[key];
         if (saveResult === undefined) {
-          saveResult = this.create(save, monitor)
+          saveResult = this.create(save)
             .then((returningResult) => {
               this.cache.set(key, Promise.resolve(returningResult));
               // tslint:disable-next-line no-dynamic-delete
@@ -100,7 +99,7 @@ export class WriteCache<Key, Value, Save, RevertOptions> implements IWriteCache<
               // tslint:disable-next-line no-dynamic-delete
               delete this.mutableSaveCache[key];
               if (isUniqueError(this.db, error)) {
-                return this.getThrows(keyIn, monitor);
+                return this.getThrows(keyIn);
               }
 
               throw error;
@@ -115,13 +114,13 @@ export class WriteCache<Key, Value, Save, RevertOptions> implements IWriteCache<
     });
   }
 
-  public async revert(options: RevertOptions, monitor: Monitor, db?: Knex | Transaction): Promise<void> {
+  public async revert(options: RevertOptions, db?: Knex | Transaction): Promise<void> {
     this.cache.del(this.getKey(this.getKeyFromRevert(options)));
-    await this.revertInternal(options, monitor, db);
+    await this.revertInternal(options, db);
   }
 
-  public refresh(key: Key, monitor: Monitor): void {
-    const result = this.fetch(key, monitor);
+  public refresh(key: Key): void {
+    const result = this.fetch(key);
     this.cache.set(this.getKey(key), result);
   }
 }

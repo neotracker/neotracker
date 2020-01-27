@@ -1,4 +1,3 @@
-import { Monitor } from '@neo-one/monitor';
 import { Address as AddressModel, Transaction as TransactionModel } from '@neotracker/server-db';
 import Knex from 'knex';
 import { AddressesDataRevert, AddressesDataSave, AddressesDataUpdater } from '../../../db/AddressesDataUpdater';
@@ -78,27 +77,27 @@ const makeAddressesPatch = (addresses: ReadonlyArray<AddressModel>, transactionI
     {},
   );
 
-const initiateTest = async (db: Knex, monitor: Monitor) => {
+const initiateTest = async (db: Knex) => {
   const context = makeContext({ db });
 
   const addressToTransactionUpdater = new AddressToTransactionUpdater();
 
   const references = await Promise.all([
     AddressModel.query(db)
-      .context(context.makeQueryContext(monitor))
+      .context(context.makeQueryContext())
       .insertAndFetch(data.createAddress({ ...initialAddress })),
     AddressModel.query(db)
-      .context(context.makeQueryContext(monitor))
+      .context(context.makeQueryContext())
       .insertAndFetch(data.createAddress({ ...secondaryAddress })),
   ]);
 
   await TransactionModel.insertAll(
     db,
-    context.makeQueryContext(monitor),
+    context.makeQueryContext(),
     transactions.map((transaction) => data.createTransaction({ ...transaction })),
   );
 
-  await addressToTransactionUpdater.save(context, monitor, {
+  await addressToTransactionUpdater.save(context, {
     ...addressToTransactions,
   });
 

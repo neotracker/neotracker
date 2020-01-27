@@ -1,21 +1,36 @@
-import { KnownLabel, metrics } from '@neo-one/monitor';
-import { bodyParser, getMonitor } from '@neotracker/server-utils-koa';
+import { AggregationType, globalStats, MeasureUnit } from '@neo-one/client-switch';
+import { Labels, labelsToTags } from '@neo-one/utils';
+import { serverLogger } from '@neotracker/logger';
+import { bodyParser } from '@neotracker/server-utils-koa';
 // @ts-ignore
 import { routes } from '@neotracker/shared-web';
 import fetch from 'cross-fetch';
 import { Context } from 'koa';
 import compose from 'koa-compose';
 
-const labelNames: ReadonlyArray<string> = [KnownLabel.HTTP_URL, KnownLabel.HTTP_STATUS_CODE];
-const SERVER_PROXY_HTTP_CLIENT_REQUEST_DURATION_SECONDS = metrics.createHistogram({
-  name: 'server_proxy_http_client_request_duration_seconds',
-  labelNames,
-});
+const labelNames: ReadonlyArray<string> = [Labels.HTTP_URL, Labels.HTTP_STATUS_CODE];
 
-const SERVER_PROXY_HTTP_CLIENT_REQUEST_FAILURES_TOTAL = metrics.createCounter({
-  name: 'server_proxy_http_client_request_failures_total',
-  labelNames,
-});
+const requestSec = globalStats.createMeasureInt64('requests/duration', MeasureUnit.SEC);
+const requestFailures = globalStats.createMeasureInt64('requets/failures', MeasureUnit.UNIT);
+
+const SERVER_PROXY_HTTP_CLIENT_REQUEST_DURATION_SECONDS = globalStats.createView(
+  'server_proxy_http_client_request_duration_seconds',
+  requestSec,
+  AggregationType.DISTRIBUTION,
+  labelsToTags(labelNames),
+  'distribution of the http client requests duration',
+  [1, 2, 5, 7.5, 10, 12.5, 15, 17.5, 20],
+);
+globalStats.registerView(SERVER_PROXY_HTTP_CLIENT_REQUEST_DURATION_SECONDS);
+
+const SERVER_PROXY_HTTP_CLIENT_REQUEST_FAILURES_TOTAL = globalStats.createView(
+  'server_proxy_http_client_request_failures_total',
+  requestFailures,
+  AggregationType.COUNT,
+  labelsToTags(labelNames),
+  'total http client request failures',
+);
+globalStats.registerView(SERVER_PROXY_HTTP_CLIENT_REQUEST_FAILURES_TOTAL);
 
 export const report = ({ reportURL }: { readonly reportURL?: string }) => ({
   type: 'route',
@@ -30,54 +45,60 @@ export const report = ({ reportURL }: { readonly reportURL?: string }) => ({
 
         return;
       }
-      const monitor = getMonitor(ctx);
       const headers = { ...ctx.header };
-      const response = await monitor
-        .withLabels({
-          [monitor.labels.HTTP_URL]: reportURL,
-          [monitor.labels.HTTP_METHOD]: ctx.method,
-          [monitor.labels.SPAN_KIND]: 'client',
-        })
-        .captureSpanLog(
-          async (span) => {
-            span.inject(monitor.formats.HTTP, headers);
-            let status = -1;
-            try {
-              const resp = await fetch(reportURL, {
-                method: ctx.method,
-                headers,
-                // tslint:disable-next-line no-any
-                body: JSON.stringify((ctx.request as any).fields),
-              });
+      const logInfo = {
+        title: 'server_proxy_http_client_request',
+        [Labels.HTTP_URL]: reportURL,
+        [Labels.HTTP_METHOD]: ctx.method,
+        [Labels.SPAN_KIND]: 'client',
+        ...headers,
+      };
+      let response;
+      let status = -1;
+      try {
+        try {
+          const startTime = Date.now();
+          response = await fetch(reportURL, {
+            method: ctx.method,
+            headers,
+            // tslint:disable-next-line no-any
+            body: JSON.stringify((ctx.request as any).fields),
+          });
 
-              ({ status } = resp);
-
-              return resp;
-            } finally {
-              span.setLabels({ [monitor.labels.HTTP_STATUS_CODE]: status });
-            }
-          },
-          {
-            name: 'server_proxy_http_client_request',
-            level: { log: 'verbose', span: 'info' },
-            metric: {
-              total: SERVER_PROXY_HTTP_CLIENT_REQUEST_DURATION_SECONDS,
-              error: SERVER_PROXY_HTTP_CLIENT_REQUEST_FAILURES_TOTAL,
+          ({ status } = response);
+          globalStats.record([
+            {
+              measure: requestSec,
+              value: Date.now() - startTime,
             },
-
-            trace: true,
-          },
-        );
-
-      ctx.status = response.status;
-      response.headers.forEach((value, key) => {
-        if (key !== 'transfer-encoding' && key !== 'content-encoding') {
-          ctx.set(key, value);
+          ]);
+        } finally {
+          // tslint:disable-next-line no-object-mutation
+          logInfo[Labels.HTTP_STATUS_CODE] = status;
         }
-      });
-      const { body } = response;
-      if (body !== null) {
-        ctx.body = body;
+      } catch (error) {
+        globalStats.record([
+          {
+            measure: requestFailures,
+            value: 1,
+          },
+        ]);
+        serverLogger.error({ ...logInfo, error: error.message });
+      }
+
+      serverLogger.info({ ...logInfo });
+
+      if (response !== undefined) {
+        ctx.status = response.status;
+        response.headers.forEach((value: string, key: string) => {
+          if (key !== 'transfer-encoding' && key !== 'content-encoding') {
+            ctx.set(key, value);
+          }
+        });
+        const { body } = response;
+        if (body !== null) {
+          ctx.body = body;
+        }
       }
     },
   ]),

@@ -1,15 +1,12 @@
+import { NetworkType } from '@neo-one/client-common';
 import {
   Client,
   LocalKeyStore,
   LocalMemoryStore,
   LocalStringStore,
   LocalUserAccountProvider,
-  NEOONEDataProvider,
   NEOONEProvider,
-  NetworkType,
-  ReadClient,
-} from '@neo-one/client';
-import { Monitor } from '@neo-one/monitor';
+} from '@neo-one/client-core';
 import { AppOptions } from '@neotracker/shared-utils';
 import { AppContext, observeQuery } from '@neotracker/shared-web-next';
 import ApolloClient from 'apollo-client';
@@ -26,7 +23,6 @@ export const createAppContext = ({
   css,
   nonce,
   options,
-  monitor,
   userAgent,
 }: {
   // tslint:disable-next-line no-any
@@ -35,13 +31,11 @@ export const createAppContext = ({
   readonly css: ReadonlyArray<string>;
   readonly nonce: string | undefined;
   readonly options: AppOptions;
-  readonly monitor: Monitor;
   readonly userAgent: IUAParser.IResult;
 }): AppContext => {
   const options$ = concat(
     _of(options),
     observeQuery<createAppContextAppOptionsQuery>({
-      monitor,
       apollo,
       query: gql`
         query createAppContextAppOptionsQuery {
@@ -49,9 +43,8 @@ export const createAppContext = ({
         }
       `,
     }).pipe(
-      map(
-        (result): AppOptions | undefined =>
-          result.type === 'resolved' ? JSON.parse(result.data.app_options) : undefined,
+      map((result): AppOptions | undefined =>
+        result.type === 'resolved' ? JSON.parse(result.data.app_options) : undefined,
       ),
       filter((value): value is AppOptions => value !== undefined),
     ),
@@ -72,38 +65,27 @@ export const createAppContext = ({
 
   const client = new Client({
     memory: new LocalUserAccountProvider({
-      keystore: new LocalKeyStore({
-        store: new LocalMemoryStore(),
-      }),
+      keystore: new LocalKeyStore(new LocalMemoryStore()),
       provider,
     }),
     localStorage: new LocalUserAccountProvider({
-      keystore: new LocalKeyStore({
-        store: new LocalStringStore({
-          type: 'localStorage',
-          storage: {
-            setItem: async (key, value) => {
-              await storage.setItem(key, value);
-            },
-            // tslint:disable-next-line no-unnecessary-type-assertion no-useless-cast
-            getItem: async (key) => storage.getItem(key) as Promise<string>,
-            removeItem: async (key) => {
-              await storage.removeItem(key);
-            },
-            getAllKeys: async () => storage.keys(),
+      keystore: new LocalKeyStore(
+        new LocalStringStore({
+          setItem: async (key, value) => {
+            await storage.setItem(key, value);
           },
+          // tslint:disable-next-line no-unnecessary-type-assertion no-useless-cast
+          getItem: async (key) => storage.getItem(key) as Promise<string>,
+          removeItem: async (key) => {
+            await storage.removeItem(key);
+          },
+          getAllKeys: async () => storage.keys(),
         }),
-      }),
+      ),
 
       provider,
     }),
   });
-
-  const dataProvider = new NEOONEDataProvider({
-    network,
-    rpcURL: options.rpcURL,
-  });
-  const readClient = new ReadClient(dataProvider);
 
   // tslint:disable-next-line no-any
   const mutableWindow: any = window;
@@ -121,7 +103,6 @@ export const createAppContext = ({
     next: (nextOptions) => {
       setApolloClient(nextOptions);
       provider.addNetwork({ network, rpcURL: nextOptions.rpcURL });
-      dataProvider.setRPCURL(nextOptions.rpcURL);
     },
   });
 
@@ -131,9 +112,7 @@ export const createAppContext = ({
     css,
     nonce,
     options$,
-    monitor,
     client,
-    readClient,
     userAgent,
     fileSaver: FileSaver,
   };

@@ -10,12 +10,13 @@ class Foo {
 }
 
 // tslint:disable-next-line export-name
-export const examples: [CTExample<typeof ConstExportInlineProps>] = [
+export const examples: readonly[CTExample<typeof ConstExportInlineProps>] = [
   {
     element: () => {
       const foo = new Foo();
 
-      return <ConstExportInlineProps foo={Math.round(foo.getFoo())} />;
+      // tslint:disable-next-line: no-any
+      return <ConstExportInlineProps foo={Math.round(foo.getFoo())} /> as any;
     },
   },
-];
+] as const;

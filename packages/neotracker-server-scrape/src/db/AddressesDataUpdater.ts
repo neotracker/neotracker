@@ -1,4 +1,4 @@
-import { Monitor } from '@neo-one/monitor';
+import { createChild, serverLogger } from '@neotracker/logger';
 import { Address as AddressModel, isPostgres } from '@neotracker/server-db';
 import { raw } from 'objection';
 import { Addresses, Context } from '../types';
@@ -15,68 +15,57 @@ export interface AddressesDataRevert {
   readonly blockIndex: number;
 }
 
+const serverScrapeLogger = createChild(serverLogger, { component: 'scrape' });
+
 export class AddressesDataUpdater extends SameContextDBUpdater<AddressesDataSave, AddressesDataRevert> {
-  public async save(
-    context: Context,
-    monitor: Monitor,
-    { addresses, blockIndex, blockTime }: AddressesDataSave,
-  ): Promise<void> {
-    return monitor.captureSpanLog(
-      async (span) => {
-        await Promise.all(
-          Object.entries(addresses).map(
-            async ([address, { transactionCount, transferCount, transactionID, transactionHash }]) => {
-              await AddressModel.query(context.db)
-                .context(context.makeQueryContext(span))
-                .where('id', address)
-                .where('aggregate_block_id', '<', blockIndex)
-                .patch({
-                  // tslint:disable no-any
-                  transaction_count: raw(`transaction_count + ${transactionCount}`) as any,
-                  transfer_count: raw(`transfer_count + ${transferCount}`) as any,
-                  // tslint:enable no-any
-                  last_transaction_id: transactionID,
-                  last_transaction_hash: transactionHash,
-                  last_transaction_time: blockTime,
-                  aggregate_block_id: blockIndex,
-                });
-            },
-          ),
-        );
-      },
-      { name: 'neotracker_scrape_save_addresses_data', level: 'verbose', error: {} },
+  public async save(context: Context, { addresses, blockIndex, blockTime }: AddressesDataSave): Promise<void> {
+    serverScrapeLogger.info({ title: 'neotracker_scrape_save_addresses_data' });
+    await Promise.all(
+      Object.entries(addresses).map(
+        async ([address, { transactionCount, transferCount, transactionID, transactionHash }]) => {
+          await AddressModel.query(context.db)
+            .context(context.makeQueryContext())
+            .where('id', address)
+            .where('aggregate_block_id', '<', blockIndex)
+            .patch({
+              // tslint:disable no-any
+              transaction_count: raw(`transaction_count + ${transactionCount}`) as any,
+              transfer_count: raw(`transfer_count + ${transferCount}`) as any,
+              // tslint:enable no-any
+              last_transaction_id: transactionID,
+              last_transaction_hash: transactionHash,
+              last_transaction_time: blockTime,
+              aggregate_block_id: blockIndex,
+            });
+        },
+      ),
     );
   }
 
-  public async revert(
-    context: Context,
-    monitor: Monitor,
-    { addresses, transactionIDs, blockIndex }: AddressesDataRevert,
-  ): Promise<void> {
-    return monitor.captureSpan(
-      async (span) => {
-        await Promise.all(
-          Object.entries(addresses).map(async ([address, { transactionCount, transferCount }]) => {
-            await AddressModel.query(context.db)
-              .context(context.makeQueryContext(span))
-              .where('id', address)
-              .where('aggregate_block_id', '>=', blockIndex)
-              .patch({
-                // tslint:disable no-any
-                transaction_count: raw(`transaction_count - ${transactionCount}`) as any,
-                transfer_count: raw(`transfer_count - ${transferCount}`) as any,
-                // tslint:enable no-any
-                aggregate_block_id: blockIndex - 1,
-              });
-          }),
-        );
+  public async revert(context: Context, { addresses, transactionIDs, blockIndex }: AddressesDataRevert): Promise<void> {
+    serverScrapeLogger.info({ title: 'neotracker_scrape_revert_addresses_data' });
+    await Promise.all(
+      Object.entries(addresses).map(async ([address, { transactionCount, transferCount }]) => {
+        await AddressModel.query(context.db)
+          .context(context.makeQueryContext())
+          .where('id', address)
+          .where('aggregate_block_id', '>=', blockIndex)
+          .patch({
+            // tslint:disable no-any
+            transaction_count: raw(`transaction_count - ${transactionCount}`) as any,
+            transfer_count: raw(`transfer_count - ${transferCount}`) as any,
+            // tslint:enable no-any
+            aggregate_block_id: blockIndex - 1,
+          });
+      }),
+    );
 
-        const addressIDsSet = Object.keys(addresses);
-        if (addressIDsSet.length > 0) {
-          if (isPostgres(context.db)) {
-            await context.db
-              .raw(
-                `
+    const addressIDsSet = Object.keys(addresses);
+    if (addressIDsSet.length > 0) {
+      if (isPostgres(context.db)) {
+        await context.db
+          .raw(
+            `
               WITH cte AS (
                 SELECT a.id AS address_id, b.transaction_id, b.hash, b.block_time
                 FROM address a
@@ -105,12 +94,12 @@ export class AddressesDataUpdater extends SameContextDBUpdater<AddressesDataSave
               WHERE
                 id = cte.address_id
               `,
-              )
-              .queryContext(context.makeQueryContext(span));
-          } else {
-            await context.db
-              .raw(
-                `
+          )
+          .queryContext(context.makeQueryContext());
+      } else {
+        await context.db
+          .raw(
+            `
               WITH cte AS (
                 SELECT a.address_id, transaction_id, hash, block_time
                 FROM (
@@ -131,12 +120,9 @@ export class AddressesDataUpdater extends SameContextDBUpdater<AddressesDataSave
               WHERE
                 id IN (${addressIDsSet.map((id) => `'${id}'`).join(', ')})
                 `,
-              )
-              .queryContext(context.makeQueryContext(span));
-          }
-        }
-      },
-      { name: 'neotracker_scrape_revert_addresses_data' },
-    );
+          )
+          .queryContext(context.makeQueryContext());
+      }
+    }
   }
 }

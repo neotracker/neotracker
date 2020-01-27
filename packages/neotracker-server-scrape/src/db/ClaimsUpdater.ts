@@ -1,4 +1,4 @@
-import { Monitor } from '@neo-one/monitor';
+import { createChild, serverLogger } from '@neotracker/logger';
 import { TransactionInputOutput as TransactionInputOutputModel } from '@neotracker/server-db';
 import _ from 'lodash';
 import { Context } from '../types';
@@ -16,30 +16,23 @@ export interface ClaimsRevert {
   readonly claims: ReadonlyArray<TransactionInputOutputModel>;
 }
 
+const serverScrapeLogger = createChild(serverLogger, { component: 'scrape' });
+
 export class ClaimsUpdater extends SameContextDBUpdater<ClaimsSave, ClaimsRevert> {
-  public async save(context: Context, monitor: Monitor, { transactions }: ClaimsSave): Promise<void> {
-    return monitor.captureSpanLog(
-      async (span) => {
-        await Promise.all(
-          transactions.map(async ({ claims, transactionID, transactionHash }) => {
-            await this.updateClaims(context, span, claims, transactionID, transactionHash);
-          }),
-        );
-      },
-      { name: 'neotracker_scrape_save_claims', level: 'verbose', error: {} },
+  public async save(context: Context, { transactions }: ClaimsSave): Promise<void> {
+    serverScrapeLogger.info({ title: 'neotracker_scrape_save_claims' });
+    await Promise.all(
+      transactions.map(async ({ claims, transactionID, transactionHash }) => {
+        await this.updateClaims(context, claims, transactionID, transactionHash);
+      }),
     );
   }
-  public async revert(context: Context, monitor: Monitor, { claims }: ClaimsRevert): Promise<void> {
-    return monitor.captureSpan(
-      async (span) => {
-        await this.updateClaims(context, span, claims);
-      },
-      { name: 'neotracker_scrape_revert_claims' },
-    );
+  public async revert(context: Context, { claims }: ClaimsRevert): Promise<void> {
+    serverScrapeLogger.info({ title: 'neotracker_scrape_revert_claims' });
+    await this.updateClaims(context, claims);
   }
   private async updateClaims(
     context: Context,
-    monitor: Monitor,
     claims: ReadonlyArray<TransactionInputOutputModel>,
     transactionID?: string,
     transactionHash?: string,
@@ -47,7 +40,7 @@ export class ClaimsUpdater extends SameContextDBUpdater<ClaimsSave, ClaimsRevert
     await Promise.all(
       _.chunk(claims, context.chunkSize).map(async (chunk) => {
         await TransactionInputOutputModel.query(context.db)
-          .context(context.makeQueryContext(monitor))
+          .context(context.makeQueryContext())
           .whereIn('id', chunk.map((claim) => claim.id))
           .patch({
             // tslint:disable-next-line no-null-keyword

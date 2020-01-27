@@ -135,6 +135,6 @@ const enhance: HOC<*, *> = (compose(
   pure,
 ): $FlowFixMe);
 
-export default (enhance(TransactionActionPagingTable): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  TransactionActionPagingTable,
+): React.ComponentType<ExternalProps>);

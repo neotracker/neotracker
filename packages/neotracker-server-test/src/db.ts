@@ -20,7 +20,6 @@ import {
   TransactionInputOutput,
   Transfer,
 } from '@neotracker/server-db';
-import { getMonitor } from '@neotracker/shared-test';
 import Knex from 'knex';
 import { addTeardownCleanup } from './addTeardownCleanup';
 
@@ -37,7 +36,7 @@ export interface DatabaseConfig {
 export const startDB = async (): Promise<DatabaseConfig> => {
   const options = await neotracker.startDB();
 
-  const db = create({ options: options.db, monitor: getMonitor() });
+  const db = create({ options: options.db });
   addTeardownCleanup(async () => {
     await db.destroy();
   });
@@ -46,8 +45,8 @@ export const startDB = async (): Promise<DatabaseConfig> => {
     database: {
       knex: db,
       reset: async () => {
-        await dropTables(db, getMonitor(), true);
-        await createTables(db, getMonitor());
+        await dropTables(db, true);
+        await createTables(db);
       },
     },
     metricsPort: options.metricsPort,
@@ -74,8 +73,7 @@ export interface DBData {
 
 const makeQueryContext = (db: Knex) =>
   makeQueryContextInternal({
-    monitor: getMonitor(),
-    rootLoader: () => createRootLoader(db, { cacheSize: 1000, cacheEnabled: true }, getMonitor()),
+    rootLoader: () => createRootLoader(db, { cacheSize: 1000, cacheEnabled: true }),
     isAllPowerful: true,
   });
 

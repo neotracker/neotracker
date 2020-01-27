@@ -51,7 +51,7 @@ export abstract class Runner {
   }
 
   protected async cleanup(): Promise<void> {
-    // do nothing
+    await Promise.resolve();
   }
 
   protected log(value: string): void {
@@ -81,10 +81,6 @@ export abstract class Runner {
     process.on('uncaughtException', (error) => {
       this.logError(error);
       this.exit(1);
-    });
-
-    process.on('unhandledRejection', (error) => {
-      this.logError(error);
     });
 
     process.on('SIGINT', () => {

@@ -119,8 +119,6 @@ export interface ClientStartMessage {
     readonly id: string;
     readonly variables: object;
   };
-  // tslint:disable-next-line no-any
-  readonly span: any;
 }
 export type ClientMessage =
   | {

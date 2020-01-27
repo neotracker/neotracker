@@ -1,6 +1,6 @@
 import webpack from 'webpack';
 
-const MODULE_MAP: ReadonlyArray<[RegExp, string]> = [
+const MODULE_MAP: ReadonlyArray<readonly [RegExp, string]> = [
   // [/^@neo-one\/(?!ec-key|boa|csharp)(.+)(?!-es2018-esm)$/, '@neo-one/$1-es2018-esm'],
 ];
 export const createModuleMapperPlugins = () =>

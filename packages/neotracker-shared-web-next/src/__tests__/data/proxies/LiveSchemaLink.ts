@@ -26,7 +26,7 @@ export class LiveSchemaLink extends ApolloLink {
       });
 
       // tslint:disable-next-line no-unused
-      return queries.map(([id, query$]) => query$);
+      return queries.map(([_id, query$]) => query$);
     }).pipe(switchMap((queries$) => merge(...queries$)));
 
     // tslint:disable-next-line no-any

@@ -1,12 +1,5 @@
-import {
-  Client,
-  LocalKeyStore,
-  LocalUserAccountProvider,
-  NEOONEProvider,
-  NetworkType,
-  ReadClient,
-} from '@neo-one/client';
-import { Monitor } from '@neo-one/monitor';
+import { NetworkType } from '@neo-one/client-common';
+import { Client, LocalKeyStore, LocalUserAccountProvider, NEOONEProvider } from '@neo-one/client-core';
 import { AppOptions } from '@neotracker/shared-utils';
 import { ApolloClient } from 'apollo-client';
 import { Observable } from 'rxjs';
@@ -17,13 +10,13 @@ export interface AppContext {
   readonly css: ReadonlyArray<string>;
   readonly nonce: string | undefined;
   readonly options$: Observable<AppOptions>;
-  readonly monitor: Monitor;
-  readonly client: Client<{
-    readonly localStorage: LocalUserAccountProvider<LocalKeyStore, NEOONEProvider>;
-    readonly memory: LocalUserAccountProvider<LocalKeyStore, NEOONEProvider>;
-  }>;
-  // tslint:disable-next-line no-any
-  readonly readClient: ReadClient<any>;
+  readonly client: Client<
+    LocalUserAccountProvider<LocalKeyStore, NEOONEProvider>,
+    {
+      readonly localStorage: LocalUserAccountProvider<LocalKeyStore, NEOONEProvider>;
+      readonly memory: LocalUserAccountProvider<LocalKeyStore, NEOONEProvider>;
+    }
+  >;
   readonly network: NetworkType;
   readonly userAgent: IUAParser.IResult;
   readonly fileSaver: {

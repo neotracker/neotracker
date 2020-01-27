@@ -9,13 +9,13 @@ import {
 import { parseJestResults } from '../../../src/checks/jest';
 
 describe('GitHub Check Run API Compliance', () => {
-  test('Passing Test', async () => {
+  test('Passing Test', () => {
     const { summary, annotations } = parseJestResults(JSON.stringify(simplePassingTest));
     expect(summary).toContain('2 total');
     expect(annotations.length).toBeLessThan(1);
   });
 
-  test('Simple failing unit test', async () => {
+  test('Simple failing unit test', () => {
     const { summary, annotations } = parseJestResults(JSON.stringify(simpleFailedTest));
 
     if (annotations.length) {
@@ -33,7 +33,7 @@ describe('GitHub Check Run API Compliance', () => {
     }
   });
 
-  test('Postgres Error', async () => {
+  test('Postgres Error', () => {
     const { summary, annotations } = parseJestResults(JSON.stringify(dbConnectivityIssueTest));
 
     if (annotations.length) {
@@ -50,7 +50,7 @@ describe('GitHub Check Run API Compliance', () => {
       expect(annotations).toBeTruthy();
     }
   });
-  test('NEO One unit tests', async () => {
+  test('NEO One unit tests', () => {
     const { summary, annotations } = parseJestResults(JSON.stringify(neoOneUnitTests));
 
     if (annotations.length) {
@@ -67,7 +67,7 @@ describe('GitHub Check Run API Compliance', () => {
       expect(annotations).toBeTruthy();
     }
   });
-  test('liveGitTestData2', async () => {
+  test('liveGitTestData2', () => {
     const { summary, annotations } = parseJestResults(JSON.stringify(testSnapshotChanges));
 
     if (annotations.length) {

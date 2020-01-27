@@ -32,7 +32,7 @@ function TransactionInputOutputSummaryBody({
   addressHash,
   dense,
   className,
-}: Props): ?React.Element<*> {
+}: Props): React.Element<*> | null {
   // TODO: empty edges
   const input = (
     <TransactionInputPagingTable
@@ -68,6 +68,6 @@ const enhance: HOC<*, *> = compose(
   pure,
 );
 
-export default (enhance(TransactionInputOutputSummaryBody): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  TransactionInputOutputSummaryBody,
+): React.ComponentType<ExternalProps>);

@@ -96,7 +96,7 @@ function DayPrice({
   symbol,
   className,
   classes,
-}: Props): ?React.Element<*> {
+}: Props): React.Element<*> | null {
   if (current_price == null) {
     return null;
   }

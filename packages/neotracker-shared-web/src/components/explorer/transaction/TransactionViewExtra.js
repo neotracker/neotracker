@@ -117,6 +117,6 @@ const enhance: HOC<*, *> = compose(
   pure,
 );
 
-export default (enhance(TransactionViewExtra): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  TransactionViewExtra,
+): React.ComponentType<ExternalProps>);

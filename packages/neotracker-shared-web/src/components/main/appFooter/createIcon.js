@@ -16,5 +16,5 @@ export default (paths: Array<React.Element<*>>) => {
     );
   }
 
-  return pure(Icon);
+  return pure<*>(Icon);
 };

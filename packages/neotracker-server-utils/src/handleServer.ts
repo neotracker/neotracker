@@ -1,4 +1,5 @@
-import { Monitor } from '@neo-one/monitor';
+import { Labels } from '@neo-one/utils';
+import { serverLogger } from '@neotracker/logger';
 import http from 'http';
 import https from 'https';
 import Application from 'koa';
@@ -7,7 +8,7 @@ interface ListenOptions {
   readonly port: number;
   readonly host: string;
 }
-type Listener = ((request: http.IncomingMessage, response: http.ServerResponse) => void);
+type Listener = (request: http.IncomingMessage, response: http.ServerResponse) => void;
 export interface HandleServerResult<T extends http.Server | https.Server> {
   readonly server: T | undefined;
   readonly listener: Listener | undefined;
@@ -15,15 +16,13 @@ export interface HandleServerResult<T extends http.Server | https.Server> {
 }
 
 export async function handleServer<T extends http.Server | https.Server, TOptions extends ListenOptions>({
-  monitor,
   createServer,
   options,
   app,
   keepAliveTimeoutMS,
   prevResult = { app: undefined, listener: undefined, server: undefined },
 }: {
-  readonly monitor: Monitor;
-  readonly createServer: ((options: TOptions) => T);
+  readonly createServer: (options: TOptions) => T;
   readonly options?: TOptions | undefined;
   readonly app: Application;
   readonly keepAliveTimeoutMS?: number;
@@ -56,15 +55,10 @@ export async function handleServer<T extends http.Server | https.Server, TOption
       const { host, port } = options;
       await new Promise<void>((resolve) => safeServer.listen(port, host, 511, resolve));
 
-      monitor
-        .withData({
-          [monitor.labels.PEER_ADDRESS]: `${host}:${port}`,
-          [monitor.labels.PEER_PORT]: port,
-        })
-        .log({
-          name: 'server_listening',
-          message: `Server listening on ${host}:${port}`,
-        });
+      serverLogger.info(
+        { title: 'server_listening', [Labels.PEER_ADDRESS]: `${host}:${port}`, [Labels.PEER_PORT]: port },
+        `Server listening on ${host}:${port}`,
+      );
     }
   }
 

@@ -10,7 +10,7 @@ describe('FromStream', () => {
     await mount();
   });
 
-  test('renders stream of props', async () => {
+  test('renders stream of props', () => {
     expect(parseInt(getWrapper().text(), 10)).toEqual(0);
   });
 

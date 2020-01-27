@@ -1,29 +1,39 @@
-import { Monitor } from '@neo-one/monitor';
+import { clientLogger } from '@neotracker/logger';
 import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
 import { ApolloLink } from 'apollo-link';
 import { onError } from 'apollo-link-error';
+import debug from 'debug';
 import { LiveLink } from './LiveLink';
 
 export const createApolloClient = ({
-  monitor,
+  labels,
   endpoint,
   apolloState,
 }: {
-  readonly monitor: Monitor;
+  readonly labels: Record<string, string>;
   readonly endpoint: string;
   readonly apolloState: NormalizedCacheObject;
 }) => {
   const liveLink = new LiveLink({
     endpoint,
-    monitor,
+    labels,
   });
+
+  const logger = debug('NEOTRACKER:CreateApolloClient');
 
   const errorLink = onError(({ networkError }) => {
     if (networkError !== undefined) {
-      monitor.logError({
-        name: 'graphql_network_error',
-        error: networkError,
+      const logInfo = {
+        title: 'graphql_network_error',
+        error: networkError.message,
+        ...labels,
+      };
+      clientLogger.error({ ...logInfo });
+      logger('%o', {
+        level: 'error',
+        ...logInfo,
+        message: 'Something went wrong when creating ApolloClient.',
       });
     }
   });
@@ -41,12 +51,12 @@ export const createApolloClient = ({
         notifyOnNetworkStatusChange: false,
       },
       query: {
-        fetchPolicy: 'cache-and-network',
+        fetchPolicy: 'cache-first',
         errorPolicy: 'all',
       },
       mutate: {
         errorPolicy: 'all',
       },
-    },
+    } as const,
   });
 };

@@ -1,5 +1,7 @@
 /* @flow */
 // $FlowFixMe
+import { webLogger } from '@neotracker/logger';
+// $FlowFixMe
 import { ClientError, sanitizeError } from '@neotracker/shared-utils';
 import * as React from 'react';
 
@@ -42,7 +44,7 @@ function SaveKeystoreFileBlob({
     <Button
       className={className}
       onClick={onClickSave}
-      variant="raised"
+      variant="contained"
       color="primary"
     >
       <Typography className={classes.buttonText} variant="body1">
@@ -74,20 +76,13 @@ const enhance: HOC<*, *> = compose(
     }) => (event) => {
       const appContext = ((appContextIn: $FlowFixMe): AppContext);
       try {
-        appContext.monitor.captureLog(
-          () => {
-            const blob = new Blob([nep2], {
-              type: 'text/plain;charset=utf-8',
-            });
-            appContext.fileSaver.saveAs(blob, filename);
-          },
-          {
-            name: 'neotracker_wallet_keystore_save_file',
-            level: 'verbose',
-            error: {},
-          },
-        );
+        webLogger.info({ title: 'neotracker_wallet_keystore_save_file' });
+        const blob = new Blob([nep2], { type: 'text/plain;charset=utf-8' });
+        appContext.fileSaver.saveAs(blob, filename);
       } catch (error) {
+        webLogger.error({
+          title: 'neotracker_wallet_keystore_save_file',
+        });
         showSnackbarError({
           error: new ClientError(
             'Something went wrong saving the encrypted key file. Try again or try ' +
@@ -105,6 +100,6 @@ const enhance: HOC<*, *> = compose(
   pure,
 );
 
-export default (enhance(SaveKeystoreFileBlob): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  SaveKeystoreFileBlob,
+): React.ComponentType<ExternalProps>);

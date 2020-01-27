@@ -1,4 +1,3 @@
-import { Monitor } from '@neo-one/monitor';
 import { Action as ActionModel, Transfer as TransferModel } from '@neotracker/server-db';
 import { utils } from '@neotracker/shared-utils';
 import BigNumber from 'bignumber.js';
@@ -6,16 +5,14 @@ import { ActionData, Context } from '../types';
 
 export async function getActionDataForModel({
   context,
-  monitor,
   actionModel,
 }: {
   readonly context: Context;
-  readonly monitor: Monitor;
   readonly actionModel: ActionModel;
 }): Promise<ActionData<ActionModel>> {
   const transferModel = await actionModel
     .$relatedQuery<TransferModel>('transfer', context.db)
-    .context(context.makeQueryContext(monitor))
+    .context(context.makeQueryContext())
     .first();
   if (transferModel === undefined) {
     return { action: actionModel };

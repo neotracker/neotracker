@@ -219,17 +219,16 @@ const summarizeAnnotationsWoLineNums = (results: JestData): string => {
   }
 
   const formattedFails = failingWoLineNumber
-    .map(
-      (resultGroup: JestResultSet): string =>
-        resultGroup.assertionResults
-          .map((ta) => {
-            if (ta.failureMessages.length === 0) {
-              return JSON.stringify(ta);
-            }
+    .map((resultGroup: JestResultSet): string =>
+      resultGroup.assertionResults
+        .map((ta) => {
+          if (ta.failureMessages.length === 0) {
+            return JSON.stringify(ta);
+          }
 
-            return ta.failureMessages.join('\n');
-          })
-          .join('\n\n'),
+          return ta.failureMessages.join('\n');
+        })
+        .join('\n\n'),
     )
     .join('---- \n\n\n');
 

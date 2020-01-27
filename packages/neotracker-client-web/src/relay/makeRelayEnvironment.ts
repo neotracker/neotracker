@@ -1,6 +1,8 @@
-import { Monitor } from '@neo-one/monitor';
+import { Labels } from '@neo-one/utils';
+import { clientLogger } from '@neotracker/logger';
 import { QueryDeduplicator } from '@neotracker/shared-graphql';
 import { ClientError } from '@neotracker/shared-utils';
+import debug from 'debug';
 // @ts-ignore
 import { Environment, Network, RecordSource, Store } from 'relay-runtime';
 // @ts-ignore
@@ -10,6 +12,8 @@ import { map, switchMap } from 'rxjs/operators';
 import { LiveClient } from './LiveClient';
 
 const POLLING_TIME_MS = 15000;
+
+const logger = debug('NEOTRACKER:MakeRelayEnvironment');
 
 // tslint:disable-next-line no-any
 const isMutation = (operation: any) => operation.operationKind === 'mutation';
@@ -36,88 +40,83 @@ const getWebsocketEndpoint = (endpoint: string) => {
 function createNetwork({
   endpoint,
   relayResponseCache,
-  monitor: monitorOuterIn,
+  labels,
 }: {
   readonly endpoint: string;
   readonly relayResponseCache: RelayQueryResponseCache;
-  readonly monitor: Monitor;
+  readonly labels: Record<string, string>;
 }): Network {
-  const monitorOuter = monitorOuterIn.at('relay_client_environment');
-  const queryDeduplicator = new QueryDeduplicator(async (queries, monitor) => {
+  const queryDeduplicator = new QueryDeduplicator(async (queries) => {
     const body = JSON.stringify(queries);
+    const commonLogInfo = {
+      [Labels.SPAN_KIND]: 'client',
+      [Labels.HTTP_METHOD]: 'POST',
+      [Labels.PEER_SERVICE]: 'graphql',
+      [Labels.HTTP_PATH]: endpoint,
+      ...labels,
+    };
+    clientLogger.info({ title: 'relay_client_graphql_fetch', ...commonLogInfo });
+    logger('%o', { level: 'debug', title: 'relay_client_graphql_fetch', ...commonLogInfo });
 
-    return monitor
-      .withLabels({
-        [monitor.labels.SPAN_KIND]: 'client',
-        [monitor.labels.HTTP_METHOD]: 'POST',
-        [monitor.labels.PEER_SERVICE]: 'graphql',
-        [monitor.labels.HTTP_PATH]: endpoint,
-      })
-      .captureSpan(
-        async (span) => {
-          const headers = {
-            'Content-Type': 'application/json',
-          };
+    const headers = {
+      'Content-Type': 'application/json',
+    };
 
-          // tslint:disable-next-line no-any
-          span.inject(span.formats.HTTP, headers as any);
+    return fetch(endpoint, {
+      method: 'POST',
+      body,
+      headers,
+      credentials: 'same-origin',
+    }).then(
+      async (response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        const error = await ClientError.getFromResponse(response);
+        const logInfo = {
+          title: 'relay_client_graphql_fetch_error',
+          [Labels.HTTP_STATUS_CODE]: response.status,
+          error: error.message,
+          ...commonLogInfo,
+        };
+        clientLogger.info({ ...logInfo });
+        logger('%o', { level: 'debug', ...logInfo });
 
-          return fetch(endpoint, {
-            method: 'POST',
-            body,
-            headers,
-            credentials: 'same-origin',
-          }).then(
-            async (response) => {
-              span.setLabels({
-                [span.labels.HTTP_STATUS_CODE]: response.status,
-              });
+        throw error;
+      },
+      (error) => {
+        const logInfo = {
+          title: 'relay_client_graphql_fetch_error',
+          [Labels.HTTP_STATUS_CODE]: -1,
+          error: error.message,
+          ...commonLogInfo,
+        };
+        clientLogger.error({ ...logInfo });
+        logger('%o', { level: 'error', ...logInfo });
 
-              if (response.ok) {
-                return response.json();
-              }
-              const error = await ClientError.getFromResponse(response);
-              span.logError({
-                name: 'relay_client_graphql_fetch_error',
-                error,
-              });
-
-              throw error;
-            },
-            (error) => {
-              span.setLabels({
-                [span.labels.HTTP_STATUS_CODE]: -1,
-              });
-
-              span.logError({
-                name: 'relay_client_graphql_fetch_error',
-                error,
-              });
-
-              throw ClientError.getFromNetworkError(error);
-            },
-          );
-        },
-        { name: 'relay_client_graphql_fetch' },
-      );
-  }, monitorOuterIn);
+        throw ClientError.getFromNetworkError(error);
+      },
+    );
+  }, labels);
 
   let liveClient: LiveClient | undefined;
   try {
     liveClient = new LiveClient({
       endpoint: getWebsocketEndpoint(endpoint),
-      monitor: monitorOuter,
+      labels,
     });
   } catch (error) {
-    monitorOuter.logError({ name: 'relay_create_live_client_error', error });
+    const logInfo = { title: 'relay_create_live_client_error', error: error.message, ...labels };
+    clientLogger.error({ ...logInfo });
+    logger('%o', { level: 'error', ...logInfo });
   }
 
   // tslint:disable-next-line no-any
-  return Network.create((operation: any, variables: any, { monitor }: { readonly monitor: Monitor }) => {
+  return Network.create((operation: any, variables: any) => {
     const { id, text } = operation;
     const query = id || text;
     if (isMutation(operation)) {
-      return queryDeduplicator.execute({ id, variables, monitor }).then((result) => {
+      return queryDeduplicator.execute({ id, variables }).then((result) => {
         relayResponseCache.clear();
 
         return result;
@@ -126,8 +125,8 @@ function createNetwork({
 
     const result$ =
       liveClient === undefined
-        ? interval(POLLING_TIME_MS).pipe(switchMap(async () => queryDeduplicator.execute({ id, variables, monitor })))
-        : liveClient.request$({ id: query, variables }, monitor);
+        ? interval(POLLING_TIME_MS).pipe(switchMap(async () => queryDeduplicator.execute({ id, variables })))
+        : liveClient.request$({ id: query, variables });
 
     let cachedPayload$ = _of();
     const cachedPayload = relayResponseCache.get(query, variables);
@@ -150,18 +149,18 @@ function createNetwork({
 
 export function makeRelayEnvironment({
   endpoint,
-  monitor,
+  labels,
   relayResponseCache,
   records,
 }: {
   readonly endpoint: string;
-  readonly monitor: Monitor;
+  readonly labels: Record<string, string>;
   readonly relayResponseCache: RelayQueryResponseCache;
   // tslint:disable-next-line no-any
   readonly records?: any;
 }) {
   return new Environment({
-    network: createNetwork({ endpoint, monitor, relayResponseCache }),
+    network: createNetwork({ endpoint, relayResponseCache, labels }),
     store: new Store(new RecordSource(records)),
   });
 }

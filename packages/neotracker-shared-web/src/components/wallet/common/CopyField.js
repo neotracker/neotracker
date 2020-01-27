@@ -4,6 +4,8 @@ import * as React from 'react';
 import { type HOC, compose, getContext, pure, withHandlers } from 'recompose';
 import { connect } from 'react-redux';
 // $FlowFixMe
+import { webLogger } from '@neotracker/logger';
+// $FlowFixMe
 import { labels, sanitizeError } from '@neotracker/shared-utils';
 
 import type { AppContext } from '../../../AppContext';
@@ -63,15 +65,12 @@ const enhance: HOC<*, *> = compose(
       showSnackbarError,
     }) => (event) => {
       const appContext = ((appContextIn: $FlowFixMe): AppContext);
-      appContext.monitor
-        .withLabels({
-          [labels.CLICK_SOURCE]: name,
-        })
-        .captureLog(() => clipboard.copy(value, appContext.userAgent), {
-          name: 'browser_copy',
-          level: 'verbose',
-          error: {},
-        })
+      webLogger.info({
+        title: 'browser_copy',
+        [labels.CLICK_SOURCE]: name,
+      });
+      clipboard
+        .copy(value, appContext.userAgent)
         .then(() => {
           showSnackbar({ message: `${name} Copied` });
         })

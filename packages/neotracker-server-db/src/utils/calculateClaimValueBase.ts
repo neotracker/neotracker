@@ -1,8 +1,8 @@
-import { utils } from '@neo-one/client-core';
+import { utils } from '@neo-one/node-core';
 import { main } from '@neo-one/node-neo-settings';
 import { numbers } from '@neotracker/shared-utils';
 import BigNumber from 'bignumber.js';
-import { BN } from 'bn.js';
+import BN from 'bn.js';
 
 const bigNumberToBN = (value: BigNumber): BN => new BN(value.times(numbers.D).toString(10), 10);
 
@@ -12,7 +12,7 @@ export const calculateClaimValueBase = async ({
   getSystemFee,
   coins,
 }: {
-  readonly getSystemFee: ((index: number) => Promise<BigNumber>);
+  readonly getSystemFee: (index: number) => Promise<BigNumber>;
   readonly coins: ReadonlyArray<{
     readonly value: BigNumber;
     readonly startHeight: number;

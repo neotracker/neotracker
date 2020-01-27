@@ -20,13 +20,17 @@ export async function checkReady(
   const stdoutListener = (res: string) => {
     stdout += res;
   };
-  proc.stdout.on('data', stdoutListener);
+  if (proc.stdout !== null) {
+    proc.stdout.on('data', stdoutListener);
+  }
 
   let stderr = '';
   const stderrListener = (res: string) => {
     stderr += res;
   };
-  proc.stderr.on('data', stderrListener);
+  if (proc.stderr !== null) {
+    proc.stderr.on('data', stderrListener);
+  }
 
   let exited = proc.killed;
   const handleExit = () => {
@@ -60,8 +64,12 @@ export async function checkReady(
   } catch (error) {
     throw new Error(`Failed to start ${component}:\nError: ${error.stack}\nstdout: ${stdout}\nstderr:${stderr}`);
   } finally {
-    proc.stdout.removeListener('data', stdoutListener);
-    proc.stderr.removeListener('data', stderrListener);
+    if (proc.stdout !== null) {
+      proc.stdout.removeListener('data', stdoutListener);
+    }
+    if (proc.stderr !== null) {
+      proc.stderr.removeListener('data', stderrListener);
+    }
     proc.removeListener('exit', handleExit);
   }
 }

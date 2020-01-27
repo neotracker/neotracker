@@ -4,7 +4,7 @@ import Helmet from 'react-helmet';
 import * as React from 'react';
 import { Redirect } from 'react-router';
 
-import { addressToScriptHash } from '@neo-one/client';
+import { addressToScriptHash } from '@neo-one/client-common';
 import { compose, getContext, pure } from 'recompose';
 import { graphql } from 'react-relay';
 // $FlowFixMe

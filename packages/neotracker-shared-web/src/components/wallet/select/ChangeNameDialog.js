@@ -9,11 +9,12 @@ import {
   withStateHandlers,
 } from 'recompose';
 import * as React from 'react';
-import type { UserAccount } from '@neo-one/client';
+import type { UserAccount } from '@neo-one/client-common';
 
 // $FlowFixMe
 import { sanitizeError } from '@neotracker/shared-utils';
-
+// $FlowFixMe
+import { webLogger } from '@neotracker/logger';
 import type { AppContext } from '../../../AppContext';
 import {
   Button,
@@ -153,21 +154,17 @@ const enhance: HOC<*, *> = compose(
         onClose: () => void,
         showSnackbarError: (error: Error) => void,
       |});
-      appContext.monitor
-        .captureSpan(
-          (span) =>
-            walletAPI
-              .updateName({ appContext, id: account.id, name })
-              .then(() => onClose())
-              .catch((error) => {
-                span.logError({
-                  name: 'neotracker_wallet_change_name',
-                  error,
-                });
-                throw error;
-              }),
-          { name: 'neotracker_wallet_change_name' },
-        )
+      webLogger.info({ title: 'neotracker_wallet_change_name' });
+      walletAPI
+        .updateName({ appContext, id: account.id, name })
+        .then(() => onClose())
+        .catch((error) => {
+          webLogger.error({
+            title: 'neotracker_wallet_change_name',
+            error: error.message,
+          });
+          throw error;
+        })
         .catch((error) => {
           showSnackbarError(error);
         });

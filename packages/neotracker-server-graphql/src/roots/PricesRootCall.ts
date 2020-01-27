@@ -1,5 +1,5 @@
 // tslint:disable no-any no-object-mutation
-import { Monitor } from '@neo-one/monitor';
+import { createChild, serverLogger } from '@neotracker/logger';
 import { pubsub } from '@neotracker/server-utils';
 // @ts-ignore
 import cryptocompare from 'cryptocompare';
@@ -19,6 +19,8 @@ interface Args {
 }
 
 const FIVE_MINUTES_IN_SECONDS = 5 * 60;
+
+const serverGQLLogger = createChild(serverLogger, { component: 'graphql' });
 
 export class PricesRootCall extends RootCall {
   public static readonly fieldName: string = 'prices';
@@ -75,7 +77,7 @@ export class PricesRootCall extends RootCall {
     };
   }
 
-  public static async refreshDataPoints(from: string, to: string, monitor: Monitor) {
+  public static async refreshDataPoints(from: string, to: string) {
     const key = this.getKey(from, to);
     if (this.mutableRefreshing[key]) {
       return;
@@ -86,7 +88,7 @@ export class PricesRootCall extends RootCall {
       this.mutableDataPoints[key] = [];
     }
     const previousDataPoints = this.mutableDataPoints[key];
-    this.mutableDataPoints[key] = await this.getDataPoints(from, to, monitor);
+    this.mutableDataPoints[key] = await this.getDataPoints(from, to);
     const mutableDataPoints = this.mutableDataPoints[key];
     if (mutableDataPoints.length > 0 && !_.isEqual(mutableDataPoints, previousDataPoints)) {
       pubsub.publish(PRICES, { prices: mutableDataPoints, from, to });
@@ -94,34 +96,30 @@ export class PricesRootCall extends RootCall {
     this.mutableRefreshing[key] = false;
   }
 
-  public static async getDataPoints(from: string, to: string, monitor: Monitor): Promise<ReadonlyArray<any>> {
+  public static async getDataPoints(from: string, to: string): Promise<ReadonlyArray<any>> {
     const key = this.getKey(from, to);
     if (from === 'GAS' || to === 'GAS') {
       return [];
     }
 
     let tries = 1;
+    const logInfo = {
+      title: 'cryptocompare_fetch',
+    };
     // tslint:disable-next-line no-loop-statement
     while (tries >= 0) {
       try {
-        // tslint:disable-next-line prefer-immediate-return
-        const finalResult = await monitor.captureLog(
-          async () => {
-            const result = await cryptocompare.histoHour(from, to);
+        serverGQLLogger.info({ ...logInfo });
+        const result = await cryptocompare.histoHour(from, to);
 
-            return result.map((point: any) => ({
-              id: `${key}:${point.time}`,
-              type: key,
-              time: point.time,
-              value: point.close,
-            }));
-          },
-          { name: 'cryptocompare_fetch', level: 'verbose', error: {} },
-        );
-
-        // tslint:disable-next-line no-var-before-return
-        return finalResult;
+        return result.map((point: any) => ({
+          id: `${key}:${point.time}`,
+          type: key,
+          time: point.time,
+          value: point.close,
+        }));
       } catch {
+        serverGQLLogger.error({ ...logInfo });
         tries -= 1;
       }
     }
@@ -134,19 +132,9 @@ export class PricesRootCall extends RootCall {
   }
 
   public static initialize$(options$: Observable<RootCallOptions>): Observable<any> {
-    return combineLatest(
-      options$.pipe(
-        map(({ monitor }) => monitor),
-        distinctUntilChanged(),
-        map((monitor) => monitor.at('prices_root_call')),
-      ),
-      timer(0, FIVE_MINUTES_IN_SECONDS * 1000),
-    ).pipe(
-      switchMap(async ([monitor]) => {
-        await Promise.all([
-          this.refreshDataPoints('NEO', 'BTC', monitor),
-          this.refreshDataPoints('NEO', 'USD', monitor),
-        ]);
+    return combineLatest([options$.pipe(distinctUntilChanged()), timer(0, FIVE_MINUTES_IN_SECONDS * 1000)]).pipe(
+      switchMap(async () => {
+        await Promise.all([this.refreshDataPoints('NEO', 'BTC'), this.refreshDataPoints('NEO', 'USD')]);
       }),
     );
   }

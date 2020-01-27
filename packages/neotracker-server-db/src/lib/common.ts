@@ -1,4 +1,3 @@
-import { Monitor } from '@neo-one/monitor';
 import { GraphQLFieldResolver } from 'graphql';
 import Knex from 'knex';
 import _ from 'lodash';
@@ -72,7 +71,7 @@ export interface Edge {
   readonly required?: boolean;
   readonly computed?: boolean;
   // tslint:disable-next-line no-any
-  readonly makeGraphQLResolver?: ((resolver: GraphQLFieldResolver<any, any>) => GraphQLFieldResolver<any, any>);
+  readonly makeGraphQLResolver?: (resolver: GraphQLFieldResolver<any, any>) => GraphQLFieldResolver<any, any>;
 }
 export interface EdgeSchema {
   readonly [edgeName: string]: Edge;
@@ -94,6 +93,7 @@ export type IndexSchema =
       readonly name: string;
       readonly unique?: boolean;
     };
+// tslint:disable-next-line: readonly-array
 export type IDSchema = 'id' | ['id1', 'id2'];
 export interface ModelSchema {
   readonly tableName: string;
@@ -107,8 +107,8 @@ export interface ModelSchema {
   readonly interfaces: ReadonlyArray<IFace>;
   readonly isEdge: boolean;
   readonly indices: ReadonlyArray<IndexSchema>;
-  readonly chainCustomBefore: ((schema: Knex.SchemaBuilder) => Knex.SchemaBuilder);
-  readonly chainCustomAfter: ((schema: Knex.SchemaBuilder) => Knex.SchemaBuilder);
+  readonly chainCustomBefore: (schema: Knex.SchemaBuilder) => Knex.SchemaBuilder;
+  readonly chainCustomAfter: (schema: Knex.SchemaBuilder) => Knex.SchemaBuilder;
   readonly materializedView?: string;
 }
 
@@ -177,7 +177,7 @@ export const makeJSONSchema = (fieldSchema: FieldSchema): JsonSchema => {
     // tslint:disable-next-line no-unused
     .map(([fieldName, __]) => fieldName);
 
-  const properties = Object.entries(fieldSchema).reduce<JsonSchema['properties']>((acc, [fieldName, field]) => {
+  const properties = Object.entries(fieldSchema).reduce<{}>((acc, [fieldName, field]: [string, Field]) => {
     if (!field.computed) {
       const jsonField = makeJSONField(field);
       if (jsonField !== undefined) {
@@ -320,7 +320,7 @@ const addColumn = (
         col = table
           .specificType(fieldName, 'tsvector')
           .notNullable()
-          .index(undefined, 'GIN');
+          .index('GIN');
         break;
       default:
         throw new Error(`Unknown field type for ${fieldName}`);
@@ -372,7 +372,6 @@ const getCreateIndex = (index: IndexSchema, tableName: string) => {
 
 export const createTable = async (
   db: Knex,
-  monitor: Monitor,
   modelSchema: ModelSchema,
   modelSchemas: { readonly [modelType: string]: ModelSchema },
   bare?: boolean,
@@ -425,7 +424,7 @@ export const createTable = async (
     };
   }
 
-  const exists = await schema.queryContext(makeAllPowerfulQueryContext(monitor)).hasTable(modelSchema.tableName);
+  const exists = await schema.queryContext(makeAllPowerfulQueryContext()).hasTable(modelSchema.tableName);
   if (!exists) {
     if (bare) {
       await executeSchema(schema);
@@ -435,11 +434,11 @@ export const createTable = async (
   }
 };
 
-export const dropTable = async (db: Knex, monitor: Monitor, modelSchema: ModelSchema, checkEmpty = false) => {
+export const dropTable = async (db: Knex, modelSchema: ModelSchema, checkEmpty = false) => {
   const schema = db.schema;
   if (modelSchema.materializedView === undefined) {
     if (checkEmpty) {
-      const exists = await schema.queryContext(makeAllPowerfulQueryContext(monitor)).hasTable(modelSchema.tableName);
+      const exists = await schema.queryContext(makeAllPowerfulQueryContext()).hasTable(modelSchema.tableName);
       if (!exists) {
         return;
       }
@@ -447,12 +446,12 @@ export const dropTable = async (db: Knex, monitor: Monitor, modelSchema: ModelSc
       const result = await db(modelSchema.tableName)
         .select('*')
         .limit(1)
-        .queryContext(makeAllPowerfulQueryContext(monitor));
+        .queryContext(makeAllPowerfulQueryContext());
       if (result.length === 0) {
         return;
       }
     }
-    await schema.dropTableIfExists(modelSchema.tableName).queryContext(makeAllPowerfulQueryContext(monitor));
+    await schema.dropTableIfExists(modelSchema.tableName).queryContext(makeAllPowerfulQueryContext());
   } else {
     await schema
       .raw(
@@ -460,13 +459,13 @@ export const dropTable = async (db: Knex, monitor: Monitor, modelSchema: ModelSc
       DROP MATERIALIZED VIEW IF EXISTS ${modelSchema.tableName} CASCADE;
     `,
       )
-      .queryContext(makeAllPowerfulQueryContext(monitor));
+      .queryContext(makeAllPowerfulQueryContext());
   }
 };
 
 const EMPTY_DROP_INDICES = 'query string argument of EXECUTE is null';
 
-export const dropIndices = async (db: Knex, monitor: Monitor, tableName: string) => {
+export const dropIndices = async (db: Knex, tableName: string) => {
   if (db.client.driverName !== 'pg') {
     throw new Error('Not implemented');
   }
@@ -484,7 +483,7 @@ export const dropIndices = async (db: Knex, monitor: Monitor, tableName: string)
       END$$;
     `,
       )
-      .queryContext(makeAllPowerfulQueryContext(monitor));
+      .queryContext(makeAllPowerfulQueryContext());
   } catch (error) {
     if (!error.message.includes(EMPTY_DROP_INDICES)) {
       throw error;
@@ -504,7 +503,7 @@ export const dropIndices = async (db: Knex, monitor: Monitor, tableName: string)
       END$$;
     `,
       )
-      .queryContext(makeAllPowerfulQueryContext(monitor));
+      .queryContext(makeAllPowerfulQueryContext());
   } catch (error) {
     if (!error.message.includes(EMPTY_DROP_INDICES)) {
       throw error;
@@ -512,16 +511,16 @@ export const dropIndices = async (db: Knex, monitor: Monitor, tableName: string)
   }
 };
 
-export const createIndices = async (db: Knex, monitor: Monitor, modelSchema: ModelSchema) => {
+export const createIndices = async (db: Knex, modelSchema: ModelSchema) => {
   await Promise.all(
     modelSchema.indices.map((index) =>
-      db.raw(getCreateIndex(index, modelSchema.tableName)).queryContext(makeAllPowerfulQueryContext(monitor)),
+      db.raw(getCreateIndex(index, modelSchema.tableName)).queryContext(makeAllPowerfulQueryContext()),
     ),
   );
 };
 
-export const refreshTriggers = async (db: Knex, monitor: Monitor, modelSchema: ModelSchema) => {
+export const refreshTriggers = async (db: Knex, modelSchema: ModelSchema) => {
   await modelSchema
     .chainCustomAfter(modelSchema.chainCustomBefore(db.schema))
-    .queryContext(makeAllPowerfulQueryContext(monitor));
+    .queryContext(makeAllPowerfulQueryContext());
 };

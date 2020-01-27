@@ -1,5 +1,5 @@
 [version]
-0.80.0
+0.110.1
 
 [ignore]
 <PROJECT_ROOT>/dashboards/.*
@@ -26,7 +26,6 @@ untyped-type-import=warn
 unclear-type=off
 unsafe-getters-setters=off
 deprecated-type=off
-deprecated-call-syntax=off
 
 [options]
 module.use_strict=true

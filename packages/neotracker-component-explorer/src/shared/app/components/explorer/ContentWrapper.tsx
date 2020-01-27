@@ -1,10 +1,12 @@
-import { Flex, styled } from 'reakit';
+import styled from 'styled-components';
+import { ifProp } from 'styled-tools';
 
 interface Props {
   readonly column?: boolean;
-  readonly children?: React.ReactNode;
 }
-export const ContentWrapper = styled<Props>(Flex)`
+export const ContentWrapper = styled.div<Props>`
+  ${ifProp('column', 'flex-direction: column', '')};
+  display: flex;
   align-items: center;
   max-width: 1200px;
   padding: 0 16px;

@@ -1,9 +1,10 @@
+import { globalStats } from '@neo-one/client-switch';
 import * as React from 'react';
 import LoadableExport, { LoadableComponent } from 'react-loadable';
 import { Route, RouteComponentProps, Switch } from 'react-router';
 import { AppContext } from './AppContext';
 import { AppShell } from './AppShell';
-import * as metrics from './metrics';
+import { sessionCounter } from './metrics';
 import * as routes from './routes';
 
 interface RouteConfig {
@@ -77,6 +78,11 @@ export class App extends React.Component<ExternalProps> {
   }
 
   public componentDidMount() {
-    metrics.NEOTRACKER_SESSION.inc();
+    globalStats.record([
+      {
+        measure: sessionCounter,
+        value: 1,
+      },
+    ]);
   }
 }

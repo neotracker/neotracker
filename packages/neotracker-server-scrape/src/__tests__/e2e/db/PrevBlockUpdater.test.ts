@@ -1,4 +1,3 @@
-import { Monitor } from '@neo-one/monitor';
 import { Block as BlockModel } from '@neotracker/server-db';
 import Knex from 'knex';
 import { PrevBlockRevert, PrevBlockUpdate, PrevBlockUpdater } from '../../../db/PrevBlockUpdater';
@@ -8,15 +7,15 @@ import { updaterUnitTest, UpdaterUtilTestOptions } from '../../data/updaterTestU
 const blockInit = data.createBlockModel({ id: 1 });
 const blockSecondary = data.createBlockModel({ id: 2 });
 
-const initiateTest = async (db: Knex, monitor: Monitor) => {
+const initiateTest = async (db: Knex) => {
   const context = makeContext({ db });
 
   await Promise.all([
     BlockModel.query(db)
-      .context(context.makeQueryContext(monitor))
+      .context(context.makeQueryContext())
       .insert([blockInit]),
     BlockModel.query(db)
-      .context(context.makeQueryContext(monitor))
+      .context(context.makeQueryContext())
       .insert([blockSecondary]),
   ]);
 

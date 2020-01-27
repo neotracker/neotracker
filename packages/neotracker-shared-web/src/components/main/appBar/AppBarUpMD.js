@@ -64,6 +64,7 @@ const styles = (theme: Theme) => ({
   },
   button: {
     height: theme.spacing.unit * 6,
+    border: 'none',
   },
   search: {
     alignItems: 'center',

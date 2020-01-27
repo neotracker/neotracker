@@ -11,7 +11,7 @@ import {
   scriptHashToAddress,
   StringContractParameter,
   TransactionBase,
-} from '@neo-one/client';
+} from '@neo-one/client-full';
 import {
   Address as AddressModel,
   Asset as AssetModel,
@@ -411,7 +411,7 @@ const createConfirmedTransactionBase = ({
   receipt: {
     blockHash,
     blockIndex,
-    index,
+    transactionIndex: index,
     globalIndex,
   },
 });

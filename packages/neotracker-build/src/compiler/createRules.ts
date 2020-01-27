@@ -27,8 +27,9 @@ const getPresets = ({
           type === 'client-web'
             ? { browsers: pkg.browserslist }
             : { node: nodeVersion === undefined ? true : nodeVersion },
-        modules: false,
+        modules: 'commonjs',
         useBuiltIns: 'entry',
+        corejs: 2,
         ignoreBrowserslistConfig: true,
       },
     ],
@@ -44,6 +45,7 @@ const styledComponents: ReadonlyArray<any> = [
 const graphqlTag = './packages/neotracker-build/src/babel/graphql-tag';
 const getPlugins = ({ type, typescript }: { readonly type: Type; readonly typescript: boolean }) =>
   [
+    '@babel/plugin-transform-runtime',
     // Syntax
     '@babel/plugin-syntax-dynamic-import',
     // Optimizations
@@ -83,29 +85,47 @@ export const createRules = ({
       configFile: false,
       presets: getPresets({ type, typescript: false, nodeVersion }),
       plugins: getPlugins({ type, typescript: false }),
-      cacheDirectory: fast,
+      cacheDirectory: fast
+        ? path.resolve(appRootDir.get(), 'node_modules', '.babel-cache', type, fast ? 'fast' : 'prod')
+        : false,
     },
   };
 
   const useBabel = type === 'client-web' || type === 'server-web';
-  const typescriptLoader = {
-    loader: 'awesome-typescript-loader',
-    options: {
-      useTranspileModule: type !== 'client-web' || fast,
-      transpileOnly: true,
-      useBabel,
-      babelOptions: useBabel
-        ? {
+  const typescriptLoader = [
+    {
+      loader: 'cache-loader',
+      options: {
+        cacheDirectory: path.resolve(appRootDir.get(), 'node_modules', '.cache', type, fast ? 'fast' : 'prod'),
+      },
+    },
+    'thread-loader',
+    useBabel
+      ? {
+          loader: 'babel-loader',
+          options: {
             configFile: false,
             presets: type === 'client-web' ? getPresets({ type, typescript: true, nodeVersion }) : undefined,
             plugins: getPlugins({ type, typescript: true }),
-          }
-        : undefined,
-      babelCore: '@babel/core',
-      useCache: fast,
-      configFileName: 'tsconfig/tsconfig.es2018.esm.json',
+            cacheDirectory: fast
+              ? path.resolve(appRootDir.get(), 'node_modules', '.ts-babel-cache', type, fast ? 'fast' : 'prod')
+              : false,
+          },
+        }
+      : undefined,
+    {
+      loader: 'ts-loader',
+      options: {
+        transpileOnly: true,
+        happyPackMode: true,
+        context: appRootDir.get(),
+        configFile: path.resolve(appRootDir.get(), 'tsconfig.static.json'),
+        onlyCompileBundledFiles: true,
+        experimentalFileCaching: true,
+        experimentalWatchApi: true,
+      },
     },
-  };
+  ].filter((value) => value !== undefined);
 
   const include = [
     path.resolve(appRootDir.get(), 'packages'),

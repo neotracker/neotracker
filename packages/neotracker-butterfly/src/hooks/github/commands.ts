@@ -118,7 +118,7 @@ export const commands = (options: CommandsOptions) => {
         // Create or re-use an existing label
         const owner = org;
         const repo = data.repository.name;
-        const existingLabels = await api.issues.getLabels({ owner, repo });
+        const existingLabels = await api.issues.listLabelsForRepo({ owner, repo });
         const mergeOnGreen = existingLabels.data.find((l: Label) => l.name === LABEL_NAME);
 
         // Create the label if it doesn't exist yet

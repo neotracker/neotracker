@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="13" failures="0" time="11.36">
+  <testsuite name="setFixtureData" errors="0" failures="0" skipped="0" timestamp="2020-01-24T05:09:41" time="2.788" tests="1">
+    <testcase classname="setFixtureData setFixtureData replaces data field of example" name="setFixtureData setFixtureData replaces data field of example" time="0.14">
+    </testcase>
+  </testsuite>
+  <testsuite name="FromStream" errors="0" failures="0" skipped="0" timestamp="2020-01-24T05:09:44" time="0.995" tests="4">
+    <testcase classname="FromStream renders stream of props" name="FromStream renders stream of props" time="0.111">
+    </testcase>
+    <testcase classname="FromStream subscribes to new props stream" name="FromStream subscribes to new props stream" time="0.091">
+    </testcase>
+    <testcase classname="FromStream returns null on no value" name="FromStream returns null on no value" time="0.079">
+    </testcase>
+    <testcase classname="FromStream access ref" name="FromStream access ref" time="0.043">
+    </testcase>
+  </testsuite>
+  <testsuite name="Query" errors="0" failures="0" skipped="0" timestamp="2020-01-24T05:09:45" time="0.693" tests="1">
+    <testcase classname="Query access ref" name="Query access ref" time="0.082">
+    </testcase>
+  </testsuite>
+  <testsuite name="Query" errors="0" failures="0" skipped="0" timestamp="2020-01-24T05:09:41" time="10.514" tests="7">
+    <testcase classname="Query renders" name="Query renders" time="0.159">
+    </testcase>
+    <testcase classname="Query access ref" name="Query access ref" time="0.068">
+    </testcase>
+    <testcase classname="Query change fixture data" name="Query change fixture data" time="0.095">
+    </testcase>
+    <testcase classname="Query resolveWith - immediate return" name="Query resolveWith - immediate return" time="0.083">
+    </testcase>
+    <testcase classname="Query resolveWith - delayed return" name="Query resolveWith - delayed return" time="2.096">
+    </testcase>
+    <testcase classname="Query resolveWithInterval" name="Query resolveWithInterval" time="0.891">
+    </testcase>
+    <testcase classname="Query resolveWithIntervalLoop" name="Query resolveWithIntervalLoop" time="0.302">
+    </testcase>
+  </testsuite>
+</testsuites>

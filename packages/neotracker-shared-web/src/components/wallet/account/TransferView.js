@@ -1,6 +1,6 @@
 /* @flow */
 import * as React from 'react';
-import type { UserAccount } from '@neo-one/client';
+import type { UserAccount } from '@neo-one/client-common';
 
 import { type HOC, compose, pure } from 'recompose';
 import { graphql } from 'react-relay';

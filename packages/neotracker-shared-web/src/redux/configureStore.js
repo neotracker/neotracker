@@ -5,7 +5,7 @@ import reducers, { flip } from './index';
 
 export default (isClient: boolean, initialState: Object = {}) => {
   const createReducer = (rootReducer: Object) =>
-    combineReducers(Object.assign({}, rootReducer));
+    combineReducers({ ...rootReducer });
 
   const store = createStore(createReducer(reducers()), initialState);
 

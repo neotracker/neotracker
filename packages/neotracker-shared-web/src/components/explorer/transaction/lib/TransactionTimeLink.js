@@ -41,6 +41,6 @@ function TransactionTimeLink({
 
 const enhance: HOC<*, *> = compose(pure);
 
-export default (enhance(TransactionTimeLink): React.ComponentType<
-  ExternalProps,
->);
+export default (enhance(
+  TransactionTimeLink,
+): React.ComponentType<ExternalProps>);

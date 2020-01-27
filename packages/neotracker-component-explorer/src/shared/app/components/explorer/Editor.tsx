@@ -6,14 +6,14 @@ import _ from 'lodash';
 import React from 'react';
 // @ts-ignore
 import { Controlled as ControlledCodeMirror, UnControlled as CodeMirror } from 'react-codemirror2';
-import { styled } from 'reakit';
+import styled from 'styled-components';
 import { WithRenderConfig, WithViewport } from '../render';
 import './theme/vscode-dark-plus-html.css';
 import './theme/vscode-dark-plus.css';
 
 const StyledCodeMirror = styled(CodeMirror)<{ readonly options: { readonly readOnly: boolean } }>`
   .CodeMirror {
-    background: #304148 important!;
+    background: #304148;
     font-family: 'Fira Code', monospace;
     padding: 1em;
     height: auto;
@@ -86,7 +86,8 @@ export class Editor extends React.Component<Props> {
   public render() {
     const { code, readOnly, controlled, mode, ...props } = this.props;
 
-    const ThisCodeMirror = controlled ? StyledControlledCodeMirror : StyledCodeMirror;
+    // tslint:disable-next-line no-any
+    const ThisCodeMirror: any = controlled ? StyledControlledCodeMirror : StyledCodeMirror;
 
     return (
       <WithRenderConfig>

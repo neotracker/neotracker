@@ -9,7 +9,10 @@ import {
 } from 'recompose';
 import { Link as RRLink } from 'react-router-dom';
 import * as React from 'react';
-import type { LocalWallet, UserAccount } from '@neo-one/client';
+// $FlowFixMe
+import { webLogger } from '@neotracker/logger';
+import type { UserAccount } from '@neo-one/client-common';
+import type { LocalWallet } from '@neo-one/client-core';
 
 import type { AppContext } from '../../../AppContext';
 import {
@@ -72,7 +75,7 @@ function SelectCardMenu({
   onCloseChangeNameDialog,
   onClickDeleteWallet,
   classes,
-}: Props): ?React.Element<*> {
+}: Props): React.Element<*> | null {
   const makeMenuItem = ({
     path,
     onClick,
@@ -116,7 +119,7 @@ function SelectCardMenu({
   };
 
   let changeNameDialog;
-  const canChangeName = account != null && account.configurableName;
+  const canChangeName = account != null;
   if (account != null && canChangeName) {
     changeNameDialog = (
       <ChangeNameDialog
@@ -132,7 +135,7 @@ function SelectCardMenu({
       <Button
         aria-owns={open ? 'select-card-menu' : null}
         aria-haspopup="true"
-        variant="raised"
+        variant="contained"
         color="primary"
         onClick={onClickMenu}
       >
@@ -165,7 +168,7 @@ function SelectCardMenu({
             'Remove the currently selected account from browser local ' +
             'storage. This does not delete the address or the funds at the ' +
             'address, it only removes it from storage local to your computer.',
-          disabled: account == null || !account.deletable,
+          disabled: account == null,
         })}
       </Menu>
       {changeNameDialog}
@@ -222,21 +225,17 @@ const enhance: HOC<*, *> = compose(
         showSnackbarError: (error: Error) => void,
       |});
 
-      appContext.monitor
-        .captureSpan(
-          (span) =>
-            walletAPI
-              .deleteAccount({ appContext, id: account.id })
-              .catch((error) => {
-                span.logError({
-                  name: 'neotracker_wallet_delete',
-                  message: `Failed to delete wallet ${account.id.address}`,
-                  error,
-                });
-                throw error;
-              }),
-          { name: 'neotracker_wallet_delete' },
-        )
+      const logInfo = { title: 'neotracker_wallet_delete' };
+      webLogger.info({ ...logInfo });
+      walletAPI
+        .deleteAccount({ appContext, id: account.id })
+        .catch((error) => {
+          webLogger.error(
+            { ...logInfo, error: error.message },
+            `Failed to delete wallet ${account.id.address}`,
+          );
+          throw error;
+        })
         .then(() => {
           setState((prevState) => ({
             ...prevState,

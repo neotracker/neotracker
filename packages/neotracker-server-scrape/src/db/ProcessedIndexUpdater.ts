@@ -1,39 +1,33 @@
-import { Monitor } from '@neo-one/monitor';
+import { createChild, serverLogger } from '@neotracker/logger';
 import { isUniqueError, ProcessedIndex } from '@neotracker/server-db';
 import { Context } from '../types';
 import { SameContextDBUpdater } from './SameContextDBUpdater';
 
-export class ProcessedIndexUpdater extends SameContextDBUpdater<number, number> {
-  public async save(context: Context, monitor: Monitor, index: number): Promise<void> {
-    await monitor.captureSpanLog(
-      async (span) => {
-        try {
-          await ProcessedIndex.query(context.db)
-            .context(context.makeQueryContext(span))
-            .insert({ index });
+const serverScrapeLogger = createChild(serverLogger, { component: 'scrape' });
 
-          await context.processedIndexPubSub.next({ index });
-        } catch (error) {
-          if (!isUniqueError(context.db, error)) {
-            throw error;
-          }
-        }
-      },
-      { name: 'neotracker_scrape_save_processed_index', level: 'verbose', error: {} },
-    );
+export class ProcessedIndexUpdater extends SameContextDBUpdater<number, number> {
+  public async save(context: Context, index: number): Promise<void> {
+    serverScrapeLogger.info({ title: 'neotracker_scrape_save_processed_index' });
+    try {
+      await ProcessedIndex.query(context.db)
+        .context(context.makeQueryContext())
+        .insert({ index });
+
+      await context.processedIndexPubSub.next({ index });
+    } catch (error) {
+      if (!isUniqueError(context.db, error)) {
+        throw error;
+      }
+    }
   }
 
-  public async revert(context: Context, monitor: Monitor, index: number): Promise<void> {
-    await monitor.captureSpan(
-      async (span) => {
-        await ProcessedIndex.query(context.db)
-          .context(context.makeQueryContext(span))
-          .where('index', '>=', index)
-          .delete();
+  public async revert(context: Context, index: number): Promise<void> {
+    serverScrapeLogger.info({ title: 'neotracker_scrape_revert_processed_index' });
+    await ProcessedIndex.query(context.db)
+      .context(context.makeQueryContext())
+      .where('index', '>=', index)
+      .delete();
 
-        await this.save(context, span, index - 1);
-      },
-      { name: 'neotracker_scrape_revert_processed_index' },
-    );
+    await this.save(context, index - 1);
   }
 }

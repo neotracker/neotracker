@@ -74,12 +74,12 @@ export const createAppContextProxy = ({ mocks: defaultMocksIn }: AppContextProxy
       const apollo = _.merge({}, defaultMocks, newFixtureData.apollo === undefined ? {} : newFixtureData.apollo);
       const options$ = newFixtureData.options$ === undefined ? DEFAULT_APP_OPTIONS$ : newFixtureData.options$;
 
-      // tslint:disable-next-line no-any
       const schema = makeExecutableSchema({
         typeDefs,
         resolvers: {
           Node: {
-            __resolveType(data) {
+            // tslint:disable-next-line no-any
+            __resolveType(data: any) {
               return data.typename;
             },
           },
@@ -97,13 +97,9 @@ export const createAppContextProxy = ({ mocks: defaultMocksIn }: AppContextProxy
         css: [],
         nonce: '1234',
         options$,
-        // tslint:disable-next-line no-any
-        monitor: {} as any,
         network: 'priv',
         // tslint:disable-next-line no-any
         client: {} as any,
-        // tslint:disable-next-line no-any
-        readClient: {} as any,
         userAgent: {
           ua: DEFAULT_USER_AGENT,
           browser: {

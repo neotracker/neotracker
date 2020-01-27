@@ -149,7 +149,7 @@ declare module '@material-ui/core/Button' {
   import type { ButtonBaseProps } from '@material-ui/core/ButtonBase';
   declare export type Color = 'default' | 'inherit' | 'primary' | 'secondary';
   declare export type ButtonSize = 'small' | 'medium' | 'large';
-  declare export type ButtonVariant = 'flat' | 'raised' | 'fab';
+  declare export type ButtonVariant = 'flat' | 'contained' | 'fab';
 
   declare export type ButtonClasses = {|
     root?: Object,
@@ -233,7 +233,7 @@ declare module '@material-ui/core/ButtonBase/createRippleHandler' {
     eventName: string,
     action: string,
     cb: ?Function
-  ) => handleEvent;
+  ) => typeof handleEvent;
 }
 
 declare module '@material-ui/core/ButtonBase/Ripple' {

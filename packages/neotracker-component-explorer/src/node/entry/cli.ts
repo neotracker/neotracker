@@ -1,21 +1,34 @@
 import yargs from 'yargs';
 import { BuildRunner, ServerRunner } from '../runner';
 
-yargs.describe('build', 'Build a static version of the component explorer').default('build', false);
-yargs.describe('out', 'Output directory for static build');
-yargs.describe('public-path', 'Path the static build will be served from');
-yargs.describe('router', 'Uses Memory Router in place of Browser Router').default('router', 'browser');
-yargs.describe('ci', 'Build for continuous integration').default('ci', false);
+const { argv } = yargs
+  .describe('build', 'Build a static version of the component explorer')
+  .default('build', false)
+  .string('out')
+  .describe('out', 'Output directory for static build')
+  .string('public-path')
+  .describe('public-path', 'Path the static build will be served from')
+  .string('router')
+  .describe('router', 'Uses Memory Router in place of Browser Router')
+  .choices('router', ['browser', 'memory'])
+  .default('router', 'browser')
+  .describe('ci', 'Build for continuous integration')
+  .default('ci', false);
 
-if (yargs.argv.build) {
+const { router } = argv;
+if (router !== 'browser' && router !== 'memory') {
+  throw new Error(`invalid router: ${router}`);
+}
+
+if (argv.build) {
   new BuildRunner({
-    isCI: yargs.argv.ci,
+    isCI: argv.ci,
     staticOptions: {
-      outDir: yargs.argv.out,
-      publicPath: yargs.argv['public-path'],
-      router: yargs.argv.router,
+      outDir: argv.out,
+      publicPath: argv['public-path'],
+      router,
     },
   }).execute();
 } else {
-  new ServerRunner({ isCI: yargs.argv.ci }).execute();
+  new ServerRunner({ isCI: argv.ci }).execute();
 }

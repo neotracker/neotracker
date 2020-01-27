@@ -1,6 +1,6 @@
-import { as, Base, styled } from 'reakit';
+import styled from 'styled-components';
 
-const BlockquoteBase = styled(Base)`
+export const Blockquote = styled.blockquote`
   background-color: rgba(255, 229, 100, 0.3);
   border-left-color: #ffe564;
   border-left-width: 8px;
@@ -13,5 +13,3 @@ const BlockquoteBase = styled(Base)`
     padding-right: 8px;
   }
 `;
-
-export const Blockquote = as('blockquote')(BlockquoteBase);

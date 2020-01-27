@@ -1,6 +1,7 @@
 /* @flow */
 import * as React from 'react';
-import type { LocalWallet, UserAccount } from '@neo-one/client';
+import type { UserAccount } from '@neo-one/client-common';
+import type { LocalWallet } from '@neo-one/client-core';
 
 import { type HOC, compose, pure } from 'recompose';
 import { graphql } from 'react-relay';

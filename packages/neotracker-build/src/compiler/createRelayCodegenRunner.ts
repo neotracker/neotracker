@@ -34,8 +34,8 @@ interface Current {
 
 class QueryPersistor {
   public queue: Array<{
-    readonly resolve: ((index: number) => void);
-    readonly reject: ((error: Error) => void);
+    readonly resolve: (index: number) => void;
+    readonly reject: (error: Error) => void;
     readonly text: string;
   }>;
   public processing: boolean;
@@ -180,9 +180,9 @@ const getRelayFileWriter = (baseDir: string) => ({
   });
 };
 export interface CodegenRunner {
-  readonly clearAll: (() => Promise<void>);
-  readonly watchAll: (() => Promise<void>);
-  readonly compileAll: (() => Promise<void>);
+  readonly clearAll: () => Promise<void>;
+  readonly watchAll: () => Promise<void>;
+  readonly compileAll: () => Promise<void>;
 }
 
 export const createRelayCodegenRunner = (): CodegenRunner => {
