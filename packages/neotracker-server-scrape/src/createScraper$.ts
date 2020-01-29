@@ -15,12 +15,10 @@ import {
   createFromEnvironment$,
   createProcessedNextIndexPubSub,
   createRootLoader$,
-  DBEnvironment,
   DBOptions,
   isHealthyDB,
   NEP5_CONTRACT_TYPE,
   PubSub,
-  PubSubEnvironment,
   PubSubOptions,
   RootLoaderOptions,
 } from '@neotracker/server-db';
@@ -39,9 +37,8 @@ import { WriteCache } from './WriteCache';
 
 export interface Environment {
   readonly network: NetworkType;
-  readonly db: DBEnvironment;
-  readonly pubSub: PubSubEnvironment;
 }
+
 export interface Options {
   readonly db: DBOptions;
   readonly rootLoader: RootLoaderOptions;
@@ -63,7 +60,6 @@ export const createScraper$ = ({
 }): Observable<boolean> => {
   const rootLoader$ = createRootLoader$({
     db$: createFromEnvironment$({
-      environment: environment.db,
       options$: options$.pipe(
         map((options) => options.db),
         distinctUntilChanged(),
@@ -125,7 +121,6 @@ export const createScraper$ = ({
 
       return createProcessedNextIndexPubSub({
         options: pubSubOptions,
-        environment: environment.pubSub,
       });
     }),
   );

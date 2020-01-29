@@ -1,4 +1,4 @@
-import { DBClient } from '@neotracker/server-db';
+import { LiteDBConfig, PGDBConfigString, PGDBConfigWithDatabase } from '../getConfiguration';
 import { Options } from '../NEOTracker';
 
 const userAgents =
@@ -6,33 +6,33 @@ const userAgents =
 const whitelistedUserAgents =
   '(Googlebot|Googlebot-Mobile|Googlebot-Image|Googlebot-News|Googlebot-Video|AdsBot-Google|Mediapartners-Google|Google-Adwords-Instant)';
 
-const db = ({
-  database,
-  filename,
-  client = 'sqlite3',
-  connectionString,
-  user,
-  password,
-}: {
-  readonly database: string;
-  readonly filename: string;
-  readonly client?: DBClient;
-  readonly connectionString?: string;
-  readonly user?: string;
-  readonly password?: string;
-}) => ({
-  // tslint:disable-next-line no-useless-cast
-  client,
-  connection:
-    connectionString !== undefined
-      ? connectionString
-      : {
-          database,
-          user,
-          password,
-          filename,
-        },
-});
+// const db = ({
+//   database,
+//   filename,
+//   client = 'sqlite3',
+//   connectionString,
+//   user,
+//   password,
+// }: {
+//   readonly database: string;
+//   readonly filename: string;
+//   readonly client?: DBClient;
+//   readonly connectionString?: string;
+//   readonly user?: string;
+//   readonly password?: string;
+// }) => ({
+//   // tslint:disable-next-line no-useless-cast
+//   client,
+//   connection:
+//     connectionString !== undefined
+//       ? connectionString
+//       : {
+//           database,
+//           user,
+//           password,
+//           filename,
+//         },
+// });
 
 export interface AssetsConfiguration {
   readonly clientAssetsPath: string;
@@ -47,41 +47,24 @@ export interface AssetsConfiguration {
 
 export const common = ({
   rpcURL,
-  database,
   port,
   blacklistNEP5Hashes,
-  dbFileName,
-  dbUser,
-  dbPassword,
-  dbClient,
-  dbConnectionString,
+  db,
   configuration,
 }: {
   readonly rpcURL: string;
-  readonly database: string;
   readonly port: number;
   readonly blacklistNEP5Hashes: ReadonlyArray<string>;
-  readonly dbFileName: string;
-  readonly dbUser?: string;
-  readonly dbPassword?: string;
-  readonly dbClient?: DBClient;
-  readonly dbConnectionString?: string;
+  readonly db: PGDBConfigWithDatabase | PGDBConfigString | LiteDBConfig;
   readonly configuration: AssetsConfiguration;
 }): Options => ({
   server: {
-    db: db({
-      database,
-      filename: dbFileName,
-      client: dbClient,
-      user: dbUser,
-      password: dbPassword,
-      connectionString: dbConnectionString,
-    }),
+    db,
     rootLoader: {
       cacheEnabled: true,
       cacheSize: 100,
     },
-    subscribeProcessedNextIndex: {},
+    subscribeProcessedNextIndex: { db },
     rateLimit: {
       enabled: true,
       config: {
@@ -178,14 +161,7 @@ export const common = ({
     serveNext: process.env.NEOTRACKER_NEXT === 'true',
   },
   scrape: {
-    db: db({
-      database,
-      filename: dbFileName,
-      client: dbClient,
-      user: dbUser,
-      password: dbPassword,
-      connectionString: dbConnectionString,
-    }),
+    db,
     rootLoader: {
       cacheEnabled: true,
       cacheSize: 100,
@@ -196,14 +172,7 @@ export const common = ({
     repairNEP5BlockFrequency: 10,
     repairNEP5LatencySeconds: 15,
     pubSub: {
-      db: db({
-        database,
-        filename: dbFileName,
-        client: dbClient,
-        user: dbUser,
-        password: dbPassword,
-        connectionString: dbConnectionString,
-      }),
+      db,
     },
   },
 });

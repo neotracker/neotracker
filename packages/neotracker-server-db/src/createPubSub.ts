@@ -14,21 +14,39 @@ export interface PubSub<T> {
 
 export interface PubSubOptions {
   readonly db?: {
-    readonly client?: DBClient;
-    readonly connection?:
+    readonly client: DBClient;
+    readonly connection:
       | string
       | {
+          readonly database: string;
+          readonly host: string;
+          readonly port: number;
           readonly user?: string;
-          readonly database?: string;
           readonly password?: string;
+        }
+      | {
+          readonly filename: string;
         };
   };
   readonly maxAttempts?: number;
   readonly reconnectTimeMS?: number;
 }
-export interface PubSubEnvironment {
-  readonly host?: string;
-  readonly port?: number;
+
+export interface CreatePubSubOptions {
+  readonly db: {
+    readonly client: 'pg';
+    readonly connection:
+      | string
+      | {
+          readonly database: string;
+          readonly host: string;
+          readonly port: number;
+          readonly user?: string;
+          readonly password?: string;
+        };
+  };
+  readonly maxAttempts?: number;
+  readonly reconnectTimeMS?: number;
 }
 
 const serverDBLogger = createChild(serverLogger, { component: 'database' });
@@ -36,28 +54,23 @@ const serverDBLogger = createChild(serverLogger, { component: 'database' });
 const createPGPubSub = <T>({
   options,
   channel,
-  environment,
 }: {
   readonly channel: string;
-  readonly options: PubSubOptions;
-  readonly environment: PubSubEnvironment;
+  readonly options: CreatePubSubOptions;
 }): PubSub<T> => {
-  const { maxAttempts = 5, reconnectTimeMS = 5000 } = options;
+  const { maxAttempts = 5, reconnectTimeMS = 5000, db } = options;
 
   let connected = false;
-  const db = options.db !== undefined ? options.db : {};
+
   const clientOptions =
     typeof db.connection === 'string'
       ? {
           connectionString: db.connection,
         }
-      : db.connection === undefined
-      ? {}
       : db.connection;
 
   const createClient = () =>
     new Client({
-      ...environment,
       ...clientOptions,
     });
 
@@ -163,14 +176,12 @@ const createPGPubSub = <T>({
 export const createPubSub = <T>({
   options,
   channel,
-  environment,
 }: {
   readonly channel: string;
   readonly options: PubSubOptions;
-  readonly environment: PubSubEnvironment;
 }): PubSub<T> => {
   if (options.db !== undefined && options.db.client === 'pg') {
-    return createPGPubSub({ options, channel, environment });
+    return createPGPubSub({ options: options as CreatePubSubOptions, channel });
   }
 
   const subject$ = new Subject<T>();
