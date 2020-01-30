@@ -1,9 +1,7 @@
 import {
   createFromEnvironment$,
   createRootLoader$,
-  DBEnvironment,
   DBOptions,
-  PubSubEnvironment,
   PubSubOptions,
   RootLoaderOptions,
   subscribeProcessedNextIndex,
@@ -70,8 +68,6 @@ export interface QueryMapEnvironment {
 export interface Environment {
   readonly react: ReactEnvironment;
   readonly reactApp: ReactAppEnvironment;
-  readonly db: DBEnvironment;
-  readonly directDB: PubSubEnvironment;
   readonly server: HTTPServerEnvironment;
   readonly network: NetworkType;
   readonly queryMap?: QueryMapEnvironment;
@@ -128,7 +124,6 @@ export const createServer$ = ({
 
   const rootLoader$ = createRootLoader$({
     db$: createFromEnvironment$({
-      environment: environment.db,
       options$: mapDistinct$((_) => _.options.db),
     }),
 
@@ -171,7 +166,6 @@ export const createServer$ = ({
     switchMap((options) =>
       subscribeProcessedNextIndex({
         options,
-        environment: environment.directDB,
       }),
     ),
   );

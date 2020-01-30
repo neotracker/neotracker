@@ -16,7 +16,7 @@
     "@neotracker/shared-utils": "^0.0.1-alpha.0",
     "bignumber.js": "^9.0.0",
     "ix": "^2.5.3",
-    "knex": "^0.15.2",
+    "knex": "^0.20.8",
     "lodash": "^4.17.11",
     "lru-cache": "^4.1.1",
     "objection": "^1.4.0",
