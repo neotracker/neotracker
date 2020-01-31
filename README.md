@@ -61,14 +61,43 @@ The full list of configurable options in the `.neotrackerrc` file. These can be 
   "ci": false, // Running as part of continuous integration
   "prod": false, // Compile for production
   "nodeRpcUrl": "http://localhost:9040/rpc", // NEO•ONE Node RPC URL
-  "dbClient": "sqlite3", // Database Client - "sqlite3" or "pg"
-  "dbFileName": "db.sqlite", // Database file - only for SQLite
-  "dbHost": "localhost", // Database host - only for Postgres
-  "dbPort": 5432, // Database port - only for Postgres
-  "dbUser": undefined, // Database username - only for Postgres
-  "dbPassword": undefined, // Database password - only for Postgres
-  "database": "neotracker_prv", // Database name
+  "db": {
+    "client": "sqlite3", // Database Client - "sqlite3" or "pg"
+    "connection": { // Database Connection Configuration (see below for postgres example)
+      "filename": "db.sqlite" // local sqlite database filename
+    }
+  },
   "resetDB": false // Resets database
+}
+```
+
+with a postgres db we have two connection options, a connection string or connection object.
+
+connection string configuration:
+
+```js
+{
+  "db": {
+    "client": "pg",
+    "connection": "postgresql://localhost:5432/neotracker_priv"
+  }
+}
+```
+
+connection object configuration:
+
+```js
+{
+  "db": {
+    "client": "pg",
+    "connection": {
+      "host": "localhost",
+      "port": 5433,
+      "user": "admin" // optional username
+      "password": "password" // optional password
+      "database": "neotracker_priv" // optional database name
+    }
+  }
 }
 ```
 

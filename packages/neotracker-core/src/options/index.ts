@@ -1,4 +1,4 @@
-import { DBClient } from '@neotracker/server-db';
+import { LiteDBConfig, PGDBConfig, PGDBConfigString } from '../getConfiguration';
 import { AssetsConfiguration } from './common';
 import { main } from './main';
 import { priv } from './priv';
@@ -14,23 +14,13 @@ export { test } from './test';
 export const getOptions = ({
   network,
   port,
-  dbFileName,
-  dbUser,
-  dbPassword,
-  dbClient,
-  dbConnectionString,
-  database,
+  db,
   configuration,
   rpcURL,
 }: {
   readonly network?: string;
   readonly port: number;
-  readonly dbFileName: string;
-  readonly dbUser?: string;
-  readonly dbPassword?: string;
-  readonly dbClient?: DBClient;
-  readonly dbConnectionString?: string;
-  readonly database?: string;
+  readonly db: LiteDBConfig | PGDBConfig | PGDBConfigString;
   readonly configuration: AssetsConfiguration;
   readonly rpcURL?: string;
 }) =>
@@ -38,32 +28,19 @@ export const getOptions = ({
     network,
     main: main({
       port,
-      dbFileName,
-      dbUser,
-      dbPassword,
-      dbClient,
-      dbConnectionString,
+      db,
       configuration,
       rpcURL,
     }),
     test: test({
       port,
-      dbFileName,
-      dbUser,
-      dbPassword,
-      dbClient,
-      dbConnectionString,
+      db,
       configuration,
       rpcURL,
     }),
     priv: priv({
       port,
-      dbFileName,
-      dbUser,
-      dbPassword,
-      dbClient,
-      dbConnectionString,
-      database,
+      db,
       configuration,
       rpcURL,
     }),

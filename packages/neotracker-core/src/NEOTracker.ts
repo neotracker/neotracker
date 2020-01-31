@@ -89,10 +89,10 @@ export class NEOTracker {
       defer(async () => {
         const options = await this.options$.pipe(take(1)).toPromise();
         if (this.environment.start.resetDB) {
-          await dropTables(createFromEnvironment(this.environment.scrape.db, options.scrape.db));
+          await dropTables(createFromEnvironment(options.scrape.db));
         }
 
-        await createTables(createFromEnvironment(this.environment.scrape.db, options.scrape.db));
+        await createTables(createFromEnvironment(options.scrape.db));
       }),
       merge(server$, scrape$),
     ).subscribe({

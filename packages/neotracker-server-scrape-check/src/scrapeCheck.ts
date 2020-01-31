@@ -15,7 +15,6 @@ import {
   Asset as AssetModel,
   Coin as CoinModel,
   createFromEnvironment,
-  DBEnvironment,
   DBOptions,
   makeAllPowerfulQueryContext,
   NEP5_CONTRACT_TYPE,
@@ -28,8 +27,8 @@ import _ from 'lodash';
 
 export interface Environment {
   readonly network: NetworkType;
-  readonly db: DBEnvironment;
 }
+
 export interface Options {
   readonly db: DBOptions;
   readonly rpcURL: string;
@@ -311,7 +310,7 @@ export const scrapeCheck = async ({
     }),
   });
 
-  const db = createFromEnvironment(environment.db, options.db);
+  const db = createFromEnvironment(options.db);
 
   const [blockHeightMismatch, smartContracts] = await Promise.all([
     checkBlockHeightMismatch({

@@ -9,21 +9,21 @@ import { filter, map, scan } from 'rxjs/operators';
 // @ts-ignore
 import sqlSummary from 'sql-summary';
 
-export interface DBEnvironment {
-  readonly host?: string;
-  readonly port?: number;
-}
-
 export type DBClient = 'pg' | 'sqlite3';
 
 export interface DBOptions {
   readonly client: DBClient;
-  readonly connection?:
+  readonly connection:
     | string
     | {
-        readonly database?: string;
+        readonly database: string;
+        readonly host: string;
+        readonly port: number;
         readonly user?: string;
         readonly password?: string;
+      }
+    | {
+        readonly filename: string;
       };
   readonly pool?: {
     readonly min?: number;
@@ -232,30 +232,11 @@ export const create$ = ({ options$ }: { readonly options$: Observable<Knex.Confi
   );
 };
 
-const getOptions = (environment: DBEnvironment, options: DBOptions): Knex.Config => ({
-  ...options,
-  connection:
-    typeof options.connection === 'string'
-      ? options.connection
-      : {
-          ...(options.connection === undefined ? {} : options.connection),
-          host: environment.host,
-          port: environment.port,
-        },
-});
+export const createFromEnvironment = (options: DBOptions) => create({ options });
 
-export const createFromEnvironment = (environment: DBEnvironment, options: DBOptions) =>
-  create({ options: getOptions(environment, options) });
-
-export const createFromEnvironment$ = ({
-  environment,
-  options$,
-}: {
-  readonly environment: DBEnvironment;
-  readonly options$: Observable<DBOptions>;
-}) =>
+export const createFromEnvironment$ = ({ options$ }: { readonly options$: Observable<DBOptions> }) =>
   create$({
-    options$: options$.pipe(map((options) => getOptions(environment, options))),
+    options$,
   });
 
 export async function transaction<T>(db: Knex, func: (trx: Objection.Transaction) => Promise<T>): Promise<T> {
