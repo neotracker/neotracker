@@ -1,3 +1,4 @@
+import { LogLevel, setGlobalLogLevel } from '@neotracker/logger';
 import * as path from 'path';
 import rc from 'rc';
 import { BehaviorSubject } from 'rxjs';
@@ -55,6 +56,7 @@ export const isLiteDBConfig = (value: { [k in string]: any }): value is LiteDBCo
 export interface NTConfiguration {
   readonly type: 'all' | 'web' | 'scrape';
   readonly port: number;
+  readonly logLevel: LogLevel;
   readonly network: 'priv' | 'main' | string;
   readonly nodeRpcUrl?: string;
   readonly metricsPort?: number;
@@ -66,6 +68,7 @@ export const defaultNTConfiguration: NTConfiguration = {
   type: 'all', // Type of NEOTracker instance to start: 'all', 'web', or 'scrape'
   port: process.env.PORT !== undefined ? Number(process.env.PORT) : 1340, // Port to listen on
   network: 'priv', // Network to run against
+  logLevel: 'info',
   nodeRpcUrl: 'http://localhost:9040/rpc', // NEO-ONE Node RPC URL
   db: {
     client: 'sqlite3',
@@ -77,7 +80,9 @@ export const defaultNTConfiguration: NTConfiguration = {
 };
 
 export const getConfiguration = (defaultConfig = defaultNTConfiguration): NTConfiguration => {
-  const { port, network, nodeRpcUrl, metricsPort, resetDB, db: dbIn, type } = rc('neotracker', defaultConfig);
+  const { port, network, nodeRpcUrl, metricsPort, resetDB, db: dbIn, type, logLevel } = rc('neotracker', defaultConfig);
+
+  setGlobalLogLevel(logLevel);
 
   const db = isLiteDBConfig(dbIn)
     ? {
@@ -95,6 +100,7 @@ export const getConfiguration = (defaultConfig = defaultNTConfiguration): NTConf
     network,
     nodeRpcUrl,
     metricsPort,
+    logLevel,
     db,
     type,
     resetDB,
