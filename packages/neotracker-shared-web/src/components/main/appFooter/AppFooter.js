@@ -30,7 +30,7 @@ const styles = (theme: Theme) => ({
     },
   },
   root: {
-    backgroundColor: theme.palette.primary[500],
+    backgroundColor: theme.palette.primary.main,
     display: 'flex',
     flexDirection: 'column',
     paddingBottom: theme.spacing.unit * 2,

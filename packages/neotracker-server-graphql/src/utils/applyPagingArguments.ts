@@ -37,7 +37,7 @@ export const applyPagingArguments = async ({
   if (pagingArguments) {
     const { forward, offset, limit } = pagingArguments;
     if (forward) {
-      const newOffset = offset === undefined ? 0 : offset + 1;
+      const newOffset = offset === undefined || isNaN(offset) ? 0 : offset + 1;
 
       // tslint:disable-next-line no-any
       const pagingForwardResults: any[] = await builder.offset(newOffset).limit(limit + 1);

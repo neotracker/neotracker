@@ -105,7 +105,7 @@ function App({
         <link
           rel="mask-icon"
           href="/safari-pinned-tab.svg"
-          color={theme.palette.primary[500]}
+          color={theme.palette.primary.main}
         />
         <meta name="theme-color" content={theme.palette.secondary.light} />
         <link rel="canonical" href={canonicalURL} />

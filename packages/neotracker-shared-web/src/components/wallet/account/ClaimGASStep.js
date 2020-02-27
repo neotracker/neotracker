@@ -29,10 +29,10 @@ const styles = (theme: Theme) => ({
     paddingTop: theme.spacing.unit / 2,
   },
   done: {
-    color: theme.palette.primary[700],
+    color: theme.palette.primary.dark,
   },
   inProgress: {
-    color: theme.palette.primary[500],
+    color: theme.palette.primary.main,
   },
   tooltip: {
     cursor: 'pointer',
@@ -134,9 +134,6 @@ function ClaimGASStep({
   );
 }
 
-const enhance: HOC<*, *> = compose(
-  withStyles(styles),
-  pure,
-);
+const enhance: HOC<*, *> = compose(withStyles(styles), pure);
 
 export default (enhance(ClaimGASStep): React.ComponentType<ExternalProps>);

@@ -85,7 +85,7 @@ const styles = (theme: Theme) => ({
     textDecoration: 'underline',
   },
   backgroundColor: {
-    backgroundColor: theme.palette.primary[500],
+    backgroundColor: theme.palette.primary.main,
   },
   id: {
     flex: '0 1 auto',
@@ -191,9 +191,6 @@ function PageViewHeader({
   );
 }
 
-const enhance: HOC<*, *> = compose(
-  withStyles(styles),
-  pure,
-);
+const enhance: HOC<*, *> = compose(withStyles(styles), pure);
 
 export default (enhance(PageViewHeader): React.ComponentType<ExternalProps>);

@@ -15,12 +15,12 @@ const styles = (theme: any) => ({
       height: 'initial',
     },
     '& .highcharts-color-0': {
-      fill: theme.palette.primary['500'],
-      stroke: theme.palette.primary['500'],
+      fill: theme.palette.primary.light,
+      stroke: theme.palette.primary.light,
     },
     '& .highcharts-color-1': {
-      fill: theme.palette.secondary.light,
-      stroke: theme.palette.secondary.light,
+      fill: theme.custom.colors.deepPurple[500],
+      stroke: theme.custom.colors.deepPurple[500],
     },
     '& .highcharts-axis-labels text': {
       ...theme.typography.caption,

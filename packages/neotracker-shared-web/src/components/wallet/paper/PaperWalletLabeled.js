@@ -12,7 +12,7 @@ const styles = (theme: Theme) => ({
     display: 'flex',
   },
   label: {
-    color: theme.palette.primary[500],
+    color: theme.palette.primary.main,
     display: 'flex',
     justifyContent: 'center',
     paddingRight: theme.spacing.unit,
@@ -56,10 +56,7 @@ function PaperWalletLabeled({
   );
 }
 
-const enhance: HOC<*, *> = compose(
-  withStyles(styles),
-  pure,
-);
+const enhance: HOC<*, *> = compose(withStyles(styles), pure);
 
 export default (enhance(
   PaperWalletLabeled,

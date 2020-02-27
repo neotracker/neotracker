@@ -15,11 +15,11 @@ const styles = (theme: any) => ({
     whiteSpace: 'nowrap',
   },
   link: {
-    color: theme.palette.primary[500],
+    color: theme.palette.secondary.main,
     fontWeight: theme.typography.fontWeightRegular,
     textDecoration: 'none',
     '&:hover': {
-      color: theme.palette.primary[700],
+      color: theme.palette.secondary.dark,
       textDecoration: 'underline',
     },
   },
@@ -114,9 +114,6 @@ function Link({
   );
 }
 
-const enhance: HOC<*, *> = compose(
-  withStyles(styles),
-  pure,
-);
+const enhance: HOC<*, *> = compose(withStyles(styles), pure);
 
 export default (enhance(Link): React.ComponentType<ExternalProps>);
