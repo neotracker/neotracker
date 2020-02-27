@@ -62,6 +62,8 @@ export interface NTConfiguration {
   readonly metricsPort?: number;
   readonly db: LiteDBConfig | PGDBConfigString | PGDBConfig;
   readonly resetDB: boolean;
+  readonly ci: boolean;
+  readonly prod: boolean;
 }
 
 export const defaultNTConfiguration: NTConfiguration = {
@@ -77,10 +79,15 @@ export const defaultNTConfiguration: NTConfiguration = {
     },
   },
   resetDB: false, // Resets database
+  ci: false,
+  prod: false,
 };
 
 export const getConfiguration = (defaultConfig = defaultNTConfiguration): NTConfiguration => {
-  const { port, network, nodeRpcUrl, metricsPort, resetDB, db: dbIn, type, logLevel } = rc('neotracker', defaultConfig);
+  const { port, network, nodeRpcUrl, metricsPort, resetDB, db: dbIn, type, logLevel, ci, prod } = rc(
+    'neotracker',
+    defaultConfig,
+  );
 
   setGlobalLogLevel(logLevel);
 
@@ -104,6 +111,8 @@ export const getConfiguration = (defaultConfig = defaultNTConfiguration): NTConf
     db,
     type,
     resetDB,
+    ci,
+    prod,
   };
 };
 
