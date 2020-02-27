@@ -45,7 +45,7 @@ const styles = (theme) => {
         marginTop: 8,
       },
       '& a': {
-        color: theme.palette.secondary[500],
+        color: theme.palette.secondary.main,
       },
       '& hr': {
         border: 'none',
@@ -126,9 +126,6 @@ function Markdown({
   );
 }
 
-const enhance: HOC<*, *> = compose(
-  withStyles(styles),
-  pure,
-);
+const enhance: HOC<*, *> = compose(withStyles(styles), pure);
 
 export default (enhance(Markdown): React.ComponentType<ExternalProps>);

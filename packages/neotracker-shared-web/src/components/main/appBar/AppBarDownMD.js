@@ -59,7 +59,7 @@ const styles = (theme: Theme) => ({
   title: {},
   padding: {},
   selected: {
-    color: theme.palette.primary[500],
+    color: theme.palette.primary.main,
   },
   menuButton: {
     height: theme.spacing.unit * 6,

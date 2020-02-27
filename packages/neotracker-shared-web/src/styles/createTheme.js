@@ -52,8 +52,20 @@ const titleUpMD = {
 export default () => {
   const theme = createMuiTheme({
     palette: {
-      primary: lightGreen,
-      secondary: deepPurple,
+      primary: {
+        main: '#00e599',
+        light: '#33eaad',
+        dark: '#00a06b',
+        [500]: '#00e599',
+        [700]: '#00a06b',
+      },
+      secondary: {
+        main: '#00af92',
+        light: '#33bfa7',
+        dark: '#007a66',
+        [500]: '#00af92',
+        [700]: '#007a66',
+      },
       error: red,
       type: 'light',
     },

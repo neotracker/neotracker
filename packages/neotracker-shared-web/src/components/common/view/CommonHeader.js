@@ -72,7 +72,7 @@ const styles = (theme: Theme) => ({
     textDecoration: 'underline',
   },
   backgroundColor: {
-    backgroundColor: theme.palette.primary[500],
+    backgroundColor: theme.palette.primary.main,
   },
 });
 
@@ -192,9 +192,6 @@ function CommonHeader({
   );
 }
 
-const enhance: HOC<*, *> = compose(
-  withStyles(styles),
-  pure,
-);
+const enhance: HOC<*, *> = compose(withStyles(styles), pure);
 
 export default (enhance(CommonHeader): React.ComponentType<ExternalProps>);
