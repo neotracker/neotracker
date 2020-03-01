@@ -148,6 +148,13 @@ const AppBarDownMD = ({
       selected: routes.isContract(location.pathname),
       href: routes.makeContractSearch(1),
     },
+    {
+      className: classes.button,
+      id: 'ecosystem',
+      label: 'Ecosystem',
+      selected: routes.isEcosystem(location.pathname),
+      href: routes.ECOSYSTEM,
+    },
   ];
 
   const onClickMenu = showMenu ? onHideMenu : onShowMenu;

@@ -56,7 +56,7 @@ function PageLoading({
         [classes.padding]: !disablePadding,
       })}
     >
-      <Logo id="PageLoading" width={48} height={56} />
+      <Logo width={48} height={56} />
       <LinearProgress className={classes.progress} />
     </div>
   );

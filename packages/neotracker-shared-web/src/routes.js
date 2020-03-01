@@ -108,3 +108,7 @@ export const MAKE_SEARCH_VALUE_ARGUMENT = 'value';
 const SEARCH_VALUE_PARAM = `:${MAKE_SEARCH_VALUE_ARGUMENT}`;
 export const makeSearch = (value: string = SEARCH_VALUE_PARAM) =>
   `/search/${value}`;
+
+// Ecosystem
+export const ECOSYSTEM = '/ecosystem';
+export const isEcosystem = (path: string) => path.startsWith('/ecosystem');
