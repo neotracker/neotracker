@@ -90,9 +90,9 @@ function Logo({
   return (
     <svg
       className={className}
-      width={`${width == null ? 24 : width}px`}
+      width={`${width == null ? 28 : width}px`}
       height={`${height == null ? 28 : height}px`}
-      viewBox="0 0 24 28"
+      viewBox="0 0 28 28"
       xmlns="http://www.w3.org/2000/svg"
     >
       {defs}
