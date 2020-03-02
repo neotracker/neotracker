@@ -126,6 +126,9 @@ function Markdown({
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(Markdown): React.ComponentType<ExternalProps>);

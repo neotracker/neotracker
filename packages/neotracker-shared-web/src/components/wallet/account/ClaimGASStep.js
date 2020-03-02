@@ -134,6 +134,9 @@ function ClaimGASStep({
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(ClaimGASStep): React.ComponentType<ExternalProps>);
