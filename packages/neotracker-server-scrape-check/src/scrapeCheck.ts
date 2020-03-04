@@ -259,7 +259,6 @@ const checkCoins = async ({
   readonly options: Options;
   readonly smartContracts: { readonly [asset: string]: nep5.NEP5SmartContract };
 }): Promise<number | undefined> => {
-  console.log(`is this offset the issue?: ${offset}`);
   const coins = await CoinModel.query(db)
     .context(makeAllPowerfulQueryContext())
     .orderBy('id')
