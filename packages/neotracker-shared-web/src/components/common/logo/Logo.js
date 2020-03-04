@@ -4,7 +4,6 @@ import * as React from 'react';
 import { type HOC, compose, pure } from 'recompose';
 
 type ExternalProps = {|
-  id: string,
   width?: number,
   height?: number,
   white?: boolean,
@@ -15,13 +14,7 @@ type Props = {|
   ...ExternalProps,
   ...InternalProps,
 |};
-function Logo({
-  id,
-  width,
-  height,
-  white,
-  className,
-}: Props): React.Element<*> {
+function Logo({ width, height, white, className }: Props): React.Element<*> {
   const style = white ? (
     <style>
       {`.cls-1{fill:#FFFFFF;}`}
@@ -49,13 +42,11 @@ function Logo({
           <g stroke="null" id="svg_5">
             <polygon
               stroke="null"
-              id="svg_3"
               points="0.2608702175581401,5.032920339497025 0.2608702175581401,23.573866768403605 12.881187855344706,27.89130401611328 12.881187855344706,9.199931946897209 26.534788131713867,4.401099670176876 14.143215180391167,0.17391400394956946 0.2608702175581401,5.032920339497025 "
               className="cls-1"
             />
             <polygon
               stroke="null"
-              id="svg_4"
               points="13.91447130070037,9.733963599952176 13.91447130070037,19.8731847399888 26.534788131713867,24.190642454847875 26.534788131713867,5.281133833165484 13.91447130070037,9.733963599952176 "
               className="cls-2"
             />

@@ -94,7 +94,7 @@ function ErrorView({
   }
   return (
     <div className={classNames(classes.root, className)}>
-      <Logo id="ErrorView" width={48} height={56} />
+      <Logo width={48} height={56} />
       <Typography variant="headline" className={classes.headline}>
         Something went wrong!
       </Typography>

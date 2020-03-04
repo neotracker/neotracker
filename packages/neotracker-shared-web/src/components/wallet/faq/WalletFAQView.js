@@ -44,11 +44,11 @@ to gain access to your Private Keys and thus your balance.
 
 
 ## How can I trust NEO Tracker Wallet?
-NEO Tracker Wallet source code is available on [Github](https://github.com/neotracker/neotracker-wallet)
+NEO Tracker Wallet source code is available on [GitHub](https://github.com/neotracker/neotracker-wallet)
 for you to verify. We serve the wallet over SSL (https) which eliminates the
 possibility of tampering with the Javascript code between our servers and your
 browser. Still not sure? Download the latest standalone release on our
-[Github releases](https://github.com/neotracker/neotracker-wallet/releases) page
+[GitHub releases](https://github.com/neotracker/neotracker-wallet/releases) page
 and open it using your browser. Alternatively, you can build directly from the source.
 
 

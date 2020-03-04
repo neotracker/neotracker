@@ -40,7 +40,7 @@ const GenericErrorPage = ({ classes }: Props) => (
     <Grid className={classes.root} container justify="center">
       <Grid item xs={12} md={8} lg={4}>
         <Card className={classes.card}>
-          <Logo id="PageLoading" width={48} height={56} />
+          <Logo width={48} height={56} />
           <Typography variant="headline" className={classes.headline}>
             Down for Maintenance
           </Typography>

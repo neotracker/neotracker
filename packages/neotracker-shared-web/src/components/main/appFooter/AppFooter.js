@@ -16,6 +16,8 @@ import TwitterIcon from './TwitterIcon';
 
 import { mapAppOptions } from '../../../utils';
 
+const year = new Date().getFullYear();
+
 const styles = (theme: Theme) => ({
   [theme.breakpoints.down('sm')]: {
     root: {
@@ -100,7 +102,7 @@ function AppFooter({
       </div>
       <div className={classes.secondRow}>
         <Typography className={classes.copyright} variant="caption">
-          {`${appOptions.meta.name} © 2020`}
+          {`${appOptions.meta.name} © 2017-${year}`}
         </Typography>
       </div>
     </div>

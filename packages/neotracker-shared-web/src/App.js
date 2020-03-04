@@ -39,6 +39,7 @@ import CreateKeystore from './pages/CreateKeystore';
 import NewWallet from './pages/NewWallet';
 import OpenWallet from './pages/OpenWallet';
 import WalletFAQ from './pages/WalletFAQ';
+import Ecosystem from './pages/Ecosystem';
 
 import AppShell from './AppShell';
 import type { AppContext, AppOptions } from './AppContext';
@@ -166,6 +167,12 @@ export const routeConfigs = [
     path: routes.WALLET_FAQ,
     render: renderComponent(WalletFAQ),
     component: WalletFAQ,
+  },
+  {
+    exact: true,
+    path: routes.ECOSYSTEM,
+    render: renderComponent(Ecosystem),
+    component: Ecosystem,
   },
   {
     exact: false,
