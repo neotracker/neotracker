@@ -191,6 +191,9 @@ function PageViewHeader({
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(PageViewHeader): React.ComponentType<ExternalProps>);

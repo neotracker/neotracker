@@ -114,6 +114,9 @@ function Link({
   );
 }
 
-const enhance: HOC<*, *> = compose(withStyles(styles), pure);
+const enhance: HOC<*, *> = compose(
+  withStyles(styles),
+  pure,
+);
 
 export default (enhance(Link): React.ComponentType<ExternalProps>);

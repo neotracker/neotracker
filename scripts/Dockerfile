@@ -1,7 +1,8 @@
 # neotracker/neo-one-circleci-node:10.16.3-1
 FROM neotracker/neo-one-circleci-node@sha256:0f047d3662ad72b75e9550e41b22a2be0bf7fa8ee6563b65272b5af966b07f20 AS builder
 # Install watchman for build layer
-RUN sudo apt-get install build-essential python-dev automake autoconf libtool libssl-dev && \
+RUN sudo apt-get update && \
+  sudo apt-get install build-essential python-dev automake autoconf libtool libssl-dev && \
   cd /tmp && \
   git clone https://github.com/facebook/watchman.git && \
   cd watchman && \
