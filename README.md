@@ -67,7 +67,8 @@ The full list of configurable options in the `.neotrackerrc` file. These can be 
       "filename": "db.sqlite" // local sqlite database filename
     }
   },
-  "resetDB": false // Resets database
+  "resetDB": false, // Resets database
+  "coinMarketCapApiKey": "" // API key needed to get current price data from CoinMarketCap. You must supply your own key to make this feature work
 }
 ```
 

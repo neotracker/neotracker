@@ -6,6 +6,7 @@ import { GraphQLResolver } from '../constants';
 export interface RootCallOptions {
   readonly appOptions: AppOptions;
   readonly rootLoader: RootLoader;
+  readonly coinMarketCapApiKey: string;
 }
 
 // tslint:disable-next-line no-unnecessary-class

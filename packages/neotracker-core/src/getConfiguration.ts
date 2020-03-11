@@ -64,6 +64,7 @@ export interface NTConfiguration {
   readonly resetDB: boolean;
   readonly ci: boolean;
   readonly prod: boolean;
+  readonly coinMarketCapApiKey: string;
 }
 
 export const defaultNTConfiguration: NTConfiguration = {
@@ -81,13 +82,23 @@ export const defaultNTConfiguration: NTConfiguration = {
   resetDB: false, // Resets database
   ci: false,
   prod: false,
+  coinMarketCapApiKey: '',
 };
 
 export const getConfiguration = (defaultConfig = defaultNTConfiguration): NTConfiguration => {
-  const { port, network, nodeRpcUrl, metricsPort, resetDB, db: dbIn, type, logLevel, ci, prod } = rc(
-    'neotracker',
-    defaultConfig,
-  );
+  const {
+    port,
+    network,
+    nodeRpcUrl,
+    metricsPort,
+    resetDB,
+    db: dbIn,
+    type,
+    logLevel,
+    ci,
+    prod,
+    coinMarketCapApiKey,
+  } = rc('neotracker', defaultConfig);
 
   setGlobalLogLevel(logLevel);
 
@@ -113,6 +124,7 @@ export const getConfiguration = (defaultConfig = defaultNTConfiguration): NTConf
     resetDB,
     ci,
     prod,
+    coinMarketCapApiKey,
   };
 };
 
@@ -125,6 +137,7 @@ export const getCoreConfiguration = () => {
     db,
     type,
     resetDB,
+    coinMarketCapApiKey,
   } = getConfiguration();
   // tslint:disable-next-line readonly-array
   const getDistPath = (...paths: string[]) => path.resolve(__dirname, '..', 'dist', ...paths);
@@ -168,6 +181,7 @@ export const getCoreConfiguration = () => {
         queriesPath: getDistPath('queries.json'),
         nextQueriesDir: getDistPath('queries'),
       },
+      coinMarketCapApiKey,
     },
     scrape: {
       network,
