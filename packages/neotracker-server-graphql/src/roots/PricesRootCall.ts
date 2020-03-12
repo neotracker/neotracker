@@ -109,8 +109,11 @@ export class PricesRootCall extends RootCall {
     // tslint:disable-next-line no-loop-statement
     while (tries >= 0) {
       try {
-        serverGQLLogger.info({ ...logInfo });
         const result = await cryptocompare.histoHour(from, to);
+        serverGQLLogger.info({
+          ...logInfo,
+          cryptoCompareApiCallResult: { data_points_received: result.length, last_data_point: result[0] },
+        });
 
         return result.map((point: any) => ({
           id: `${key}:${point.time}`,
@@ -118,8 +121,8 @@ export class PricesRootCall extends RootCall {
           time: point.time,
           value: point.close,
         }));
-      } catch {
-        serverGQLLogger.error({ ...logInfo });
+      } catch (error) {
+        serverGQLLogger.error({ ...logInfo, error });
         tries -= 1;
       }
     }

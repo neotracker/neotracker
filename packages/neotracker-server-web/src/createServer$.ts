@@ -71,6 +71,7 @@ export interface Environment {
   readonly server: HTTPServerEnvironment;
   readonly network: NetworkType;
   readonly queryMap?: QueryMapEnvironment;
+  readonly coinMarketCapApiKey: string;
 }
 export interface Options {
   readonly db: DBOptions;
@@ -158,7 +159,11 @@ export const createServer$ = ({
 
   const rootCalls$ = startRootCalls$(
     combineLatest([mapDistinct$((_) => _.options.appOptions), rootLoader$]).pipe(
-      map(([appOptions, rootLoader]) => ({ appOptions, rootLoader })),
+      map(([appOptions, rootLoader]) => ({
+        appOptions,
+        rootLoader,
+        coinMarketCapApiKey: environment.coinMarketCapApiKey,
+      })),
     ),
   );
 

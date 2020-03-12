@@ -4,7 +4,16 @@ import { getOptions, NEOTracker, getConfiguration, defaultNTConfiguration } from
 import { BehaviorSubject } from 'rxjs';
 import { configuration } from '../configuration';
 
-const { port, network: neotrackerNetwork, nodeRpcUrl, metricsPort = 1341, db, type, resetDB } = getConfiguration({
+const {
+  port,
+  network: neotrackerNetwork,
+  nodeRpcUrl,
+  metricsPort = 1341,
+  db,
+  type,
+  resetDB,
+  coinMarketCapApiKey,
+} = getConfiguration({
   ...defaultNTConfiguration,
   nodeRpcUrl: undefined,
 });
@@ -49,6 +58,7 @@ const environment = {
       port,
     },
     network,
+    coinMarketCapApiKey,
   },
   scrape: {
     db,

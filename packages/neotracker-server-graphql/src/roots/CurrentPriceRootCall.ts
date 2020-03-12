@@ -1,7 +1,7 @@
 import { createChild, serverLogger } from '@neotracker/logger';
 import { Asset, RootLoader } from '@neotracker/server-db';
 import { CodedError, pubsub } from '@neotracker/server-utils';
-import { GAS_ASSET_HASH, tryParseNumber } from '@neotracker/shared-utils';
+import { GAS_ASSET_HASH, tryParseDateStringToSeconds, tryParseNumber } from '@neotracker/shared-utils';
 import BigNumber from 'bignumber.js';
 import fetch from 'cross-fetch';
 import { GraphQLResolveInfo } from 'graphql';
@@ -14,11 +14,11 @@ import { GraphQLContext } from '../GraphQLContext';
 import { RootCall, RootCallOptions } from '../lib';
 import { liveExecuteField } from '../live';
 
-const THREE_MINUTES_IN_SECONDS = 3 * 60;
-const GAS = 'gas';
-const SYM_TO_COINMARKETCAP: { [K in string]?: string } = {
-  NEO: 'neo',
-  GAS,
+const FIVE_MINUTES_IN_SECONDS = 5 * 60;
+const GAS = 'GAS';
+const SYM_TO_COINMARKETCAP_ID = {
+  NEO: 1376,
+  GAS: 1785,
 };
 
 const serverGQLLogger = createChild(serverLogger, { component: 'graphql' });
@@ -42,11 +42,14 @@ export class CurrentPriceRootCall extends RootCall {
       _context: GraphQLContext,
       _info: GraphQLResolveInfo,
     ): Promise<any> => {
-      // tslint:enable no-any
-      const assetID = SYM_TO_COINMARKETCAP[sym];
-      if (assetID === undefined) {
+      if (typeof sym !== 'string') {
         throw new CodedError(CodedError.PROGRAMMING_ERROR);
       }
+      if (sym !== 'NEO' && sym !== 'GAS') {
+        throw new CodedError(CodedError.PROGRAMMING_ERROR);
+      }
+      // tslint:enable no-any
+      const assetID = SYM_TO_COINMARKETCAP_ID[sym];
 
       return CurrentPriceRootCall.mutableCurrentPrices[assetID];
     };
@@ -62,18 +65,19 @@ export class CurrentPriceRootCall extends RootCall {
     };
   }
 
-  public static async refreshCurrentPrice(sym: string, rootLoader: RootLoader) {
-    const assetID = SYM_TO_COINMARKETCAP[sym];
-    if (assetID === undefined) {
-      return;
-    }
+  public static async refreshCurrentPrice(
+    sym: keyof typeof SYM_TO_COINMARKETCAP_ID,
+    rootLoader: RootLoader,
+    coinMarketCapApiKey: string,
+  ) {
+    const assetID = SYM_TO_COINMARKETCAP_ID[sym];
 
     if (this.mutableRefreshing[assetID]) {
       return;
     }
     this.mutableRefreshing[assetID] = true;
     const previousCurrentPrice = this.mutableCurrentPrices[assetID];
-    this.mutableCurrentPrices[assetID] = await this.getCurrentPrice(sym, assetID, rootLoader);
+    this.mutableCurrentPrices[assetID] = await this.getCurrentPrice(sym, assetID, rootLoader, coinMarketCapApiKey);
 
     const currentPrice = this.mutableCurrentPrices[assetID];
     if (currentPrice != undefined && !_.isEqual(currentPrice, previousCurrentPrice)) {
@@ -84,8 +88,9 @@ export class CurrentPriceRootCall extends RootCall {
 
   public static async getCurrentPrice(
     sym: string,
-    assetID: string,
+    assetID: number,
     rootLoader: RootLoader,
+    coinMarketCapApiKey: string,
     // tslint:disable-next-line no-any
   ): Promise<any> {
     let tries = 1;
@@ -95,12 +100,24 @@ export class CurrentPriceRootCall extends RootCall {
     // tslint:disable-next-line no-loop-statement
     while (tries >= 0) {
       try {
-        serverGQLLogger.info({ ...logInfo });
-        const response = await fetch(`https://api.coinmarketcap.com/v1/ticker/${assetID}/`);
-        const [result] = await response.json();
-        const priceUSD = tryParseNumber({ value: result.price_usd });
-        let marketCapUSD = result.market_cap_usd;
-        if (marketCapUSD == undefined && assetID === GAS) {
+        const response = await fetch(
+          `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=${assetID}`,
+          {
+            headers: {
+              'X-CMC_PRO_API_KEY': coinMarketCapApiKey,
+            },
+          },
+        );
+        const jsonResult = await response.json();
+        if (jsonResult.status.error_code !== 0) {
+          throw { message: 'Problem with CoinMarketCap API', cmc_status: jsonResult.status };
+        }
+        const result = jsonResult.data[assetID].quote.USD;
+        serverGQLLogger.info({ ...logInfo, coinmarketcap_fetch_result: jsonResult });
+
+        const priceUSD = tryParseNumber({ value: result.price });
+        let marketCapUSD = result.market_cap;
+        if (marketCapUSD == undefined && assetID === SYM_TO_COINMARKETCAP_ID[GAS]) {
           const asset = await Asset.query(rootLoader.db)
             .context(rootLoader.makeAllPowerfulQueryContext())
             .where('id', GAS_ASSET_HASH)
@@ -121,13 +138,13 @@ export class CurrentPriceRootCall extends RootCall {
             value: result.percent_change_24h,
           }),
           volume_usd_24h: tryParseNumber({
-            value: result['24h_volume_usd'],
+            value: result.volume_24h,
           }),
           market_cap_usd: marketCapUSD,
-          last_updated: tryParseNumber({ value: result.last_updated }),
+          last_updated: tryParseDateStringToSeconds({ value: result.last_updated }),
         };
-      } catch {
-        serverGQLLogger.error({ ...logInfo });
+      } catch (error) {
+        serverGQLLogger.error({ ...logInfo, error });
         tries -= 1;
       }
     }
@@ -138,17 +155,17 @@ export class CurrentPriceRootCall extends RootCall {
   // tslint:disable-next-line no-any
   public static initialize$(options$: Observable<RootCallOptions>): Observable<any> {
     return combineLatest([
-      options$.pipe(
-        map(({ rootLoader }) => ({ rootLoader })),
-        map(({ rootLoader }) => ({
-          rootLoader,
-        })),
-      ),
-
-      timer(0, THREE_MINUTES_IN_SECONDS * 1000),
+      options$.pipe(map(({ rootLoader, coinMarketCapApiKey }) => ({ rootLoader, coinMarketCapApiKey }))),
+      timer(0, FIVE_MINUTES_IN_SECONDS * 1000),
     ]).pipe(
-      switchMap(async ([{ rootLoader }]) => {
-        await Promise.all([this.refreshCurrentPrice('NEO', rootLoader), this.refreshCurrentPrice('GAS', rootLoader)]);
+      switchMap(async ([{ rootLoader, coinMarketCapApiKey }]) => {
+        await Promise.all([
+          this.refreshCurrentPrice(
+            'NEO',
+            rootLoader,
+            coinMarketCapApiKey,
+          ) /* this.refreshCurrentPrice('GAS', rootLoader, coinMarketCapApiKey) */,
+        ]);
       }),
     );
   }

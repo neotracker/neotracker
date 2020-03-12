@@ -6,34 +6,6 @@ const userAgents =
 const whitelistedUserAgents =
   '(Googlebot|Googlebot-Mobile|Googlebot-Image|Googlebot-News|Googlebot-Video|AdsBot-Google|Mediapartners-Google|Google-Adwords-Instant)';
 
-// const db = ({
-//   database,
-//   filename,
-//   client = 'sqlite3',
-//   connectionString,
-//   user,
-//   password,
-// }: {
-//   readonly database: string;
-//   readonly filename: string;
-//   readonly client?: DBClient;
-//   readonly connectionString?: string;
-//   readonly user?: string;
-//   readonly password?: string;
-// }) => ({
-//   // tslint:disable-next-line no-useless-cast
-//   client,
-//   connection:
-//     connectionString !== undefined
-//       ? connectionString
-//       : {
-//           database,
-//           user,
-//           password,
-//           filename,
-//         },
-// });
-
 export interface AssetsConfiguration {
   readonly clientAssetsPath: string;
   readonly clientAssetsPathNext: string;

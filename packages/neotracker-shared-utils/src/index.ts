@@ -6,6 +6,7 @@ export * from './labels';
 export * from './neverComplete';
 export * from './numbers';
 export * from './retry';
+export * from './tryParseDateStringToSeconds';
 export * from './tryParseInt';
 export * from './tryParseNumber';
 export * from './ua';
