@@ -48,14 +48,6 @@ const cards = [
     cover: false,
   },
   {
-    title: 'DFINITY',
-    description:
-      'Dfinity is a blockchain-based cloud computing company that aims to develop a decentralized internet computer. The Internet Computer is a seamless shared universe for reimagined software that’s secure and unstoppable.',
-    link: 'https://dfinity.org/',
-    image: 'dfinity.png',
-    cover: true,
-  },
-  {
     title: 'Nash',
     description:
       'Nash is a fast and user-friendly non-custodial exchange. Nash gives you sipmle, secure access to fund management tools for Bitcoin, Ethereum, and NEO.',
