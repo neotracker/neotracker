@@ -142,7 +142,8 @@ function SendTransactionDialog({
             getID(confirmTransaction.asset.id),
           )}
         </Typography>
-        to address:
+        {/* eslint-disable-next-line react/jsx-curly-brace-presence */}
+        {' to address: '}
         <AddressLink
           addressHash={confirmTransaction.address}
           newTab
