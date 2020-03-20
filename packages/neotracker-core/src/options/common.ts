@@ -124,7 +124,7 @@ export const common = ({
         donateAddress: 'AKDVzYGLczmykdtRaejgvWeZrvdkVEvQ1X',
       },
       url: `http://127.0.0.1:${port}`,
-      rpcURL: `http://127.0.0.1:${port}/rpc`,
+      rpcURL,
       maintenance: false,
       disableWalletModify: false,
       // 3 minutes

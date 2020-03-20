@@ -78,6 +78,7 @@ RUN sudo yarn build-core
 FROM node@sha256:f35820f56323a0ae30406651fdc2f0525f4719e187a5b7f2f35a1dcd77f2495f AS production
 RUN mkdir -p neotracker-core
 COPY --from=builder tmp/neotracker/dist/neotracker-core/ neotracker-core/
+COPY yarn.lock neotracker-core/
 WORKDIR /neotracker-core
 RUN yarn install --production
 ENTRYPOINT ["/usr/local/bin/node", "bin/neotracker", "neotracker"]
