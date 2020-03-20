@@ -2,7 +2,7 @@
 // $FlowFixMe
 import { NEO_ASSET_HASH, sanitizeError } from '@neotracker/shared-utils';
 import * as React from 'react';
-import type { UserAccount, addressToScriptHash } from '@neo-one/client-common';
+import { type UserAccount, addressToScriptHash } from '@neo-one/client-common';
 
 import classNames from 'classnames';
 import {
