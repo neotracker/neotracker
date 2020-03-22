@@ -33,12 +33,12 @@ export const common = ({
   server: {
     db,
     rootLoader: {
-      cacheEnabled: true,
+      cacheEnabled: false,
       cacheSize: 100,
     },
     subscribeProcessedNextIndex: { db },
     rateLimit: {
-      enabled: true,
+      enabled: false,
       config: {
         rate: 5 * 60, // Allow 5 requests per second
         duration: 60 * 1000, // 60 seconds
@@ -60,7 +60,7 @@ export const common = ({
       rpcURL,
     },
     toobusy: {
-      enabled: true,
+      enabled: false,
       userAgents,
       whitelistedUserAgents,
       maxLag: 70,
