@@ -33,7 +33,7 @@ export const common = ({
   server: {
     db,
     rootLoader: {
-      cacheEnabled: false,
+      cacheEnabled: true,
       cacheSize: 100,
     },
     subscribeProcessedNextIndex: { db },
