@@ -17,7 +17,7 @@ export interface Options {
 }
 
 const getLoaderOptions = (options: Options, model: typeof BaseModel) =>
-  options.cacheEnabled && model.cacheType === 'blockchain'
+  options.cacheEnabled && model.cacheType === 'blockchain' && model.modelName !== 'Coin'
     ? {
         cacheMap: makeCache({
           modelClass: model,
