@@ -28,6 +28,7 @@ interface Props {
   readonly js: ReadonlyArray<string>;
   readonly helmet: HelmetData;
   readonly nonce: string;
+  readonly googleAnalyticsTag: string;
   readonly reactAppString: string;
   readonly apolloState: NormalizedCacheObject;
   readonly styles: ReadonlyArray<React.ReactElement<{}>>;
@@ -46,6 +47,7 @@ export const makeServerHTML = ({
   js,
   helmet,
   nonce,
+  googleAnalyticsTag,
   reactAppString,
   apolloState,
   styles,
@@ -110,6 +112,18 @@ export const makeServerHTML = ({
     `,
           'adsense',
         ),
+    googleAnalyticsTag === ''
+      ? undefined
+      : scriptTag(`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsTag}`, { async: true }),
+    googleAnalyticsTag === ''
+      ? undefined
+      : inlineScript(`
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config','${googleAnalyticsTag}');
+    `),
   ]
     .filter(utils.notNull)
     .concat(styles);

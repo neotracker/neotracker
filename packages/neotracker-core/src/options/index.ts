@@ -17,12 +17,14 @@ export const getOptions = ({
   db,
   configuration,
   rpcURL,
+  googleAnalyticsTag,
 }: {
   readonly network?: string;
   readonly port: number;
   readonly db: LiteDBConfig | PGDBConfig | PGDBConfigString;
   readonly configuration: AssetsConfiguration;
   readonly rpcURL?: string;
+  readonly googleAnalyticsTag: string;
 }) =>
   getNetworkOptions({
     network,
@@ -31,17 +33,20 @@ export const getOptions = ({
       db,
       configuration,
       rpcURL,
+      googleAnalyticsTag,
     }),
     test: test({
       port,
       db,
       configuration,
       rpcURL,
+      googleAnalyticsTag,
     }),
     priv: priv({
       port,
       db,
       configuration,
       rpcURL,
+      googleAnalyticsTag,
     }),
   });

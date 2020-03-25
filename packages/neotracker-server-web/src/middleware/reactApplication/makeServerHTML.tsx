@@ -17,6 +17,7 @@ interface Props {
   readonly js: ReadonlyArray<string>;
   readonly helmet: HelmetData;
   readonly nonce: string;
+  readonly googleAnalyticsTag: string;
   readonly reactAppString: string;
   // tslint:disable-next-line no-any
   readonly relay?: () => any;
@@ -38,6 +39,7 @@ export const makeServerHTML = ({
   js,
   helmet,
   nonce,
+  googleAnalyticsTag,
   reactAppString,
   relay,
   records,
@@ -96,6 +98,18 @@ export const makeServerHTML = ({
         google_ad_client: "${adsenseID}",
         enable_page_level_ads: true
       });
+    `),
+    googleAnalyticsTag === ''
+      ? undefined
+      : scriptTag(`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsTag}`, { async: true }),
+    googleAnalyticsTag === ''
+      ? undefined
+      : inlineScript(`
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config','${googleAnalyticsTag}');
     `),
   ].filter(utils.notNull);
 

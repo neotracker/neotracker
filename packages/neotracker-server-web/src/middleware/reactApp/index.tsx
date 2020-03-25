@@ -133,6 +133,7 @@ export interface Options {
   readonly statsPath: string;
   readonly publicPath: string;
   readonly rpcURL: string;
+  readonly googleAnalyticsTag: string;
   readonly adsenseID?: string;
   readonly bsaEnabled?: boolean;
 }
@@ -200,6 +201,7 @@ export const reactApp = ({
           js: bundlePaths,
           reactAppString,
           nonce,
+          googleAnalyticsTag: options.googleAnalyticsTag,
           helmet: reactHelmet,
           apolloState,
           styles,
