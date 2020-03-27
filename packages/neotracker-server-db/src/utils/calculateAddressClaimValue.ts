@@ -11,6 +11,7 @@ export const calculateAddressClaimValue = async (
   context: GraphQLContext,
   _info: GraphQLResolveInfo,
 ): Promise<string> => {
+  context.rootLoader.maxIndexFetcher.reset();
   const [unclaimed, currentHeight] = await Promise.all([
     TransactionInputOutput.query(context.rootLoader.db)
       .context(context.rootLoader.makeQueryContext())
