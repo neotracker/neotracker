@@ -1,32 +1,30 @@
 // tslint:disable: match-default-export-name
 import pino from 'pino';
-import { getPretty } from './pretty';
 
 const createLogger = (service: string, options: pino.LoggerOptions = {}) =>
   options.browser !== undefined
-    ? pino({ ...options, base: { service }, prettyPrint: getPretty() })
+    ? pino({ ...options, base: { service } })
     : pino(
-        { ...options, base: { service }, prettyPrint: getPretty() },
+        { ...options, base: { service } },
         process.env.NODE_ENV === 'production' ? pino.extreme(1) : pino.destination(1),
       );
 
-const defaultOptions = { timestamp: false };
 const browserOptions =
   // tslint:disable-next-line: strict-type-predicates
-  typeof window === 'undefined' && typeof origin === 'undefined'
-    ? { ...defaultOptions }
-    : { ...defaultOptions, browser: { asObject: true } };
+  typeof window === 'undefined' && typeof origin === 'undefined' ? {} : { browser: { asObject: true } };
 
-export const clientLogger = createLogger('client', browserOptions);
 export const coreLogger = createLogger('core', browserOptions);
 export const serverLogger = createLogger('server', browserOptions);
-export const webLogger = createLogger('web', browserOptions);
 export const utilsLogger = createLogger('utils', browserOptions);
-export const topLevelLogger = pino({
-  // tslint:disable-next-line: no-null-keyword
-  base: null,
-  prettyPrint: { colorize: true, translateTime: 'SYS:mm-dd-yy hh:MM:ssTT' },
-});
+export const topLevelLogger = createLogger('compiler', browserOptions);
+
+/*
+  hacky way to get the web console logs hidden besides errors
+  the client/web doesn't seem to inherit the logLevels we set in a .neotrackerrc
+  I suspect there is somewhere in the client code we should call setLogLevel
+*/
+export const clientLogger = createLogger('client', { level: 'error', ...browserOptions });
+export const webLogger = createLogger('web', { level: 'error', ...browserOptions });
 
 // tslint:disable-next-line: no-let
 let loggers: ReadonlyArray<pino.Logger> = [
