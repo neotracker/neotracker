@@ -1,5 +1,4 @@
-import chalk from 'chalk';
-import logger from 'fancy-log';
+import { topLevelLogger } from '@neotracker/logger';
 
 export function log({
   title,
@@ -10,17 +9,15 @@ export function log({
   readonly level?: 'info' | 'warn' | 'error';
   readonly message: string;
 }): void {
-  const msg = `==> ${title} -> ${message}`;
-
   switch (level) {
     case 'warn':
-      logger(chalk.yellow(msg));
+      topLevelLogger.warn({ title, message });
       break;
     case 'error':
-      logger(chalk.bgRed.white(msg));
+      topLevelLogger.error({ title, message });
       break;
     case 'info':
     default:
-      logger(chalk.green(msg));
+      topLevelLogger.info({ title, message });
   }
 }

@@ -9,8 +9,7 @@
   "main": "./src/index.ts",
   "dependencies": {
     "@types/pino": "^5.8.10",
-    "pino": "^5.13.2",
-    "pino-pretty": "^3.2.1"
+    "pino": "^5.13.2"
   },
   "sideEffects": false
 }
