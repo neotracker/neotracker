@@ -195,6 +195,7 @@ export interface Options {
     readonly userAgents: string;
   };
   readonly rpcURL: string;
+  readonly googleAnalyticsTag: string;
   readonly adsenseID?: string;
   readonly bsaEnabled?: boolean;
 }
@@ -259,6 +260,7 @@ export const reactApplication = ({
           js: [asset.js],
           reactAppString,
           nonce,
+          googleAnalyticsTag: options.googleAnalyticsTag,
           helmet: reactHelmet,
           relay,
           records,

@@ -69,6 +69,7 @@ The full list of configurable options in the `.neotrackerrc` file. These can be 
   },
   "resetDB": false, // Resets database
   "coinMarketCapApiKey": "" // API key needed to get current price data from CoinMarketCap. You must supply your own key to make this feature work
+  "googleAnalyticsTag": "" // Google Analytics Tag
 }
 ```
 

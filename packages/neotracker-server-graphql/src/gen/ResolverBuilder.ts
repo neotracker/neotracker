@@ -358,8 +358,18 @@ export class ResolverBuilder {
         if (field == undefined) {
           return undefined;
         }
+        // Clear the cache for that address when we check coin balances so we get latest balance from DB
+        if (edge.name === 'coins') {
+          obj.getLoaderByEdge(context.rootLoader.makeQueryContext(), edge.name).clear({ id: field });
+        }
 
-        return obj.getLoaderByEdge(context.rootLoader.makeQueryContext(), edge.name).load({ id: field });
+        const result = await obj.getLoaderByEdge(context.rootLoader.makeQueryContext(), edge.name).load({ id: field });
+
+        if (edge.name === 'coins') {
+          obj.getLoaderByEdge(context.rootLoader.makeQueryContext(), edge.name).clear({ id: field });
+        }
+
+        return result;
       }
 
       const builder = obj
@@ -403,9 +413,18 @@ export class ResolverBuilder {
         if (field == undefined) {
           return {};
         }
+
+        // Clear the cache for that address when we check coin balances so we get latest balance from DB
+        if (edge.name === 'coins') {
+          obj.getLoaderByEdge(context.rootLoader.makeQueryContext(), edge.name).clear({ id: field });
+        }
         const results: any[] = await obj
           .getLoaderByEdge(context.rootLoader.makeQueryContext(), edge.name)
           .load({ id: field });
+
+        if (edge.name === 'coins') {
+          obj.getLoaderByEdge(context.rootLoader.makeQueryContext(), edge.name).clear({ id: field });
+        }
 
         return {
           edges: results.map((result, idx) => ({

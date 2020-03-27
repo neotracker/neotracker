@@ -13,6 +13,7 @@ const {
   type,
   resetDB,
   coinMarketCapApiKey,
+  googleAnalyticsTag,
 } = getConfiguration({
   ...defaultNTConfiguration,
   nodeRpcUrl: undefined,
@@ -37,6 +38,7 @@ const { options, network } = getOptions({
   port,
   network: neotrackerNetwork,
   rpcURL,
+  googleAnalyticsTag,
   db,
   configuration,
 });

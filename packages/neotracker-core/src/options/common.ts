@@ -19,12 +19,14 @@ export interface AssetsConfiguration {
 
 export const common = ({
   rpcURL,
+  googleAnalyticsTag,
   port,
   blacklistNEP5Hashes,
   db,
   configuration,
 }: {
   readonly rpcURL: string;
+  readonly googleAnalyticsTag: string;
   readonly port: number;
   readonly blacklistNEP5Hashes: ReadonlyArray<string>;
   readonly db: PGDBConfigWithDatabase | PGDBConfigString | LiteDBConfig;
@@ -51,12 +53,14 @@ export const common = ({
         enabled: true,
         userAgents,
       },
+      googleAnalyticsTag,
       rpcURL,
     },
     reactApp: {
       clientAssetsPath: configuration.clientAssetsPathNext,
       statsPath: configuration.statsPath,
       publicPath: configuration.clientPublicPathNext,
+      googleAnalyticsTag,
       rpcURL,
     },
     toobusy: {

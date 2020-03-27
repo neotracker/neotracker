@@ -7,11 +7,13 @@ export const test = ({
   db: dbIn,
   configuration,
   rpcURL = testRPCURL,
+  googleAnalyticsTag,
 }: {
   readonly port: number;
   readonly db: LiteDBConfig | PGDBConfig | PGDBConfigString;
   readonly configuration: AssetsConfiguration;
   readonly rpcURL?: string;
+  readonly googleAnalyticsTag: string;
 }) => {
   const db = isPGDBConfig(dbIn)
     ? {
@@ -25,6 +27,7 @@ export const test = ({
 
   return common({
     rpcURL,
+    googleAnalyticsTag,
     port,
     blacklistNEP5Hashes: [],
     db,

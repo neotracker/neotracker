@@ -65,6 +65,7 @@ export interface NTConfiguration {
   readonly ci: boolean;
   readonly prod: boolean;
   readonly coinMarketCapApiKey: string;
+  readonly googleAnalyticsTag: string;
 }
 
 export const defaultNTConfiguration: NTConfiguration = {
@@ -83,6 +84,7 @@ export const defaultNTConfiguration: NTConfiguration = {
   ci: false,
   prod: false,
   coinMarketCapApiKey: '',
+  googleAnalyticsTag: '',
 };
 
 export const getConfiguration = (defaultConfig = defaultNTConfiguration): NTConfiguration => {
@@ -98,6 +100,7 @@ export const getConfiguration = (defaultConfig = defaultNTConfiguration): NTConf
     ci,
     prod,
     coinMarketCapApiKey,
+    googleAnalyticsTag,
   } = rc('neotracker', defaultConfig);
 
   setGlobalLogLevel(logLevel);
@@ -125,6 +128,7 @@ export const getConfiguration = (defaultConfig = defaultNTConfiguration): NTConf
     ci,
     prod,
     coinMarketCapApiKey,
+    googleAnalyticsTag,
   };
 };
 
@@ -138,6 +142,7 @@ export const getCoreConfiguration = () => {
     type,
     resetDB,
     coinMarketCapApiKey,
+    googleAnalyticsTag,
   } = getConfiguration();
   // tslint:disable-next-line readonly-array
   const getDistPath = (...paths: string[]) => path.resolve(__dirname, '..', 'dist', ...paths);
@@ -157,6 +162,7 @@ export const getCoreConfiguration = () => {
   const { options, network } = getOptions({
     network: neotrackerNetwork,
     rpcURL,
+    googleAnalyticsTag,
     port,
     db,
     configuration,
