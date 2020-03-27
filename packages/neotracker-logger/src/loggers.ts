@@ -10,18 +10,33 @@ const createLogger = (service: string, options: pino.LoggerOptions = {}) =>
         process.env.NODE_ENV === 'production' ? pino.extreme(1) : pino.destination(1),
       );
 
+const defaultOptions = { timestamp: false };
 const browserOptions =
   // tslint:disable-next-line: strict-type-predicates
-  typeof window === 'undefined' && typeof origin === 'undefined' ? {} : { browser: { asObject: true } };
+  typeof window === 'undefined' && typeof origin === 'undefined'
+    ? { ...defaultOptions }
+    : { ...defaultOptions, browser: { asObject: true } };
 
 export const clientLogger = createLogger('client', browserOptions);
 export const coreLogger = createLogger('core', browserOptions);
 export const serverLogger = createLogger('server', browserOptions);
 export const webLogger = createLogger('web', browserOptions);
 export const utilsLogger = createLogger('utils', browserOptions);
+export const topLevelLogger = pino({
+  // tslint:disable-next-line: no-null-keyword
+  base: null,
+  prettyPrint: { colorize: true, translateTime: 'SYS:mm-dd-yy hh:MM:ssTT' },
+});
 
 // tslint:disable-next-line: no-let
-let loggers: ReadonlyArray<pino.Logger> = [clientLogger, coreLogger, serverLogger, webLogger, utilsLogger];
+let loggers: ReadonlyArray<pino.Logger> = [
+  clientLogger,
+  coreLogger,
+  serverLogger,
+  webLogger,
+  utilsLogger,
+  topLevelLogger,
+];
 export const setGlobalLogLevel = (level: pino.LevelWithSilent) =>
   loggers.forEach((logger) => {
     // tslint:disable-next-line no-object-mutation
