@@ -55,7 +55,7 @@ The full list of configurable options in the `.neotrackerrc` file. These can be 
 
 ```js
 {
-  "type": "all", Components to run: "all" | "scrape" | "web"
+  "type": "all", // Components to run: "all" | "scrape" | "web"
   "port": 1340, // Port the website will be on
   "network": "priv", // NEO network to run on
   "ci": false, // Running as part of continuous integration
@@ -68,6 +68,7 @@ The full list of configurable options in the `.neotrackerrc` file. These can be 
     }
   },
   "resetDB": false, // Resets database
+  "logLevel": "info", // Sets pino log level globally: "trace" | "debug" | "info" | "warn" | "error" | "fatal" | "silent"
   "coinMarketCapApiKey": "" // API key needed to get current price data from CoinMarketCap. You must supply your own key to make this feature work
   "googleAnalyticsTag": "" // Google Analytics Tag
 }

@@ -1,3 +1,4 @@
+import { topLevelLogger } from '@neotracker/logger';
 import * as appRootDir from 'app-root-dir';
 import { ChildProcess } from 'child_process';
 import execa from 'execa';
@@ -109,13 +110,9 @@ export class HotCompilerServer implements HotServer {
       message: 'Server running with latest changes.',
     });
     if (newServer.stdout !== null) {
-      newServer.stdout.on('data', (data) =>
-        log({
-          title: this.title,
-          level: 'info',
-          message: data.toString().trim(),
-        }),
-      );
+      newServer.stdout.on('data', (data) => {
+        topLevelLogger.info(data.toString().trim());
+      });
     }
     if (newServer.stderr !== null) {
       newServer.stderr.on('data', (data) => {
