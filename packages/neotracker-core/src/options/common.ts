@@ -24,6 +24,8 @@ export const common = ({
   blacklistNEP5Hashes,
   db,
   configuration,
+  url = `http://127.0.0.1`,
+  domain = '127.0.0.1',
 }: {
   readonly rpcURL: string;
   readonly googleAnalyticsTag: string;
@@ -31,6 +33,8 @@ export const common = ({
   readonly blacklistNEP5Hashes: ReadonlyArray<string>;
   readonly db: PGDBConfigWithDatabase | PGDBConfigString | LiteDBConfig;
   readonly configuration: AssetsConfiguration;
+  readonly url?: string;
+  readonly domain?: string;
 }): Options => ({
   server: {
     db,
@@ -106,7 +110,7 @@ export const common = ({
     rootAssets: {
       path: configuration.rootAssetsPath,
     },
-    domain: '127.0.0.1',
+    domain,
     rpcURL,
     server: {
       keepATimeoutMS: 650000,
@@ -127,7 +131,7 @@ export const common = ({
         },
         donateAddress: 'AKDVzYGLczmykdtRaejgvWeZrvdkVEvQ1X',
       },
-      url: `http://127.0.0.1:${port}`,
+      url: `${url}:${port}`,
       rpcURL,
       maintenance: false,
       disableWalletModify: false,
