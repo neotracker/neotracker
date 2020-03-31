@@ -18,6 +18,7 @@ export const getOptions = ({
   configuration,
   rpcURL,
   googleAnalyticsTag,
+  externalRpcUrl,
 }: {
   readonly network?: string;
   readonly port: number;
@@ -25,6 +26,7 @@ export const getOptions = ({
   readonly configuration: AssetsConfiguration;
   readonly rpcURL?: string;
   readonly googleAnalyticsTag: string;
+  readonly externalRpcUrl: string;
 }) =>
   getNetworkOptions({
     network,
@@ -34,6 +36,7 @@ export const getOptions = ({
       configuration,
       rpcURL,
       googleAnalyticsTag,
+      externalRpcUrl,
     }),
     test: test({
       port,
@@ -41,6 +44,7 @@ export const getOptions = ({
       configuration,
       rpcURL,
       googleAnalyticsTag,
+      externalRpcUrl,
     }),
     priv: priv({
       port,
@@ -48,5 +52,6 @@ export const getOptions = ({
       configuration,
       rpcURL,
       googleAnalyticsTag,
+      externalRpcUrl,
     }),
   });

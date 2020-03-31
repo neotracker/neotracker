@@ -10,6 +10,7 @@ export const main = ({
   googleAnalyticsTag,
   url = 'https://neotracker.io',
   domain = 'neotracker.io',
+  externalRpcUrl,
 }: {
   readonly port: number;
   readonly db: LiteDBConfig | PGDBConfig | PGDBConfigString;
@@ -18,6 +19,7 @@ export const main = ({
   readonly googleAnalyticsTag: string;
   readonly url?: string;
   readonly domain?: string;
+  readonly externalRpcUrl: string;
 }) => {
   const db = isPGDBConfig(dbIn)
     ? {
@@ -34,6 +36,7 @@ export const main = ({
     googleAnalyticsTag,
     url,
     domain,
+    externalRpcUrl,
     port,
     blacklistNEP5Hashes: [
       '4b4f63919b9ecfd2483f0c72ff46ed31b5bbb7a4', //  Phantasma

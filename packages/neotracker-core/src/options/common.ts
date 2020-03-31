@@ -20,6 +20,7 @@ export interface AssetsConfiguration {
 export const common = ({
   rpcURL,
   googleAnalyticsTag,
+  externalRpcUrl,
   port,
   blacklistNEP5Hashes,
   db,
@@ -29,6 +30,7 @@ export const common = ({
 }: {
   readonly rpcURL: string;
   readonly googleAnalyticsTag: string;
+  readonly externalRpcUrl: string;
   readonly port: number;
   readonly blacklistNEP5Hashes: ReadonlyArray<string>;
   readonly db: PGDBConfigWithDatabase | PGDBConfigString | LiteDBConfig;
@@ -111,7 +113,7 @@ export const common = ({
       path: configuration.rootAssetsPath,
     },
     domain,
-    rpcURL,
+    rpcURL: externalRpcUrl,
     server: {
       keepATimeoutMS: 650000,
     },
@@ -146,7 +148,7 @@ export const common = ({
       cacheEnabled: true,
       cacheSize: 100,
     },
-    rpcURL,
+    rpcURL: externalRpcUrl,
     migrationEnabled: true,
     blacklistNEP5Hashes,
     repairNEP5BlockFrequency: 10,

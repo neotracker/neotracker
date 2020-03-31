@@ -1,6 +1,6 @@
 // tslint:disable no-import-side-effect no-let ordered-imports
 import './init';
-import { getOptions, NEOTracker, getConfiguration, defaultNTConfiguration } from '@neotracker/core';
+import { getOptions, NEOTracker, getConfiguration } from '@neotracker/core';
 import { BehaviorSubject } from 'rxjs';
 import { configuration } from '../configuration';
 
@@ -14,30 +14,26 @@ const {
   resetDB,
   coinMarketCapApiKey,
   googleAnalyticsTag,
-} = getConfiguration({
-  ...defaultNTConfiguration,
-  nodeRpcUrl: undefined,
-});
+  clientRpcUrl,
+} = getConfiguration();
 
-let rpcURL: string | undefined;
+let externalRpcUrl: string | undefined;
 switch (neotrackerNetwork) {
   case 'priv':
-    rpcURL = nodeRpcUrl;
-    if (rpcURL === undefined) {
-      rpcURL = 'http://localhost:9040/rpc';
-    }
+    externalRpcUrl = nodeRpcUrl;
     break;
   case 'main':
-    rpcURL = 'https://neotracker.io/rpc';
+    externalRpcUrl = 'https://neotracker.io/rpc';
     break;
   default:
-    rpcURL = 'https://testnet.neotracker.io/rpc';
+    externalRpcUrl = 'https://testnet.neotracker.io/rpc';
 }
 
 const { options, network } = getOptions({
+  externalRpcUrl,
   port,
   network: neotrackerNetwork,
-  rpcURL,
+  rpcURL: clientRpcUrl,
   googleAnalyticsTag,
   db,
   configuration,

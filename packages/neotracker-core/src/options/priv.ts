@@ -8,12 +8,14 @@ export const priv = ({
   configuration,
   rpcURL = privRPCURL,
   googleAnalyticsTag,
+  externalRpcUrl,
 }: {
   readonly port: number;
   readonly db: LiteDBConfig | PGDBConfig | PGDBConfigString;
   readonly configuration: AssetsConfiguration;
   readonly rpcURL?: string;
   readonly googleAnalyticsTag: string;
+  readonly externalRpcUrl: string;
 }) => {
   const db = isPGDBConfig(dbIn)
     ? {
@@ -29,6 +31,7 @@ export const priv = ({
     db,
     rpcURL,
     googleAnalyticsTag,
+    externalRpcUrl,
     port,
     blacklistNEP5Hashes: [],
     configuration,

@@ -58,7 +58,8 @@ export interface NTConfiguration {
   readonly port: number;
   readonly logLevel: LogLevel;
   readonly network: 'priv' | 'main' | string;
-  readonly nodeRpcUrl?: string;
+  readonly nodeRpcUrl: string;
+  readonly clientRpcUrl?: string;
   readonly metricsPort?: number;
   readonly db: LiteDBConfig | PGDBConfigString | PGDBConfig;
   readonly resetDB: boolean;
@@ -74,6 +75,7 @@ export const defaultNTConfiguration: NTConfiguration = {
   network: 'priv', // Network to run against
   logLevel: 'info',
   nodeRpcUrl: 'http://localhost:9040/rpc', // NEO-ONE Node RPC URL
+  clientRpcUrl: 'http://localhost:9040/rpc',
   db: {
     client: 'sqlite3',
     connection: {
@@ -92,6 +94,7 @@ export const getConfiguration = (defaultConfig = defaultNTConfiguration): NTConf
     port,
     network,
     nodeRpcUrl,
+    clientRpcUrl,
     metricsPort,
     resetDB,
     db: dbIn,
@@ -120,6 +123,7 @@ export const getConfiguration = (defaultConfig = defaultNTConfiguration): NTConf
     port,
     network,
     nodeRpcUrl,
+    clientRpcUrl,
     metricsPort,
     logLevel,
     db,
@@ -136,7 +140,8 @@ export const getCoreConfiguration = () => {
   const {
     port,
     network: neotrackerNetwork,
-    nodeRpcUrl: rpcURL,
+    nodeRpcUrl,
+    clientRpcUrl,
     metricsPort = 1341,
     db,
     type,
@@ -161,12 +166,14 @@ export const getCoreConfiguration = () => {
 
   const { options, network } = getOptions({
     network: neotrackerNetwork,
-    rpcURL,
     googleAnalyticsTag,
+    externalRpcUrl: nodeRpcUrl,
+    rpcURL: clientRpcUrl,
     port,
     db,
     configuration,
   });
+
   const options$ = new BehaviorSubject(options);
 
   const environment = {
