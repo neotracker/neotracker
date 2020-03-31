@@ -8,12 +8,16 @@ export const main = ({
   configuration,
   rpcURL = mainRPCURL,
   googleAnalyticsTag,
+  url = 'https://neotracker.io',
+  domain = 'neotracker.io',
 }: {
   readonly port: number;
   readonly db: LiteDBConfig | PGDBConfig | PGDBConfigString;
   readonly configuration: AssetsConfiguration;
   readonly rpcURL?: string;
   readonly googleAnalyticsTag: string;
+  readonly url?: string;
+  readonly domain?: string;
 }) => {
   const db = isPGDBConfig(dbIn)
     ? {
@@ -28,6 +32,8 @@ export const main = ({
   return common({
     rpcURL,
     googleAnalyticsTag,
+    url,
+    domain,
     port,
     blacklistNEP5Hashes: [
       '4b4f63919b9ecfd2483f0c72ff46ed31b5bbb7a4', //  Phantasma
