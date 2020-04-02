@@ -1,6 +1,6 @@
 import { isPGDBConfig, LiteDBConfig, PGDBConfig, PGDBConfigString } from '../getConfiguration';
 import { AssetsConfiguration, common } from './common';
-import { mainRPCURL } from './utils';
+import { mainRPCURL, neotrackerDomain, neotrackerURL } from './utils';
 
 export const main = ({
   port,
@@ -8,8 +8,8 @@ export const main = ({
   configuration,
   rpcURL = mainRPCURL,
   googleAnalyticsTag,
-  url = 'https://neotracker.io',
-  domain = 'neotracker.io',
+  url = neotrackerURL,
+  domain = neotrackerDomain,
 }: {
   readonly port: number;
   readonly db: LiteDBConfig | PGDBConfig | PGDBConfigString;
