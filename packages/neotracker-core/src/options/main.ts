@@ -10,6 +10,7 @@ export const main = ({
   googleAnalyticsTag,
   url = 'https://neotracker.io',
   domain = 'neotracker.io',
+  prod,
 }: {
   readonly port: number;
   readonly db: LiteDBConfig | PGDBConfig | PGDBConfigString;
@@ -18,6 +19,7 @@ export const main = ({
   readonly googleAnalyticsTag: string;
   readonly url?: string;
   readonly domain?: string;
+  readonly prod: boolean;
 }) => {
   const db = isPGDBConfig(dbIn)
     ? {
@@ -30,6 +32,7 @@ export const main = ({
     : dbIn;
 
   return common({
+    prod,
     rpcURL,
     googleAnalyticsTag,
     url,

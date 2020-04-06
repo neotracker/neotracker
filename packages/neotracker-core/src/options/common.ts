@@ -26,6 +26,7 @@ export const common = ({
   configuration,
   url = `http://127.0.0.1`,
   domain = '127.0.0.1',
+  prod,
 }: {
   readonly rpcURL: string;
   readonly googleAnalyticsTag: string;
@@ -35,6 +36,7 @@ export const common = ({
   readonly configuration: AssetsConfiguration;
   readonly url?: string;
   readonly domain?: string;
+  readonly prod: boolean;
 }): Options => ({
   server: {
     db,
@@ -75,7 +77,7 @@ export const common = ({
       smoothingFactor: 1 / 3,
     },
     security: {
-      enforceHTTPs: false,
+      enforceHTTPs: prod,
       frameguard: {
         enabled: true,
         action: 'deny',

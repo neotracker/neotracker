@@ -14,6 +14,7 @@ const {
   resetDB,
   coinMarketCapApiKey,
   googleAnalyticsTag,
+  prod,
 } = getConfiguration({
   ...defaultNTConfiguration,
   nodeRpcUrl: undefined,
@@ -41,6 +42,7 @@ const { options, network } = getOptions({
   googleAnalyticsTag,
   db,
   configuration,
+  prod,
 });
 
 const options$ = new BehaviorSubject(options);
