@@ -1,4 +1,6 @@
 import { LogLevel, setGlobalLogLevel } from '@neotracker/logger';
+import { APIKeys } from '@neotracker/server-web';
+import { NetworkType } from '@neotracker/shared-utils';
 import * as path from 'path';
 import rc from 'rc';
 import { BehaviorSubject } from 'rxjs';
@@ -57,15 +59,14 @@ export interface NTConfiguration {
   readonly type: 'all' | 'web' | 'scrape';
   readonly port: number;
   readonly logLevel: LogLevel;
-  readonly network: 'priv' | 'main' | string;
+  readonly network: NetworkType;
   readonly nodeRpcUrl?: string;
   readonly metricsPort?: number;
   readonly db: LiteDBConfig | PGDBConfigString | PGDBConfig;
   readonly resetDB: boolean;
   readonly ci: boolean;
   readonly prod: boolean;
-  readonly coinMarketCapApiKey: string;
-  readonly googleAnalyticsTag: string;
+  readonly apiKeys: APIKeys;
 }
 
 export const defaultNTConfiguration: NTConfiguration = {
@@ -83,25 +84,30 @@ export const defaultNTConfiguration: NTConfiguration = {
   resetDB: false, // Resets database
   ci: false,
   prod: false,
-  coinMarketCapApiKey: '',
-  googleAnalyticsTag: '',
+  apiKeys: {
+    coinMarketCap: '',
+    googleAnalyticsTag: '',
+  },
+};
+
+const getDistPath = (...paths: readonly string[]) => path.resolve(__dirname, '..', 'dist', ...paths);
+
+const configuration = {
+  clientBundlePath: getDistPath('neotracker-client-web'),
+  clientBundlePathNext: getDistPath('neotracker-client-web-next'),
+  clientPublicPath: '/client/',
+  clientPublicPathNext: '/client-next/',
+  clientAssetsPath: getDistPath('neotracker-client-web', 'assets.json'),
+  clientAssetsPathNext: getDistPath('neotracker-client-web-next', 'assets.json'),
+  statsPath: getDistPath('neotracker-client-web-next', 'stats.json'),
+  rootAssetsPath: getDistPath('root'),
+  publicAssetsPath: getDistPath('public'),
 };
 
 export const getConfiguration = (defaultConfig = defaultNTConfiguration): NTConfiguration => {
-  const {
-    port,
-    network,
-    nodeRpcUrl,
-    metricsPort,
-    resetDB,
-    db: dbIn,
-    type,
-    logLevel,
-    ci,
-    prod,
-    coinMarketCapApiKey,
-    googleAnalyticsTag,
-  } = rc('neotracker', defaultConfig);
+  const { port, network, nodeRpcUrl, metricsPort, resetDB, db: dbIn, type, logLevel, ci, prod, apiKeys } = rc<
+    NTConfiguration
+  >('neotracker', defaultConfig);
 
   setGlobalLogLevel(logLevel);
 
@@ -127,41 +133,25 @@ export const getConfiguration = (defaultConfig = defaultNTConfiguration): NTConf
     resetDB,
     ci,
     prod,
-    coinMarketCapApiKey,
-    googleAnalyticsTag,
+    apiKeys,
   };
 };
 
 export const getCoreConfiguration = () => {
   const {
     port,
-    network: neotrackerNetwork,
+    network,
     nodeRpcUrl: rpcURL,
     metricsPort = 1341,
     db,
     type,
     resetDB,
-    coinMarketCapApiKey,
-    googleAnalyticsTag,
+    apiKeys,
     prod,
   } = getConfiguration();
-  // tslint:disable-next-line readonly-array
-  const getDistPath = (...paths: string[]) => path.resolve(__dirname, '..', 'dist', ...paths);
+  const { googleAnalyticsTag } = apiKeys;
 
-  const configuration = {
-    clientBundlePath: getDistPath('neotracker-client-web'),
-    clientBundlePathNext: getDistPath('neotracker-client-web-next'),
-    clientPublicPath: '/client/',
-    clientPublicPathNext: '/client-next/',
-    clientAssetsPath: getDistPath('neotracker-client-web', 'assets.json'),
-    clientAssetsPathNext: getDistPath('neotracker-client-web-next', 'assets.json'),
-    statsPath: getDistPath('neotracker-client-web-next', 'stats.json'),
-    rootAssetsPath: getDistPath('root'),
-    publicAssetsPath: getDistPath('public'),
-  };
-
-  const { options, network } = getOptions({
-    network: neotrackerNetwork,
+  const options = getOptions(network, {
     rpcURL,
     googleAnalyticsTag,
     port,
@@ -169,6 +159,7 @@ export const getCoreConfiguration = () => {
     configuration,
     prod,
   });
+
   const options$ = new BehaviorSubject(options);
 
   const environment = {
@@ -189,7 +180,7 @@ export const getCoreConfiguration = () => {
         queriesPath: getDistPath('queries.json'),
         nextQueriesDir: getDistPath('queries'),
       },
-      coinMarketCapApiKey,
+      apiKeys,
     },
     scrape: {
       network,

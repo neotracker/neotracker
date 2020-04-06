@@ -133,7 +133,6 @@ export interface Options {
   readonly statsPath: string;
   readonly publicPath: string;
   readonly rpcURL: string;
-  readonly googleAnalyticsTag: string;
   readonly adsenseID?: string;
   readonly bsaEnabled?: boolean;
 }
@@ -142,6 +141,7 @@ export interface Options {
 export const reactApp = ({
   addHeadElements,
   addBodyElements,
+  googleAnalyticsTag,
   environment,
   options,
   network,
@@ -149,6 +149,7 @@ export const reactApp = ({
 }: {
   readonly addHeadElements: AddHeadElements;
   readonly addBodyElements: AddBodyElements;
+  readonly googleAnalyticsTag: string;
   readonly environment: Environment;
   readonly options: Options;
   readonly network: NetworkType;
@@ -201,7 +202,7 @@ export const reactApp = ({
           js: bundlePaths,
           reactAppString,
           nonce,
-          googleAnalyticsTag: options.googleAnalyticsTag,
+          googleAnalyticsTag,
           helmet: reactHelmet,
           apolloState,
           styles,

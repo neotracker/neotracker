@@ -12,13 +12,14 @@ const {
   db,
   type,
   resetDB,
-  coinMarketCapApiKey,
-  googleAnalyticsTag,
+  apiKeys,
   prod,
 } = getConfiguration({
   ...defaultNTConfiguration,
   nodeRpcUrl: undefined,
 });
+
+const { googleAnalyticsTag } = apiKeys;
 
 let rpcURL: string | undefined;
 switch (neotrackerNetwork) {
@@ -35,9 +36,8 @@ switch (neotrackerNetwork) {
     rpcURL = 'https://testnet.neotracker.io/rpc';
 }
 
-const { options, network } = getOptions({
+const options = getOptions(neotrackerNetwork, {
   port,
-  network: neotrackerNetwork,
   rpcURL,
   googleAnalyticsTag,
   db,
@@ -61,12 +61,12 @@ const environment = {
       host: 'localhost',
       port,
     },
-    network,
-    coinMarketCapApiKey,
+    apiKeys,
+    network: neotrackerNetwork,
   },
   scrape: {
+    network: neotrackerNetwork,
     db,
-    network,
     pubSub: {},
   },
   start: {

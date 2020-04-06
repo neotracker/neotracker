@@ -66,13 +66,19 @@ export interface QueryMapEnvironment {
   readonly queriesPath: string;
   readonly nextQueriesDir: string;
 }
+
+export interface APIKeys {
+  readonly coinMarketCap: string;
+  readonly googleAnalyticsTag: string;
+}
+
 export interface Environment {
   readonly react: ReactEnvironment;
   readonly reactApp: ReactAppEnvironment;
   readonly server: HTTPServerEnvironment;
   readonly network: NetworkType;
   readonly queryMap?: QueryMapEnvironment;
-  readonly coinMarketCapApiKey: string;
+  readonly apiKeys: APIKeys;
 }
 export interface Options {
   readonly db: DBOptions;
@@ -124,6 +130,8 @@ export const createServer$ = ({
     );
   }
 
+  const { coinMarketCap: coinMarketCapApiKey, googleAnalyticsTag } = environment.apiKeys;
+
   const rootLoader$ = createRootLoader$({
     db$: createFromEnvironment$({
       options$: mapDistinct$((_) => _.options.db),
@@ -163,7 +171,7 @@ export const createServer$ = ({
       map(([appOptions, rootLoader]) => ({
         appOptions,
         rootLoader,
-        coinMarketCapApiKey: environment.coinMarketCapApiKey,
+        coinMarketCapApiKey,
       })),
     ),
   );
@@ -214,6 +222,7 @@ export const createServer$ = ({
             ? reactApp({
                 addHeadElements,
                 addBodyElements,
+                googleAnalyticsTag,
                 environment: environment.reactApp,
                 options: reactAppOptions,
                 network: environment.network,
@@ -222,6 +231,7 @@ export const createServer$ = ({
             : reactApplication({
                 addHeadElements,
                 addBodyElements,
+                googleAnalyticsTag,
                 environment: environment.react,
                 options: react,
                 network: environment.network,
