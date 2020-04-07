@@ -8,12 +8,14 @@ export const test = ({
   configuration,
   rpcURL = testRPCURL,
   googleAnalyticsTag,
+  prod,
 }: {
   readonly port: number;
   readonly db: LiteDBConfig | PGDBConfig | PGDBConfigString;
   readonly configuration: AssetsConfiguration;
   readonly rpcURL?: string;
   readonly googleAnalyticsTag: string;
+  readonly prod: boolean;
 }) => {
   const db = isPGDBConfig(dbIn)
     ? {
@@ -26,6 +28,7 @@ export const test = ({
     : dbIn;
 
   return common({
+    prod,
     rpcURL,
     googleAnalyticsTag,
     port,

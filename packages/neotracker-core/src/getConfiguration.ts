@@ -143,6 +143,7 @@ export const getCoreConfiguration = () => {
     resetDB,
     coinMarketCapApiKey,
     googleAnalyticsTag,
+    prod,
   } = getConfiguration();
   // tslint:disable-next-line readonly-array
   const getDistPath = (...paths: string[]) => path.resolve(__dirname, '..', 'dist', ...paths);
@@ -166,6 +167,7 @@ export const getCoreConfiguration = () => {
     port,
     db,
     configuration,
+    prod,
   });
   const options$ = new BehaviorSubject(options);
 
