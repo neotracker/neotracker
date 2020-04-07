@@ -58,6 +58,7 @@ export const makeServerHTML = ({
     <script nonce={nonce} type="text/javascript" dangerouslySetInnerHTML={{ __html: body }} />
   );
 
+  // Make sure scripts are added to the Content Security Policy
   const scriptTag = (src: string, scriptProps: object = {}) => (
     <script {...scriptProps} nonce={nonce} type="text/javascript" src={src} />
   );
