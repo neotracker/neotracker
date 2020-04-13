@@ -19,7 +19,7 @@ const {
   nodeRpcUrl: undefined,
 });
 
-const { googleAnalyticsTag } = apiKeys;
+const { googleAnalyticsTag, moonpayPublic: moonpayPublicApiKey } = apiKeys;
 
 let rpcURL: string | undefined;
 switch (neotrackerNetwork) {
@@ -39,10 +39,11 @@ switch (neotrackerNetwork) {
 const options = getOptions(neotrackerNetwork, {
   port,
   rpcURL,
-  googleAnalyticsTag,
   db,
   configuration,
   prod,
+  googleAnalyticsTag,
+  moonpayPublicApiKey,
 });
 
 const options$ = new BehaviorSubject(options);

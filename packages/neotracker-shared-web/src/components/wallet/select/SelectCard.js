@@ -107,6 +107,7 @@ type ExternalProps = {|
   error?: ?Error,
   retry?: ?() => void,
   forward?: boolean,
+  swapPage?: boolean,
   className?: string,
 |};
 type InternalProps = {|
@@ -127,6 +128,7 @@ function SelectCard({
   error,
   retry,
   forward,
+  swapPage,
   className,
   accounts,
   onSelect,
@@ -249,9 +251,18 @@ function SelectCard({
               path: routes.WALLET_OPEN_WALLET,
               text: 'OPEN WALLET',
               tooltip:
-                'Open a account to interact with the blockchain in order to send ' +
+                'Open an account to interact with the blockchain in order to send ' +
                 'NEO, GAS or other tokens, claim GAS and more.',
             })}
+            {!swapPage
+              ? makeButton({
+                  path: routes.SWAP,
+                  text: 'BUY NEO',
+                  tooltip:
+                    'Click here to be redirected to the Buy NEO page in order to ' +
+                    'buy NEO.',
+                })
+              : null}
             <SelectCardMenu
               className={classes.buttonMargin}
               account={account}

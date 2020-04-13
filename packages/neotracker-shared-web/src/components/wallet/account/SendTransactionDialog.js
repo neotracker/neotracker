@@ -318,15 +318,15 @@ const enhance: HOC<*, *> = compose(
     },
   }),
   lifecycle({
-    componentWillReceiveProps(nextProps) {
+    componentDidUpdate(prevProps) {
       if (
-        this.props.confirmTransaction !== nextProps.confirmTransaction &&
-        nextProps.confirmTransaction != null
+        prevProps.confirmTransaction !== this.props.confirmTransaction &&
+        this.props.confirmTransaction != null
       ) {
-        if (nextProps.timer != null) {
-          clearTimeout(nextProps.timer);
+        if (this.props.timer != null) {
+          clearTimeout(this.props.timer);
         }
-        nextProps.setState((prevState) => ({
+        this.props.setState((prevState) => ({
           ...prevState,
           open: true,
           loading: false,

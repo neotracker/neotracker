@@ -1,12 +1,9 @@
 /* @flow */
 import * as React from 'react';
-
 import classNames from 'classnames';
 import { type HOC, compose, pure } from 'recompose';
-
 import { type Theme } from '../../../styles/createTheme';
 import { Markdown } from '../../../lib/markdown';
-
 import { withStyles } from '../../../lib/base';
 
 const styles = (theme: Theme) => ({
@@ -17,20 +14,36 @@ const styles = (theme: Theme) => ({
 });
 
 const FAQ = `
-## What is the NEO Tracker wallet?
-The NEO Tracker wallet is a light wallet that lets NEO holders interact with
-the Neo blockchain. You do not create an account or give us your funds to hold
-onto. No data leaves your computer or your browser. We make it easy for you to
-create, save, and access your information and interact with the Neo blockchain.
+## What is MoonPay?
+MoonPay is a new way to buy cryptocurrencies like NEO with debit/credit cards
+and bank transfers. MoonPay has dozens of partners
+that use their API to allow users to buy cryptocurrencies.
+
+Click [here](https://www.moonpay.io/) to learn more about MoonPay.
 
 
 ## How does it work?
-Light wallet means that the NEO Tracker wallet does not require syncing locally with
-the blockchain and instead, uses a remote server, namely NEO Tracker's blockchain
-explorer, to fetch data like the transaction history or the amount of GAS
-available to claim. Note that **none** of your personal data is ever sent to
-NEO Tracker. Specifically, your Private Keys and encrypted Keystore files never
-leave your local computer.
+1. Select the wallet whose address you want the NEO to be sent to. If you don't have any
+wallets open you can either create a new wallet or enter an address in the widget directly.
+2. Enter the amount of NEO you want to purchase (minimum of $20 USD, maximum of
+$2,200 USD).
+3. Press "Buy Now". If you have selected a wallet to send the NEO to then the address
+will be shown in the widget. If you have no wallet selected then the address will
+be empty and you'll have to enter a valid NEO address that you want your NEO to be
+sent to.
+4. Press "Buy Now" again and you'll enter your email for confirmation and receipt
+purposes.
+5. Once your transaction is completed on MoonPay's site you'll be redirected back to
+NEO Tracker to see your transaction reflected on the Neo blockchain.
+
+
+## What payment methods are accepted?
+MoonPay accepts debit cards, credit cards, and bank transfers.
+
+
+## What verification is needed?
+MoonPay needs an email for confirmation and receipt purposes.
+ U.S. citizens currently cannot buy NEO through MoonPay.
 
 
 ## How secure is it?
@@ -43,20 +56,11 @@ would additionally need the password to unlock your encrypted Keystore file in o
 to gain access to your Private Keys and thus your balance.
 
 
-## How can I trust the NEO Tracker application?
-NEO Tracker is completely open-source and is available on [GitHub](https://github.com/neotracker/neotracker)
-for you to verify. We serve NEO Tracker over SSL (HTTPS) which eliminates the
-possibility of tampering with the Javascript code between our servers and your
-browser. Still not sure? Download and use a local standalone version of the NEO Tracker wallet.
-Go to our GitHub for the latest [release](https://github.com/neotracker/neotracker-wallet/releases)
-and open it using your browser. Alternatively, you can build directly from the source.
-
-
-## What if I forget my encrypted Keystore file's password or lose my Private Key?
-NEO Tracker Wallet does not hold your keys for you. We cannot access accounts,
-recover keys, reset passwords, nor reverse transactions. Protect your keys and
-always check that you are on the correct URL. You are responsible for your security.
-
+## What if something has gone wrong? What do I do?
+If you think something has gone wrong then contact us at [NEO Tracker](https://twitter.com/neotrackerio)
+AND contact [MoonPay](mailto:support@moonpay.io).
+We will work diligently with you and with MoonPay to help you figure out what
+happened and try to remedy the situation.
 
 ## What if I have questions, concerns, comments?
 The best way to get in contact with us is to Direct Message us at our
@@ -81,7 +85,7 @@ type Props = {|
   ...ExternalProps,
   ...InternalProps,
 |};
-function WalletFAQView({ className, classes }: Props): React.Element<*> {
+function SwapFAQView({ className, classes }: Props): React.Element<*> {
   return (
     <div className={classNames(className, classes.root)}>
       <Markdown source={FAQ} />
@@ -94,4 +98,4 @@ const enhance: HOC<*, *> = compose(
   pure,
 );
 
-export default (enhance(WalletFAQView): React.ComponentType<ExternalProps>);
+export default (enhance(SwapFAQView): React.ComponentType<ExternalProps>);

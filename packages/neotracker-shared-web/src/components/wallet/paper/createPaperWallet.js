@@ -75,6 +75,7 @@ const createPaperWallet = ({
     );
   } else {
     win.document.write(html);
+    win.document.close();
   }
 };
 

@@ -19,11 +19,13 @@ const styles = (theme: Theme) => ({
   text: {
     padding: theme.spacing.unit * 2,
     height: theme.spacing.unit * 14,
-    overflow: 'scroll',
+    overflowY: 'scroll',
+    overflowX: 'hidden',
     '&::-webkit-scrollbar': {
       display: 'none',
     },
     '-ms-overflow-style': 'none',
+    scrollbarWidth: 'none',
   },
   [theme.breakpoints.down('xs')]: {
     cardCommon: {
