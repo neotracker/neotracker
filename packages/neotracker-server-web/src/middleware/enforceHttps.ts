@@ -69,6 +69,12 @@ export function enforceHTTPS(options: any) {
     // First, check if directly requested via https
     let secure = ctx.secure;
 
+    // Don't do redirect if request is coming from a load balancer health check (ie. GCE Ingress)
+    const isLoadBalancerHealthCheck = ctx.request.header['x-forwarded-proto'] == undefined ? true : false;
+    if (isLoadBalancerHealthCheck && options.trustProtoHeader) {
+      return next();
+    }
+
     // Second, if the request headers can be trusted (e.g. because they are send
     // by a proxy), check if x-forward-proto is set to https
     if (options.trustProtoHeader && ctx.request.header['x-forwarded-proto'] != undefined) {

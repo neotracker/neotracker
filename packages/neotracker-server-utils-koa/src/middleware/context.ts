@@ -66,6 +66,7 @@ export const context = ({
     const logInfo: Record<string, string | number | undefined> = {
       title: 'http_server_request',
       ...ua.convertLabels(userAgent),
+      [Labels.HTTP_HEADERS]: JSON.stringify(ctx.headers),
     };
     const startTime = Date.now();
 

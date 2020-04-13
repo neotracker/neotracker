@@ -77,7 +77,7 @@ export const common = ({
       smoothingFactor: 1 / 3,
     },
     security: {
-      enforceHTTPs: false,
+      enforceHTTPs: prod,
       frameguard: {
         enabled: true,
         action: 'deny',
