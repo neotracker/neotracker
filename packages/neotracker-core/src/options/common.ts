@@ -19,13 +19,12 @@ export interface AssetsConfiguration {
 
 export const common = ({
   rpcURL,
-  googleAnalyticsTag,
   port,
   blacklistNEP5Hashes,
   db,
   configuration,
-  url = `http://127.0.0.1`,
-  domain = '127.0.0.1',
+  url,
+  domain,
   prod,
 }: {
   readonly rpcURL: string;
@@ -34,8 +33,8 @@ export const common = ({
   readonly blacklistNEP5Hashes: ReadonlyArray<string>;
   readonly db: PGDBConfigWithDatabase | PGDBConfigString | LiteDBConfig;
   readonly configuration: AssetsConfiguration;
-  readonly url?: string;
-  readonly domain?: string;
+  readonly url: string;
+  readonly domain: string;
   readonly prod: boolean;
 }): Options => ({
   server: {
@@ -59,14 +58,12 @@ export const common = ({
         enabled: true,
         userAgents,
       },
-      googleAnalyticsTag,
       rpcURL,
     },
     reactApp: {
       clientAssetsPath: configuration.clientAssetsPathNext,
       statsPath: configuration.statsPath,
       publicPath: configuration.clientPublicPathNext,
-      googleAnalyticsTag,
       rpcURL,
     },
     toobusy: {
@@ -180,7 +177,7 @@ export const common = ({
         },
         donateAddress: 'AKDVzYGLczmykdtRaejgvWeZrvdkVEvQ1X',
       },
-      url: `${url}:${port}`,
+      url,
       rpcURL,
       maintenance: false,
       disableWalletModify: false,

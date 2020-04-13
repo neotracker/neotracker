@@ -28,7 +28,6 @@
     "@neotracker/server-utils": "^0.0.1-alpha.0",
     "@neotracker/server-web": "^0.0.1-alpha.0",
     "@neotracker/shared-utils": "^0.0.1-alpha.0",
-    "@types/rc": "^1.1.0",
     "app-root-dir": "^1.0.2",
     "assets-webpack-plugin": "^3.9.7",
     "babel-literal-to-ast": "^2.0.0",
