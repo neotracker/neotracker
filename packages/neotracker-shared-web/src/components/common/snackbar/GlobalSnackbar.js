@@ -137,30 +137,30 @@ const enhance: HOC<*, *> = compose(
     },
   }),
   lifecycle({
-    componentWillReceiveProps(nextProps) {
+    componentDidUpdate(prevProps) {
       if (
-        this.props.snackbarProps !== nextProps.snackbarProps &&
-        nextProps.snackbarProps != null
+        this.props.snackbarProps !== prevProps.snackbarProps &&
+        this.props.snackbarProps != null
       ) {
         if (
-          nextProps.snackbarPropsQueue.length === 0 &&
-          nextProps.currentSnackbarProps == null
+          this.props.snackbarPropsQueue.length === 0 &&
+          this.props.currentSnackbarProps == null
         ) {
-          nextProps.setState((prevState) => ({
+          this.props.setState((prevState) => ({
             ...prevState,
             open: true,
-            currentSnackbarProps: nextProps.snackbarProps,
+            currentSnackbarProps: this.props.snackbarProps,
             timer: setTimeout(
-              () => nextProps.handleClose(),
-              nextProps.snackbarProps.timeoutMS || 2000,
+              () => this.props.handleClose(),
+              this.props.snackbarProps.timeoutMS || 2000,
             ),
           }));
         } else {
-          nextProps.setState((prevState) => ({
+          this.props.setState((prevState) => ({
             ...prevState,
             snackbarPropsQueue: [
               ...prevState.snackbarPropsQueue,
-              nextProps.snackbarProps,
+              this.props.snackbarProps,
             ],
           }));
         }

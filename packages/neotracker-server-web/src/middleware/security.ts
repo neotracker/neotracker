@@ -13,7 +13,7 @@ export interface Options {
   readonly cspConfig: {
     readonly enabled: boolean;
     // tslint:disable-next-line no-any readonly-array
-    readonly directives: { [K in string]?: any[] };
+    readonly directives: { [K in string]?: any[] | boolean };
     readonly browserSniff: boolean;
   };
   readonly featurePolicy: {
@@ -32,8 +32,11 @@ export interface Options {
 }
 
 // tslint:disable-next-line no-any readonly-array
-const addNonce = (directives: { [K in string]?: any[] }, key: string): void => {
+const addNonce = (directives: { [K in string]?: any[] | boolean }, key: string): void => {
   let directive = directives[key];
+  if (typeof directive === 'boolean') {
+    return;
+  }
   // tslint:disable-next-line no-object-mutation
   directives[key] = directive = directive === undefined ? [] : [...directive];
 

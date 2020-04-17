@@ -15,6 +15,6 @@ module.exports = [
     name: 'Total Size (current)',
     path: 'dist/neotracker-client-web/*.js.gz',
     webpack: false,
-    limit: '1007 KB',
+    limit: '10013 KB',
   },
 ];

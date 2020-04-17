@@ -19,23 +19,25 @@ export interface AssetsConfiguration {
 
 export const common = ({
   rpcURL,
-  port,
   blacklistNEP5Hashes,
   db,
   configuration,
   url,
   domain,
   prod,
+  moonpayPublicApiKey,
+  moonpayUrl,
 }: {
   readonly rpcURL: string;
   readonly googleAnalyticsTag: string;
-  readonly port: number;
   readonly blacklistNEP5Hashes: ReadonlyArray<string>;
   readonly db: PGDBConfigWithDatabase | PGDBConfigString | LiteDBConfig;
   readonly configuration: AssetsConfiguration;
   readonly url: string;
   readonly domain: string;
   readonly prod: boolean;
+  readonly moonpayPublicApiKey: string;
+  readonly moonpayUrl: string;
 }): Options => ({
   server: {
     db,
@@ -82,24 +84,30 @@ export const common = ({
       cspConfig: {
         enabled: true,
         directives: {
+          baseUri: ["'self'"],
+          blockAllMixedContent: true,
           childSrc: ["'self'"],
-          defaultSrc: ["'self'"],
           connectSrc: ["'self'", `ws${prod ? 's' : ''}://${domain}`, rpcURL],
-          imgSrc: ["'self'", 'data:'],
+          defaultSrc: ["'self'"],
           fontSrc: ["'self'", 'https://fonts.gstatic.com/'],
-          frameSrc: ["'self'"],
-          objectSrc: ["'self'"],
-          mediaSrc: ["'self'"],
+          formAction: ["'self'"],
+          frameAncestors: ["'none'"],
+          frameSrc: ["'self'", moonpayUrl],
+          imgSrc: ["'self'", 'data:'],
           manifestSrc: ["'self'"],
+          mediaSrc: ["'self'"],
+          objectSrc: ["'none'"],
           scriptSrc: ["'self'", "'unsafe-eval'", 'https://www.googletagmanager.com'],
           styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+          upgradeInsecureRequests: true,
+          workerSrc: ["'self'"],
         },
         browserSniff: false,
       },
       featurePolicy: {
         enabled: true,
         features: {
-          accelerometer: ["'none'"],
+          accelerometer: [moonpayUrl],
           ambientLightSensor: ["'none'"],
           autoplay: ["'none'"],
           camera: ["'none'"],
@@ -109,7 +117,7 @@ export const common = ({
           fontDisplayLateSwap: ["'none'"],
           fullscreen: ["'none'"],
           geolocation: ["'none'"],
-          gyroscope: ["'none'"],
+          gyroscope: [moonpayUrl],
           layoutAnimations: ["'none'"],
           legacyImageFormats: ["'none'"],
           loadingFrameDefaultEager: ["'none'"],
@@ -123,7 +131,6 @@ export const common = ({
           speaker: ["'none'"],
           syncScript: ["'none'"],
           syncXhr: ["'none'"],
-          unoptimizedImages: ["'none'"],
           unoptimizedLosslessImages: ["'none'"],
           unoptimizedLossyImages: ["'none'"],
           unsizedMedia: ["'none'"],
@@ -166,10 +173,10 @@ export const common = ({
         title: 'NEO Tracker Blockchain Explorer & Wallet',
         name: 'NEO Tracker',
         description:
-          'NEO blockchain explorer and wallet. Explore blocks, transactions, addresses and more. Transfer NEO or GAS, claim GAS and more with the web wallet.',
+          'Neo blockchain explorer and wallet. Explore blocks, transactions, addresses and more. Transfer NEO or GAS, claim GAS and more with the web wallet.',
         walletDescription:
           'NEO Tracker Wallet is a light web wallet that lets NEO holders interact ' +
-          'with the NEO blockchain. Transfer NEO, GAS or other tokens, claim GAS, ' +
+          'with the Neo blockchain. Transfer NEO, GAS or other tokens, claim GAS, ' +
           'print paper wallets and more.',
         social: {
           fb: 'https://www.facebook.com/neotracker.io/',
@@ -183,6 +190,10 @@ export const common = ({
       disableWalletModify: false,
       // 3 minutes
       confirmLimitMS: 3 * 60 * 1000,
+      debug: !prod, // if true will enable Apollo GraphQL devtools in the browser
+      moonpayPublicApiKey,
+      moonpayUrl,
+      prod,
     },
     serveNext: process.env.NEOTRACKER_NEXT === 'true',
   },

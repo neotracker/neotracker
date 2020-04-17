@@ -74,7 +74,7 @@ export const defaultNTConfiguration: NTConfiguration = {
   port: process.env.PORT !== undefined ? Number(process.env.PORT) : 1340, // Port to listen on
   network: 'priv', // Network to run against
   logLevel: 'info',
-  nodeRpcUrl: 'http://localhost:9040/rpc', // NEO-ONE Node RPC URL
+  nodeRpcUrl: 'http://localhost:9040/rpc', // NEO•ONE Node RPC URL
   db: {
     client: 'sqlite3',
     connection: {
@@ -87,6 +87,8 @@ export const defaultNTConfiguration: NTConfiguration = {
   apiKeys: {
     coinMarketCap: '',
     googleAnalyticsTag: '',
+    moonpayPrivate: '',
+    moonpayPublic: '',
   },
 };
 
@@ -149,15 +151,16 @@ export const getCoreConfiguration = () => {
     apiKeys,
     prod,
   } = getConfiguration();
-  const { googleAnalyticsTag } = apiKeys;
+  const { googleAnalyticsTag, moonpayPublic: moonpayPublicApiKey } = apiKeys;
 
   const options = getOptions(network, {
     rpcURL,
-    googleAnalyticsTag,
     port,
     db,
     configuration,
     prod,
+    googleAnalyticsTag,
+    moonpayPublicApiKey,
   });
 
   const options$ = new BehaviorSubject(options);
