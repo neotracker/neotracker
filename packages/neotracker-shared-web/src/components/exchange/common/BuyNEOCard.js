@@ -117,6 +117,7 @@ const styles = (theme: Theme) => ({
     flexDirection: 'row',
     justifyContent: 'center',
     height: '100%',
+    padding: '16px', // same padding as form inside MoonPay iframe
   },
   innerFrameContent: {
     display: 'flex',
