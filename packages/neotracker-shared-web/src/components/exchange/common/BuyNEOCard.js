@@ -49,6 +49,9 @@ const styles = (theme: Theme) => ({
       width: responsiveWidthXs,
       marginTop: theme.spacing.unit,
     },
+    iframe: {
+      marginTop: 0,
+    },
   },
   [theme.breakpoints.up('sm')]: {
     content: {
@@ -67,6 +70,9 @@ const styles = (theme: Theme) => ({
       width: responsiveWidthSm,
       marginTop: theme.spacing.unit,
     },
+    iframe: {
+      marginTop: 0,
+    },
   },
   [theme.breakpoints.up('md')]: {
     content: {
@@ -84,6 +90,9 @@ const styles = (theme: Theme) => ({
     innerFrameContent: {
       width: '50%',
       marginTop: 0,
+    },
+    iframe: {
+      marginTop: '-16px', // brings top of iframe form in line with adjacent content
     },
   },
   root: {},
@@ -117,7 +126,6 @@ const styles = (theme: Theme) => ({
     flexDirection: 'row',
     justifyContent: 'center',
     height: '100%',
-    padding: '16px', // same padding as form inside MoonPay iframe
   },
   innerFrameContent: {
     display: 'flex',
