@@ -38,12 +38,16 @@ export const createApolloClient = ({
     }
   });
 
+  const cache = new InMemoryCache({
+    addTypename: false,
+  }).restore(apolloState);
+  cache.writeData({ data: { timeAgo: false } });
+
   return new ApolloClient({
     link: ApolloLink.from([errorLink, liveLink]),
-    cache: new InMemoryCache({
-      addTypename: false,
-    }).restore(apolloState),
+    cache,
     queryDeduplication: false,
+    resolvers: {},
     defaultOptions: {
       watchQuery: {
         fetchPolicy: 'cache-and-network',

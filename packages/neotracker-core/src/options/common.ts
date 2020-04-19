@@ -190,7 +190,7 @@ export const common = ({
       disableWalletModify: false,
       // 3 minutes
       confirmLimitMS: 3 * 60 * 1000,
-      debug: !prod, // if true will enable Apollo GraphQL devtools in the browser
+      debug: true, // if true will enable Apollo GraphQL devtools in the browser
       moonpayPublicApiKey,
       moonpayUrl,
       prod,

@@ -1,0 +1,16 @@
+query HomeQuery {
+  blocks(orderBy: [{name: "block.id", direction: "desc"}], first: 16) {
+    edges {
+      node {
+        id
+        time
+        transaction_count
+        validator_address_id
+        size
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}

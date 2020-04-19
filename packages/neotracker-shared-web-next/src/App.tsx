@@ -1,4 +1,5 @@
 import { globalStats } from '@neo-one/client-switch';
+import gql from 'graphql-tag';
 import * as React from 'react';
 import LoadableExport, { LoadableComponent } from 'react-loadable';
 import { Route, RouteComponentProps, Switch } from 'react-router';
@@ -78,6 +79,16 @@ export class App extends React.Component<ExternalProps> {
   }
 
   public componentDidMount() {
+    setInterval(() => {
+      const prev = this.props.appContext.apollo.readQuery({
+        query: gql`
+          query MountQuery {
+            timeAgo @client
+          }
+        `,
+      });
+      this.props.appContext.apollo.writeData({ data: { timeAgo: !prev.timeAgo } });
+    }, 1000);
     globalStats.record([
       {
         measure: sessionCounter,
