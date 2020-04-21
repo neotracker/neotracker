@@ -93,7 +93,7 @@ export const common = ({
           formAction: ["'self'"],
           frameAncestors: ["'none'"],
           frameSrc: ["'self'", moonpayUrl],
-          imgSrc: ["'self'", 'data:'],
+          imgSrc: ["'self'", 'data:', 'https://www.google-analytics.com', 'https://stats.g.doubleclick.net'],
           manifestSrc: ["'self'"],
           mediaSrc: ["'self'"],
           objectSrc: ["'none'"],
