@@ -7,7 +7,6 @@ export interface RootCallOptions {
   readonly appOptions: AppOptions;
   readonly rootLoader: RootLoader;
   readonly coinMarketCapApiKey: string;
-  readonly moonpayPrivateApiKey: string;
 }
 
 // tslint:disable-next-line no-unnecessary-class

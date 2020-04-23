@@ -16,7 +16,6 @@ interface CreateOptions {
   readonly rpcURL?: string;
   readonly googleAnalyticsTag: string;
   readonly prod: boolean;
-  readonly moonpayPublicApiKey: string;
 }
 
 const blacklistNEP5Hashes: ReadonlyArray<string> = [
@@ -33,7 +32,7 @@ const blacklistNEP5Hashes: ReadonlyArray<string> = [
 
 export const getOptions = (
   network: NetworkType = 'priv',
-  { rpcURL, db: dbIn, configuration, port, googleAnalyticsTag, moonpayPublicApiKey, prod }: CreateOptions,
+  { rpcURL, db: dbIn, configuration, port, googleAnalyticsTag, prod }: CreateOptions,
 ) => {
   const db = isPGDBConfig(dbIn)
     ? {
@@ -55,9 +54,7 @@ export const getOptions = (
         db,
         configuration,
         googleAnalyticsTag,
-        moonpayPublicApiKey,
         prod,
-        moonpayUrl: 'https://buy.moonpay.io',
       });
 
     case 'staging':
@@ -69,9 +66,7 @@ export const getOptions = (
         db,
         configuration,
         googleAnalyticsTag,
-        moonpayPublicApiKey,
         prod,
-        moonpayUrl: 'https://buy-staging.moonpay.io',
       });
 
     case 'priv':
@@ -83,9 +78,7 @@ export const getOptions = (
         db,
         configuration,
         googleAnalyticsTag,
-        moonpayPublicApiKey,
         prod,
-        moonpayUrl: 'https://buy-staging.moonpay.io',
       });
     default:
       throw new Error('Invalid Network Option');

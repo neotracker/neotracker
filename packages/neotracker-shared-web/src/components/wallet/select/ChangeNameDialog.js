@@ -172,9 +172,9 @@ const enhance: HOC<*, *> = compose(
   }),
   withStyles(styles),
   lifecycle({
-    componentDidUpdate(prevProps) {
-      if (this.props.account !== prevProps.account) {
-        this.props.onChangeName(this.props.account.name);
+    componentWillReceiveProps(nextProps) {
+      if (this.props.account !== nextProps.account) {
+        nextProps.onChangeName(nextProps.account.name);
       }
     },
   }),

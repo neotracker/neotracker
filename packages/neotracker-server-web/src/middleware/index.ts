@@ -8,7 +8,7 @@ export { nodeRPC } from './nodeRPC';
 export { publicAssets } from './publicAssets';
 export { ratelimit } from './ratelimit';
 export { reactApplication } from './reactApplication';
-export { redirectWWWURL, redirectMoonPayURL } from './redirectURL';
+export { redirectURL } from './redirectURL';
 export { report } from './report';
 export { rootAssets } from './rootAssets';
 export { setRootLoader } from './setRootLoader';
