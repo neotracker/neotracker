@@ -37,10 +37,6 @@ export const upsellClickTotal = globalStats.createMeasureInt64(
   'neotracker/upsell_clicks',
   MeasureUnit.UNIT,
 );
-export const totalFrameLoads = globalStats.createMeasureInt64(
-  'neotracker/frame_loads',
-  MeasureUnit.UNIT,
-);
 
 export const NEOTRACKER_WALLET_NEW_FLOW_PRIVATE_KEY_TOTAL = globalStats.createView(
   'neotracker_wallet_new_flow_private_key_total',
@@ -104,12 +100,3 @@ export const NEOTRACKER_WALLET_UPSELL_CLICK_TOTAL = globalStats.createView(
   'neotracker wallet upsell click total',
 );
 globalStats.registerView(NEOTRACKER_WALLET_UPSELL_CLICK_TOTAL);
-
-export const NEOTRACKER_SWAP_TOTAL_MOONPAY_FRAME_LOADS = globalStats.createView(
-  'neotracker_swap_total_moonpay_frame_loads',
-  totalFrameLoads,
-  AggregationType.COUNT,
-  labelsToTags([]),
-  'neotracker swaps moonpay frame load total',
-);
-globalStats.registerView(NEOTRACKER_SWAP_TOTAL_MOONPAY_FRAME_LOADS);

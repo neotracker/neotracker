@@ -40,7 +40,6 @@ const DEFAULT_APP_OPTIONS$: Observable<AppOptions> = new BehaviorSubject({
   // 3 minutes
   confirmLimitMS: 3 * 60 * 1000,
   debug: true,
-  moonpayPublicApiKey: '',
 });
 const DEFAULT_MOCKS = {
   Int: () => fakerStatic.random.number(),

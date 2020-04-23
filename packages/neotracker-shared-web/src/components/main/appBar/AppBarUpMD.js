@@ -115,13 +115,6 @@ const AppBarUpMD = ({
         },
         {
           className: classes.button,
-          id: 'swap',
-          label: 'Buy NEO',
-          selected: routes.isSwap(location.pathname),
-          href: routes.SWAP,
-        },
-        {
-          className: classes.button,
           id: 'blocks',
           label: 'Blocks',
           selected: routes.isBlock(location.pathname),

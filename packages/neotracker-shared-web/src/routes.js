@@ -22,7 +22,6 @@ export const WALLET_NEW_WALLET = '/wallet/new-wallet';
 export const WALLET_OPEN_WALLET = '/wallet/open-wallet';
 export const WALLET_CREATE_KEYSTORE = '/wallet/create-keystore';
 export const WALLET_FAQ = '/wallet/faq';
-export const SWAP_FAQ = '/swap/faq';
 
 // Transaction
 export const TRANSACTION_HASH_ARGUMENT = 'transactionHash';
@@ -113,7 +112,3 @@ export const makeSearch = (value: string = SEARCH_VALUE_PARAM) =>
 // Ecosystem
 export const ECOSYSTEM = '/ecosystem';
 export const isEcosystem = (path: string) => path.startsWith('/ecosystem');
-
-// Buy NEO
-export const SWAP = '/swap';
-export const isSwap = (path: string) => path.startsWith('/swap');

@@ -19,6 +19,5 @@ export interface AppOptions {
   readonly confirmLimitMS: number;
   readonly bsaEnabled?: boolean;
   readonly debug: boolean;
-  readonly moonpayPublicApiKey: string;
 }
 export type NetworkType = 'main' | 'staging' | 'priv';

@@ -25,8 +25,6 @@ export const common = ({
   url,
   domain,
   prod,
-  moonpayPublicApiKey,
-  moonpayUrl,
 }: {
   readonly rpcURL: string;
   readonly googleAnalyticsTag: string;
@@ -36,8 +34,6 @@ export const common = ({
   readonly url: string;
   readonly domain: string;
   readonly prod: boolean;
-  readonly moonpayPublicApiKey: string;
-  readonly moonpayUrl: string;
 }): Options => ({
   server: {
     db,
@@ -92,7 +88,7 @@ export const common = ({
           fontSrc: ["'self'", 'https://fonts.gstatic.com/'],
           formAction: ["'self'"],
           frameAncestors: ["'none'"],
-          frameSrc: ["'self'", moonpayUrl],
+          frameSrc: ["'self'"],
           imgSrc: ["'self'", 'data:', 'https://www.google-analytics.com', 'https://stats.g.doubleclick.net'],
           manifestSrc: ["'self'"],
           mediaSrc: ["'self'"],
@@ -107,7 +103,7 @@ export const common = ({
       featurePolicy: {
         enabled: true,
         features: {
-          accelerometer: [moonpayUrl],
+          accelerometer: ["'none'"],
           ambientLightSensor: ["'none'"],
           autoplay: ["'none'"],
           camera: ["'none'"],
@@ -117,7 +113,7 @@ export const common = ({
           fontDisplayLateSwap: ["'none'"],
           fullscreen: ["'none'"],
           geolocation: ["'none'"],
-          gyroscope: [moonpayUrl],
+          gyroscope: ["'none'"],
           layoutAnimations: ["'none'"],
           legacyImageFormats: ["'none'"],
           loadingFrameDefaultEager: ["'none'"],
@@ -191,8 +187,6 @@ export const common = ({
       // 3 minutes
       confirmLimitMS: 3 * 60 * 1000,
       debug: !prod, // if true will enable Apollo GraphQL devtools in the browser
-      moonpayPublicApiKey,
-      moonpayUrl,
       prod,
     },
     serveNext: process.env.NEOTRACKER_NEXT === 'true',

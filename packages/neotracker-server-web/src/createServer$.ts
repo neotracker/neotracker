@@ -44,8 +44,7 @@ import {
   ReactAppOptions,
   ReactEnvironment,
   ReactOptions,
-  redirectMoonPayURL as redirectMoonPayMiddlware,
-  redirectWWWURL as redirectWWWMiddleware,
+  redirectURL as redirectMiddleware,
   report,
   rootAssets,
   security,
@@ -71,8 +70,6 @@ export interface QueryMapEnvironment {
 export interface APIKeys {
   readonly coinMarketCap: string;
   readonly googleAnalyticsTag: string;
-  readonly moonpayPrivate: string;
-  readonly moonpayPublic: string;
 }
 
 export interface Environment {
@@ -133,11 +130,7 @@ export const createServer$ = ({
     );
   }
 
-  const {
-    coinMarketCap: coinMarketCapApiKey,
-    googleAnalyticsTag,
-    moonpayPrivate: moonpayPrivateApiKey,
-  } = environment.apiKeys;
+  const { coinMarketCap: coinMarketCapApiKey, googleAnalyticsTag } = environment.apiKeys;
 
   const rootLoader$ = createRootLoader$({
     db$: createFromEnvironment$({
@@ -179,7 +172,6 @@ export const createServer$ = ({
         appOptions,
         rootLoader,
         coinMarketCapApiKey,
-        moonpayPrivateApiKey,
       })),
     ),
   );
@@ -300,8 +292,7 @@ export const createServer$ = ({
           toobusyMiddleware,
           ratelimitMiddleware,
           securityMiddleware,
-          redirectMoonPayMiddlware,
-          redirectWWWMiddleware,
+          redirectMiddleware,
           clientAssetsMiddleware,
           clientAssetsNextMiddleware,
           publicAssetsMiddleware,
