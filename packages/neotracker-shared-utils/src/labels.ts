@@ -51,7 +51,7 @@ export const labels = {
   DNS_SERVICE_RECORDS: 'dns.service.records',
   DNS_SERVICE_DELETE: 'dns.service.delete',
   DNS_NODE_RECORDS: 'dns.node.records',
-  // Postgre
+  // Postgres
   POSTGRES_BACKUPWAL_ISBEHIND: 'postgres.backup_wal.is_behind',
   POSTGRES_BACKUPWAL_VALUE: 'postgres.backup_wal.value',
   POSTGRES_BACKUPWAL_LSNOFFSET: 'postgres.backup_wal.lsn_offset',

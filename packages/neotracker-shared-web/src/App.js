@@ -30,6 +30,8 @@ import Error404 from './lib/error/Error404';
 import GenericErrorPage from './pages/GenericErrorPage';
 import Home from './pages/Home';
 import Search from './pages/Search';
+import Swap from './pages/Swap';
+import SwapFAQ from './pages/SwapFAQ';
 import Transaction from './pages/Transaction';
 import TransactionSearch from './pages/TransactionSearch';
 
@@ -66,6 +68,12 @@ export const routeConfigs = [
     path: routes.HOME,
     render: renderComponent(Home),
     component: Home,
+  },
+  {
+    exact: true,
+    path: routes.SWAP,
+    render: renderComponent(Swap),
+    component: Swap,
   },
   {
     exact: true,
@@ -168,6 +176,12 @@ export const routeConfigs = [
     path: routes.WALLET_FAQ,
     render: renderComponent(WalletFAQ),
     component: WalletFAQ,
+  },
+  {
+    exact: true,
+    path: routes.SWAP_FAQ,
+    render: renderComponent(SwapFAQ),
+    component: SwapFAQ,
   },
   {
     exact: true,

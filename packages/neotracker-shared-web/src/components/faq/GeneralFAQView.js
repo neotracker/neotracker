@@ -87,10 +87,55 @@ accounts.
 export const Disclaimer = `
 ## We are not responsible for any loss.
 
-Neo, neotracker.io and some of the underlying Javascript libraries we use are
+Neo, neotracker.io and some of the underlying JavaScript libraries we use are
 under active development. While we have thoroughly tested, there is always the
 possibility something unexpected happens that causes your funds to be lost.
 Please do not invest more than you are willing to lose, and please be careful.
+`;
+
+export const MoonPayFAQ = `
+## What is MoonPay?
+MoonPay is a new way to buy cryptocurrencies like NEO with debit/credit cards
+and bank transfers (SEPA/FPS). MoonPay has dozens of partners
+that use their API to allow users to buy cryptocurrencies.
+
+Click [here](https://www.moonpay.io/) to learn more about MoonPay. Click [here](https://help.moonpay.io/en/)
+for MoonPay's FAQ page. Click [here](https://www.moonpay.io/privacy_policy) for MoonPay's Privacy Policy.
+Click [here](https://www.moonpay.io/cookie_policy) for MoonPay's Cookie Policy.
+
+## How does it work?
+1. Select the wallet address you want the NEO to be sent to. If you don't have any
+wallets open you can either create a new wallet, open a wallet, or enter an address in the widget directly.
+2. Enter the amount of NEO you want to purchase (minimum of $20 USD, maximum of
+$2,200 USD).
+3. Press "Buy Now". If you have selected a wallet to send the NEO to then the address
+will be shown in the widget. If you have no wallet selected then the address will
+be empty and you'll have to enter a valid NEO address that you want your NEO to be
+sent to.
+4. Enter your email for confirmation and receipt purposes.
+5. Enter the verification code sent to your email.
+6. You will then be directed to enter your name, date of birth, physical address, phone number,
+and passport/driving license/national identity card. This information is required for KYC/AML purposes,
+is sent directly to MoonPay and is not in any way collected, recorded, or stored by NEO Tracker.
+Click [here](https://www.moonpay.io/privacy_policy) for MoonPay's Privacy Policy to learn more about
+how MoonPay will handle your information.
+7. You will also be directed to submit two photos for identity verification.
+8. Once your transaction is completed on MoonPay's site you'll be redirected back to
+NEO Tracker to see your transaction reflected on the Neo blockchain. Note that it may take a few minutes
+for the transaction to be completed and thus you will not see the NEO in your wallet until the transaction
+is confirmed on the blockchain.
+
+## What payment methods are accepted?
+MoonPay accepts debit cards, credit cards, and bank transfers (SEPA for Euro and FPS for GBP).
+
+## What if I'm a US citizen?
+U.S. citizens cannot currently buy NEO through MoonPay.
+
+## What if something has gone wrong? What do I do?
+If you think something has gone wrong then contact us at [NEO Tracker](https://twitter.com/neotrackerio)
+AND contact [MoonPay](mailto:support@moonpay.io).
+We will work diligently with you and with MoonPay to help you figure out what
+happened and try to remedy the situation.
 `;
 
 const RPXToken = `
@@ -193,6 +238,7 @@ or Block index.
 const FAQ = `
 ${RPXToken}
 ${CoreWalletFAQ}
+${MoonPayFAQ}
 ${GeneralFAQ}
 ${Disclaimer}
 ${QCC}
