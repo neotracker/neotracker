@@ -98,7 +98,7 @@ function EcosystemCard({
   cover,
 }: Props): React.Element<any> {
   const openLink = () => {
-    window.open(link, '_blank');
+    window.open(link, '_blank', 'noreferrer,noopener');
   };
   return (
     <div
