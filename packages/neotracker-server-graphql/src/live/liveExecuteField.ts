@@ -1,3 +1,4 @@
+import { serverLogger } from '@neotracker/logger';
 import { defaultFieldResolver, GraphQLResolveInfo } from 'graphql';
 import { ExecutionContext } from 'graphql/execution/execute';
 import { Observable } from 'rxjs';
@@ -49,6 +50,15 @@ export function liveExecuteField<TSource>(
         } catch (error) {
           // tslint:disable-next-line no-array-mutation
           executionContext.errors.push(error);
+          serverLogger.error({
+            title: 'live_execute_field_error',
+            key: getFieldEntryKey(info.fieldNodes[0]),
+            source: payload,
+            args,
+            fieldName: info.fieldNodes[0].name.value,
+            operation:
+              executionContext.operation.name === undefined ? undefined : executionContext.operation.name.value,
+          });
         }
 
         response = { ...response, errors: executionContext.errors };
