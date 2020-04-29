@@ -474,6 +474,7 @@ export class LiveServer {
         ...handleConnectionLabels,
         title: 'websocket_server_message_received',
         [utilLabels.WEBSOCKET_MESSAGE_TYPE]: message.type,
+        [utilLabels.WEBSOCKET_MESSAGEJSON]: messageJSON,
       });
 
       // tslint:disable-next-line no-floating-promises

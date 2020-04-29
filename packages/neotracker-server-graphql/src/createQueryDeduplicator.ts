@@ -60,6 +60,16 @@ export async function doExecuteForDocument({
 }): Promise<ExecutionResult> {
   try {
     const response = await execute(schema, doc, rootValue, context, variables);
+    if (response.errors !== undefined && response.errors.length > 0) {
+      serverLogger.error({
+        title: 'graphql_top_level_execute_response_errors',
+        doc,
+        variables,
+        schema,
+        rootValue,
+        context,
+      });
+    }
 
     return convertExecutionResult(response);
   } catch (error) {
