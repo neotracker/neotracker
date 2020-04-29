@@ -62,12 +62,8 @@ export async function doExecuteForDocument({
     const response = await execute(schema, doc, rootValue, context, variables);
     if (response.errors !== undefined && response.errors.length > 0) {
       serverLogger.error({
-        title: 'graphql_top_level_execute_response_errors',
-        doc,
+        title: 'graphql_top_level_execute_variables',
         variables,
-        schema,
-        rootValue,
-        context,
       });
     }
 
