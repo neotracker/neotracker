@@ -155,6 +155,13 @@ const AppBarUpMD = ({
           selected: routes.isEcosystem(location.pathname),
           href: routes.ECOSYSTEM,
         },
+        {
+          className: classes.button,
+          id: 'faq',
+          label: 'FAQ',
+          selected: routes.isGeneralFAQ(location.pathname),
+          href: routes.GENERAL_FAQ,
+        },
       ]}
     />
   );
