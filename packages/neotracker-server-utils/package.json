@@ -10,7 +10,7 @@
   "dependencies": {
     "@neotracker/logger": "^1.0.0",
     "@neotracker/shared-utils": "^0.0.1-alpha.0",
-    "@neo-one/utils": "^2.3.0",
+    "@neo-one/utils": "^2.4.0",
     "@types/is-running": "^2.1.0",
     "app-root-dir": "^1.0.2",
     "chokidar": "^2.0.3",

@@ -1,5 +1,5 @@
 import { NetworkType } from '@neo-one/client-common';
-import { Client, LocalKeyStore, LocalUserAccountProvider, NEOONEProvider } from '@neo-one/client-core';
+import { Client, LocalKeyStore, LocalUserAccountProvider, NEOProvider } from '@neo-one/client-core';
 import { AppOptions } from '@neotracker/shared-utils';
 import { ApolloClient } from 'apollo-client';
 import { Observable } from 'rxjs';
@@ -11,10 +11,10 @@ export interface AppContext {
   readonly nonce: string | undefined;
   readonly options$: Observable<AppOptions>;
   readonly client: Client<
-    LocalUserAccountProvider<LocalKeyStore, NEOONEProvider>,
+    LocalUserAccountProvider<LocalKeyStore, NEOProvider>,
     {
-      readonly localStorage: LocalUserAccountProvider<LocalKeyStore, NEOONEProvider>;
-      readonly memory: LocalUserAccountProvider<LocalKeyStore, NEOONEProvider>;
+      readonly localStorage: LocalUserAccountProvider<LocalKeyStore, NEOProvider>;
+      readonly memory: LocalUserAccountProvider<LocalKeyStore, NEOProvider>;
     }
   >;
   readonly network: NetworkType;

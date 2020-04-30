@@ -8,8 +8,8 @@
   "license": "MIT",
   "main": "./src/index.ts",
   "dependencies": {
-    "@neo-one/client-switch": "^2.3.0",
-    "@neo-one/utils": "^2.3.0",
+    "@neo-one/client-switch": "2.5.1-alpha-7",
+    "@neo-one/utils": "^2.4.0",
     "@neotracker/logger": "^1.0.0",
     "@neotracker/server-utils": "^0.0.1-alpha.0",
     "@neotracker/shared-utils": "^0.0.1-alpha.0",

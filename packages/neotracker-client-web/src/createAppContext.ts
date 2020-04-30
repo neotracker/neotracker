@@ -5,7 +5,7 @@ import {
   LocalMemoryStore,
   LocalStringStore,
   LocalUserAccountProvider,
-  NEOONEProvider,
+  NEOProvider,
 } from '@neo-one/client-core';
 // tslint:disable-next-line:ban-ts-ignore
 // @ts-ignore
@@ -71,7 +71,7 @@ export const createAppContext = ({
     refCount(),
   );
 
-  const provider = new NEOONEProvider([{ network, rpcURL: options.rpcURL }]);
+  const provider = new NEOProvider([{ network, rpcURL: options.rpcURL }]);
 
   const storage = localforage.createInstance({
     name: 'neotracker',

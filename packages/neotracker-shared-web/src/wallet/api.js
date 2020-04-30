@@ -366,7 +366,7 @@ export const doSendAsset = async ({
 |}) => {
   const asset = add0x(assetHashIn);
   const { client, network } = appContext;
-  const transactionOptions = { from: account };
+  const transactionOptions = { from: account, skipSysFeeCheck: true };
 
   if (assetType === 'NEP5') {
     const networks = {

@@ -5,7 +5,7 @@ import {
   LocalMemoryStore,
   LocalStringStore,
   LocalUserAccountProvider,
-  NEOONEProvider,
+  NEOProvider,
 } from '@neo-one/client-core';
 import { AppOptions } from '@neotracker/shared-utils';
 import { AppContext, observeQuery } from '@neotracker/shared-web-next';
@@ -54,7 +54,7 @@ export const createAppContext = ({
     refCount(),
   );
 
-  const provider = new NEOONEProvider([{ network, rpcURL: options.rpcURL }]);
+  const provider = new NEOProvider([{ network, rpcURL: options.rpcURL }]);
 
   const storage = localforage.createInstance({
     name: 'neotracker',

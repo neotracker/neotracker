@@ -1,0 +1,13 @@
+{
+  "type": "scrape",
+  "port": 1340,
+  "network": "priv",
+  "nodeRpcUrl": "http://localhost:10332/rpc",
+  "ci": false,
+  "prod": false,
+  "resetDB": false,
+  "db": {
+    "client": "pg",
+    "connection": "postgresql://localhost:5432/neotracker_priv"
+  }
+}

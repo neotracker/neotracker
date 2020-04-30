@@ -5,7 +5,7 @@ import type {
   Client,
   LocalKeyStore,
   LocalUserAccountProvider,
-  NEOONEProvider,
+  NEOProvider,
 } from '@neo-one/client-core';
 import type { Observable } from 'rxjs';
 
@@ -40,8 +40,8 @@ export type AppContext = {|
   nonce: ?string,
   options$: Observable<AppOptions>,
   client: Client<{
-    localStorage: LocalUserAccountProvider<LocalKeyStore, NEOONEProvider>,
-    memory: LocalUserAccountProvider<LocalKeyStore, NEOONEProvider>,
+    localStorage: LocalUserAccountProvider<LocalKeyStore, NEOProvider>,
+    memory: LocalUserAccountProvider<LocalKeyStore, NEOProvider>,
   }>,
   network: NetworkType,
   userAgent: $FlowFixMe,

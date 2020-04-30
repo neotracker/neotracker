@@ -3,7 +3,7 @@ import {
   Client,
   ConfirmedTransaction,
   Contract,
-  NEOONEDataProvider,
+  NEODataProvider,
   nep5,
   RawAction,
   ReadClient,
@@ -74,7 +74,7 @@ export interface Context {
   readonly nep5Contracts: { readonly [K in string]?: nep5.NEP5SmartContract };
   readonly chunkSize: number;
   readonly processedIndexPubSub: PubSub<{ readonly index: number }>;
-  readonly client: ReadClient<NEOONEDataProvider>;
+  readonly client: ReadClient<NEODataProvider>;
   readonly fullClient: Client;
   readonly migrationHandler: MigrationHandler;
   readonly blacklistNEP5Hashes: Set<string>;

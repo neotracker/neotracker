@@ -21,10 +21,13 @@ function calculateTransactionData({
   readonly claims: ReadonlyArray<TransactionInputOutputModel>;
   readonly inputs: ReadonlyArray<TransactionInputOutputModel>;
 }): TransactionData {
-  const transactionID = transaction.receipt.globalIndex.toString();
+  const transactionID = `${blockIndex * 500 + transactionIndex}`;
   const transactionHash = transaction.hash;
   const actionDatas =
-    transaction.type === 'InvocationTransaction' && transaction.invocationData.result.state === 'HALT'
+    transaction.type === 'InvocationTransaction' &&
+    // tslint:disable-next-line strict-type-predicates
+    transaction.invocationData !== undefined &&
+    transaction.invocationData.result.state === 'HALT'
       ? transaction.invocationData.actions.map((action) =>
           getActionDataForClient({
             context,

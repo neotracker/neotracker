@@ -306,7 +306,7 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
           context.db,
           context.makeQueryContext(),
           chunk.map(({ transaction, transactionIndex }) => ({
-            id: transaction.receipt.globalIndex.toString(),
+            id: `${blockIndex * 500 + transactionIndex}`,
             hash: transaction.hash,
             type: transaction.type,
             size: transaction.size,

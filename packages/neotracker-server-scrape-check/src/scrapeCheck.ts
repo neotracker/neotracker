@@ -4,8 +4,8 @@ import {
   LocalKeyStore,
   LocalMemoryStore,
   LocalUserAccountProvider,
-  NEOONEDataProvider,
-  NEOONEProvider,
+  NEODataProvider,
+  NEOProvider,
   nep5,
   NetworkType,
   ReadClient,
@@ -93,7 +93,7 @@ const getSystemCoinBalance = async ({
 }: {
   readonly address: string;
   readonly asset: string;
-  readonly client: ReadClient<NEOONEDataProvider>;
+  readonly client: ReadClient<NEODataProvider>;
 }): Promise<BigNumber | undefined> => {
   const account = await client.getAccount(address);
 
@@ -116,7 +116,7 @@ const getCoinBalance = async ({
   smartContracts,
 }: {
   readonly coinModel: CoinModel;
-  readonly client: ReadClient<NEOONEDataProvider>;
+  readonly client: ReadClient<NEODataProvider>;
   readonly smartContracts: { readonly [asset: string]: nep5.NEP5SmartContract };
 }): Promise<BigNumber | undefined> => {
   if ((smartContracts[coinModel.asset_id] as nep5.NEP5SmartContract | undefined) !== undefined) {
@@ -145,7 +145,7 @@ const getNodeBalances = async ({
   smartContracts,
 }: {
   readonly coins: ReadonlyArray<CoinModel>;
-  readonly client: ReadClient<NEOONEDataProvider>;
+  readonly client: ReadClient<NEODataProvider>;
   readonly smartContracts: { readonly [asset: string]: nep5.NEP5SmartContract };
 }): Promise<ReadonlyArray<CoinAndBalance>> => {
   const nodeBalances = await Promise.all(
@@ -185,7 +185,7 @@ const logCoinMismatch = async ({
   secondTry,
 }: {
   readonly coinModel: CoinModel;
-  readonly client: ReadClient<NEOONEDataProvider>;
+  readonly client: ReadClient<NEODataProvider>;
   readonly smartContracts: { readonly [asset: string]: nep5.NEP5SmartContract };
   readonly db: Knex;
   readonly secondTry: boolean;
@@ -235,7 +235,7 @@ const checkBlockHeightMismatch = async ({
   maxBlockOffset,
   db,
 }: {
-  readonly client: ReadClient<NEOONEDataProvider>;
+  readonly client: ReadClient<NEODataProvider>;
   readonly maxBlockOffset: number;
   readonly db: Knex;
 }): Promise<boolean> => {
@@ -254,7 +254,7 @@ const checkCoins = async ({
   offset = 0,
 }: {
   readonly db: Knex;
-  readonly client: ReadClient<NEOONEDataProvider>;
+  readonly client: ReadClient<NEODataProvider>;
   readonly offset?: number;
   readonly options: Options;
   readonly smartContracts: { readonly [asset: string]: nep5.NEP5SmartContract };
@@ -298,7 +298,7 @@ export const scrapeCheck = async ({
   readonly environment: Environment;
   readonly options: Options;
 }): Promise<void> => {
-  const provider = new NEOONEDataProvider({
+  const provider = new NEODataProvider({
     network: environment.network,
     rpcURL: options.rpcURL,
   });
@@ -306,7 +306,7 @@ export const scrapeCheck = async ({
   const clientFull = new Client({
     memory: new LocalUserAccountProvider({
       keystore: new LocalKeyStore(new LocalMemoryStore()),
-      provider: new NEOONEProvider([provider]),
+      provider: new NEOProvider([provider]),
     }),
   });
 

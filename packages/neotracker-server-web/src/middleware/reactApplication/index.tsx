@@ -1,12 +1,6 @@
 import createGenerateClassName from '@material-ui/core/styles/createGenerateClassName';
 import { NetworkType } from '@neo-one/client-common';
-import {
-  Client,
-  LocalKeyStore,
-  LocalMemoryStore,
-  LocalUserAccountProvider,
-  NEOONEProvider,
-} from '@neo-one/client-core';
+import { Client, LocalKeyStore, LocalMemoryStore, LocalUserAccountProvider, NEOProvider } from '@neo-one/client-core';
 import { RootLoader } from '@neotracker/server-db';
 import { makeRelayEnvironment, QueryMap, RelaySSRQueryCache, schema } from '@neotracker/server-graphql';
 import { CodedError, resolveRootPath } from '@neotracker/server-utils';
@@ -43,14 +37,14 @@ import { makeServerHTML } from './makeServerHTML';
 
 const provider = new LocalUserAccountProvider({
   keystore: new LocalKeyStore(new LocalMemoryStore()),
-  provider: new NEOONEProvider(),
+  provider: new NEOProvider(),
 });
 
 const client = new Client({
   memory: provider,
   localStorage: new LocalUserAccountProvider({
     keystore: new LocalKeyStore(new LocalMemoryStore()),
-    provider: new NEOONEProvider(),
+    provider: new NEOProvider(),
   }),
 });
 

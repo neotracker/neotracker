@@ -20,7 +20,7 @@ export function getInputOutputResultForClient({
   // tslint:disable-next-line no-any
   readonly actionDatas: ReadonlyArray<ActionData<any>>;
 }): InputOutputResult {
-  const transactionID = transaction.receipt.globalIndex.toString();
+  const transactionID = `${transaction.receipt.blockIndex * 500 + transaction.receipt.transactionIndex}`;
   const transactionHash = transaction.hash;
   const addressData = {
     startTransactionID: transactionID,

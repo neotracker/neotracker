@@ -1,10 +1,4 @@
-import {
-  Client,
-  LocalKeyStore,
-  LocalMemoryStore,
-  LocalUserAccountProvider,
-  NEOONEProvider,
-} from '@neo-one/client-core';
+import { Client, LocalKeyStore, LocalMemoryStore, LocalUserAccountProvider, NEOProvider } from '@neo-one/client-core';
 import { SchemaLink } from '@neotracker/server-graphql';
 import { CodedError, resolveRootPath } from '@neotracker/server-utils';
 import { QueryDeduplicator } from '@neotracker/shared-graphql';
@@ -36,14 +30,14 @@ const getStats = (statsPath: string) => JSON.parse(fs.readFileSync(resolveRootPa
 
 const provider = new LocalUserAccountProvider({
   keystore: new LocalKeyStore(new LocalMemoryStore()),
-  provider: new NEOONEProvider(),
+  provider: new NEOProvider(),
 });
 
 const client = new Client({
   memory: provider,
   localStorage: new LocalUserAccountProvider({
     keystore: new LocalKeyStore(new LocalMemoryStore()),
-    provider: new NEOONEProvider(),
+    provider: new NEOProvider(),
   }),
 });
 

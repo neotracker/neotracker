@@ -28,7 +28,7 @@ const getAsset = (transaction: ConfirmedTransaction, blockTime: number): Partial
   if (asset !== undefined) {
     return {
       id: transaction.hash,
-      transaction_id: transaction.receipt.globalIndex.toString(),
+      transaction_id: `${transaction.receipt.blockIndex * 500 + transaction.receipt.transactionIndex}`,
       transaction_hash: transaction.hash,
       type: asset.type,
       name_raw: JSON.stringify(asset.name),
@@ -92,7 +92,7 @@ const getContractAndAsset = async ({
     author: contract.author,
     email: contract.email,
     description: contract.description,
-    transaction_id: transaction.receipt.globalIndex.toString(),
+    transaction_id: `${blockIndex * 500 + transaction.receipt.transactionIndex}`,
     transaction_hash: transaction.hash,
     block_time: blockTime,
     block_id: blockIndex,
@@ -119,7 +119,7 @@ const getContractAndAsset = async ({
 
       asset = {
         id: contractModel.id,
-        transaction_id: transaction.receipt.globalIndex.toString(),
+        transaction_id: `${blockIndex * 500 + transaction.receipt.transactionIndex}`,
         transaction_hash: transaction.hash,
         type: 'NEP5',
         name_raw: JSON.stringify(name),
