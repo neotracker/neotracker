@@ -40,6 +40,7 @@ import NewWallet from './pages/NewWallet';
 import OpenWallet from './pages/OpenWallet';
 import WalletFAQ from './pages/WalletFAQ';
 import Ecosystem from './pages/Ecosystem';
+import FAQ from './pages/FAQ';
 
 import AppShell from './AppShell';
 import type { AppContext, AppOptions } from './AppContext';
@@ -172,6 +173,12 @@ export const routeConfigs = [
     exact: true,
     path: routes.ECOSYSTEM,
     render: renderComponent(Ecosystem),
+    component: Ecosystem,
+  },
+  {
+    exact: true,
+    path: routes.GENERAL_FAQ,
+    render: renderComponent(FAQ),
     component: Ecosystem,
   },
   {

@@ -112,3 +112,7 @@ export const makeSearch = (value: string = SEARCH_VALUE_PARAM) =>
 // Ecosystem
 export const ECOSYSTEM = '/ecosystem';
 export const isEcosystem = (path: string) => path.startsWith('/ecosystem');
+
+// General FAQ
+export const GENERAL_FAQ = '/faq';
+export const isGeneralFAQ = (path: string) => path.startsWith('/faq');
