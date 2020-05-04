@@ -19,7 +19,7 @@ if (outputPath === undefined || jsonOutputPath === undefined) {
   });
 
   process.exit(1);
-  // For Flow
+  // @ts-ignore For Flow
   throw new Error('Exited');
 }
 

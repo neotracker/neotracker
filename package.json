@@ -22,7 +22,7 @@
     "@babel/preset-env": "7.6.3",
     "@babel/preset-react": "7.6.3",
     "@cypress/webpack-preprocessor": "4.1.0",
-    "@neo-one/cli": "^2.3.0",
+    "@neo-one/cli": "^2.5.0",
     "@size-limit/preset-app": "^3.0.0",
     "@size-limit/webpack": "^3.0.0",
     "@types/app-root-dir": "0.1.0",
@@ -141,7 +141,7 @@
     "tslint-microsoft-contrib": "6.2.0",
     "tslint-react": "4.1.0",
     "tslint-sonarts": "1.9.0",
-    "typescript": "3.6.4",
+    "typescript": "3.8.3",
     "typescript-styled-plugin": "0.15.0"
   },
   "resolutions": {
@@ -205,5 +205,6 @@
       "post-merge": "yarn run ts-node ./scripts/hooks/post-merge.ts",
       "post-rewrite": "yarn run ts-node ./scripts/hooks/post-rewrite.ts"
     }
-  }
+  },
+  "dependencies": {}
 }
