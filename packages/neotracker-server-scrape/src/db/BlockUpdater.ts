@@ -47,7 +47,7 @@ export class BlockUpdater extends DBUpdater<Block, BlockModel> {
     const [height, prevBlockData] = await Promise.all([
       getCurrentHeight(context),
       getPreviousBlockData(context, block.index),
-    ]);
+    ] as const);
     if (block.index === height + 1) {
       if (prevBlockData === undefined || block.previousBlockHash === prevBlockData.previous_block_hash) {
         const systemFee = block.transactions.reduce(
