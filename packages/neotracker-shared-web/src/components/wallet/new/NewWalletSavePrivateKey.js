@@ -26,7 +26,7 @@ const styles = (theme: Theme) => ({
   },
   [theme.breakpoints.up('sm')]: {
     print: {
-      paddingTop: theme.spacing.unit * 2,
+      paddingTop: theme.spacing.unit,
     },
   },
   print: {},
