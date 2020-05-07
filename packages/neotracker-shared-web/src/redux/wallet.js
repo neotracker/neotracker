@@ -18,6 +18,7 @@ export type State = {
         lang: string,
       }>,
     },
+    networkFee?: BigNumber,
   },
 };
 
