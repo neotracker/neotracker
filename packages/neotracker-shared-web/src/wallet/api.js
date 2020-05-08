@@ -318,10 +318,13 @@ export const validateAmount = (
       precision: number,
     },
   },
+  minimumAmount?: number,
 ): ?string => {
   let amountNumber;
+  let minimumAmountNumber;
   try {
     amountNumber = new BigNumber(amount);
+    minimumAmountNumber = new BigNumber(minimumAmount);
   } catch (error) {
     // ignore errors
   }
@@ -343,7 +346,11 @@ export const validateAmount = (
   }
 
   if (amountNumber.isNegative() || amountNumber.isZero()) {
-    return 'Amount must be positive';
+    return 'Amount must be positive.';
+  }
+
+  if (minimumAmount && amountNumber.lt(minimumAmountNumber)) {
+    return `Amount must be at least ${minimumAmountNumber.toString()}.`;
   }
 
   return null;
@@ -356,6 +363,7 @@ export const doSendAsset = async ({
   amount,
   assetType,
   assetHash: assetHashIn,
+  networkFee,
 }: {|
   appContext: AppContext,
   account: UserAccountID,
@@ -363,10 +371,14 @@ export const doSendAsset = async ({
   amount: BigNumber,
   assetType: AssetType,
   assetHash: string,
+  networkFee?: BigNumber,
 |}) => {
   const asset = add0x(assetHashIn);
   const { client, network } = appContext;
-  const transactionOptions = { from: account };
+  const transactionOptions = {
+    from: account,
+    networkFee: BigNumber.isBigNumber(networkFee) ? networkFee : undefined,
+  };
 
   if (assetType === 'NEP5') {
     const networks = {

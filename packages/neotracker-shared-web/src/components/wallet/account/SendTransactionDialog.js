@@ -151,6 +151,23 @@ function SendTransactionDialog({
         />
       </Typography>
     );
+    const feeText = (
+      <Typography>
+        {/* eslint-disable-next-line react/jsx-curly-brace-presence */}
+        {'with a '}
+        <CoinValue
+          className={classes.inline}
+          variant="body2"
+          component="span"
+          value={confirmTransaction.networkFee}
+        />{' '}
+        <Typography className={classes.inline} variant="body2" component="span">
+          GAS
+        </Typography>
+        {/* eslint-disable-next-line react/jsx-curly-brace-presence */}
+        {' network fee attached. '}
+      </Typography>
+    );
 
     if (confirmed && hash != null) {
       content = (
@@ -199,6 +216,7 @@ function SendTransactionDialog({
       content = (
         <div className={classes.content}>
           {makeText('You are about to send ')}
+          {confirmTransaction.networkFee ? feeText : null}
           <Typography
             className={classes.confirmText}
             variant="title"
@@ -293,6 +311,9 @@ const enhance: HOC<*, *> = compose(
           amount: new BigNumber(confirmTransaction.amount),
           assetType: confirmTransaction.asset.type,
           assetHash: getID(confirmTransaction.asset.id),
+          networkFee: confirmTransaction.networkFee
+            ? new BigNumber(confirmTransaction.networkFee)
+            : undefined,
         })
         .then((hash) => {
           setState((prevState) => ({

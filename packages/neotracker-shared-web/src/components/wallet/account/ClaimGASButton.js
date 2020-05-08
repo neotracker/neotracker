@@ -144,7 +144,7 @@ const enhance: HOC<*, *> = compose(
               address: account.id.address,
               error:
                 'Claiming all GAS failed: ' +
-                `${sanitizeError(error).clientMessage}. ` +
+                `${sanitizeError(error).clientMessage} ` +
                 'Please try again or refresh the page.',
             }),
           );

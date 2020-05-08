@@ -22,3 +22,5 @@ export const GAS_COIN_ASSET = {
   name: [{ lang: 'zh-CN', name: '小蚁币' }, { lang: 'en', name: 'AntCoin' }],
   symbol: 'GAS',
 };
+
+export const MINIMUM_NETWORK_FEE = 0.001;

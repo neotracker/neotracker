@@ -9,3 +9,4 @@ export { default as getPagingVariables } from './getPagingVariables';
 export { default as observeQuery } from './observeQuery';
 export { default as mapAppOptions } from './mapAppOptions';
 export { default as validatePassword } from './validatePassword';
+export { default as getAverage } from './getAverage';

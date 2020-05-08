@@ -1,5 +1,6 @@
 /* @flow */
 import * as React from 'react';
+import { MINIMUM_NETWORK_FEE } from '@neotracker/shared-utils';
 
 import classNames from 'classnames';
 import { type HOC, compose, pure } from 'recompose';
@@ -30,6 +31,25 @@ explorer, to fetch data like the transaction history or the amount of GAS
 available to claim. Note that **none** of your personal data is ever sent to
 NEO Tracker. Specifically, your Private Keys and encrypted Keystore files never
 leave your local computer.
+
+## My transfer didn't go through. What happened?
+If the network is busy it's possible that your transaction is not making into the
+next block. Each block has a limit on the number of transactions it can hold, so
+if the network is busy then there may be transactions that don't get picked
+up for a while. To get around this you can add a "network fee" to your transaction
+which will incentivize the block "miners" to include your transaction in the next block.
+
+## How do I add a transaction fee (AKA network fee) to my transfers?
+To make a transfer you must unlock your wallet. Once you unlock your wallet you
+will see the input for "Optional Network Fee". If you would like to add a network
+fee to your transfer you can enter the fee amount here. This fee will come from
+your wallet's GAS balance and will be paid to the block miner for including your
+transaction in their block. The minimum network fee allowed is ${MINIMUM_NETWORK_FEE}
+GAS. Adding a transaction fee is completely optional and is usually unnecessary.
+But adding a transaction fee during high traffic times can result in a faster transaction.
+Our recommended fee is the average network fee of the last 30 transactions on the blockchain,
+excluding Miner transactions. If the average is below the minimum network fee it then
+the recommendation will be 0.
 
 ## How secure is it?
 NEO Tracker **never** sends your Private Keys or encryped Keystore files
