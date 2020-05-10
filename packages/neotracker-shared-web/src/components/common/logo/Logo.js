@@ -37,7 +37,7 @@ function Logo({ width, height, white, className }: Props): React.Element<*> {
     >
       <defs>{style}</defs>
       <g>
-        <title>Layer 1</title>
+        <title>NEO Tracker Logo</title>
         <g stroke="null" id="Layer_2">
           <g stroke="null" id="svg_5">
             <polygon
