@@ -33,10 +33,13 @@ NEO Tracker. Specifically, your Private Keys and encrypted Keystore files never
 leave your local computer.
 
 ## My transfer didn't go through. What happened?
-If the network is busy it's possible that your transaction is not making into the
-next block. Each block has a limit on the number of transactions it can hold, so
-if the network is busy then there may be transactions that don't get picked
-up for a while. To get around this you can add a "network fee" to your transaction
+There are several possibilities for why a transaction didn't work. First, it could be
+that the transaction was sent to a Neo "node" that has stalled. If that's the case
+you just need to wait a minute and try again. Second, it could be that the transaction
+was too large (too many inputs and outputs). If that's the case you may need to add
+a base network fee of 0.001 GAS plus 0.00001 GAS per byte of the transaction. Third,
+it could be that the network is busy and your transaction is not making into the
+next block. If that's the case then you can add a network fee to your transaction
 which will incentivize the block "miners" to include your transaction in the next block.
 
 ## How do I add a transaction fee (AKA network fee) to my transfers?
@@ -46,7 +49,6 @@ fee to your transfer you can enter the fee amount here. This fee will come from
 your wallet's GAS balance and will be paid to the block miner for including your
 transaction in their block. The minimum network fee allowed is ${MINIMUM_NETWORK_FEE}
 GAS. Adding a transaction fee is completely optional and is usually unnecessary.
-But adding a transaction fee during high traffic times can result in a faster transaction.
 Our recommended fee is the average network fee of the last 30 transactions on the blockchain,
 excluding Miner transactions. If the average is below the minimum network fee it then
 the recommendation will be 0.
