@@ -20,4 +20,4 @@ export interface AppOptions {
   readonly bsaEnabled?: boolean;
   readonly debug: boolean;
 }
-export type NetworkType = 'main' | 'staging' | 'priv';
+export type NetworkType = 'main' | 'staging' | 'priv' | 'test';

@@ -57,6 +57,21 @@ export const getOptions = (
         prod,
       });
 
+    case 'test':
+      return common({
+        rpcURL: rpcURL ? rpcURL : testRPCURL,
+        url: 'https://testnet.neotracker.io',
+        domain: 'testnet.neotracker.io',
+        blacklistNEP5Hashes: [
+          'ee0515b2a3d24873e7e0d27426af9c99bbd3fdd2', // AnkarenkoToken
+          'cb8f7f52183225d86ef7af1274ec00834b9edfca', // Test World Token4
+        ],
+        db,
+        configuration,
+        googleAnalyticsTag,
+        prod,
+      });
+
     case 'staging':
       return common({
         rpcURL: rpcURL ? rpcURL : mainRPCURL,

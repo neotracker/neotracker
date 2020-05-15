@@ -20,6 +20,7 @@ const styles = () => ({
   nameValue: {
     flex: '1 1 auto',
     minWidth: 136,
+    maxWidth: 260,
   },
   authorValue: {
     flex: '1 10 auto',
