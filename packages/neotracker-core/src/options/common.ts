@@ -43,7 +43,7 @@ export const common = ({
     },
     subscribeProcessedNextIndex: { db },
     rateLimit: {
-      enabled: false,
+      enabled: true,
       config: {
         rate: 5 * 60, // Allow 5 requests per second
         duration: 60 * 1000, // 60 seconds
@@ -65,7 +65,7 @@ export const common = ({
       rpcURL,
     },
     toobusy: {
-      enabled: false,
+      enabled: true,
       userAgents,
       whitelistedUserAgents,
       maxLag: 70,
