@@ -1,0 +1,7 @@
+FROM node@sha256:f35820f56323a0ae30406651fdc2f0525f4719e187a5b7f2f35a1dcd77f2495f
+RUN mkdir -p neotracker-core
+COPY dist/neotracker-core/ neotracker-core/
+COPY yarn.lock neotracker-core/
+WORKDIR /neotracker-core
+RUN yarn install --production
+ENTRYPOINT ["/usr/local/bin/node", "bin/neotracker", "neotracker"]
