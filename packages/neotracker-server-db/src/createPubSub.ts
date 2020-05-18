@@ -88,21 +88,13 @@ const createPGPubSub = <T>({
     }
   };
 
-  const attemptClientEnd = (termClient: Client) =>
-    Promise.race([
-      new Promise<void>((resolve) => {
-        setTimeout(resolve, 5000);
-      }),
-      termClient.end(),
-    ]);
-
   const closeClient = async () => {
     const currentClient = client;
     client = createClient();
     connected = false;
     try {
       currentClient.removeAllListeners();
-      await attemptClientEnd(currentClient);
+      await currentClient.end();
     } catch (error) {
       serverDBLogger.error({ title: 'pg_pubsub_close_error', error: error.message });
     }
