@@ -93,7 +93,12 @@ export const common = ({
           manifestSrc: ["'self'"],
           mediaSrc: ["'self'"],
           objectSrc: ["'none'"],
-          scriptSrc: ["'self'", "'unsafe-eval'", 'https://www.googletagmanager.com'],
+          scriptSrc: [
+            "'self'",
+            "'unsafe-eval'",
+            'https://www.googletagmanager.com',
+            'https://www.google-analytics.com',
+          ],
           styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
           upgradeInsecureRequests: true,
           workerSrc: ["'self'"],
