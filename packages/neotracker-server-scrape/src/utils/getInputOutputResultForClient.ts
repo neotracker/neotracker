@@ -1,9 +1,9 @@
-import { ConfirmedTransaction } from '@neo-one/client-full';
 import { TransactionInputOutput as TransactionInputOutputModel } from '@neotracker/server-db';
 import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import { ActionData, InputOutputResult } from '../types';
 import { getActionDataInputOutputResult } from './getActionDataInputOutputResult';
+import { getTransactionId, ModifiedConfirmedTransaction } from './getTransactionId';
 import { EMPTY_INPUT_OUTPUT_RESULT, reduceInputOutputResults } from './reduceInputOutputResults';
 
 export function getInputOutputResultForClient({
@@ -13,14 +13,14 @@ export function getInputOutputResultForClient({
   claims,
   actionDatas,
 }: {
-  readonly transaction: ConfirmedTransaction;
+  readonly transaction: ModifiedConfirmedTransaction;
   readonly transactionIndex: number;
   readonly inputs: ReadonlyArray<TransactionInputOutputModel>;
   readonly claims: ReadonlyArray<TransactionInputOutputModel>;
   // tslint:disable-next-line no-any
   readonly actionDatas: ReadonlyArray<ActionData<any>>;
 }): InputOutputResult {
-  const transactionID = transaction.receipt.globalIndex.toString();
+  const transactionID = getTransactionId(transaction);
   const transactionHash = transaction.hash;
   const addressData = {
     startTransactionID: transactionID,

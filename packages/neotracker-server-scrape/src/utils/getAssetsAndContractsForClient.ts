@@ -1,4 +1,4 @@
-import { addressToScriptHash, ConfirmedTransaction, Contract, nep5, RegisterTransaction } from '@neo-one/client-full';
+import { addressToScriptHash, Contract, nep5, RegisterTransaction } from '@neo-one/client-full';
 import { createChild, serverLogger } from '@neotracker/logger';
 import {
   Asset as AssetModel,
@@ -10,11 +10,12 @@ import { utils } from '@neotracker/shared-utils';
 import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import { Context } from '../types';
+import { getTransactionId, ModifiedConfirmedTransaction } from './getTransactionId';
 import { strip0x } from './strip0x';
 
 const serverScrapeLogger = createChild(serverLogger, { component: 'scrape' });
 
-const getAsset = (transaction: ConfirmedTransaction, blockTime: number): Partial<AssetModel> | undefined => {
+const getAsset = (transaction: ModifiedConfirmedTransaction, blockTime: number): Partial<AssetModel> | undefined => {
   // tslint:disable-next-line deprecation
   let asset: RegisterTransaction['asset'] | undefined;
   if (transaction.type === 'RegisterTransaction') {
@@ -28,7 +29,7 @@ const getAsset = (transaction: ConfirmedTransaction, blockTime: number): Partial
   if (asset !== undefined) {
     return {
       id: transaction.hash,
-      transaction_id: transaction.receipt.globalIndex.toString(),
+      transaction_id: getTransactionId(transaction),
       transaction_hash: transaction.hash,
       type: asset.type,
       name_raw: JSON.stringify(asset.name),
@@ -70,7 +71,7 @@ const getContractAndAsset = async ({
   blockTime,
 }: {
   readonly context: Context;
-  readonly transaction: ConfirmedTransaction;
+  readonly transaction: ModifiedConfirmedTransaction;
   readonly contract: Contract;
   readonly blockIndex: number;
   readonly blockTime: number;
@@ -92,7 +93,7 @@ const getContractAndAsset = async ({
     author: contract.author,
     email: contract.email,
     description: contract.description,
-    transaction_id: transaction.receipt.globalIndex.toString(),
+    transaction_id: getTransactionId(transaction),
     transaction_hash: transaction.hash,
     block_time: blockTime,
     block_id: blockIndex,
@@ -119,7 +120,7 @@ const getContractAndAsset = async ({
 
       asset = {
         id: contractModel.id,
-        transaction_id: transaction.receipt.globalIndex.toString(),
+        transaction_id: getTransactionId(transaction),
         transaction_hash: transaction.hash,
         type: 'NEP5',
         name_raw: JSON.stringify(name),
@@ -152,7 +153,7 @@ const getContracts = async ({
   blockTime,
 }: {
   readonly context: Context;
-  readonly transaction: ConfirmedTransaction;
+  readonly transaction: ModifiedConfirmedTransaction;
   readonly blockIndex: number;
   readonly blockTime: number;
 }): Promise<{
@@ -192,7 +193,7 @@ export const getAssetsAndContractsForClient = async ({
 }: {
   readonly context: Context;
   readonly transactions: ReadonlyArray<{
-    readonly transaction: ConfirmedTransaction;
+    readonly transaction: ModifiedConfirmedTransaction;
     readonly transactionIndex: number;
   }>;
   readonly blockIndex: number;

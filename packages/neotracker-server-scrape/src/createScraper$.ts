@@ -3,8 +3,8 @@ import {
   LocalKeyStore,
   LocalMemoryStore,
   LocalUserAccountProvider,
-  NEOONEDataProvider,
-  NEOONEProvider,
+  NEODataProvider,
+  NEOProvider,
   nep5,
   NetworkType,
   ReadClient,
@@ -80,7 +80,7 @@ export const createScraper$ = ({
     map(
       (rpcURL) =>
         new ReadClient(
-          new NEOONEDataProvider({
+          new NEODataProvider({
             network: environment.network,
             rpcURL,
           }),
@@ -97,8 +97,8 @@ export const createScraper$ = ({
         new Client({
           memory: new LocalUserAccountProvider({
             keystore: new LocalKeyStore(new LocalMemoryStore()),
-            provider: new NEOONEProvider([
-              new NEOONEDataProvider({
+            provider: new NEOProvider([
+              new NEODataProvider({
                 network: environment.network,
                 rpcURL,
               }),

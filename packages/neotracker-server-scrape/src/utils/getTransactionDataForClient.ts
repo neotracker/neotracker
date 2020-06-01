@@ -5,6 +5,7 @@ import { Context, TransactionData } from '../types';
 import { getActionDataForClient } from './getActionDataForClient';
 import { getInputOutputResultForClient } from './getInputOutputResultForClient';
 import { getIssuedOutputs, getSubtype } from './getSubtype';
+import { getTransactionId, ModifiedConfirmedTransaction } from './getTransactionId';
 
 function calculateTransactionData({
   context,
@@ -15,16 +16,19 @@ function calculateTransactionData({
   inputs,
 }: {
   readonly context: Context;
-  readonly transaction: ConfirmedTransaction;
+  readonly transaction: ModifiedConfirmedTransaction;
   readonly transactionIndex: number;
   readonly blockIndex: number;
   readonly claims: ReadonlyArray<TransactionInputOutputModel>;
   readonly inputs: ReadonlyArray<TransactionInputOutputModel>;
 }): TransactionData {
-  const transactionID = transaction.receipt.globalIndex.toString();
+  const transactionID = getTransactionId(transaction);
   const transactionHash = transaction.hash;
   const actionDatas =
-    transaction.type === 'InvocationTransaction' && transaction.invocationData.result.state === 'HALT'
+    transaction.type === 'InvocationTransaction' &&
+    // tslint:disable-next-line: strict-type-predicates
+    transaction.invocationData !== undefined &&
+    transaction.invocationData.result.state === 'HALT'
       ? transaction.invocationData.actions.map((action) =>
           getActionDataForClient({
             context,

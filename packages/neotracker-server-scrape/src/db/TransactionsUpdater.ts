@@ -1,7 +1,8 @@
 import { Block } from '@neo-one/client-full';
 import { createChild, serverLogger } from '@neotracker/logger';
 import { Block as BlockModel, Transaction as TransactionModel } from '@neotracker/server-db';
-import { utils } from '@neotracker/shared-utils';
+import { labels, numbers, utils } from '@neotracker/shared-utils';
+import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import { Context, TransactionData } from '../types';
 import {
@@ -55,6 +56,7 @@ export interface TransactionsUpdaters {
 const serverScrapeLogger = createChild(serverLogger, { component: 'scrape' });
 
 export class TransactionsUpdater extends DBUpdater<TransactionsSave, TransactionsRevert> {
+  public mutableTransactionGlobalIndex: BigNumber;
   private readonly updaters: TransactionsUpdaters;
 
   public constructor(
@@ -77,13 +79,17 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
   ) {
     super();
     this.updaters = updaters;
+    this.mutableTransactionGlobalIndex = new BigNumber(0);
   }
 
   public async save(contextIn: Context, { block }: TransactionsSave): Promise<Context> {
     serverScrapeLogger.info({ title: 'neotracker_scrape_save_transactions' });
+    if (this.mutableTransactionGlobalIndex.eq(new BigNumber(0))) {
+      await this.initializeLastProcessedGlobalIndex(contextIn);
+    }
     const transactionsIn = [...block.transactions.entries()].map(([transactionIndex, transaction]) => ({
       transactionIndex,
-      transaction,
+      transaction: { ...transaction, manualGlobalIndex: this.incrementTransactionGlobalIndex() },
     }));
     const { assets, contracts, context } = await getAssetsAndContractsForClient({
       context: contextIn,
@@ -294,6 +300,39 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
     };
   }
 
+  public async initializeLastProcessedGlobalIndex(context: Context): Promise<void> {
+    const lastTransactions = await TransactionModel.query(context.db)
+      .context(context.makeQueryContext())
+      .orderBy('id', 'desc')
+      .limit(1);
+
+    if (lastTransactions.length === 0) {
+      serverScrapeLogger.error({
+        title: 'initialize_last_transaction_index',
+        message: 'No transactions found during initialization. Starting at globalIndex 0',
+      });
+
+      return;
+    }
+
+    const lastTransaction = lastTransactions[0];
+    const lastTransactionIndex = new BigNumber(lastTransaction.id);
+    serverScrapeLogger.info({
+      title: 'initialize_last_transaction_index',
+      [labels.LAST_TRANSFER_GLOBAL_INDEX]: lastTransactionIndex.toString(),
+      [labels.TRANSACTION_BLOCK]: lastTransaction.block_id,
+      [labels.TRANSACTION_HASH]: lastTransaction.hash,
+    });
+
+    this.mutableTransactionGlobalIndex = lastTransactionIndex;
+  }
+
+  private incrementTransactionGlobalIndex(): BigNumber {
+    this.mutableTransactionGlobalIndex = this.mutableTransactionGlobalIndex.plus(new BigNumber(1));
+
+    return this.mutableTransactionGlobalIndex;
+  }
+
   private async insertTransactions(
     context: Context,
     blockIndex: number,
@@ -305,8 +344,11 @@ export class TransactionsUpdater extends DBUpdater<TransactionsSave, Transaction
         await TransactionModel.insertAll(
           context.db,
           context.makeQueryContext(),
-          chunk.map(({ transaction, transactionIndex }) => ({
-            id: transaction.receipt.globalIndex.toString(),
+          chunk.map(({ transaction, transactionIndex, transactionID }) => ({
+            // this should probably be only ever transactionID
+            id: transaction.receipt.globalIndex.eq(numbers.INVALID_INDEX)
+              ? transactionID
+              : transaction.receipt.globalIndex.toString(),
             hash: transaction.hash,
             type: transaction.type,
             size: transaction.size,

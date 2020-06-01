@@ -1,0 +1,12 @@
+{
+  "type": "all",
+  "nodeRpcUrl": "http://localhost:10332",
+  "db": {
+    "client": "postgres",
+    "connection": {
+      "host": "localhost",
+      "port": 5432,
+      "database": "neotracker_main_neo_node"
+    }
+  }
+}

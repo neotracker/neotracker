@@ -13,6 +13,7 @@ import {
   RawInvocationResult,
 } from '@neo-one/client-full';
 import { utils } from '@neotracker/shared-utils';
+import BigNumber from 'bignumber.js';
 
 export const normalizeHash = (hash: string): string => {
   if (hash.startsWith('0x')) {
@@ -231,15 +232,32 @@ const normalizeAsset = (asset: Asset): Asset => ({
   frozen: asset.frozen,
 });
 
-const normalizeInvocationData = (data: RawInvocationData): RawInvocationData => ({
-  result: normalizeInvocationResult(data.result),
-  asset: data.asset === undefined ? data.asset : normalizeAsset(data.asset),
-  contracts: data.contracts.map(normalizeContract),
-  deletedContractAddresses: data.deletedContractAddresses,
-  migratedContractAddresses: data.migratedContractAddresses,
-  actions: data.actions.map(normalizeAction),
-  storageChanges: data.storageChanges,
-});
+const dummyInvocationData: RawInvocationData = {
+  contracts: [],
+  deletedContractAddresses: [],
+  migratedContractAddresses: [],
+  result: {
+    state: 'HALT',
+    stack: [],
+    gasConsumed: new BigNumber(0),
+    gasCost: new BigNumber(0),
+  },
+  actions: [],
+  storageChanges: [],
+};
+
+const normalizeInvocationData = (data?: RawInvocationData): RawInvocationData =>
+  !data
+    ? dummyInvocationData
+    : {
+        result: normalizeInvocationResult(data.result),
+        asset: data.asset === undefined ? data.asset : normalizeAsset(data.asset),
+        contracts: data.contracts.map(normalizeContract),
+        deletedContractAddresses: data.deletedContractAddresses,
+        migratedContractAddresses: data.migratedContractAddresses,
+        actions: data.actions.map(normalizeAction),
+        storageChanges: data.storageChanges,
+      };
 
 const normalizeTransaction = (transaction: ConfirmedTransaction): ConfirmedTransaction => {
   const transactionBase = {

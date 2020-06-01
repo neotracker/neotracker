@@ -51,7 +51,7 @@ export const labels = {
   DNS_SERVICE_RECORDS: 'dns.service.records',
   DNS_SERVICE_DELETE: 'dns.service.delete',
   DNS_NODE_RECORDS: 'dns.node.records',
-  // Postgre
+  // Postgres
   POSTGRES_BACKUPWAL_ISBEHIND: 'postgres.backup_wal.is_behind',
   POSTGRES_BACKUPWAL_VALUE: 'postgres.backup_wal.value',
   POSTGRES_BACKUPWAL_LSNOFFSET: 'postgres.backup_wal.lsn_offset',
@@ -78,6 +78,9 @@ export const labels = {
   CONTRACT_HASH: 'contract.hash',
   SCRAPE_REPAIR_NEP5_COINS: 'scrape.repair_nep5.coins',
   SCRAPE_REPAIR_NEP5_ASSET: 'scrape.repair_nep5.asset.hash',
+  LAST_TRANSFER_GLOBAL_INDEX: 'transfer.globalIndex.max',
+  TRANSACTION_BLOCK: 'transfer.block_id',
+  TRANSACTION_HASH: 'transfer.hash',
   // General
   QUEUE_SIZE: 'queue.size',
   OPTIONS: 'options',
