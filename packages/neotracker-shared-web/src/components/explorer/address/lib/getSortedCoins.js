@@ -8,19 +8,24 @@ import {
   GAS_ASSET_HASH,
   NEO_COIN_ASSET,
   GAS_COIN_ASSET,
+  UNKNOWN_COIN,
   // $FlowFixMe
 } from '@neotracker/shared-utils';
 
 import { getID } from '../../../../graphql/relay';
 
 export default (
-  coins: $ReadOnlyArray<{
+  coinsIn: $ReadOnlyArray<{
     +asset: {
       +id: string,
     },
     +value: string,
   }>,
 ) => {
+  const coins = coinsIn.map((coin) => ({
+    ...coin,
+    asset: coin.asset || UNKNOWN_COIN,
+  }));
   let result = _.partition(
     coins,
     (coin) => getID(coin.asset.id) === NEO_ASSET_HASH,

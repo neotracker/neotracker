@@ -22,7 +22,7 @@ export type AddressView_address = {|
     +edges: $ReadOnlyArray<{|
       +node: {|
         +value: string,
-        +asset: {|
+        +asset: ?{|
           +id: string,
           +symbol: string,
         |},

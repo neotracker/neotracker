@@ -93,13 +93,14 @@ possibility something unexpected happens that causes your funds to be lost.
 Please do not invest more than you are willing to lose, and please be careful.
 `;
 
-const RPXQuestion = `
-## An Address I want to see is seemingly loading forever. What's going on?
-We are aware of a bug in NEO Tracker that causes this error on addresses that have the
-RPX (Red Pulse Phoenix) token. This is an issue with NEO Tracker and not with the Neo blockchain, RPX token,
-or that Address. This is currently our top priority to fix and will be fixed soon.
-If you think something else is wrong or you are still concerned please reach out to us on
-[Twitter](https://twitter.com/neotrackerio) or [Facebook](https://www.facebook.com/neotracker.io/).
+const RPXToken = `
+## What token is represented by "N/A"?
+"N/A" typically means "not applicable", "not available", or "no answer".
+In the case of NEO Tracker this likely represents the old RPX (Red Pulse Phoenix) token, which
+was swapped for the PHX token in 2018. The RPX token no longer exists, but RPX token transactions
+still exist on the blockchain, which means that NEO Tracker still reads and stores those
+token transactions and token balances. So if you see "N/A" in your wallet or in transactions
+just know that it probably represents transactions and balances of the old RPX token.
 `;
 
 const GeneralFAQ = `
@@ -190,7 +191,7 @@ or Block index.
 `;
 
 const FAQ = `
-${RPXQuestion}
+${RPXToken}
 ${CoreWalletFAQ}
 ${GeneralFAQ}
 ${Disclaimer}

@@ -1,6 +1,7 @@
 /* @flow */
 import * as React from 'react';
 import type { Variant } from '@material-ui/core/Typography';
+import { UNKNOWN_COIN } from '@neotracker/shared-utils';
 
 import { type HOC, compose, pure } from 'recompose';
 
@@ -25,12 +26,13 @@ type Props = {|
   ...InternalProps,
 |};
 function AssetNameLinkBase({
-  asset,
+  asset: assetIn,
   variant: variantIn,
   component,
   className,
 }: Props): React.Element<*> {
   const variant = variantIn == null ? 'body1' : variantIn;
+  const asset = assetIn || UNKNOWN_COIN;
   return (
     <Link
       className={className}

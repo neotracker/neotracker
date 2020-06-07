@@ -101,7 +101,7 @@ export class Coin extends BlockchainModel<string> {
         },
       },
 
-      required: true,
+      required: false, // false for RPX token
       exposeGraphQL: true,
     },
   };

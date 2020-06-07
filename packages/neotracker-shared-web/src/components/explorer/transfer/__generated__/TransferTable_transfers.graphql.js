@@ -16,7 +16,7 @@ export type TransferTable_transfers = $ReadOnlyArray<{|
   +from_address_id: ?string,
   +to_address_id: ?string,
   +value: string,
-  +asset: {|
+  +asset: ?{|
     +$fragmentRefs: AssetNameLink_asset$ref
   |},
   +block_time: number,

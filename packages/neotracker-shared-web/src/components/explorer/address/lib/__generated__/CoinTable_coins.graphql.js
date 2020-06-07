@@ -12,7 +12,7 @@ import type { FragmentReference } from "relay-runtime";
 declare export opaque type CoinTable_coins$ref: FragmentReference;
 export type CoinTable_coins = $ReadOnlyArray<{|
   +value: string,
-  +asset: {|
+  +asset: ?{|
     +id: string,
     +symbol: string,
   |},
