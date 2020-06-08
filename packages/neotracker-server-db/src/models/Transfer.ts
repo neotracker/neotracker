@@ -146,7 +146,7 @@ export class Transfer extends BlockchainModel<string> {
       },
 
       exposeGraphQL: true,
-      required: true,
+      required: false, // false for RPX token
     },
 
     action: {

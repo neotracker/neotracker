@@ -12,7 +12,7 @@ import type { FragmentReference } from "relay-runtime";
 declare export opaque type Coin_coin$ref: FragmentReference;
 export type Coin_coin = {|
   +value: string,
-  +asset: {|
+  +asset: ?{|
     +id: string,
     +symbol: string,
   |},

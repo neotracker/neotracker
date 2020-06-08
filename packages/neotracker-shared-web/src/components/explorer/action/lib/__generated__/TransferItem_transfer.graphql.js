@@ -15,7 +15,7 @@ export type TransferItem_transfer = {|
   +from_address_id: ?string,
   +to_address_id: ?string,
   +value: string,
-  +asset: {|
+  +asset: ?{|
     +$fragmentRefs: AssetNameLink_asset$ref
   |},
   +$refType: TransferItem_transfer$ref,

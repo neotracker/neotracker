@@ -22,7 +22,7 @@ export type TransactionInvocationSummaryBody_transaction = {|
   +transfers: {|
     +edges: $ReadOnlyArray<{|
       +node: {|
-        +asset: {|
+        +asset: ?{|
           +$fragmentRefs: AssetNameLink_asset$ref
         |},
         +from_address_id: ?string,

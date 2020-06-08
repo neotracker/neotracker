@@ -15,7 +15,7 @@ export type SendTransaction_address = {|
     +edges: $ReadOnlyArray<{|
       +node: {|
         +value: string,
-        +asset: {|
+        +asset: ?{|
           +type: string,
           +id: string,
           +precision: number,

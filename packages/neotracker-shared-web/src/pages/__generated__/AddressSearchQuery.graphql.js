@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 19eba039c46d8cbafd5e030d2c4041fb
+ * @relayHash 82a8dc56316e86989bed721fd661ce38
  */
 
 /* eslint-disable */
@@ -24,7 +24,7 @@ export type AddressSearchQueryResponse = {|
           +edges: $ReadOnlyArray<{|
             +node: {|
               +value: string,
-              +asset: {|
+              +asset: ?{|
                 +id: string,
                 +symbol: string,
               |},

@@ -236,7 +236,7 @@ type Coin implements Node {
   asset_id: String!
   value: String!
   address: Address!
-  asset: Asset!
+  asset: Asset
 }
 
 type Contract implements Node {
@@ -542,7 +542,7 @@ type Transfer implements Node {
   to_address_id: String
   block_time: Int!
   transaction: Transaction
-  asset: Asset!
+  asset: Asset
   action: Action!
   contract: Contract!
   from_address: Address
