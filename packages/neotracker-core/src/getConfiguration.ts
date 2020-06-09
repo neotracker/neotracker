@@ -87,6 +87,8 @@ export const defaultNTConfiguration: NTConfiguration = {
   apiKeys: {
     coinMarketCap: '',
     googleAnalyticsTag: '',
+    moonpayPrivate: '',
+    moonpayPublic: '',
   },
 };
 
@@ -149,7 +151,7 @@ export const getCoreConfiguration = () => {
     apiKeys,
     prod,
   } = getConfiguration();
-  const { googleAnalyticsTag } = apiKeys;
+  const { googleAnalyticsTag, moonpayPublic: moonpayPublicApiKey } = apiKeys;
 
   const options = getOptions(network, {
     rpcURL,
@@ -158,6 +160,7 @@ export const getCoreConfiguration = () => {
     configuration,
     prod,
     googleAnalyticsTag,
+    moonpayPublicApiKey,
   });
 
   const options$ = new BehaviorSubject(options);

@@ -37,7 +37,8 @@ By default, `yarn develop` sets up a [SQLite](https://www.sqlite.org/index.html)
 
 If you'd like to use [Postgres 10.3](https://www.postgresql.org/download/), here are some instructions for getting started.
 
-We will use the `$PGDATA` environment variable in the following examples. You may set this variable with `export PGDATA=<directory to store database>` if it's not set. For example, on Mac you can use the default data directory with `export PGDATA=/usr/local/var/postgres`
+We will use the `$PGDATA` environment variable in the following examples. You may set this variable with `export PGDATA=<directory to store database>` if it's not set. For example, on macOS you can use the default data directory with `export PGDATA=/usr/local/var/postgres`.
+To make this a "permanent" environment variable, for use in other sessions, you'll want to add `export PGDATA="/usr/local/var/postgres"` to your `.bashrc` or `.zshrc` file(s).
 
 - `initdb $PGDATA` (initialize the data directory)
 - `pg_ctl -D $PGDATA start` (start postgres)
