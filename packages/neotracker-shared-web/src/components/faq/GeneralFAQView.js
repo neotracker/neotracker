@@ -139,12 +139,11 @@ happened and try to remedy the situation.
 `;
 
 const RPXToken = `
-## What token is represented by "N/A"?
-"N/A" typically means "not applicable", "not available", or "no answer".
+## Why do I see "Unknown" as a token?
 In the case of NEO Tracker this likely represents the old RPX (Red Pulse Phoenix) token, which
 was swapped for the PHX token in 2018. The RPX token no longer exists, but RPX token transactions
 still exist on the blockchain, which means that NEO Tracker still reads and stores those
-token transactions and token balances. So if you see "N/A" in your wallet or in transactions
+token transactions and token balances. So if you see "Unknown" in your wallet or in transactions
 just know that it probably represents transactions and balances of the old RPX token.
 `;
 

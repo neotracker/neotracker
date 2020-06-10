@@ -24,4 +24,4 @@ export const GAS_COIN_ASSET = {
 };
 
 export const MINIMUM_NETWORK_FEE = 0.001;
-export const UNKNOWN_COIN = { id: 'N/A', symbol: 'N/A' };
+export const UNKNOWN_COIN = { id: 'Unknown', symbol: 'Unknown' };
