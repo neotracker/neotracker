@@ -2,6 +2,7 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 import Helmet from 'react-helmet';
 import * as React from 'react';
+import { tryParseInt } from '@neotracker/shared-utils';
 
 import { compose, pure } from 'recompose';
 import { graphql } from 'react-relay';
@@ -59,7 +60,7 @@ function Block({ props, error, retry, className }: Props): React.Element<any> {
 
 const mapPropsToVariables = ({ match }) => ({
   hash: match.params.blockHash,
-  index: Number(match.params.blockIndex),
+  index: tryParseInt({ value: match.params.blockIndex, default: null }),
 });
 export default (queryRenderer(
   graphql`
