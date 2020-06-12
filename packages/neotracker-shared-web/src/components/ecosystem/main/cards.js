@@ -120,14 +120,6 @@ const cards = [
     cover: false,
   },
   {
-    title: 'For The Win',
-    description:
-      'FTW is a decentralized gambling platform on the Neo blockchain. FTW aims to rectify the shortcomings in the traditional lottery system in which the participation is limited and most funds are used in maintaining administrative costs.',
-    link: 'https://www.ftwcoin.io/',
-    image: 'ftw.png',
-    cover: true,
-  },
-  {
     title: 'nOS',
     description:
       'nOS is an all-in-one platform that introduces new business models powered by blockchain technologies. With nOS you can access the crypto-powered web, discover or create apps using blockchains and cryptocurrencies.',
