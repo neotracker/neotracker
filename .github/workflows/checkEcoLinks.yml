@@ -1,0 +1,21 @@
+name: Check Ecosystem Links
+on:
+  push:
+    branches:
+      - master
+    releases:
+      - [created]
+  pull_request:
+    branches:
+      - master
+jobs:
+  checkEcoLinks:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@aabbfeb2ce60b5bd82389903509092c4648a9713
+      - name: Use Node
+        uses: actions/setup-node@44c9c187283081e4e88b54b0efad9e9d468165a4
+        with:
+          node-version: '10.16'
+      - run: yarn install
+      - run: yarn run test:ecosystem-links
