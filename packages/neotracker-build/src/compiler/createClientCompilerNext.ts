@@ -14,7 +14,6 @@ import { ReactLoadablePlugin } from 'react-loadable/webpack';
 import webpack from 'webpack';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import { configuration } from '../configuration';
-import { createAlias } from './createAlias';
 import { createDefinePlugin } from './createDefinePlugin';
 import { createModuleMapperPlugins } from './createModuleMapperPlugins';
 import { createRules } from './createRules';
@@ -97,7 +96,6 @@ export const createClientCompilerNext = ({
       mainFields: ['browser', 'module', 'main'],
       aliasFields: ['browser'],
       extensions: ['.wasm', '.mjs', '.js', '.json', '.mjsx', '.jsx', '.css', '.ts', '.tsx'],
-      alias: createAlias(),
     },
     node: {
       fs: 'empty',

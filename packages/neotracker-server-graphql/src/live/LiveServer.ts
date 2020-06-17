@@ -1,5 +1,4 @@
-import { AggregationType, globalStats, MeasureUnit } from '@neo-one/client-switch';
-import { Labels, labelsToTags } from '@neo-one/utils';
+import { Labels } from '@neo-one/utils';
 import { createChild, serverLogger } from '@neotracker/logger';
 import { RootLoader } from '@neotracker/server-db';
 import { getUA } from '@neotracker/server-utils';
@@ -26,40 +25,6 @@ interface SocketConfig {
   readonly closeSocket: () => void;
   readonly restart: () => Promise<void>;
 }
-
-const graphqlQuerylabelNames: ReadonlyArray<string> = [utilLabels.GRAPHQL_QUERY];
-
-const requestSec = globalStats.createMeasureInt64('requests/duration', MeasureUnit.SEC);
-const requestErrors = globalStats.createMeasureInt64('request/failures', MeasureUnit.UNIT);
-const wsMeasure = globalStats.createMeasureInt64('ws_server/sockets', MeasureUnit.UNIT);
-
-const GRAPHQL_FIRST_RESPONSE_DURATION_SECONDS = globalStats.createView(
-  'graphql_server_first_response_duration_seconds',
-  requestSec,
-  AggregationType.DISTRIBUTION,
-  labelsToTags(graphqlQuerylabelNames),
-  'distribution of the seconds to first graphql response',
-  [1, 2, 5, 7.5, 10, 12.5, 15, 17.5, 20],
-);
-globalStats.registerView(GRAPHQL_FIRST_RESPONSE_DURATION_SECONDS);
-
-const GRAPHQL_FIRST_RESPONSE_FAILURES_TOTAL = globalStats.createView(
-  'graphql_server_first_response_failures_total',
-  requestErrors,
-  AggregationType.COUNT,
-  labelsToTags(graphqlQuerylabelNames),
-  'total gql query failures',
-);
-globalStats.registerView(GRAPHQL_FIRST_RESPONSE_FAILURES_TOTAL);
-
-const WEBSOCKET_SERVER_SOCKETS = globalStats.createView(
-  'websocket_server_sockets',
-  wsMeasure,
-  AggregationType.COUNT,
-  [],
-  'total websocket server sockets open',
-);
-globalStats.registerView(WEBSOCKET_SERVER_SOCKETS);
 
 const serverGQLLogger = createChild(serverLogger, { component: 'graphql' });
 
@@ -294,17 +259,10 @@ export class LiveServer {
       if (this.mutableSockets[socketID] !== undefined) {
         // tslint:disable-next-line no-dynamic-delete
         delete this.mutableSockets[socketID];
-        globalStats.record([
-          {
-            measure: wsMeasure,
-            value: -1,
-          },
-        ]);
       }
     };
 
     const handleStart = async (message: ClientStartMessage) => {
-      const startTime = Date.now();
       const handleStartLabels = {
         ...handleConnectionLabels,
         title: 'graphql_server_first_response',
@@ -323,12 +281,6 @@ export class LiveServer {
         query = await this.queryMap.get(message.query.id);
       } catch (error) {
         serverGQLLogger.error({ ...handleStartLabels, title: 'graphql_get_query', error: error.message });
-        globalStats.record([
-          {
-            measure: requestErrors,
-            value: 1,
-          },
-        ]);
         sendMessage({
           type: 'GQL_QUERY_MAP_ERROR',
           message: sanitizeError(error).message,
@@ -351,12 +303,6 @@ export class LiveServer {
         });
       } catch (error) {
         serverGQLLogger.error({ ...handleStartLabels, title: 'graphql_get_live_query', error: error.message });
-        globalStats.record([
-          {
-            measure: requestErrors,
-            value: 1,
-          },
-        ]);
         sendMessage({
           type: 'GQL_SUBSCRIBE_ERROR',
           message: sanitizeError(error).message,
@@ -375,12 +321,6 @@ export class LiveServer {
         return liveQuery.subscribe({
           next: (value: ExecutionResult) => {
             serverGQLLogger.info({ ...subscriptionLabels, title: 'graphql_subscription_result' });
-            globalStats.record([
-              {
-                measure: requestSec,
-                value: Date.now() - startTime,
-              },
-            ]);
             sendMessage({
               type: 'GQL_DATA',
               value,
@@ -389,12 +329,6 @@ export class LiveServer {
           },
           complete: () => {
             serverGQLLogger.info({ ...subscriptionLabels, title: 'graphql_subscription_complete' });
-            globalStats.record([
-              {
-                measure: requestSec,
-                value: Date.now() - startTime,
-              },
-            ]);
           },
           error: (error: Error) => {
             serverGQLLogger.error({
@@ -402,12 +336,6 @@ export class LiveServer {
               title: 'graphql_subscription_result',
               error: error.message,
             });
-            globalStats.record([
-              {
-                measure: requestErrors,
-                value: 1,
-              },
-            ]);
 
             sendMessage({
               type: 'GQL_DATA_ERROR',
@@ -492,12 +420,7 @@ export class LiveServer {
     };
 
     this.mutableSockets[socketID] = { closeSocket, restart: restartAll };
-    globalStats.record([
-      {
-        measure: wsMeasure,
-        value: 1,
-      },
-    ]);
+
     socket.on('error', onSocketError);
     socket.on('close', onSocketClosed);
     socket.on('message', onMessage);

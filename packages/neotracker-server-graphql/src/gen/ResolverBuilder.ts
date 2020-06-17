@@ -1,6 +1,4 @@
 // tslint:disable no-any no-object-mutation no-loop-statement
-import { AggregationType, globalStats, MeasureUnit } from '@neo-one/client-switch';
-import { labelsToTags } from '@neo-one/utils';
 import { createChild, serverLogger } from '@neotracker/logger';
 import { Base, BaseModel } from '@neotracker/server-db';
 import { CodedError } from '@neotracker/server-utils';
@@ -26,28 +24,6 @@ import {
 } from '../utils';
 import { getInterfaceName, getRootEdgeName, getTypeName } from './namer';
 
-const requestSec = globalStats.createMeasureInt64('requests/duration', MeasureUnit.SEC);
-const requestErrors = globalStats.createMeasureInt64('requests/failures', MeasureUnit.UNIT);
-
-const GRAPHQL_EXECUTE_FIELD_DURATION_SECONDS = globalStats.createView(
-  'graphql_execute_field_duration_seconds',
-  requestSec,
-  AggregationType.DISTRIBUTION,
-  labelsToTags([labels.GRAPHQL_PATH]),
-  'distribution of graphql request durations',
-  [1, 2, 5, 7.5, 10, 12.5, 15, 17.5, 20],
-);
-globalStats.registerView(GRAPHQL_EXECUTE_FIELD_DURATION_SECONDS);
-
-const GRAPHQL_EXECUTE_FIELD_FAILURES_TOTAL = globalStats.createView(
-  'graphql_execute_field_failures_total',
-  requestErrors,
-  AggregationType.COUNT,
-  labelsToTags([labels.GRAPHQL_PATH]),
-  'total graphql execute field failures',
-);
-globalStats.registerView(GRAPHQL_EXECUTE_FIELD_FAILURES_TOTAL);
-
 const serverGQLLogger = createChild(serverLogger, { component: 'graphql' });
 
 function wrapFieldResolver(
@@ -56,7 +32,6 @@ function wrapFieldResolver(
   resolver: GraphQLFieldResolver<any, GraphQLContext>,
 ): GraphQLFieldResolver<any, GraphQLContext> {
   return async (...args: any[]) => {
-    const startTime = Date.now();
     const info = (args.length === 3 ? args[2] : args[3]) as GraphQLResolveInfo;
     const logInfo = {
       title: 'graphql_execute_field',
@@ -64,23 +39,11 @@ function wrapFieldResolver(
     };
     try {
       serverGQLLogger.info({ ...logInfo });
-      globalStats.record([
-        {
-          measure: requestSec,
-          value: Date.now() - startTime,
-        },
-      ]);
 
       // @ts-ignore
       return resolver(...args);
     } catch (error) {
       serverGQLLogger.error({ ...logInfo });
-      globalStats.record([
-        {
-          measure: requestErrors,
-          value: 1,
-        },
-      ]);
       throw error;
     }
   };

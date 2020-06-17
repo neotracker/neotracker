@@ -6,11 +6,9 @@ import * as React from 'react';
 import { labels } from '@neotracker/shared-utils';
 // $FlowFixMe
 import { webLogger } from '@neotracker/logger';
-import { globalStats } from '@neo-one/client-switch';
 import { Link } from '../../../lib/link';
 import { Typography, withStyles } from '../../../lib/base';
 
-import { upsellClickTotal } from '../../../metrics';
 import * as routes from '../../../routes';
 
 const styles = () => ({
@@ -58,12 +56,6 @@ const enhance: HOC<*, *> = compose(
         title: 'neotracker_wallet_upsell_click',
         [labels.CLICK_SOURCE]: source,
       });
-      globalStats.record([
-        {
-          measure: upsellClickTotal,
-          value: 1,
-        },
-      ]);
     },
   }),
   withStyles(styles),

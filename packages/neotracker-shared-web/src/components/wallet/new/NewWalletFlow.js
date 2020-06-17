@@ -6,19 +6,12 @@ import * as React from 'react';
 import { labels } from '@neotracker/shared-utils';
 // $FlowFixMe
 import { webLogger } from '@neotracker/logger';
-import { globalStats } from '@neo-one/client-switch';
 import { withRouter } from 'react-router-dom';
 
 import type { AppContext } from '../../../AppContext';
 
 import { addShowSnackbarError } from '../../../utils';
 import { api as walletAPI } from '../../../wallet';
-import {
-  passwordsTotal,
-  privateKeyFailures,
-  privateKeyTotal,
-  totalKeystores,
-} from '../../../metrics';
 import * as routes from '../../../routes';
 
 import NewWalletFlowBase from './NewWalletFlowBase';
@@ -61,24 +54,12 @@ const enhance: HOC<*, *> = compose(
         name: 'neotracker_wallet_new_flow_password',
         [labels.CREATE_KEYSTORE_NEW]: true,
       });
-      globalStats.record([
-        {
-          measure: passwordsTotal,
-          value: 1,
-        },
-      ]);
     },
     onContinueKeystore: () => () => {
       webLogger.info({
         title: 'neotracker_wallet_new_flow_keystore',
         [labels.CREATE_KEYSTORE_NEW]: true,
       });
-      globalStats.record([
-        {
-          measure: totalKeystores,
-          value: 1,
-        },
-      ]);
     },
     onContinuePrivateKey: ({
       history,
@@ -98,21 +79,9 @@ const enhance: HOC<*, *> = compose(
           nep2: stage.nep2,
         })
         .then(() => {
-          globalStats.record([
-            {
-              measure: privateKeyTotal,
-              value: 1,
-            },
-          ]);
           history.replace(routes.WALLET_HOME);
         })
         .catch((error) => {
-          globalStats.record([
-            {
-              measure: privateKeyFailures,
-              value: 1,
-            },
-          ]);
           showSnackbarError(error);
         });
     },
