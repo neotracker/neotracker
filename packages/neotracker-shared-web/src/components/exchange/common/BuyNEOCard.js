@@ -260,7 +260,7 @@ function BuyNEOCard({
             referrerPolicy="no-referrer"
             name="Buy NEO Frame"
             title="Buy NEO"
-            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
             onLoad={hideSpinner}
             onError={onFrameError}
             className={isLoading ? classes.iframeLoading : classes.iframe}
