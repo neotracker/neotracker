@@ -1,4 +1,4 @@
-import { FetchPolicy, OperationVariables } from 'apollo-client';
+import { OperationVariables, WatchQueryFetchPolicy } from 'apollo-client';
 import { DocumentNode } from 'graphql';
 import _ from 'lodash';
 import * as React from 'react';
@@ -30,7 +30,7 @@ interface GetObserveQueryOptions<TVariables> {
   readonly appContext: AppContext;
   readonly variables?: TVariables;
   readonly notifyOnNetworkStatusChange?: boolean;
-  readonly fetchPolicy?: FetchPolicy;
+  readonly fetchPolicy?: WatchQueryFetchPolicy;
 }
 
 function getObserveQueryOptions<TVariables>({
@@ -38,7 +38,7 @@ function getObserveQueryOptions<TVariables>({
   query,
   variables,
   notifyOnNetworkStatusChange = false,
-  fetchPolicy = 'cache-first',
+  fetchPolicy = 'cache-and-network',
 }: GetObserveQueryOptions<TVariables>): ObserveQueryOptions<TVariables> {
   return {
     apollo,
@@ -58,17 +58,17 @@ class QueryBase<TData, TVariables = OperationVariables> extends React.Component<
     this.mutableResult$ = observeQuery(getObserveQueryOptions(props));
   }
 
-  public UNSAFE_componentWillReceiveProps(nextProps: Props<TData, TVariables>): void {
+  public componentDidUpdate(prevProps: Props<TData, TVariables>): void {
     if (
       // tslint:disable-next-line: strict-comparisons
-      this.props.appContext.apollo !== nextProps.appContext.apollo ||
+      this.props.appContext.apollo !== prevProps.appContext.apollo ||
       // tslint:disable-next-line: strict-comparisons
-      this.props.query !== nextProps.query ||
+      this.props.query !== prevProps.query ||
       // tslint:disable-next-line: strict-comparisons
-      this.props.notifyOnNetworkStatusChange !== nextProps.notifyOnNetworkStatusChange ||
-      !_.isEqual(this.props.variables, nextProps.variables)
+      this.props.notifyOnNetworkStatusChange !== prevProps.notifyOnNetworkStatusChange ||
+      !_.isEqual(this.props.variables, prevProps.variables)
     ) {
-      this.mutableResult$ = observeQuery(getObserveQueryOptions(nextProps));
+      this.mutableResult$ = observeQuery(getObserveQueryOptions(this.props));
     }
   }
 

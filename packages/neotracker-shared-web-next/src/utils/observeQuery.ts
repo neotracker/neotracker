@@ -1,4 +1,4 @@
-import ApolloClient, { ApolloError, FetchPolicy, NetworkStatus, OperationVariables } from 'apollo-client';
+import ApolloClient, { ApolloError, NetworkStatus, OperationVariables, WatchQueryFetchPolicy } from 'apollo-client';
 import { DocumentNode } from 'graphql';
 import { Observable, Observer } from 'rxjs';
 
@@ -39,7 +39,7 @@ export interface ObserveQueryOptions<TVariables> {
   readonly apollo: ApolloClient<any>;
   readonly query: DocumentNode;
   readonly variables?: TVariables;
-  readonly fetchPolicy?: FetchPolicy;
+  readonly fetchPolicy?: WatchQueryFetchPolicy;
   readonly notifyOnNetworkStatusChange?: boolean;
 }
 
@@ -47,7 +47,7 @@ export const observeQuery = <TData, TVariables = OperationVariables>({
   apollo,
   query,
   variables,
-  fetchPolicy = 'cache-first',
+  fetchPolicy = 'cache-and-network',
   notifyOnNetworkStatusChange = false,
 }: ObserveQueryOptions<TVariables>): Observable<QueryResult<TData, TVariables>> =>
   new Observable((observer: Observer<QueryResult<TData, TVariables>>) => {
