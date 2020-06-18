@@ -91,7 +91,7 @@ const createPackageJSON = async (pkgJSON: any) => {
         'neotracker.js': 'bin/index.js',
       },
       engines: {
-        node: '>=8.9.0',
+        node: '>=10.16.0',
       },
       dependencies: _.fromPairs(deps.filter(([key]) => !key.startsWith('@types'))),
       publishConfig: {
