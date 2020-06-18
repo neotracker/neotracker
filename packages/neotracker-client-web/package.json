@@ -1,11 +1,7 @@
 {
   "name": "@neotracker/client-web",
   "version": "0.0.1-alpha.0",
-  "keywords": [
-    "neo",
-    "blockchain",
-    "neotracker"
-  ],
+  "keywords": ["neo", "blockchain", "neotracker"],
   "description": "NEO Tracker client.",
   "repository": "https://github.com/neotracker/neotracker",
   "bugs": "https://github.com/neotracker/neotracker/issues",
@@ -13,10 +9,9 @@
   "main": "./src/index.ts",
   "dependencies": {
     "@babel/polyfill": "7.2.5",
-    "@neo-one/client-common": "^2.4.0",
-    "@neo-one/client-core": "^2.4.0",
-    "@neo-one/client-switch": "^2.4.0",
-    "@neo-one/utils": "^2.4.0",
+    "@neo-one/client-common": "^2.6.0",
+    "@neo-one/client-core": "^2.6.0",
+    "@neo-one/utils": "^2.5.0",
     "@neotracker/logger": "^1.0.0",
     "@neotracker/shared-graphql": "^0.0.1-alpha.0",
     "@neotracker/shared-utils": "^0.0.1-alpha.0",
@@ -40,7 +35,5 @@
     "tracekit": "^0.4.5",
     "whatwg-fetch": "^3.0.0"
   },
-  "sideEffects": [
-    "./src/init.ts"
-  ]
+  "sideEffects": ["./src/init.ts"]
 }

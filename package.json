@@ -22,7 +22,7 @@
     "@babel/preset-env": "7.6.3",
     "@babel/preset-react": "7.6.3",
     "@cypress/webpack-preprocessor": "4.1.0",
-    "@neo-one/cli": "^2.5.0",
+    "@neo-one/cli": "^2.6.0",
     "@size-limit/preset-app": "^3.0.0",
     "@size-limit/webpack": "^3.0.0",
     "@types/app-root-dir": "0.1.0",

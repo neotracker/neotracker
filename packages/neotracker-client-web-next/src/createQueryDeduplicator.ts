@@ -1,4 +1,3 @@
-import { SpanKind } from '@neo-one/client-switch';
 import { Labels } from '@neo-one/utils';
 import { clientLogger } from '@neotracker/logger';
 import { QueryDeduplicator } from '@neotracker/shared-graphql';
@@ -18,7 +17,6 @@ export const createQueryDeduplicator = ({
   new QueryDeduplicator(async (queries) => {
     const body = JSON.stringify(queries);
     const commonLogInfo = {
-      kind: SpanKind.CLIENT,
       [Labels.SPAN_KIND]: 'client',
       [Labels.HTTP_METHOD]: 'POST',
       [Labels.PEER_SERVICE]: 'graphql',

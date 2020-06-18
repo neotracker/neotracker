@@ -1,11 +1,7 @@
 {
   "name": "@neotracker/shared-web",
   "version": "0.0.1-alpha.0",
-  "keywords": [
-    "neo",
-    "blockchain",
-    "neotracker"
-  ],
+  "keywords": ["neo", "blockchain", "neotracker"],
   "description": "NEO Tracker shared GraphQL code.",
   "repository": "https://github.com/neotracker/neotracker",
   "bugs": "https://github.com/neotracker/neotracker/issues",
@@ -13,10 +9,9 @@
   "main": "./src/index.js",
   "dependencies": {
     "@material-ui/core": "^3.7.1",
-    "@neo-one/client-common": "^2.4.0",
-    "@neo-one/client-core": "^2.4.0",
-    "@neo-one/client-switch": "^2.4.0",
-    "@neo-one/utils": "^2.4.0",
+    "@neo-one/client-common": "^2.6.0",
+    "@neo-one/client-core": "^2.6.0",
+    "@neo-one/utils": "^2.5.0",
     "@neotracker/logger": "1.0.0",
     "@neotracker/shared-utils": "^0.0.1-alpha.0",
     "bignumber.js": "^9.0.0",

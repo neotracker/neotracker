@@ -12,7 +12,6 @@ import * as path from 'path';
 import webpack from 'webpack';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import { configuration } from '../configuration';
-import { createAlias } from './createAlias';
 import { createDefinePlugin } from './createDefinePlugin';
 import { createModuleMapperPlugins } from './createModuleMapperPlugins';
 import { createRules } from './createRules';
@@ -106,7 +105,6 @@ export const createClientCompiler = ({
       mainFields: ['browser', 'module', 'main'],
       aliasFields: ['browser'],
       extensions: ['.js', '.json', '.jsx', '.css', '.ts', '.tsx'],
-      alias: createAlias(),
     },
     parallelism: 16,
     optimization: {

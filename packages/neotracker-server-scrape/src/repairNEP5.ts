@@ -1,20 +1,8 @@
 import { addressToScriptHash, nep5 } from '@neo-one/client-full';
-import { AggregationType, globalStats, MeasureUnit } from '@neo-one/client-switch';
 import { createChild, serverLogger } from '@neotracker/logger';
 import { Asset as AssetModel, Coin as CoinModel } from '@neotracker/server-db';
 import { labels } from '@neotracker/shared-utils';
 import { Context } from './types';
-
-const coinTotal = globalStats.createMeasureInt64('scrape/coin_total', MeasureUnit.UNIT);
-
-const NEOTRACKER_NEGATIVE_COIN_TOTAL = globalStats.createView(
-  'neotracker_scrape_negative_coin_total',
-  coinTotal,
-  AggregationType.COUNT,
-  [],
-  'total negative coin count',
-);
-globalStats.registerView(NEOTRACKER_NEGATIVE_COIN_TOTAL);
 
 const serverScrapeLogger = createChild(serverLogger, { component: 'scrape' });
 
@@ -24,12 +12,6 @@ const fetchNegativeCoins = async (context: Context) =>
     .where('value', '<', 0);
 
 const updateCoin = async (context: Context, contract: nep5.NEP5SmartContract, coin: CoinModel) => {
-  globalStats.record([
-    {
-      measure: coinTotal,
-      value: 1,
-    },
-  ]);
   const balance = await contract.balanceOf(addressToScriptHash(coin.address_id));
 
   await coin

@@ -1,5 +1,4 @@
-import { AggregationType, globalStats, MeasureUnit } from '@neo-one/client-switch';
-import { Labels, labelsToTags } from '@neo-one/utils';
+import { Labels } from '@neo-one/utils';
 import { createChild, serverLogger } from '@neotracker/logger';
 import { finalize } from '@neotracker/shared-utils';
 import Knex from 'knex';
@@ -73,50 +72,6 @@ const addProfiler = (db: Knex, labels: Record<string, string>) => {
   });
 };
 
-const labelNames: ReadonlyArray<Labels> = [Labels.DB_INSTANCE, Labels.DB_USER, Labels.DB_TYPE];
-
-const createMeasure = (tag: string) => globalStats.createMeasureInt64(`server/${tag}`, MeasureUnit.UNIT);
-const numUsed = createMeasure('used');
-const numFree = createMeasure('free');
-const numPendingAcquires = createMeasure('pending_acquires');
-const numPendingCreates = createMeasure('pending_creates');
-
-const numUsedGauge = globalStats.createView(
-  'Knex_pool_num_used',
-  numUsed,
-  AggregationType.COUNT,
-  labelsToTags(labelNames),
-  'number of Knex pool used',
-);
-globalStats.registerView(numUsedGauge);
-
-const numFreeGauge = globalStats.createView(
-  'Knex_pool_num_free',
-  numFree,
-  AggregationType.COUNT,
-  labelsToTags(labelNames),
-  'number of Knex pool free',
-);
-globalStats.registerView(numFreeGauge);
-
-const numPendingAcquiresGauge = globalStats.createView(
-  'Knex_pool_num_pending_acquires',
-  numPendingAcquires,
-  AggregationType.COUNT,
-  labelsToTags(labelNames),
-  'number of Knex pending acquires',
-);
-globalStats.registerView(numPendingAcquiresGauge);
-
-const numPendingCreatesGauge = globalStats.createView(
-  'Knex_pool_num_pending_creates',
-  numPendingCreates,
-  AggregationType.COUNT,
-  labelsToTags(labelNames),
-  'number of Knex pending creates',
-);
-globalStats.registerView(numPendingCreatesGauge);
-
 export const create = ({
   options,
   useNullAsDefault = options.client === 'sqlite3',
@@ -135,31 +90,7 @@ export const create = ({
     [Labels.DB_USER]: (connection as any).user,
     [Labels.DB_TYPE]: 'postgres',
   };
-  const subcription = interval(5000)
-    .pipe(
-      map(() => {
-        const { pool } = db.client;
-        globalStats.record([
-          {
-            measure: numUsed,
-            value: pool.numUsed(),
-          },
-          {
-            measure: numFree,
-            value: pool.numFree(),
-          },
-          {
-            measure: numPendingAcquires,
-            value: pool.numPendingAcquires(),
-          },
-          {
-            measure: numPendingCreates,
-            value: pool.numPendingCreates(),
-          },
-        ]);
-      }),
-    )
-    .subscribe();
+  const subcription = interval(5000).subscribe();
   // tslint:disable no-object-mutation
   // @ts-ignore
   db.destroy = async () => {

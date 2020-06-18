@@ -1,4 +1,3 @@
-import { AggregationType, globalStats, MeasureUnit } from '@neo-one/client-switch';
 import { createChild, serverLogger } from '@neotracker/logger';
 import {
   AddressToTransfer as AddressToTransferModel,
@@ -18,59 +17,6 @@ import { BlockUpdater, getCurrentHeight } from './db';
 import { normalizeBlock } from './normalizeBlock';
 import { repairNEP5 } from './repairNEP5';
 import { Context } from './types';
-
-const persistSec = globalStats.createMeasureInt64('scrape/persist_blocks_duration', MeasureUnit.SEC);
-const persistFailures = globalStats.createMeasureInt64('scrape/persist_blocks_failures', MeasureUnit.UNIT);
-const blockIndex = globalStats.createMeasureInt64('scrape/block_index', MeasureUnit.UNIT);
-const persistingBlockIndex = globalStats.createMeasureInt64('scrape/persisting_block_index', MeasureUnit.UNIT);
-const persistLatencySec = globalStats.createMeasureInt64('scrape/persist_blocks_latency', MeasureUnit.SEC);
-
-const NEOTRACKER_PERSIST_BLOCK_DURATION_SECONDS = globalStats.createView(
-  'neotracker_scrape_persist_block_duration_seconds',
-  persistSec,
-  AggregationType.DISTRIBUTION,
-  [],
-  'distribution of the persist block duration',
-  [1, 2, 5, 7.5, 10, 12.5, 15, 17.5, 20],
-);
-globalStats.registerView(NEOTRACKER_PERSIST_BLOCK_DURATION_SECONDS);
-
-const NEOTRACKER_PERSIST_BLOCK_FAILURES_TOTAL = globalStats.createView(
-  'neotracker_scrape_persist_block_failures_total',
-  persistFailures,
-  AggregationType.COUNT,
-  [],
-  'total persist block failures',
-);
-globalStats.registerView(NEOTRACKER_PERSIST_BLOCK_FAILURES_TOTAL);
-
-const NEOTRACKER_SCRAPE_BLOCK_INDEX_GAUGE = globalStats.createView(
-  'neotracker_scrape_block_index',
-  blockIndex,
-  AggregationType.LAST_VALUE,
-  [],
-  'The current block index',
-);
-globalStats.registerView(NEOTRACKER_SCRAPE_BLOCK_INDEX_GAUGE);
-
-const NEOTRACKER_SCRAPE_PERSISTING_BLOCK_INDEX_GAUGE = globalStats.createView(
-  'neotracker_scrape_persisting_block_index',
-  persistingBlockIndex,
-  AggregationType.LAST_VALUE,
-  [],
-  'The current in progress persist index',
-);
-globalStats.registerView(NEOTRACKER_SCRAPE_PERSISTING_BLOCK_INDEX_GAUGE);
-
-const NEOTRACKER_PERSIST_BLOCK_LATENCY_SECONDS = globalStats.createView(
-  'neotracker_scrape_persist_block_latency_seconds',
-  persistLatencySec,
-  AggregationType.DISTRIBUTION,
-  [],
-  'The latency from block timestamp to persist',
-  [1, 2, 5, 7.5, 10, 12.5, 15, 17.5, 20],
-);
-globalStats.registerView(NEOTRACKER_PERSIST_BLOCK_LATENCY_SECONDS);
 
 const serverScrapeLogger = createChild(serverLogger, { component: 'scrape' });
 
@@ -158,29 +104,6 @@ function doRun$({
         serverScrapeLogger.info({ title: 'neotracker_persist_block' });
         context = await blockUpdater.save(context, block);
         const latency = startTime - block.time;
-
-        globalStats.record([
-          {
-            measure: persistSec,
-            value: Date.now() - startTime,
-          },
-          {
-            measure: persistFailures,
-            value: 1,
-          },
-          {
-            measure: blockIndex,
-            value: block.index,
-          },
-          {
-            measure: persistingBlockIndex,
-            value: block.index,
-          },
-          {
-            measure: persistLatencySec,
-            value: latency,
-          },
-        ]);
 
         if (block.index % context.repairNEP5BlockFrequency === 0 && latency <= context.repairNEP5LatencySeconds) {
           await repairNEP5(context);

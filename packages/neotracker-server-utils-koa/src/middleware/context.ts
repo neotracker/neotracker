@@ -1,5 +1,4 @@
-import { AggregationType, globalStats, MeasureUnit } from '@neo-one/client-switch';
-import { Labels, labelsToTags } from '@neo-one/utils';
+import { Labels } from '@neo-one/utils';
 import { serverLogger } from '@neotracker/logger';
 import { getUA } from '@neotracker/server-utils';
 import { sanitizeError, ua } from '@neotracker/shared-utils';
@@ -8,30 +7,6 @@ import v4 from 'uuid/v4';
 import { simpleMiddleware } from './common';
 
 const RATE_LIMIT_ERROR_CODE = 429;
-
-const labelNames: ReadonlyArray<string> = [Labels.HTTP_PATH, Labels.HTTP_STATUS_CODE, Labels.HTTP_METHOD];
-
-const requestSec = globalStats.createMeasureInt64('requests/duration', MeasureUnit.SEC);
-const requestFailures = globalStats.createMeasureInt64('requests/failures', MeasureUnit.UNIT);
-
-const HTTP_SERVER_REQUEST_DURATION_SECONDS = globalStats.createView(
-  'http_server_request_duration_seconds',
-  requestSec,
-  AggregationType.DISTRIBUTION,
-  labelsToTags(labelNames),
-  'distribution of requests duration',
-  [1, 2, 5, 7.5, 10, 12.5, 15, 17.5, 20],
-);
-globalStats.registerView(HTTP_SERVER_REQUEST_DURATION_SECONDS);
-
-const HTTP_SERVER_REQUEST_FAILURES_TOTAL = globalStats.createView(
-  'http_server_request_failures_total',
-  requestFailures,
-  AggregationType.COUNT,
-  labelsToTags(labelNames),
-  'total request failures',
-);
-globalStats.registerView(HTTP_SERVER_REQUEST_FAILURES_TOTAL);
 
 // tslint:disable-next-line no-any
 const defaultHandleError = (ctx: Context, error: any) => {
@@ -68,7 +43,6 @@ export const context = ({
       ...ua.convertLabels(userAgent),
       [Labels.HTTP_HEADERS]: JSON.stringify(ctx.headers),
     };
-    const startTime = Date.now();
 
     try {
       try {
@@ -87,26 +61,14 @@ export const context = ({
             logInfo[Labels.HTTP_PATH] = layer.path;
           }
         }
-        globalStats.record([
-          {
-            measure: requestSec,
-            value: Date.now() - startTime,
-          },
-        ]);
       }
     } catch (error) {
       serverLogger.error({ ...logInfo, error: error.message });
-      globalStats.record([
-        {
-          measure: requestFailures,
-          value: 1,
-        },
-      ]);
+
       handleError(ctx, error);
     }
     serverLogger.info({ ...logInfo });
   });
-
 export const onError = () => (error: Error) => {
   serverLogger.error({
     title: 'http_server_request_uncaught_error',

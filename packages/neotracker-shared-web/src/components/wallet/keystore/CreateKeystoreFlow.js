@@ -1,6 +1,5 @@
 /* @flow */
 import type { UnlockedWallet } from '@neo-one/client-core';
-import { globalStats } from '@neo-one/client-switch';
 import * as React from 'react';
 
 import { type HOC, compose, getContext, pure, withHandlers } from 'recompose';
@@ -15,12 +14,6 @@ import { NewWalletFlowBase } from '../new';
 
 import { addShowSnackbarError } from '../../../utils';
 import { api as walletAPI } from '../../../wallet';
-import {
-  passwordFailures,
-  passwordsTotal,
-  privateKeyTotal,
-  totalKeystores,
-} from '../../../metrics';
 import * as routes from '../../../routes';
 
 type ExternalProps = {|
@@ -71,12 +64,6 @@ const enhance: HOC<*, *> = compose(
           title: 'neotracker_wallet_new_flow_password',
           [labels.CREATE_KEYSTORE_NEW]: false,
         });
-        globalStats.record([
-          {
-            measure: passwordsTotal,
-            value: 1,
-          },
-        ]);
         await walletAPI.convertAccount({
           appContext,
           wallet,
@@ -87,12 +74,7 @@ const enhance: HOC<*, *> = compose(
           title: 'neotracker_wallet_new_flow_password',
           [labels.CREATE_KEYSTORE_NEW]: false,
         });
-        globalStats.record([
-          {
-            measure: passwordFailures,
-            value: 1,
-          },
-        ]);
+
         showSnackbarError(error);
       }
     },
@@ -101,24 +83,13 @@ const enhance: HOC<*, *> = compose(
         title: 'neotracker_wallet_new_flow_keystore',
         [labels.CREATE_KEYSTORE_NEW]: false,
       });
-      globalStats.record([
-        {
-          measure: totalKeystores,
-          value: 1,
-        },
-      ]);
     },
     onContinuePrivateKey: ({ history }) => () => {
       webLogger.info({
         title: 'neotracker_wallet_new_flow_private_key',
         [labels.CREATE_KEYSTORE_NEW]: false,
       });
-      globalStats.record([
-        {
-          measure: privateKeyTotal,
-          value: 1,
-        },
-      ]);
+
       history.replace(routes.WALLET_HOME);
     },
   }),

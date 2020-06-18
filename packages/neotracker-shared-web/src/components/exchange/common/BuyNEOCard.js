@@ -14,8 +14,6 @@ import {
 import { graphql } from 'react-relay';
 // $FlowFixMe
 import { webLogger } from '@neotracker/logger';
-import { globalStats } from '@neo-one/client-switch';
-import { totalFrameLoads, totalFrameErrors } from '../../../metrics';
 import { type Theme } from '../../../styles/createTheme';
 import { Card, Button, Typography, withStyles } from '../../../lib/base';
 import { Link } from '../../../lib/link';
@@ -300,21 +298,10 @@ const enhance: HOC<*, *> = compose(
   withHandlers({
     onFrameError: () => () => {
       webLogger.error({ title: 'neotracker_swaps_iframe_error' });
-      globalStats.record([
-        {
-          measure: totalFrameErrors,
-          value: 1,
-        },
-      ]);
     },
     hideSpinner: ({ setState }) => () => {
       webLogger.info({ title: 'neotracker_swaps_iframe_loaded' });
-      globalStats.record([
-        {
-          measure: totalFrameLoads,
-          value: 1,
-        },
-      ]);
+
       setState((prevState) => ({
         ...prevState,
         isLoading: false,

@@ -1,5 +1,4 @@
-import { AggregationType, globalStats, MeasureUnit } from '@neo-one/client-switch';
-import { Labels, labelsToTags } from '@neo-one/utils';
+import { Labels } from '@neo-one/utils';
 import { clientLogger } from '@neotracker/logger';
 import { ClientMessage, ExecutionResult, GRAPHQL_WS, parseAndValidateServerMessage } from '@neotracker/shared-graphql';
 import { labels, sanitizeError, utils } from '@neotracker/shared-utils';
@@ -24,28 +23,6 @@ interface OperationOptions {
 interface Operation extends OperationOptions {
   readonly started: boolean;
 }
-
-const requestSec = globalStats.createMeasureInt64('requests/duration', MeasureUnit.SEC);
-const requestErrors = globalStats.createMeasureInt64('requests/failures', MeasureUnit.UNIT);
-
-const WEBSOCKET_CLIENT_FIRST_RESPONSE_DURATION_SECONDS = globalStats.createView(
-  'graphql_client_first_response_duration_seconds',
-  requestSec,
-  AggregationType.DISTRIBUTION,
-  labelsToTags([labels.GRAPHQL_QUERY]),
-  'distribution of the requests duration',
-  [1, 2, 5, 7.5, 10, 12.5, 15, 17.5, 20],
-);
-globalStats.registerView(WEBSOCKET_CLIENT_FIRST_RESPONSE_DURATION_SECONDS);
-
-const WEBSOCKET_CLIENT_FIRST_RESPONSE_FAILURES_TOTAL = globalStats.createView(
-  'graphql_client_first_response_failures_total',
-  requestErrors,
-  AggregationType.COUNT,
-  labelsToTags([labels.GRAPHQL_QUERY]),
-  'total request failures',
-);
-globalStats.registerView(WEBSOCKET_CLIENT_FIRST_RESPONSE_FAILURES_TOTAL);
 
 const logger = debug('NEOTRACKER:LiveClient');
 
@@ -248,7 +225,6 @@ export class LiveClient {
   };
 
   public start(id: string): void {
-    const startTime = Date.now();
     const operation = this.mutableOperations[id] as Operation | undefined;
     if (operation !== undefined && this.status === this.wsImpl.OPEN) {
       const startLabels = {
@@ -259,12 +235,6 @@ export class LiveClient {
       };
       clientLogger.info({ ...startLabels });
       logger('%o', { level: 'debug', ...startLabels });
-      globalStats.record([
-        {
-          measure: requestSec,
-          value: Date.now() - startTime,
-        },
-      ]);
 
       this.mutableOperations[id] = {
         id: operation.id,

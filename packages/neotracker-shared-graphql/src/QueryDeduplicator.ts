@@ -1,31 +1,8 @@
-import { AggregationType, globalStats, MeasureUnit } from '@neo-one/client-switch';
 import { createChild, serverLogger } from '@neotracker/logger';
 import { labels } from '@neotracker/shared-utils';
 import _ from 'lodash';
 import stringify from 'safe-stable-stringify';
 import { ExecutionResult } from './constants';
-
-const requestSec = globalStats.createMeasureInt64('requests/duration', MeasureUnit.SEC);
-const requestFailures = globalStats.createMeasureInt64('requests/failures', MeasureUnit.UNIT);
-
-const GRAPHQL_EXECUTE_QUERIES_DURATION_SECONDS = globalStats.createView(
-  'graphql_execute_queries_duration_seconds',
-  requestSec,
-  AggregationType.DISTRIBUTION,
-  [],
-  'distribution of the graphql query duration',
-  [1, 2, 5, 7.5, 10, 12.5, 15, 17.5, 20],
-);
-globalStats.registerView(GRAPHQL_EXECUTE_QUERIES_DURATION_SECONDS);
-
-const GRAPHQL_EXECUTE_QUERIES_FAILURES_TOTAL = globalStats.createView(
-  'graphql_execute_queries_failures_total',
-  requestFailures,
-  AggregationType.COUNT,
-  [],
-  'count of graphql query failures',
-);
-globalStats.registerView(GRAPHQL_EXECUTE_QUERIES_FAILURES_TOTAL);
 
 const logger = createChild(serverLogger, { component: 'graphql' });
 
@@ -93,7 +70,6 @@ export class QueryDeduplicator {
     );
   }
   private readonly consumeQueue = (): void => {
-    const startTime = Date.now();
     const mutableQueue = this.mutableQueue;
     this.mutableQueue = [];
     this.mutableInflight = {};
@@ -106,23 +82,11 @@ export class QueryDeduplicator {
       logger.info({ ...logInfo });
       this.executeQueries(mutableQueue.map((obj) => ({ id: obj.id, variables: obj.variables })))
         .then((results) => {
-          globalStats.record([
-            {
-              measure: requestSec,
-              value: Date.now() - startTime,
-            },
-          ]);
           results.forEach((result, idx) => mutableQueue[idx].resolve(result));
         })
         .catch((error) => {
           logger.error({ ...logInfo });
           mutableQueue.forEach(({ reject }) => reject(error));
-          globalStats.record([
-            {
-              measure: requestFailures,
-              value: 1,
-            },
-          ]);
         });
     }
   };
