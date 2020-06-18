@@ -30,6 +30,8 @@ const blacklistNEP5Hashes: ReadonlyArray<string> = [
   '2e25d2127e0240c6deaf35394702feb236d4d7fc', //  Narrative Token
   '6d36b38af912ca107f55a5daedc650054f7e4f75',
 ];
+const moonpayStagingUrl = 'https://buy-staging.moonpay.io';
+const moonpayUrl = 'https://buy.moonpay.io';
 
 export const getOptions = (
   network: NetworkType = 'priv',
@@ -57,7 +59,7 @@ export const getOptions = (
         googleAnalyticsTag,
         moonpayPublicApiKey,
         prod,
-        moonpayUrl: 'https://buy.moonpay.io',
+        moonpayUrl,
       });
 
     case 'test':
@@ -74,7 +76,7 @@ export const getOptions = (
         googleAnalyticsTag,
         moonpayPublicApiKey,
         prod,
-        moonpayUrl: 'https://buy.moonpay.io',
+        moonpayUrl,
       });
 
     case 'staging':
@@ -88,7 +90,7 @@ export const getOptions = (
         googleAnalyticsTag,
         moonpayPublicApiKey,
         prod,
-        moonpayUrl: 'https://buy-staging.moonpay.io',
+        moonpayUrl: moonpayStagingUrl,
       });
 
     case 'priv':
@@ -102,7 +104,7 @@ export const getOptions = (
         googleAnalyticsTag,
         moonpayPublicApiKey,
         prod,
-        moonpayUrl: 'https://buy-staging.moonpay.io',
+        moonpayUrl: moonpayStagingUrl,
       });
     default:
       throw new Error('Invalid Network Option');

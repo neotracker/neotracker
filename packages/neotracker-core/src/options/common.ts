@@ -17,6 +17,8 @@ export interface AssetsConfiguration {
   readonly rootAssetsPath: string;
 }
 
+const moonpayApiUrl = 'https://api.moonpay.io';
+
 export const common = ({
   rpcURL,
   blacklistNEP5Hashes,
@@ -92,7 +94,7 @@ export const common = ({
           fontSrc: ["'self'", 'https://fonts.gstatic.com/'],
           formAction: ["'self'"],
           frameAncestors: ["'none'"],
-          frameSrc: ["'self'", moonpayUrl],
+          frameSrc: ["'self'", moonpayUrl, moonpayApiUrl],
           imgSrc: ["'self'", 'data:', 'https://www.google-analytics.com', 'https://stats.g.doubleclick.net'],
           manifestSrc: ["'self'"],
           mediaSrc: ["'self'"],
@@ -112,7 +114,7 @@ export const common = ({
       featurePolicy: {
         enabled: true,
         features: {
-          accelerometer: [moonpayUrl],
+          accelerometer: [moonpayUrl, moonpayApiUrl],
           ambientLightSensor: ["'none'"],
           autoplay: ["'none'"],
           camera: ["'none'"],
