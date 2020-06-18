@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash db1c98687672bea60803bce832e986ab
+ * @relayHash d883cbf7ed56d65042e68759d89e6f0c
  */
 
 /* eslint-disable */
@@ -9,8 +9,8 @@
 
 /*::
 import type { ConcreteRequest } from 'relay-runtime';
-export type SendTransactionQueryVariables = {||};
-export type SendTransactionQueryResponse = {|
+export type SendTransactionFeeQueryVariables = {||};
+export type SendTransactionFeeQueryResponse = {|
   +transactions: {|
     +edges: $ReadOnlyArray<{|
       +node: {|
@@ -19,15 +19,15 @@ export type SendTransactionQueryResponse = {|
     |}>
   |}
 |};
-export type SendTransactionQuery = {|
-  variables: SendTransactionQueryVariables,
-  response: SendTransactionQueryResponse,
+export type SendTransactionFeeQuery = {|
+  variables: SendTransactionFeeQueryVariables,
+  response: SendTransactionFeeQueryResponse,
 |};
 */
 
 
 /*
-query SendTransactionQuery {
+query SendTransactionFeeQuery {
   transactions(orderBy: [{name: "transaction.id", direction: "desc"}], filters: [{name: "transaction.type", operator: "!=", value: "MinerTransaction"}], first: 30) {
     edges {
       node {
@@ -81,13 +81,13 @@ v1 = {
 return {
   "kind": "Request",
   "operationKind": "query",
-  "name": "SendTransactionQuery",
-  "id": "60",
+  "name": "SendTransactionFeeQuery",
+  "id": "73",
   "text": null,
   "metadata": {},
   "fragment": {
     "kind": "Fragment",
-    "name": "SendTransactionQuery",
+    "name": "SendTransactionFeeQuery",
     "type": "Query",
     "metadata": null,
     "argumentDefinitions": [],
@@ -130,7 +130,7 @@ return {
   },
   "operation": {
     "kind": "Operation",
-    "name": "SendTransactionQuery",
+    "name": "SendTransactionFeeQuery",
     "argumentDefinitions": [],
     "selections": [
       {
@@ -179,5 +179,5 @@ return {
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = '59c4f0405ed8a438be454f7b6cfe9847';
+(node/*: any*/).hash = 'd10ab8de91dcf9d40781bf1acda015f5';
 module.exports = node;

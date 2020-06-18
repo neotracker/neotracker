@@ -40,7 +40,7 @@ import { getSortedCoins } from '../../explorer/address/lib';
 import { formatNumber, getAverage } from '../../../utils';
 
 import { type SendTransaction_address } from './__generated__/SendTransaction_address.graphql';
-import { type SendTransactionQuery } from './__generated__/SendTransactionQuery.graphql';
+import { type SendTransactionFeeQuery } from './__generated__/SendTransactionFeeQuery.graphql';
 
 const styles = (theme: Theme) => ({
   assetArea: {
@@ -73,8 +73,8 @@ type ExternalProps = {|
   className?: string,
 |};
 type InternalProps = {|
-  props: ?SendTransactionQuery,
-  lastProps: ?SendTransactionQuery,
+  props: ?SendTransactionFeeQuery,
+  lastProps: ?SendTransactionFeeQuery,
   address: ?SendTransaction_address,
   coins: $ReadOnlyArray<{
     value: string,
@@ -233,7 +233,7 @@ function SendTransaction({
 
 const enhance: HOC<*, *> = compose(
   queryRenderer(graphql`
-    query SendTransactionQuery {
+    query SendTransactionFeeQuery {
       transactions(
         orderBy: [{ name: "transaction.id", direction: "desc" }]
         filters: [
