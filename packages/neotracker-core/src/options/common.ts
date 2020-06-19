@@ -17,6 +17,7 @@ export interface AssetsConfiguration {
   readonly rootAssetsPath: string;
 }
 
+const googleAnalyticsUrl = 'https://www.google-analytics.com';
 const whitelistMoonPayUrls: ReadonlyArray<string> = [
   'https://api.moonpay.io',
   'https://sercure5.arcot.com',
@@ -93,22 +94,17 @@ export const common = ({
           baseUri: ["'self'"],
           blockAllMixedContent: true,
           childSrc: ["'self'"],
-          connectSrc: ["'self'", `ws${prod ? 's' : ''}://${domain}`, rpcURL],
+          connectSrc: ["'self'", googleAnalyticsUrl, `ws${prod ? 's' : ''}://${domain}`, rpcURL],
           defaultSrc: ["'self'"],
           fontSrc: ["'self'", 'https://fonts.gstatic.com/'],
           formAction: ["'self'"],
           frameAncestors: ["'none'"],
           frameSrc: ["'self'", moonpayUrl, ...whitelistMoonPayUrls],
-          imgSrc: ["'self'", 'data:', 'https://www.google-analytics.com', 'https://stats.g.doubleclick.net'],
+          imgSrc: ["'self'", 'data:', googleAnalyticsUrl, 'https://stats.g.doubleclick.net'],
           manifestSrc: ["'self'"],
           mediaSrc: ["'self'"],
           objectSrc: ["'none'"],
-          scriptSrc: [
-            "'self'",
-            "'unsafe-eval'",
-            'https://www.googletagmanager.com',
-            'https://www.google-analytics.com',
-          ],
+          scriptSrc: ["'self'", "'unsafe-eval'", 'https://www.googletagmanager.com', googleAnalyticsUrl],
           styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
           upgradeInsecureRequests: true,
           workerSrc: ["'self'"],
