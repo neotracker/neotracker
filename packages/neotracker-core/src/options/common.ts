@@ -17,7 +17,11 @@ export interface AssetsConfiguration {
   readonly rootAssetsPath: string;
 }
 
-const moonpayApiUrl = 'https://api.moonpay.io';
+const whitelistMoonPayUrls: ReadonlyArray<string> = [
+  'https://api.moonpay.io',
+  'https://sercure5.arcot.com',
+  'https://authentication.cardinalcommerce.com',
+];
 
 export const common = ({
   rpcURL,
@@ -94,7 +98,7 @@ export const common = ({
           fontSrc: ["'self'", 'https://fonts.gstatic.com/'],
           formAction: ["'self'"],
           frameAncestors: ["'none'"],
-          frameSrc: ["'self'", moonpayUrl, moonpayApiUrl],
+          frameSrc: ["'self'", moonpayUrl, ...whitelistMoonPayUrls],
           imgSrc: ["'self'", 'data:', 'https://www.google-analytics.com', 'https://stats.g.doubleclick.net'],
           manifestSrc: ["'self'"],
           mediaSrc: ["'self'"],
@@ -114,7 +118,7 @@ export const common = ({
       featurePolicy: {
         enabled: true,
         features: {
-          accelerometer: [moonpayUrl, moonpayApiUrl],
+          accelerometer: [moonpayUrl],
           ambientLightSensor: ["'none'"],
           autoplay: ["'none'"],
           camera: ["'none'"],
