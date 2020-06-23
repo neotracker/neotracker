@@ -32,6 +32,14 @@ const cards = [
     cover: true,
   },
   {
+    title: 'Switcheo',
+    description:
+      'Switcheo builds decentralized platforms that break new ground, bringing you finance without limits. Whether you’re a battle-weary trader or are just making your first purchase, there’s nothing cryptic about crypto on Switcheo.',
+    link: 'https://switcheo.network/',
+    image: 'switcheo.svg',
+    cover: true,
+  },
+  {
     title: 'NeoResearch',
     description:
       'NeoResearch is an open-source community focused on developing cutting-edge technologies for the Neo blockchain. NeoResearch is passionate group of people crazy for blockchain technology and the Smart Economy revolution.',
@@ -48,22 +56,6 @@ const cards = [
     cover: false,
   },
   {
-    title: 'Nash',
-    description:
-      'Nash is a fast and user-friendly non-custodial exchange. Nash gives you sipmle, secure access to fund management tools for Bitcoin, Ethereum, and Neo.',
-    link: 'https://nash.io/',
-    image: 'nash_png.png',
-    cover: false,
-  },
-  {
-    title: 'Switcheo Network',
-    description:
-      'Switcheo is a decentralized cryptocurrency exchange. Switcheo paves the way for a trustless and secure multi-chain trading experience. No mandatory registration. Connect and trade freely.',
-    link: 'https://switcheo.network/',
-    image: 'switcheo.png',
-    cover: true,
-  },
-  {
     title: 'Moonlight',
     description:
       'Moonlight is a decentralized workforce and project management platform anchored on the Neo blockchain. Moonlight will change the way you recruit and scale your workforce.',
@@ -72,11 +64,11 @@ const cards = [
     cover: true,
   },
   {
-    title: 'Neo Name Service',
+    title: 'Nash',
     description:
-      'NNS is a distributed, open-source and extensible naming system based on the Neo blockchain, which offers a secure and decentralized way to address resources both on and off the blockchain.',
-    link: 'https://neons.name/index_En.html',
-    image: 'nns.png',
+      'Nash is a fast and user-friendly non-custodial exchange. Nash gives you sipmle, secure access to fund management tools for Bitcoin, Ethereum, and Neo.',
+    link: 'https://nash.io/',
+    image: 'nash_png.png',
     cover: false,
   },
   {
@@ -85,6 +77,14 @@ const cards = [
       'New Economy Labs ia a China-based community of open-source developers supporting the Neo ecosystem.',
     link: 'https://nel.group/',
     image: 'new_economy_labs.png',
+    cover: false,
+  },
+  {
+    title: 'Neo Name Service',
+    description:
+      'NNS is a distributed, open-source and extensible naming system based on the Neo blockchain, which offers a secure and decentralized way to address resources both on and off the blockchain.',
+    link: 'https://neons.name/index_En.html',
+    image: 'nns.png',
     cover: false,
   },
   {
