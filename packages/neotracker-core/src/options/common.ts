@@ -20,7 +20,7 @@ export interface AssetsConfiguration {
 const googleAnalyticsUrl = 'https://www.google-analytics.com';
 const whitelistMoonPayUrls: ReadonlyArray<string> = [
   'https://api.moonpay.io',
-  'https://sercure5.arcot.com',
+  'https://secure5.arcot.com',
   'https://authentication.cardinalcommerce.com',
 ];
 
@@ -100,7 +100,7 @@ export const common = ({
           formAction: ["'self'"],
           frameAncestors: ["'none'"],
           frameSrc: ["'self'", moonpayUrl, ...whitelistMoonPayUrls],
-          imgSrc: ["'self'", 'data:', googleAnalyticsUrl, 'https://stats.g.doubleclick.net'],
+          imgSrc: ["'self'", 'data:', googleAnalyticsUrl, 'https://www.google.com', 'https://stats.g.doubleclick.net'],
           manifestSrc: ["'self'"],
           mediaSrc: ["'self'"],
           objectSrc: ["'none'"],
