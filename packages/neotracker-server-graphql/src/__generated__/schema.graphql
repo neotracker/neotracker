@@ -326,6 +326,7 @@ type Migration implements Node {
 
 type MoonPay {
   secureUrl: String!
+  validUrl: Boolean!
 }
 
 interface Node {
@@ -376,7 +377,7 @@ type Query {
   block(hash: String, index: Int): Block
   contract(hash: String!): Contract
   current_price(sym: String!): CurrentPrice
-  moonpay(url: String!): MoonPay
+  moonpay(url: String): MoonPay
   prices(from: String!, to: String!): [DataPoint!]!
   transaction(hash: String!): Transaction
 }

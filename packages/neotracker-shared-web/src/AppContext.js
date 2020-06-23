@@ -29,6 +29,7 @@ export type AppOptions = {|
   disableWalletModify: boolean,
   confirmLimitMS: number,
   bsaEnabled?: boolean,
+  debug: boolean,
   moonpayPublicApiKey: string,
   moonpayUrl: string,
   prod: boolean,
