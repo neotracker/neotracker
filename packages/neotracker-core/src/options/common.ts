@@ -18,11 +18,6 @@ export interface AssetsConfiguration {
 }
 
 const googleAnalyticsUrl = 'https://www.google-analytics.com';
-const whitelistMoonPayUrls: ReadonlyArray<string> = [
-  'https://api.moonpay.io',
-  'https://secure5.arcot.com',
-  'https://authentication.cardinalcommerce.com',
-];
 
 export const common = ({
   rpcURL,
@@ -99,7 +94,7 @@ export const common = ({
           fontSrc: ["'self'", 'https://fonts.gstatic.com/'],
           formAction: ["'self'"],
           frameAncestors: ["'none'"],
-          frameSrc: ["'self'", moonpayUrl, ...whitelistMoonPayUrls],
+          frameSrc: ['*'], // needs to be wildcard for MoonPay frame and associated banks
           imgSrc: ["'self'", 'data:', googleAnalyticsUrl, 'https://www.google.com', 'https://stats.g.doubleclick.net'],
           manifestSrc: ["'self'"],
           mediaSrc: ["'self'"],
