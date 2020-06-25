@@ -20,5 +20,7 @@ export interface AppOptions {
   readonly bsaEnabled?: boolean;
   readonly debug: boolean;
   readonly moonpayPublicApiKey: string;
+  readonly moonpayUrl: string;
+  readonly prod: boolean;
 }
 export type NetworkType = 'main' | 'staging' | 'priv' | 'test';

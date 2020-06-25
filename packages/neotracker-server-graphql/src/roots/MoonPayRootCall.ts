@@ -1,3 +1,4 @@
+import { createChild, serverLogger } from '@neotracker/logger';
 import { CodedError } from '@neotracker/server-utils';
 import crypto from 'crypto';
 import { GraphQLResolveInfo } from 'graphql';
@@ -10,6 +11,7 @@ import { liveExecuteField } from '../live';
 
 interface MoonPayOptions {
   readonly moonpayPrivateApiKey: string;
+  readonly moonpayUrl: string;
 }
 
 const createUrlWithSignature = (originalUrl: string, moonpayPrivateApiKey: string): string => {
@@ -21,11 +23,13 @@ const createUrlWithSignature = (originalUrl: string, moonpayPrivateApiKey: strin
   return `${originalUrl}&signature=${encodeURIComponent(signature)}`;
 };
 
+const serverGQLLogger = createChild(serverLogger, { component: 'graphql' });
+
 export class MoonPayRootCall extends RootCall {
   public static readonly fieldName: string = 'moonpay';
   public static readonly typeName: string = 'MoonPay';
   public static readonly args: { readonly [fieldName: string]: string } = {
-    url: 'String!',
+    url: 'String',
   };
 
   public static getAppOptions$(): Observable<MoonPayOptions> {
@@ -46,13 +50,20 @@ export class MoonPayRootCall extends RootCall {
       _context: GraphQLContext,
       _info: GraphQLResolveInfo,
     ) => {
-      if (url == undefined) {
-        throw new CodedError(CodedError.PROGRAMMING_ERROR);
-      }
-      const appOptions$ = this.getAppOptions$();
-      const { moonpayPrivateApiKey } = await appOptions$.pipe(take(1)).toPromise();
+      const { moonpayPrivateApiKey, moonpayUrl } = await this.getAppOptions$()
+        .pipe(take(1))
+        .toPromise();
+      if (url === undefined || url === null || !url.startsWith(moonpayUrl)) {
+        serverGQLLogger.info({
+          title: 'moonpay_invalid_url_return',
+          expected_url_base: moonpayUrl,
+          url_in: url,
+        });
 
-      return { secureUrl: createUrlWithSignature(url, moonpayPrivateApiKey) };
+        return { secureUrl: '', validUrl: false };
+      }
+
+      return { secureUrl: createUrlWithSignature(url, moonpayPrivateApiKey), validUrl: true };
     };
 
     return {
@@ -67,8 +78,9 @@ export class MoonPayRootCall extends RootCall {
   public static initialize$(options$: Observable<RootCallOptions>): Observable<never> {
     this.mutableMoonpayOptions$ = options$.pipe(
       distinctUntilChanged(),
-      map(({ moonpayPrivateApiKey }) => ({
+      map(({ moonpayPrivateApiKey, appOptions: { moonpayUrl } }) => ({
         moonpayPrivateApiKey,
+        moonpayUrl,
       })),
     );
 

@@ -197,7 +197,8 @@ function BuyNEOCard({
     !useNullAddress &&
     currentProps &&
     currentProps.moonpay &&
-    currentProps.moonpay.secureUrl
+    currentProps.moonpay.secureUrl &&
+    currentProps.moonpay.validUrl
   ) {
     secureUrl = currentProps.moonpay.secureUrl;
   }
@@ -275,9 +276,10 @@ function BuyNEOCard({
 const enhance: HOC<*, *> = compose(
   queryRenderer(
     graphql`
-      query BuyNEOCardQuery($url: String!) {
+      query BuyNEOCardQuery($url: String) {
         moonpay(url: $url) {
           secureUrl
+          validUrl
         }
       }
     `,

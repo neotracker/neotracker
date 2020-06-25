@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash e2f77999a5a6d53a737cf52d7afecaf8
+ * @relayHash 36b7914face9ba2c1511bd01753ca2de
  */
 
 /* eslint-disable */
@@ -10,11 +10,12 @@
 /*::
 import type { ConcreteRequest } from 'relay-runtime';
 export type BuyNEOCardQueryVariables = {|
-  url: string
+  url?: ?string
 |};
 export type BuyNEOCardQueryResponse = {|
   +moonpay: ?{|
-    +secureUrl: string
+    +secureUrl: string,
+    +validUrl: boolean,
   |}
 |};
 export type BuyNEOCardQuery = {|
@@ -26,10 +27,11 @@ export type BuyNEOCardQuery = {|
 
 /*
 query BuyNEOCardQuery(
-  $url: String!
+  $url: String
 ) {
   moonpay(url: $url) {
     secureUrl
+    validUrl
   }
 }
 */
@@ -39,7 +41,7 @@ var v0 = [
   {
     "kind": "LocalArgument",
     "name": "url",
-    "type": "String!",
+    "type": "String",
     "defaultValue": null
   }
 ],
@@ -54,7 +56,7 @@ v1 = [
         "kind": "Variable",
         "name": "url",
         "variableName": "url",
-        "type": "String!"
+        "type": "String"
       }
     ],
     "concreteType": "MoonPay",
@@ -66,6 +68,13 @@ v1 = [
         "name": "secureUrl",
         "args": null,
         "storageKey": null
+      },
+      {
+        "kind": "ScalarField",
+        "alias": null,
+        "name": "validUrl",
+        "args": null,
+        "storageKey": null
       }
     ]
   }
@@ -74,7 +83,7 @@ return {
   "kind": "Request",
   "operationKind": "query",
   "name": "BuyNEOCardQuery",
-  "id": "68",
+  "id": "77",
   "text": null,
   "metadata": {},
   "fragment": {
@@ -94,5 +103,5 @@ return {
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = '75e7486531ca2b84bcda42e495f24089';
+(node/*: any*/).hash = '7c24336d003779032ec9f20f62d02a79';
 module.exports = node;
