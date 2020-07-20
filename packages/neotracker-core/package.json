@@ -18,7 +18,7 @@
     "rxjs": "^6.3.3",
     "semver": "^5.6.0",
     "source-map-support": "^0.5.16",
-    "sqlite3": "4.0.4"
+    "sqlite3": "4.0.9"
   },
   "sideEffects": ["./src/bin/init.ts"]
 }
