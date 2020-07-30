@@ -14,15 +14,6 @@ interface MoonPayOptions {
   readonly moonpayUrl: string;
 }
 
-const createUrlWithSignature = (originalUrl: string, moonpayPrivateApiKey: string): string => {
-  const signature = crypto
-    .createHmac('sha256', moonpayPrivateApiKey)
-    .update(new URL(originalUrl).search)
-    .digest('base64');
-
-  return `${originalUrl}&signature=${encodeURIComponent(signature)}`;
-};
-
 const serverGQLLogger = createChild(serverLogger, { component: 'graphql' });
 
 export class MoonPayRootCall extends RootCall {
@@ -50,6 +41,15 @@ export class MoonPayRootCall extends RootCall {
       _context: GraphQLContext,
       _info: GraphQLResolveInfo,
     ) => {
+      const createUrlWithSignature = (originalUrl: string, moonpayPrivateApiKeyIn: string): string => {
+        const signature = crypto
+          .createHmac('sha256', moonpayPrivateApiKeyIn)
+          .update(new URL(originalUrl).search)
+          .digest('base64');
+
+        return `${originalUrl}&signature=${encodeURIComponent(signature)}`;
+      };
+
       const { moonpayPrivateApiKey, moonpayUrl } = await this.getAppOptions$()
         .pipe(take(1))
         .toPromise();
@@ -77,11 +77,11 @@ export class MoonPayRootCall extends RootCall {
   // tslint:disable-next-line no-any
   public static initialize$(options$: Observable<RootCallOptions>): Observable<never> {
     this.mutableMoonpayOptions$ = options$.pipe(
-      distinctUntilChanged(),
       map(({ moonpayPrivateApiKey, appOptions: { moonpayUrl } }) => ({
         moonpayPrivateApiKey,
         moonpayUrl,
       })),
+      distinctUntilChanged(),
     );
 
     return EMPTY;
