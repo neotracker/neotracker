@@ -77,9 +77,9 @@ The full list of configurable options in the `.neotrackerrc` file. These can be 
 }
 ```
 
-with a postgres db we have two connection options, a connection string or connection object.
+With a Postgresql DB we have two connection options, a connection string or connection object.
 
-connection string configuration:
+Connection string configuration:
 
 ```js
 {
@@ -90,7 +90,7 @@ connection string configuration:
 }
 ```
 
-connection object configuration:
+Connection object configuration:
 
 ```js
 {
@@ -98,7 +98,7 @@ connection object configuration:
     "client": "pg",
     "connection": {
       "host": "localhost",
-      "port": 5433,
+      "port": 5432,
       "user": "admin" // optional username
       "password": "password" // optional password
       "database": "neotracker_priv" // optional database name
