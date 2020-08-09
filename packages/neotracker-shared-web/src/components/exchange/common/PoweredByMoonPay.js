@@ -37,7 +37,7 @@ const points = [
   'Enter the amount that you want to purchase (minimum of $20 USD, maximum of $2,200 USD).',
   'Press "Buy Now" and you\'ll be shown the address that the NEO will be sent to.',
   'Press "Buy Now" again and you\'ll be asked for an email address.',
-  `Once you're transaction is completed on MoonPay's site you'll be redirected back to NEO Tracker to see your transaction reflected on the Neo blockchain.`,
+  `Once your transaction is completed on MoonPay's site you'll be redirected back to NEO Tracker to see your transaction reflected on the Neo blockchain.`,
   'U.S. users cannot currently purchase NEO from MoonPay.',
 ];
 
