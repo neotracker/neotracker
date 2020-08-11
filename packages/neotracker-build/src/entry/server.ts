@@ -7,7 +7,7 @@ import { configuration } from '../configuration';
 const {
   port,
   network: neotrackerNetwork,
-  nodeRpcUrl,
+  nodeRpcUrl: rpcURL,
   metricsPort = 1341,
   db,
   type,
@@ -20,21 +20,6 @@ const {
 });
 
 const { googleAnalyticsTag, moonpayPublic: moonpayPublicApiKey } = apiKeys;
-
-let rpcURL: string | undefined;
-switch (neotrackerNetwork) {
-  case 'priv':
-    rpcURL = nodeRpcUrl;
-    if (rpcURL === undefined) {
-      rpcURL = 'http://localhost:9040/rpc';
-    }
-    break;
-  case 'main':
-    rpcURL = 'https://neotracker.io/rpc';
-    break;
-  default:
-    rpcURL = 'https://testnet.neotracker.io/rpc';
-}
 
 const options = getOptions(neotrackerNetwork, {
   port,
