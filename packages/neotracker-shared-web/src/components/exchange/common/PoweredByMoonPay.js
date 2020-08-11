@@ -39,6 +39,7 @@ const points = [
   'Press "Buy Now" again and you\'ll be asked for an email address.',
   `Once your transaction is completed on MoonPay's site you'll be redirected back to NEO Tracker to see your transaction reflected on the Neo blockchain.`,
   'U.S. users cannot currently purchase NEO from MoonPay.',
+  'If you experience any issues with the MoonPay widget please message us on Twitter or Facebook for help.',
 ];
 
 type ExternalProps = {|

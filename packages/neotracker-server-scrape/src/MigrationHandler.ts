@@ -1,6 +1,5 @@
 import { createTables, makeAllPowerfulQueryContext, Migration, QueryContext } from '@neotracker/server-db';
 import Knex from 'knex';
-import { migrations } from './migrations';
 
 export class MigrationHandler {
   private readonly enabled: boolean;
@@ -38,8 +37,6 @@ export class MigrationHandler {
 
       const initMigration = await this.getMigration('initialization');
       if (initMigration === undefined || !initMigration.complete) {
-        await Promise.all(migrations.map(async ([migrationName]) => this.onComplete(migrationName)));
-
         await this.onComplete('initialization');
       }
 
