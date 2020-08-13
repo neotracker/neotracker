@@ -45,7 +45,7 @@
     "react-router-config": "^4.4.0-beta.6",
     "resolve-path": "^1.4.0",
     "rxjs": "^6.3.3",
-    "serialize-javascript": "^2.1.2",
+    "serialize-javascript": "^4.0.0",
     "sitemap": "^5.0.1",
     "styled-components": "^4.1.3",
     "toobusy-js": "^0.5.1"
