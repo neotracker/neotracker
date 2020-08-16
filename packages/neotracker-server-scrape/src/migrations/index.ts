@@ -1,4 +1,4 @@
-import { ConfirmedInvocationTransaction } from '@neo-one/client-full';
+import { ConfirmedInvocationTransaction, NetworkType } from '@neo-one/client-full';
 import {
   Asset as AssetModel,
   Coin as CoinModel,
@@ -87,7 +87,7 @@ const rpxMigrationBlock = 1444840;
 const longMigrationBlock = 5752874;
 
 // tslint:disable-next-line export-name
-export const migrations: ReadonlyArray<readonly [string, MigrationFunc, ShouldMigrateFunc]> = [
+export const migrations: ReadonlyArray<readonly [string, MigrationFunc, ShouldMigrateFunc, NetworkType]> = [
   [
     'RPX',
     async (context, _) => {
@@ -108,6 +108,7 @@ export const migrations: ReadonlyArray<readonly [string, MigrationFunc, ShouldMi
       ]);
     },
     async (context) => migrationBlockAboveCurrentBlock({ context, migrationBlock: rpxMigrationBlock }),
+    'main',
   ],
   [
     'LONG',
@@ -129,5 +130,6 @@ export const migrations: ReadonlyArray<readonly [string, MigrationFunc, ShouldMi
       ]);
     },
     async (context) => migrationBlockAboveCurrentBlock({ context, migrationBlock: longMigrationBlock }),
+    'main',
   ],
 ];

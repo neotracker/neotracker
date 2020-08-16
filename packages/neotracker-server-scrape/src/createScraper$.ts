@@ -232,10 +232,10 @@ export const createScraper$ = ({
     }),
     mergeScanLatest<Context, Context>(async (_acc, context: Context) => {
       // tslint:disable-next-line no-loop-statement
-      for (const [name, migration, shouldMigrate] of migrations) {
+      for (const [name, migration, shouldMigrate, migrationNetwork] of migrations) {
         const shouldExecute = await context.migrationHandler.shouldExecute(name);
         const shouldDoMigration = await shouldMigrate(context);
-        if (shouldExecute && shouldDoMigration) {
+        if (shouldExecute && shouldDoMigration && environment.network === migrationNetwork) {
           await migration(context, name);
           await context.migrationHandler.onComplete(name);
         }
