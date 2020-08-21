@@ -101,7 +101,7 @@ export class NEOTracker {
         this.shutdown(1);
       },
       error: (error: Error) => {
-        coreLogger.error({ title: 'service_unexpected_complete', error: error.message });
+        coreLogger.error({ title: 'service_unexpected_complete', error: error.message, stack: error.stack });
         this.shutdown(1);
       },
     });
