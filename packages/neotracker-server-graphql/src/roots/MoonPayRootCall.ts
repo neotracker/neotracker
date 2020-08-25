@@ -2,6 +2,7 @@ import { createChild, serverLogger } from '@neotracker/logger';
 import { CodedError } from '@neotracker/server-utils';
 import crypto from 'crypto';
 import { GraphQLResolveInfo } from 'graphql';
+import LRUCache from 'lru-cache';
 import { concat, EMPTY, Observable, of as _of } from 'rxjs';
 import { distinctUntilChanged, map, take } from 'rxjs/operators';
 import { GraphQLResolver } from '../constants';
@@ -15,6 +16,8 @@ interface MoonPayOptions {
 }
 
 const serverGQLLogger = createChild(serverLogger, { component: 'graphql' });
+
+const hashCache = new LRUCache<string, string>(100);
 
 export class MoonPayRootCall extends RootCall {
   public static readonly fieldName: string = 'moonpay';
@@ -42,10 +45,15 @@ export class MoonPayRootCall extends RootCall {
       _info: GraphQLResolveInfo,
     ) => {
       const createUrlWithSignature = (originalUrl: string, moonpayPrivateApiKeyIn: string): string => {
+        if (hashCache.has(originalUrl)) {
+          return `${originalUrl}&signature=${encodeURIComponent(hashCache.get(originalUrl) as string)}`;
+        }
         const signature = crypto
           .createHmac('sha256', moonpayPrivateApiKeyIn)
           .update(new URL(originalUrl).search)
           .digest('base64');
+
+        hashCache.set(originalUrl, signature);
 
         return `${originalUrl}&signature=${encodeURIComponent(signature)}`;
       };
