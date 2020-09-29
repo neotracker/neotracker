@@ -17,7 +17,7 @@ interface MoonPayOptions {
 
 const serverGQLLogger = createChild(serverLogger, { component: 'graphql' });
 
-const hashCache = new LRUCache<string, string>(100);
+const hashCache = new LRUCache<string, string>(10000);
 
 export class MoonPayRootCall extends RootCall {
   public static readonly fieldName: string = 'moonpay';
