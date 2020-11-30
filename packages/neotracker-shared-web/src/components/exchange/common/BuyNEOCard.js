@@ -11,18 +11,14 @@ import {
   getContext,
   lifecycle,
 } from 'recompose';
-import { graphql } from 'react-relay';
 // $FlowFixMe
 import { webLogger } from '@neotracker/logger';
 import { type Theme } from '../../../styles/createTheme';
-import { Card, Button, Typography, withStyles } from '../../../lib/base';
+import { Card, Typography, withStyles } from '../../../lib/base';
 import { Link } from '../../../lib/link';
 import { PageLoading } from '../../common/loading';
 import type { AppOptions } from '../../../AppContext';
-import { createBaseMoonPayUrl, mapAppOptions } from '../../../utils';
-import { queryRenderer } from '../../../graphql/relay';
 import { PoweredByMoonPay } from './index';
-import { Tooltip } from '../../../lib/tooltip';
 import * as routes from '../../../routes';
 import { type BuyNEOQueryResponse } from './__generated__/BuyNEOCardQuery.graphql';
 
@@ -170,61 +166,11 @@ type Props = {|
 function BuyNEOCard({
   className,
   classes,
-  appOptions,
   hideSpinner,
   onFrameError,
   isLoading,
-  useNullAddress,
-  toggleNullAddress,
-  address,
   moonpayUrl,
-  props,
-  lastProps,
 }: Props): React.Element<*> {
-  let currentProps;
-  if (props != null) {
-    currentProps = props;
-  } else if (lastProps != null) {
-    currentProps = lastProps;
-  }
-
-  let secureUrl = createBaseMoonPayUrl({
-    moonpayPublicApiKey: appOptions.moonpayPublicApiKey,
-    moonpayUrl: appOptions.moonpayUrl,
-    redirectLink: appOptions.url,
-  });
-  if (
-    !useNullAddress &&
-    currentProps &&
-    currentProps.moonpay &&
-    currentProps.moonpay.secureUrl &&
-    currentProps.moonpay.validUrl
-  ) {
-    secureUrl = currentProps.moonpay.secureUrl;
-  }
-
-  const toggleButton = (
-    <Tooltip
-      title={
-        'The widget below will automatically use the address from the wallet' +
-        " you have selected. If you want to enter a different address that's" +
-        ' not in your wallet you can press this button to do that.'
-      }
-      position="bottom"
-    >
-      <Button
-        className={classes.toggleNullAddressButton}
-        variant="contained"
-        color="primary"
-        onClick={toggleNullAddress}
-      >
-        <Typography className={classes.buttonText} variant="body1">
-          {useNullAddress ? 'USE WALLET ADDRESS' : 'ENTER ADDRESS MANUALLY'}
-        </Typography>
-      </Button>
-    </Tooltip>
-  );
-
   const frameSupportMessage = (
     <Typography variable="body1">
       You need to enable support for iframes to use this feature. Your browser
@@ -239,7 +185,6 @@ function BuyNEOCard({
           <Typography className={classes.title} variant="title" component="h1">
             Buy NEO
           </Typography>
-          {address ? toggleButton : null}
         </div>
         <Link
           className={classes.buttonMargin}
@@ -263,7 +208,7 @@ function BuyNEOCard({
             onLoad={hideSpinner}
             onError={onFrameError}
             className={isLoading ? classes.iframeLoading : classes.iframe}
-            src={address ? secureUrl : moonpayUrl}
+            src={moonpayUrl}
           >
             {frameSupportMessage}
           </iframe>
@@ -274,24 +219,6 @@ function BuyNEOCard({
 }
 
 const enhance: HOC<*, *> = compose(
-  queryRenderer(
-    graphql`
-      query BuyNEOCardQuery($url: String) {
-        moonpay(url: $url) {
-          secureUrl
-          validUrl
-        }
-      }
-    `,
-    {
-      skipNullVariables: true,
-      mapPropsToVariables: {
-        client: ({ address, moonpayUrl }) =>
-          address == null ? null : { url: moonpayUrl },
-      },
-      cacheConfig: { force: true },
-    },
-  ),
   withState('state', 'setState', () => ({
     isLoading: true,
     useNullAddress: false,
@@ -315,12 +242,6 @@ const enhance: HOC<*, *> = compose(
         isLoading: true,
       }));
     },
-    toggleNullAddress: ({ setState }) => () => {
-      setState((prevState) => ({
-        ...prevState,
-        useNullAddress: !prevState.useNullAddress,
-      }));
-    },
   }),
   lifecycle({
     componentDidUpdate(prevProps) {
@@ -336,7 +257,6 @@ const enhance: HOC<*, *> = compose(
   }),
   getContext({ relayEnvironment: () => null }),
   withStyles(styles),
-  mapAppOptions,
   pure,
 );
 

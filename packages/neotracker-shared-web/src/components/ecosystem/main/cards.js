@@ -27,7 +27,7 @@ const cards = [
     title: 'City of Zion',
     description:
       'City of Zion is a global, independent group of over 50 open source developers, designers and translators formed to support the Neo core and ecosystem. Contributors are rewarded weekly with NEO.',
-    link: 'https://cityofzion.io/',
+    link: 'https://coz.io/',
     image: 'city_of_zion.png',
     cover: true,
   },
@@ -51,7 +51,7 @@ const cards = [
     title: 'Neo SPCC',
     description:
       'Neo Saint Petersburg Competence Center is a Saint Petersburg-based R&D company that provides support for Neo core development. NSPCC is creating NeoFS to allow data transfer and storage on Neo.',
-    link: 'https://www.nspcc.ru/en/',
+    link: 'https://nspcc.ru/en/',
     image: 'neo_spcc.png',
     cover: false,
   },
@@ -77,14 +77,6 @@ const cards = [
       'New Economy Labs ia a China-based community of open-source developers supporting the Neo ecosystem.',
     link: 'https://nel.group/',
     image: 'new_economy_labs.png',
-    cover: false,
-  },
-  {
-    title: 'Neo Name Service',
-    description:
-      'NNS is a distributed, open-source and extensible naming system based on the Neo blockchain, which offers a secure and decentralized way to address resources both on and off the blockchain.',
-    link: 'https://neons.name/index_En.html',
-    image: 'nns.png',
     cover: false,
   },
   {
