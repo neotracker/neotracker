@@ -13,6 +13,10 @@ export class Base extends Model {
   // tslint:disable-next-line readonly-array
   public static readonly jsonAttributes: string[] = [];
 
+  public static get useLimitInFirst() {
+    return true;
+  }
+
   public static get pluralName(): string {
     return `${this.modelName}s`;
   }
