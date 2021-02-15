@@ -81,4 +81,4 @@ COPY --from=builder tmp/neotracker/dist/neotracker-core/ neotracker-core/
 COPY yarn.lock neotracker-core/
 WORKDIR /neotracker-core
 RUN yarn install --production
-ENTRYPOINT ["/usr/local/bin/node", "--max-old-space-size=2048", "bin/neotracker", "neotracker"]
+ENTRYPOINT ["/usr/local/bin/node", "bin/neotracker", "neotracker"]
