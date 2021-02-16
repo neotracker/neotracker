@@ -17,7 +17,7 @@
     "bignumber.js": "^9.0.0",
     "classnames": "^2.2.6",
     "headroom.js": "^0.9.4",
-    "highcharts": "^6.2.0",
+    "highcharts": "^8.2.0",
     "js-sha3": "^0.8.0",
     "jss": "^9.8.7",
     "jss-preset-default": "^4.3.0",
